@@ -1,5 +1,3 @@
-//Some politicians listen to public opinion, but no politician will radically deviate from their alignment.
-//More extreme politicians are less likely to deviate from their views. Moderates always consult public opinion.
 import 'package:lcs_new_age/basemode/disbanding.dart';
 import 'package:lcs_new_age/common_display/common_display.dart';
 import 'package:lcs_new_age/engine/engine.dart';

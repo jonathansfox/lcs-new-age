@@ -82,7 +82,6 @@ class CreatureType {
   int? recruitActivityDifficulty;
   bool edgelord = false;
 
-  // TODO: add some of these to creature type definitions so they're data driven
   bool get freeable {
     if (id == CreatureTypeIds.childLaborer ||
         (id == CreatureTypeIds.servant &&

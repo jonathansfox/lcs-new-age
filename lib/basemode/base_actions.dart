@@ -29,7 +29,7 @@ Future<void> setVehicles() async {
 
     mvaddstr(18, 1,
         "Press a letter to specify passengers for that Liberal vehicle.");
-    mvaddstr(19, 1, "Capitalize the letter to designate a driver.");
+    mvaddstr(19, 1, "Capitalize the letter to select a driver.");
     mvaddstr(
         20, 1, "Press a number to remove that squad member from a vehicle.");
     mvaddstr(21, 1,
@@ -40,15 +40,16 @@ Future<void> setVehicles() async {
         "       These cars may be used by both squads but not on the same day.");
     mvaddstr(24, 1, "Enter - Done");
 
-    String input = await getKeyCaseSensitive();
-    int listIndex = input.toLowerCase().codePoint - Key.a;
+    String rawKey = await getKeyCaseSensitive();
+    int input = rawKey.codePoint;
+    int listIndex = input - Key.a;
     int carIndex = listIndex + page * carsPerPage;
-    int squadIndex = input.codePoint - '1'.codePoint;
+    int squadIndex = input - '1'.codePoint;
     if (listIndex >= 0 &&
         listIndex < carsPerPage &&
         carIndex < vehiclePool.length) {
       bool driver = true;
-      if (input.codePoint >= Key.a) driver = false;
+      if (rawKey.codeUnitAt(0) >= Key.a) driver = false;
       int c = 0;
       if (squad.length > 1) {
         mvaddstrc(8, 20, white,
@@ -57,23 +58,22 @@ Future<void> setVehicles() async {
       }
       if (c >= 0 && c <= 5) {
         Creature p = squad[c];
-        if (p.preferredCarId == vehiclePool[carIndex].id) {
-          if (p.canWalk) {
-            p.preferredDriver = driver;
-          } else {
-            p.preferredDriver = false;
-          }
+        p.preferredCarId = vehiclePool[carIndex].id;
+        if (driver) {
+          p.preferredDriver = driver;
+        } else {
+          p.preferredDriver = false;
         }
       }
     } else if (squadIndex >= 0 && squadIndex < squad.length) {
       squad[squadIndex].preferredCarId = null;
       squad[squadIndex].preferredDriver = false;
-    } else if (isPageUp(input.codePoint) && page > 0) {
+    } else if (isPageUp(input) && page > 0) {
       page--;
-    } else if (isPageDown(input.codePoint) &&
+    } else if (isPageDown(input) &&
         (page + 1) * carsPerPage < vehiclePool.length) {
       page++;
-    } else {
+    } else if (isBackKey(input)) {
       return;
     }
   }

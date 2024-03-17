@@ -319,5 +319,4 @@ int locx = 0;
 int locy = 0;
 int locz = 0;
 
-// TODO: move this to the curses emulation code should not be in game_state.dart
 void debugPrint(String message) => material.debugPrint(message);

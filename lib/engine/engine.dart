@@ -63,6 +63,7 @@ abstract class Key {
   static const int tab = 9;
   static const int escape = 27;
   static const int space = 32;
+  static const int shift = 16;
   static const int upArrow = 17;
   static const int downArrow = 18;
   static const int rightArrow = 19;
@@ -118,6 +119,7 @@ extension CodePointExtension on String {
     if (this == "Down") return Key.downArrow;
     if (this == "Right") return Key.rightArrow;
     if (this == "Left") return Key.leftArrow;
+    if (this == "Shift") return Key.shift;
     if (isEmpty) return 0;
     return toLowerCase().codeUnitAt(0);
   }

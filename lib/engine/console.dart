@@ -118,6 +118,8 @@ class Console {
         character = "Backspace";
       case LogicalKeyboardKey.enter:
         character = "Enter";
+      case LogicalKeyboardKey.shift:
+        character = "Shift";
       default:
         character = lastKey?.character ?? '';
     }

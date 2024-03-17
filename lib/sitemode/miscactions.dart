@@ -65,7 +65,7 @@ Future<UnlockResult> unlock(UnlockTypes type) async {
       if (maxattack <= difficulty) {
         p.train(Skill.security, 10 * difficulty);
       }
-      clearMessageArea();
+      clearMessageArea(false);
       mvaddstrc(16, 1, white, "${p.name} ");
       switch (type) {
         case UnlockTypes.door:
@@ -94,7 +94,7 @@ Future<UnlockResult> unlock(UnlockTypes type) async {
 
       return UnlockResult.unlocked;
     } else {
-      clearMessageArea();
+      clearMessageArea(false);
       setColor(white);
       move(16, 1);
 

@@ -175,8 +175,6 @@ Future<void> equip(List<Item>? loot) async {
             Weapon w = loot[slot] as Weapon;
             squaddie.giveWeapon(w, loot);
 
-            if (loot[slot].stackSize == 0) loot.removeAt(slot);
-
             if (page * 18 >= loot.length && page != 0) page--;
           } else if (loot[slot] is Armor) {
             debugPrint(
