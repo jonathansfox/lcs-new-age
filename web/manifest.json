@@ -1,0 +1,57 @@
+{
+    "name": "Liberal Crime Squad: New Age",
+    "short_name": "LCS:NA",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#111111",
+    "theme_color": "#028121",
+    "description": "A satirical game about American politics.",
+    "orientation": "landscape",
+    "prefer_related_applications": false,
+    "icons": [
+        {
+            "src": "icons/lcs-64-basic.png",
+            "sizes": "64x64",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/lcs-64-maskable.png",
+            "sizes": "64x64",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "icons/lcs-128-basic.png",
+            "sizes": "128x128",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/lcs-128-maskable.png",
+            "sizes": "128x128",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "icons/lcs-256-basic.png",
+            "sizes": "256x256",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/lcs-256-maskable.png",
+            "sizes": "256x256",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "icons/lcs-512-basic.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/lcs-512-maskable.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ]
+}

@@ -1,0 +1,36 @@
+include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+    - always_declare_return_types
+    - always_use_package_imports
+    - avoid_dynamic_calls
+    - avoid_slow_async_io
+    - avoid_type_to_string
+    - avoid_void_async
+    - avoid_types_on_closure_parameters
+    - cancel_subscriptions
+    - cast_nullable_to_non_nullable
+    - directives_ordering
+    - discarded_futures
+    - eol_at_end_of_file
+    - literal_only_boolean_expressions
+    - no_self_assignments
+    - no_wildcard_variable_uses
+    - no_literal_bool_comparisons
+    - noop_primitive_operations
+    - prefer_void_to_null
+    - prefer_int_literals
+    - prefer_if_elements_to_conditional_expressions
+    - sort_constructors_first
+    - sort_unnamed_constructors_first
+    - type_annotate_public_apis
+    - unawaited_futures
+    - unnecessary_breaks
+    - unnecessary_lambdas
+    - unnecessary_parenthesis
+    - unnecessary_to_list_in_spreads
+    - unnecessary_statements
+    - unreachable_from_main
+    - use_enums
+    - use_super_parameters
