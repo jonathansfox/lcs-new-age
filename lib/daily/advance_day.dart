@@ -295,7 +295,10 @@ Future<void> _squadDepart(Squad s) async {
   }
   s.activity.type = ActivityType.none;
 
-  locatesquad(s, base);
+  for (Creature c in s.members) {
+    c.location = c.base;
+    c.car?.locationId = c.site?.id;
+  }
 }
 
 enum DispersalTypes {
