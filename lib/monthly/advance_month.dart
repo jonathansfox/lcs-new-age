@@ -92,8 +92,9 @@ Future<void> advanceMonth() async {
     politics.publicInterest[entry.key] = entry.value ~/ 2;
   }
 
-  double conspower =
-      200 - publicOpinion[View.amRadio]! - publicOpinion[View.cableNews]!;
+  double conspower = 300 -
+      publicOpinion[View.amRadio]! * 1.5 -
+      publicOpinion[View.cableNews]! * 1.5;
 
   //HAVING SLEEPERS
   for (int pl = pool.length - 1; pl > 0; pl--) {
@@ -185,16 +186,15 @@ Future<void> advanceMonth() async {
           changePublicOpinion(v, 1);
         }
       }
-      //Random movement after loop
-      changePublicOpinion(v, lcsRandom(2) * 2 - 1);
     }
     // AM Radio and Cable News popularity slowly shift to reflect public
     // opinion over time -- if left unchecked, their subtle influence
     // on society will become a self-perpetuating Conservative nightmare!
     else if (v == View.amRadio || v == View.cableNews) {
-      if (politics.publicMood() - 5 < publicOpinion[v]!) {
+      if (politics.publicMood() - 10 < publicOpinion[v]!) {
         changePublicOpinion(v, -1);
-      } else {
+      }
+      if (politics.publicMood() - 20 > publicOpinion[v]!) {
         changePublicOpinion(v, 1);
       }
     }
