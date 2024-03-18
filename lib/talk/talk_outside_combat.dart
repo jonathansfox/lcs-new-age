@@ -185,7 +185,8 @@ Future<bool> heyIWantToRentARoom(Creature a, Creature tk) async {
   while (true) {
     int c = Key.a;
 
-    if (ledger.funds < rent) mvaddstrc(11, 1, darkGray, "A - Accept.");
+    setColor(ledger.funds >= rent ? white : darkGray);
+    mvaddstr(11, 1, "A - Accept.");
     mvaddstrc(12, 1, white, "B - Decline.");
     mvaddstr(13, 1, "C - Threaten the landlord.");
 
