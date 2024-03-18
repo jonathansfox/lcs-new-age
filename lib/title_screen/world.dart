@@ -152,7 +152,4 @@ void makeWorld() {
       SiteType.intelligenceHQ,
       SiteType.armyBase,
     ]);
-
-  gameState.districts = cities.expand((c) => c.districts).toList();
-  gameState.sites = gameState.districts.expand((d) => d.sites).toList();
 }

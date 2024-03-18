@@ -40,8 +40,12 @@ class GameState {
 
   int uniqueGameId = lcsRandom(10000000);
   List<City> cities = [];
-  List<District> districts = [];
-  List<Site> sites = [];
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  List<District> get districts =>
+      cities.expand((city) => city.districts).toList();
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  List<Site> get sites =>
+      districts.expand((district) => district.sites).toList();
   Politics politics = Politics.newGame();
   CrimeSquad lcs = CrimeSquad();
   DateTime date = DateTime(2023, DateTime.january, 1);
