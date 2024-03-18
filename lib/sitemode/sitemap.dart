@@ -829,13 +829,14 @@ void addOldMapSpecials(Site loc) {
 
 void addLoot(Site loc) {
   //ADD LOOT
+  final range = levelMap.range(2, 2, 0, MAPX - 2, MAPY - 2, MAPZ);
+  bool highSecurityTiles = range.any((t) => t.restricted);
   for (SiteTile tile in levelMap.range(2, 2, 0, MAPX - 2, MAPY - 2, MAPZ)) {
     if (!tile.door &&
         !tile.wall &&
         !tile.outdoor &&
         tile.special == TileSpecial.none &&
-        (tile.restricted ||
-            securityable(activeSite?.type ?? SiteType.downtown) == 0) &&
+        (tile.restricted || !highSecurityTiles) &&
         oneIn(10)) {
       switch (loc.type) {
         case SiteType.bank: // the valuables are in the vault
