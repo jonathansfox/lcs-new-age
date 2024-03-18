@@ -1062,7 +1062,7 @@ Future<void> _siteModeAux() async {
         int index = c - '1'.codePoint;
         if (index < squad.length) {
           if (activeSquadMemberIndex == index) {
-            printFullCreatureStats(activeSquadMember!);
+            await fullCreatureInfoScreen(activeSquadMember!);
           } else {
             activeSquadMemberIndex = index;
           }
