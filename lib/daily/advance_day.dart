@@ -265,6 +265,24 @@ Future<void> _squadDepart(Squad s) async {
   } else {
     await showMessage("${s.name} has arrived at ${site.name}.");
   }
+  int c = Key.t;
+
+  if (site.controller == SiteController.lcs && s.members.first.base != site) {
+    List<SiteType> raidableSafehouses = [
+      SiteType.tenement,
+      SiteType.apartment,
+      SiteType.upscaleApartment,
+    ];
+    if (!raidableSafehouses.contains(site.type)) {
+      c = Key.s;
+    } else {
+      mvaddstrc(8, 1, white,
+          "Why is the squad here?   (S)afe House, to cause (T)rouble, or (B)oth?");
+      do {
+        c = await getKey();
+      } while (c != Key.s && c != Key.b && c != Key.t);
+    }
+  }
   activeSquad = s;
   switch (site.type) {
     case SiteType.departmentStore:
@@ -283,12 +301,13 @@ Future<void> _squadDepart(Squad s) async {
       await hospital(site);
       locatesquad(s, base);
     default:
-      if (site.controller == SiteController.lcs) {
+      if (c == Key.s || c == Key.b) {
         for (var c in s.members) {
           c.base = site;
         }
         base = site;
-      } else {
+      }
+      if (c == Key.t || c == Key.b) {
         sitestory = NewsStory.prepare(NewsStories.squadSiteAction)..loc = site;
         await siteMode(site);
       }
