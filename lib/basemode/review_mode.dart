@@ -499,7 +499,7 @@ Future<void> reviewMode(ReviewMode mode) async {
             mvaddstr(24, 0,
                 "                                                                                "); // 80 spaces
 
-            await enterName(24, 0, tempp.name);
+            tempp.name = await enterName(24, 0, tempp.name);
           } else if (c == Key.g && tempp.align == Alignment.liberal) {
             List<Gender> genders = [
               Gender.male,
