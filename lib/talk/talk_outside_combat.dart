@@ -216,6 +216,7 @@ Future<bool> heyIWantToRentARoom(Creature a, Creature tk) async {
         await getKey();
 
         ledger.subtractFunds(rent, Expense.rent);
+        activeSite?.controller = SiteController.lcs;
         activeSite?.rent = rent;
         activeSite?.newRental = true;
 
