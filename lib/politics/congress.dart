@@ -89,31 +89,32 @@ Future<void> congress() async {
   senate.shuffle();
 
   //DETERMINE BILLS
-  int pup, pdown, pprior;
+  int pup, pdown;
   for (Law l in Law.values) {
     pup = 0;
     pdown = 0;
-    pprior = 0;
 
     // Consult House
     for (int cl = 0; cl < house.length; cl++) {
       DeepAlignment housealign = house[cl];
       if (laws[l]! < housealign) {
         pup++;
+        if (housealign == DeepAlignment.eliteLiberal) pup += 2;
       } else if (laws[l]! > housealign) {
         pdown++;
+        if (housealign == DeepAlignment.archConservative) pdown += 2;
       }
-      pprior += housealign.index - laws[l]!.index;
     }
     // Consult Senate
     for (int sl = 0; sl < senate.length; sl++) {
       DeepAlignment senatealign = senate[sl];
       if (laws[l]! < senatealign) {
         pup += 4;
+        if (senatealign == DeepAlignment.eliteLiberal) pup += 6;
       } else if (laws[l]! > senatealign) {
         pdown += 4;
+        if (senatealign == DeepAlignment.archConservative) pdown += 6;
       }
-      pprior += (senatealign.index - laws[l]!.index) * 4;
     }
     // Consult Public Opinion
     double mood = politics.publicSupportForLaw(l);
@@ -121,9 +122,8 @@ Future<void> congress() async {
     for (int i = 0; i < 4; i++) {
       if (10 + 20 * i < mood) publicPosition++;
     }
-    if (laws[l]!.index < publicPosition) pup += 600;
-    if (laws[l]!.index > publicPosition) pdown += 600;
-    pprior += (publicPosition - laws[l]!.index) * 600;
+    if (laws[l]!.index < publicPosition) pup += 150;
+    if (laws[l]!.index > publicPosition) pdown += 150;
 
     if (pup > pdown) {
       lawdir[l] = 1;
@@ -136,7 +136,7 @@ Future<void> congress() async {
     if (laws[l] == DeepAlignment.eliteLiberal) lawdir[l] = -1;
 
     //CALC PRIORITY
-    lawpriority[l] = pprior.abs();
+    lawpriority[l] = (pup - pdown).abs();
   }
 
   for (int c = 0; c < cnum; c++) {
@@ -371,9 +371,13 @@ Future<void> congress() async {
   }
 
   // LET ARCH-CONSERVATIVES REPEAL THE CONSTITUTION AND LOSE THE GAME?
-  if (housemake[0] > house.length * 2 / 3 &&
-      senatemake[0] > senate.length * 2 / 3 &&
-      politics.publicMood() < 10) {
+  if (housemake[0] > house.length * 1 / 2 &&
+      senatemake[0] >= senate.length * 1 / 2 &&
+      laws.values.every((law) => law == DeepAlignment.archConservative) &&
+      politics.timeSinceLastConstitutionRepealAttempt > 5) {
+    politics.timeSinceLastConstitutionRepealAttempt = 0;
     await tryToRepealConstitution();
+  } else {
+    politics.timeSinceLastConstitutionRepealAttempt++;
   }
 }

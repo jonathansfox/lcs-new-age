@@ -92,6 +92,8 @@ class Politics {
   bool termLimitsPassed = false;
   bool supremeCourtPurged = false;
   int constitutionalAmendments = 27;
+  @JsonKey(defaultValue: 6)
+  int timeSinceLastConstitutionRepealAttempt = 0;
 
   void promoteVP() {
     exec[Exec.president] = exec[Exec.vicePresident]!;
