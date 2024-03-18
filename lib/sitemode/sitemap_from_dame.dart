@@ -178,7 +178,7 @@ void readMapCBSpecials(int x, int y, int z, int i) {
 
 void makeDoor(int x, int y, int z, {int flags = 0}) {
   final tile = levelMap[x][y][z];
-  tile.door = true;
+  tile.flag = SITEBLOCK_DOOR | flags;
   tile.restricted = tile.neighbors().any((n) => n.restricted);
 }
 
@@ -195,7 +195,7 @@ void readMapCBTiles(int x, int y, int z, int i) {
     case 6:
       makeDoor(x, y, z, flags: SITEBLOCK_LOCKED);
     case 7:
-      levelMap[x][y][z].flag = SITEBLOCK_RESTRICTED;
+      levelMap[x][y][z].flag |= SITEBLOCK_RESTRICTED;
       if (x > 0 && (levelMap[x - 1][y][z].flag & SITEBLOCK_DOOR) > 0) {
         levelMap[x - 1][y][z].flag |= SITEBLOCK_RESTRICTED;
       }
@@ -203,7 +203,7 @@ void readMapCBTiles(int x, int y, int z, int i) {
         levelMap[x][y - 1][z].flag |= SITEBLOCK_RESTRICTED;
       }
     case 8:
-      levelMap[x][y][z].flag = SITEBLOCK_CHAINLINK;
+      levelMap[x][y][z].flag |= SITEBLOCK_CHAINLINK;
     case 9:
       makeDoor(x, y, z, flags: SITEBLOCK_LOCKED | SITEBLOCK_ALARMED);
     case 10:

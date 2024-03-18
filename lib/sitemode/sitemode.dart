@@ -1900,7 +1900,7 @@ Future<void> _openDoor(bool restricted) async {
 
   if (vaultDoor) {
     // Vault door, not usable by bumping
-    clearMessageArea();
+    clearMessageArea(false);
 
     mvaddstrc(16, 1, white, "The vault door is impenetrable.");
 
