@@ -227,7 +227,7 @@ class Shop extends ShopOption {
         } else {
           setColor(darkGray);
         }
-        addstr("M - Buy a Mask                (\$15)");
+        addstr("M - Buy a Mask (\$15)");
       }
       if (x == 2) y++;
 
@@ -560,9 +560,8 @@ class Shop extends ShopOption {
           p < masktype.length && p < page * 19 + 19;
           p++, y++) {
         setColor(lightGray);
-        move(y, 0);
-        addchar("${letterAPlus(y - 2)} - ${masktype[p].name}");
-        mvaddstrc(y, 39, lightGray, masktype[p].description);
+        mvaddstr(y, 0, "${letterAPlus(y - 2)} - ${masktype[p].name}");
+        mvaddstrc(y, 39, lightGray, masktype[p].description.trim());
       }
 
       mvaddstrc(22, 0, lightGray, "Press a Letter to select a Mask");

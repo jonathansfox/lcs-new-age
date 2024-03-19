@@ -13,7 +13,7 @@ class ArmorType extends ItemType {
   factory ArmorType.mask(String id) {
     ArmorType? maskPrototype = armorTypes[maskPrototypeId];
     ArmorType mask = ArmorType(id);
-    mask.mask = maskPrototype?.mask ?? true;
+    mask.mask = true;
     mask.concealsFace = maskPrototype?.concealsFace ?? true;
     mask.coversHead = maskPrototype?.coversHead ?? true;
     mask.interrogationAssaultBonus =

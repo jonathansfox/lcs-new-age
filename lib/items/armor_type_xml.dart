@@ -85,6 +85,10 @@ void parseArmorType(ArmorType armor, XmlElement xml) {
         armor.weaponsPermittedIds.add(element.innerText);
       case "durability":
         armor.durability = int.tryParse(element.innerText) ?? armor.durability;
+      case "description":
+        armor.description = element.innerText;
+      case "surprise":
+        armor.surpriseMask = parseBool(element.innerText) ?? armor.surpriseMask;
     }
   }
 }
