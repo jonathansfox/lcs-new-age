@@ -62,7 +62,7 @@ Future<void> burnFlagAnimation() async {
       16,
       51.75,
       FlagBurningAnimation(
-        SvgPicture.asset('flags/Flag_of_the_United_States.svg'),
+        SvgPicture.asset('assets/flags/Flag_of_the_United_States.svg'),
         BurnData(29, 15),
         duration: duration,
       ),
@@ -261,5 +261,5 @@ class BurnData {
 
 void printFlag() {
   console.addGraphic(ConsoleGraphic(10.5, 27.25, 16, 51.75,
-      SvgPicture.asset('flags/Flag_of_the_United_States.svg')));
+      SvgPicture.asset('assets/flags/Flag_of_the_United_States.svg')));
 }
