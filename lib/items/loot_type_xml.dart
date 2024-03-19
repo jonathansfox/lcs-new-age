@@ -14,6 +14,8 @@ void parseLootType(LootType loot, XmlElement xml) {
             bool.tryParse(element.innerText) ?? loot.noQuickFencing;
       case 'cloth':
         loot.cloth = bool.tryParse(element.innerText) ?? loot.cloth;
+      case 'fencevalue':
+        loot.fenceValue = int.tryParse(element.innerText) ?? loot.fenceValue;
     }
   }
 }
