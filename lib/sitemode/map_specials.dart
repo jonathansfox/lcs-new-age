@@ -1193,8 +1193,8 @@ Future<void> specialSecurity(bool metaldetect) async {
   await getKey();
 
   int rejectReason = NOT_REJECTED;
-  void reject(int reason) {
-    if (reason > rejectReason) rejectReason = reason;
+  void reject(int newReason) {
+    if (newReason < rejectReason) rejectReason = newReason;
   }
 
   // Size up the squad for entry
