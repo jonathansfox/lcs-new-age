@@ -308,13 +308,14 @@ void printSkillValue(Creature cr, Skill skill, int y, int x,
     {bool emphasizePotential = false}) {
   move(y, x);
   addstr("{:2d}.".format(cr.skill(skill)));
-  if (cr.skillXP(skill) < 100 + (10 * cr.skill(skill))) {
-    if ((cr.skillXP(skill) * 100) / (100 + (10 * cr.skill(skill))) != 0) {
-      if ((cr.skillXP(skill) * 100) / (100 + (10 * cr.skill(skill))) < 10) {
+  int xpPercent =
+      ((cr.skillXP(skill) / skillXpNeeded(cr.skill(skill))) * 100).round();
+  if (xpPercent < 100) {
+    if (xpPercent != 0) {
+      if (xpPercent < 10) {
         addstr("0");
       }
-      addstr(
-          "${((cr.skillXP(skill) * 100) / (100 + (10 * cr.skill(skill)))).round()}");
+      addstr("$xpPercent");
     } else {
       addstr("00");
     }
