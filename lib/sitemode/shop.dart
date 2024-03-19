@@ -457,8 +457,10 @@ class Shop extends ShopOption {
       for (int l = page * 18; l < base.loot.length && l < page * 18 + 18; l++) {
         if (selected[l] > 0) {
           setColor(lightGreen);
-        } else {
+        } else if (base.loot[l].isForSale) {
           setColor(lightGray);
+        } else {
+          setColor(darkGray);
         }
         itemstr = base.loot[l].equipTitle();
         if (base.loot[l].stackSize > 1) {
@@ -504,15 +506,7 @@ class Shop extends ShopOption {
             ret -= base.loot[slot].fenceValue * selected[slot];
             selected[slot] = 0;
           } else {
-            if (!base.loot[slot].isForSale) {
-              printParty();
-
-              move(8, 15);
-              setColor(white);
-              addstr(" You can't sell damaged goods.");
-
-              await getKey();
-            } else {
+            if (base.loot[slot].isForSale) {
               if (base.loot[slot].stackSize > 1) {
                 selected[slot] =
                     await promptAmount(0, base.loot[slot].stackSize);
