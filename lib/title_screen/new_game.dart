@@ -205,7 +205,7 @@ Future<void> makeCharacter() async {
 
   erase();
   mvaddstrc(0, 0, white, "What is your name to the people?");
-  await enterName(2, 0, founder.properName, prefill: true);
+  founder.name = await enterName(2, 0, founder.properName, prefill: true);
 }
 
 Future<void> aNewConservativeEra() async {
