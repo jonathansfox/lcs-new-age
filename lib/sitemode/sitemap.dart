@@ -321,7 +321,9 @@ Future<void> initsite(Site loc) async {
     //ADD ACCESSORIES
     addOldMapSpecials(loc);
   }
-  cleanSiteblockRestrictions();
+  if (!loaded) {
+    cleanSiteblockRestrictions();
+  }
   addLoot(loc);
 
   /*******************************************************
