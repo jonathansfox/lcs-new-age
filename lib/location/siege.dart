@@ -23,7 +23,9 @@ class Siege {
   Map<String, dynamic> toJson() => _$SiegeToJson(this);
   SiegeType activeSiegeType = SiegeType.none;
   bool get underSiege => activeSiegeType != SiegeType.none;
-  bool underAttack = false;
+  bool _underAttack = false;
+  bool get underAttack => underSiege && _underAttack;
+  set underAttack(bool value) => _underAttack = value;
   int attackTime = 0;
   int kills = 0;
   int tanks = 0;
