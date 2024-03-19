@@ -12,11 +12,12 @@ Skill? parseSkill(String skillString) {
   Skill? skill = Skill.values.firstWhereOrNull(
       (s) => s.name.toLowerCase() == skillString.toLowerCase());
   if (skill == null) {
-    switch (skillString) {
+    switch (skillString.toLowerCase()) {
       case "handtohand":
       case "axe":
       case "club":
       case "sword":
+      case "knife":
         skill = Skill.martialArts;
       case "pistol":
       case "rifle":
