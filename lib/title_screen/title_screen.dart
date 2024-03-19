@@ -10,7 +10,7 @@ import 'package:lcs_new_age/title_screen/new_game.dart';
 import 'package:lcs_new_age/title_screen/world.dart';
 import 'package:lcs_new_age/utils/colors.dart';
 
-const String gameVersion = "1.0.1";
+const String gameVersion = "1.0.2";
 
 Future<void> titleScreen() async {
   HighScores? highScores = await loadHighScores();

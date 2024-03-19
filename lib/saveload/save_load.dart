@@ -49,12 +49,18 @@ class SaveFile {
     required this.lastPlayed,
     this.gameState,
   });
-  factory SaveFile.fromJson(Map<String, dynamic> json) =>
-      _$SaveFileFromJson(json);
+  factory SaveFile.fromJson(Map<String, dynamic> json) {
+    String version = json["version"];
+    if (compareVersionStrings(version, "1.0.2") < 0) {
+      json["saveData"] = jsonDecode(json["saveData"]);
+    }
+    return _$SaveFileFromJson(json);
+  }
   Map<String, dynamic> toJson() => _$SaveFileToJson(this);
+
   final String gameId;
   final String version;
-  final String saveData;
+  final Map<String, dynamic> saveData;
   final DateTime? lastPlayed;
   @JsonKey(includeToJson: false, includeFromJson: false)
   final GameState? gameState;
@@ -173,7 +179,7 @@ Future<bool> loadGame(SaveFile selectedSave) async {
 Future<bool> loadGameFromSave(SaveFile selectedSave) async {
   if (selectedSave.gameState == null) {
     debugPrint("Generating crash report from ${selectedSave.version}");
-    gameState = GameState.fromJson(jsonDecode(selectedSave.saveData));
+    gameState = GameState.fromJson(selectedSave.saveData);
     return true;
   } else {
     debugPrint("Loading game from ${selectedSave.version}");
@@ -259,7 +265,8 @@ Future<SaveFile?> importSave() async {
 Future<void> saveGameFile(SaveFile saveFile) async {
   final prefs = await SharedPreferences.getInstance();
   await prefs.setString("gameVersion${saveFile.gameId}", saveFile.version);
-  await prefs.setString("savedGame${saveFile.gameId}", saveFile.saveData);
+  await prefs.setString(
+      "savedGame${saveFile.gameId}", jsonEncode(saveFile.saveData));
   await prefs.setString(
       "lastPlayed${saveFile.gameId}",
       saveFile.lastPlayed?.toIso8601String() ??
@@ -292,7 +299,7 @@ Future<List<SaveFile>> loadGameList() async {
           savedGame != null ? GameState.fromJson(jsonDecode(savedGame)) : null;
       saveFiles.add(SaveFile(
         version: version ?? "ERROR",
-        saveData: savedGame ?? "",
+        saveData: jsonDecode(savedGame ?? ""),
         lastPlayed: lastPlayedDate,
         gameId: savedGameIds[i],
         gameState: gameState,
@@ -301,7 +308,7 @@ Future<List<SaveFile>> loadGameList() async {
       debugPrint("Error loading save game $i: $e");
       saveFiles.add(SaveFile(
         version: version ?? "ERROR",
-        saveData: savedGame ?? "",
+        saveData: jsonDecode(savedGame ?? ""),
         gameId: savedGameIds[i],
         lastPlayed: lastPlayedDate,
       ));
@@ -312,4 +319,23 @@ Future<List<SaveFile>> loadGameList() async {
 
 Future<void> deleteSaveGame() async {
   await deleteSaveGameId(gameState.uniqueGameId.toString());
+}
+
+int compareVersionStrings(String a, String b) {
+  List<int> aParts = a.split(".").map(int.parse).toList();
+  List<int> bParts = b.split(".").map(int.parse).toList();
+  for (int i = 0; i < aParts.length; i++) {
+    if (i >= bParts.length) {
+      return 1;
+    }
+    if (aParts[i] > bParts[i]) {
+      return 1;
+    } else if (aParts[i] < bParts[i]) {
+      return -1;
+    }
+  }
+  if (aParts.length < bParts.length) {
+    return -1;
+  }
+  return 0;
 }
