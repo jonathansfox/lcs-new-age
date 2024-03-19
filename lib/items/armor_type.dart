@@ -58,7 +58,7 @@ class ArmorType extends ItemType {
   int qualityLevels = 4;
   bool police = false;
   Iterable<WeaponType> get weaponsPermitted =>
-      weaponsPermittedIds.map((id) => weaponTypes[id]!);
+      weaponsPermittedIds.map((id) => weaponTypes[id]).nonNulls;
   List<String> weaponsPermittedIds = [];
 
   int makeDifficultyFor(Creature cr) =>
