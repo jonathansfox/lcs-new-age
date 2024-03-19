@@ -537,6 +537,7 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
       }
     }
   } else {
+    clearMessageArea();
     mvaddstrc(14, 1, white, "The Squad surrenders and is arrested.");
     await getKey();
 
