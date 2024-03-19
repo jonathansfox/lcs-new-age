@@ -1430,7 +1430,7 @@ Future<void> specialBankTeller() async {
   } else {
     await encounterMessage("A bank teller is available.");
     encounter.clear();
-    encounter.add(Creature.fromId(CreatureTypeIds.bankManager));
+    encounter.add(Creature.fromId(CreatureTypeIds.bankTeller));
   }
 }
 
