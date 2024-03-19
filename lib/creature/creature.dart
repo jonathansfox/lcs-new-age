@@ -473,7 +473,7 @@ class Creature {
 
   void strip({List<Item>? lootPile}) {
     Armor? armor = equippedArmor;
-    if (armor != null) {
+    if (armor != null && armor.type.idName != "ARMOR_NONE") {
       if (lootPile != null) lootPile.add(armor);
       equippedArmor = null;
     }
