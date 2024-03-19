@@ -1233,7 +1233,7 @@
         </attack>
     </weapontype>
 
-    <weapontype idname="WEAPON_TEETH">
+    <weapontype idname="WEAPON_BITE">
         <name>Teeth</name>
         <shortname>Teeth</shortname>
         <size>15</size>
