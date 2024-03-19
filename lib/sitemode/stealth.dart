@@ -479,7 +479,7 @@ DisguiseQuality disguiseQuality(Creature cr) {
         }
       case SiteType.policeStation:
         if (levelMap[locx][locy][locz].flag & SITEBLOCK_RESTRICTED != 0) {
-          uniformed = DisguiseQuality.inconspicuous;
+          uniformed = DisguiseQuality.trespassing;
           if (["ARMOR_POLICEUNIFORM", "ARMOR_POLICEARMOR"]
               .contains(cr.armor.type.idName)) {
             uniformed = DisguiseQuality.inconspicuous;
