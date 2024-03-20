@@ -116,12 +116,10 @@ int clinictime(Creature g) {
     if (body.puncturedRightKidney) time++;
     if (body.puncturedLeftKidney) time++;
     if (body.puncturedSpleen) time++;
-    if (g.blood < g.maxBlood) {
-      if (body.ribs < body.maxRibs) time++;
-      if (body.brokenNeck) time++;
-      if (body.brokenUpperSpine) time++;
-      if (body.brokenLowerSpine) time++;
-    }
+    if (body.ribs < body.maxRibs) time++;
+    if (body.neck == InjuryState.untreated) time++;
+    if (body.upperSpine == InjuryState.untreated) time++;
+    if (body.lowerSpine == InjuryState.untreated) time++;
   }
   return time;
 }
