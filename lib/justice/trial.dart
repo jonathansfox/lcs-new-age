@@ -433,20 +433,6 @@ Future<void> trial(Creature g) async {
   if (trialOutcome == TrialOutcome.guilty ||
       trialOutcome == TrialOutcome.lenience) {
     await penalize(g, trialOutcome == TrialOutcome.lenience);
-    //CLEAN UP LAW FLAGS
-    for (var c in g.wantedForCrimes.entries) {
-      g.wantedForCrimes[c.key] = 0;
-    }
-    //Clean up heat, confessions
-    g.heat = 0;
-    g.confessions = 0;
-    //PLACE PRISONER
-    if (g.sentence != 0) {
-      imprison(g);
-    } else {
-      Armor clothes = Armor("ARMOR_CLOTHES");
-      g.giveArmor(clothes, null);
-    }
   }
 
   if (trialOutcome == TrialOutcome.acquittal) {
@@ -465,6 +451,21 @@ Future<void> trial(Creature g) async {
       }
     }
     await getKey();
+  }
+
+  //CLEAN UP LAW FLAGS
+  for (var c in g.wantedForCrimes.entries) {
+    g.wantedForCrimes[c.key] = 0;
+  }
+  //Clean up heat, confessions
+  g.heat = 0;
+  g.confessions = 0;
+  //PLACE PRISONER
+  if (g.sentence != 0) {
+    imprison(g);
+  } else {
+    Armor clothes = Armor("ARMOR_CLOTHES");
+    g.giveArmor(clothes, null);
   }
 }
 
