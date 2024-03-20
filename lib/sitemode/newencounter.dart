@@ -22,8 +22,8 @@ extension AddToMap on Map<String, int> {
 }
 
 /* generates a new random encounter */
-void prepareencounter(SiteType type, bool sec) {
-  encounter.clear();
+void prepareEncounter(SiteType type, bool sec, {bool addToExisting = false}) {
+  if (!addToExisting) encounter.clear();
 
   Map<String, int> weights = {};
 

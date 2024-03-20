@@ -184,8 +184,9 @@ Future<void> surrenderToAuthorities(Site loc) async {
   if (rescued.any((e) => e.type.preciousToHicks)) offendedHicks = true;
 
   int y = 1;
-  Iterable<Creature> arrested =
-      liberals.where((e) => e.wantedForCrimes.values.any((v) => v > 0));
+  Iterable<Creature> arrested = loc.type == SiteType.homelessEncampment
+      ? liberals
+      : liberals.where((e) => e.wantedForCrimes.values.any((v) => v > 0));
   if (rescued.length == 1) {
     mvaddstr(y += 2, 1,
         "${rescued.first.name} is taken into custody and rehabilitated.");
@@ -239,6 +240,13 @@ Future<void> surrenderToAuthorities(Site loc) async {
     if (!loc.businessFront) {
       mvaddstr(y += 2, 1, "Materials related to the business front are taken.");
     }
+  }
+  if (loc.type == SiteType.homelessEncampment &&
+      laws[Law.policeReform]! < DeepAlignment.eliteLiberal) {
+    loc.init();
+    mvaddstr(y += 2, 1,
+        "The police also ransack the camp and destroy the makeshift shelters.");
+    mvaddstr(++y, 1, "The homeless people here are left with nothing.");
   }
   await pressAnyKey();
   for (Creature p in present) {

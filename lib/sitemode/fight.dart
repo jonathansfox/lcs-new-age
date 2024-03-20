@@ -236,11 +236,17 @@ Future<void> enemyattack() async {
       }
 
       int fear = e.maxBlood - e.blood;
-      if (armed) fear += 100;
+      if (armed && e.isEnemy) fear += 100;
       if (e.blood < e.maxBlood * 0.45) fear += 100;
       if (!e.armor.type.fireResistant) fear += fire * lcsRandom(100);
-      if (!e.isEnemy) fear += 500;
       int courage = e.juice + lcsRandom(50);
+      if (!e.isEnemy) {
+        if (!activeSiteUnderSiege) {
+          fear += 500;
+        } else {
+          courage += 100;
+        }
+      }
       if (e.type.canPerformArrests) courage += 200;
       if (e.equippedWeapon != null) courage += 100;
       if (e.type.tank) courage += 2000;
@@ -281,7 +287,15 @@ Future<void> enemyattack() async {
       }
       for (Creature e2 in encounter) {
         if (e2.alive && e2 != e) {
-          badtarg.add(e2);
+          if (!activeSiteUnderSiege) {
+            badtarg.add(e2);
+          } else {
+            if (e2.isEnemy) {
+              badtarg.add(e2);
+            } else {
+              goodtarg.add(e2);
+            }
+          }
         }
       }
     } else {

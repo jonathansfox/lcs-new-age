@@ -1643,7 +1643,7 @@ Future<void> _siteModeAux() async {
 
                 await getKey();
 
-                prepareencounter(siteType, false);
+                prepareEncounter(siteType, false);
                 if (encounter.length > 1) {
                   encounter.removeRange(1, encounter.length - 1);
                 }
@@ -1660,7 +1660,7 @@ Future<void> _siteModeAux() async {
               }
               await getKey();
 
-              prepareencounter(siteType, false);
+              prepareEncounter(siteType, false);
             case TileSpecial.parkBench:
               clearMessageArea();
               setColor(white);
@@ -1675,7 +1675,7 @@ Future<void> _siteModeAux() async {
 
                 await getKey();
 
-                prepareencounter(siteType, false);
+                prepareEncounter(siteType, false);
               }
             case TileSpecial.securityCheckpoint:
               await specialSecurityCheckpoint();
@@ -1757,7 +1757,7 @@ Future<void> _siteModeAux() async {
                 if (!oneIn(3)) break; // Rarely encounter someone in apartments.
               }
 
-              prepareencounter(siteType, activeSite!.highSecurity > 0);
+              prepareEncounter(siteType, activeSite!.highSecurity > 0);
           }
           hostcheck = true;
         }

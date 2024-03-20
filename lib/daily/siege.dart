@@ -28,6 +28,7 @@ import 'package:lcs_new_age/politics/views.dart';
 import 'package:lcs_new_age/sitemode/chase_sequence.dart';
 import 'package:lcs_new_age/sitemode/fight.dart';
 import 'package:lcs_new_age/sitemode/miscactions.dart';
+import 'package:lcs_new_age/sitemode/newencounter.dart';
 import 'package:lcs_new_age/sitemode/site_display.dart';
 import 'package:lcs_new_age/sitemode/sitemap.dart';
 import 'package:lcs_new_age/sitemode/sitemode.dart';
@@ -197,10 +198,14 @@ Future<void> siegeCheck() async {
 
       if (numpres > 0) {
         erase();
-        mvaddstrc(
-            8, 1, white, "The police have surrounded the ${l.getName()}!");
-
-        l.siege.underAttack = false;
+        if (l.type == SiteType.homelessEncampment) {
+          mvaddstrc(8, 1, white, "The police are sweeping the ${l.getName()}!");
+          l.siege.underAttack = true;
+        } else {
+          mvaddstrc(
+              8, 1, white, "The police have surrounded the ${l.getName()}!");
+          l.siege.underAttack = false;
+        }
 
         await getKey();
 
@@ -226,7 +231,7 @@ Future<void> siegeCheck() async {
         }
 
         // "You are wanted for blahblah and other crimes."
-        await statebrokenlaws(l);
+        await stateBrokenLaws(l);
         l.siege.activeSiegeType = SiegeType.police;
         l.siege.lightsOff = false;
         l.siege.camerasOff = false;
@@ -1016,7 +1021,7 @@ enum SallyForthResult {
 }
 
 // Siege -- Mass combat outside safehouse
-Future<SallyForthResult> sallyForthAux(Site loc) async {
+Future<SallyForthResult> sallyForthPart3(Site loc) async {
   reloadparty(false);
   Siege siege = loc.siege;
   activeSite = loc;
@@ -1024,9 +1029,28 @@ Future<SallyForthResult> sallyForthAux(Site loc) async {
   encounter.clear();
 
   if (siege.escalationState == SiegeEscalation.police) {
-    // SWAT teams
-    for (int e = 0; e < ENCMAX - 9; e++) {
-      encounter.add(Creature.fromId(CreatureTypeIds.swat));
+    if (loc.type == SiteType.homelessEncampment) {
+      // Regular cops sweeping the homeless camp
+      for (int e = 0; e < ENCMAX - 9; e++) {
+        if (deathSquadsActive) {
+          encounter.add(Creature.fromId(CreatureTypeIds.deathSquad));
+        } else if (gangUnitsActive) {
+          encounter.add(Creature.fromId(CreatureTypeIds.gangUnit));
+        } else {
+          encounter.add(Creature.fromId(CreatureTypeIds.cop));
+        }
+      }
+      // Bystanders that might help out
+      prepareEncounter(loc.type, false, addToExisting: true);
+      prepareEncounter(loc.type, false, addToExisting: true);
+      for (int e = ENCMAX - 9; e < encounter.length; e++) {
+        encounter[e].align = Alignment.liberal;
+      }
+    } else {
+      // SWAT teams
+      for (int e = 0; e < ENCMAX - 9; e++) {
+        encounter.add(Creature.fromId(CreatureTypeIds.swat));
+      }
     }
   } else if (siege.escalationState.index >=
       SiegeEscalation.nationalGuard.index) {
@@ -1063,12 +1087,42 @@ Future<SallyForthResult> sallyForthAux(Site loc) async {
     case ChaseOutcome.victory:
       setColor(white);
       clearMessageArea();
-      mvaddstr(16, 1, "The siege is broken!");
+      if (loc.type == SiteType.homelessEncampment) {
+        mvaddstr(16, 1, "The camp is saved!");
+      } else {
+        mvaddstr(16, 1, "The siege is broken!");
+      }
       await getKey();
       await conquertext();
       await escapeSiege(true);
       return SallyForthResult.brokeSiege;
   }
+}
+
+Future<void> fightHomelessCampSiege() async {
+  Site? loc = activeSafehouse ?? activeSquad?.members.firstOrNull?.site;
+  if (loc == null) return;
+
+  //GIVE INFO SCREEN
+  erase();
+  mvaddstrc(1, 26, red, "UNDER ATTACK: HOMELESS CAMP");
+
+  mvaddstrc(3, 16, lightGray,
+      "You are about to mount a defense of the homeless camp.");
+  mvaddstr(4, 11, "The enemy is expecting resistance, and you will have to");
+  mvaddstr(5, 11, "defeat them all or run away to survive this encounter.");
+  mvaddstr(6, 11, "Some agitators are also turning out to resist with you.");
+
+  mvaddstr(8, 11, "Your Squad has filled out to six members if any were ");
+  mvaddstr(9, 11, "available.  If you have a larger pool of Liberals, they");
+  mvaddstr(10, 11, "will provide cover fire and hang back until needed.");
+
+  mvaddstrc(
+      23, 11, red, "Press any key to Confront the Conservative Aggressors");
+
+  await getKey();
+
+  return sallyForthPart2(loc);
 }
 
 /* siege - prepares for exiting the siege to fight the attackers head on */
@@ -1096,6 +1150,10 @@ Future<void> sallyForth() async {
 
   await getKey();
 
+  return sallyForthPart2(loc);
+}
+
+Future<void> sallyForthPart2(Site loc) async {
   //CRIMINALIZE
   if (loc.siege.activeSiegeType == SiegeType.police) {
     criminalizeAll(pool.where((p) => p.isActiveLiberal && p.location == loc),
@@ -1137,7 +1195,7 @@ Future<void> sallyForth() async {
     ..positive = 1
     ..loc = loc
     ..siegetype = loc.siege.activeSiegeType;
-  SallyForthResult result = await sallyForthAux(loc);
+  SallyForthResult result = await sallyForthPart3(loc);
   if (result == SallyForthResult.brokeSiege) {
     sitestory!.type = NewsStories.squadBrokeSiege;
   }
@@ -1416,7 +1474,7 @@ Future<void> conquertextccs() async {
 }
 
 /* siege - "you are wanted for _______ and other crimes..." */
-Future<void> statebrokenlaws(Site loc) async {
+Future<void> stateBrokenLaws(Site loc) async {
   Set<Crime> brokenLaws = {};
   int kidnapped = 0;
   String? kname;
@@ -1439,7 +1497,7 @@ Future<void> statebrokenlaws(Site loc) async {
 
   setColor(white);
   move(1, 1);
-  if (loc.siege.underAttack) {
+  if (loc.siege.underAttack && loc.siege.activeSiegeType != SiegeType.police) {
     addstr("You hear shouts:");
   } else {
     addstr("You hear a blaring voice on a loudspeaker:");
@@ -1449,6 +1507,8 @@ Future<void> statebrokenlaws(Site loc) async {
   if (loc.siege.escalationState.index >= SiegeEscalation.tanks.index &&
       politics.publicMood() < 20) {
     addstr("In the name of God, your campaign of terror ends here!");
+  } else if (loc.type == SiteType.homelessEncampment) {
+    addstr("Everyone in the camp is under arrest!");
   } else {
     addstr("Surrender yourselves!");
   }
@@ -1467,7 +1527,7 @@ Future<void> statebrokenlaws(Site loc) async {
         "harboring a fugitive from justice";
     addstr("You are wanted for $crimeName");
     if (typenum > 1) addstr(" and other crimes");
-    addstr(".");
+    addstr("!");
   }
 
   await getKey();

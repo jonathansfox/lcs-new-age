@@ -19,6 +19,7 @@ import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/gamestate/squad.dart';
 import 'package:lcs_new_age/gamestate/time.dart';
+import 'package:lcs_new_age/location/location_type.dart';
 import 'package:lcs_new_age/location/siege.dart';
 import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/monthly/advance_month.dart';
@@ -69,6 +70,12 @@ Future<bool> baseMode() async {
         // go forth / fight siege
         if (!(siege?.underSiege ?? false) && partySize > 0) {
           await planSiteVisit();
+        } else if (siege?.underSiege == true &&
+            siege?.activeSiegeType == SiegeType.police &&
+            (activeSafehouse ?? activeSquad?.site)?.type ==
+                SiteType.homelessEncampment) {
+          await fightHomelessCampSiege();
+          cleanGoneSquads();
         } else if (siege?.underAttack ?? false) {
           await escapeOrEngage();
           cleanGoneSquads();

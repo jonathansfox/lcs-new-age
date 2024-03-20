@@ -406,7 +406,7 @@ Future<void> sleeperSteal(Creature cr, Map<View, int> libpower) async {
 Future<void> sleeperRecruit(Creature cr, Map<View, int> libpower) async {
   if (cr.workSite == null) return;
   if (cr.subordinatesLeft > 0) {
-    prepareencounter(cr.workSite!.type, false);
+    prepareEncounter(cr.workSite!.type, false);
     for (Creature e in encounter) {
       if (e.workLocation == cr.workLocation || oneIn(5)) {
         if (e.align != Alignment.liberal && !oneIn(5)) continue;
