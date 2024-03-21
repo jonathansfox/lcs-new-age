@@ -43,9 +43,9 @@ Future<void> advanceDay() async {
   }
   if (!disbanding) {
     _moveSquadlessToBases();
-    await _advanceSquads();
     await _tendHostages();
     await soloActivities();
+    await _advanceSquads();
   }
   if (!disbanding) await _dailyHealing();
   await dispersalCheck();
