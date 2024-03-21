@@ -237,8 +237,13 @@ Future<void> siegeCheck() async {
         l.siege.camerasOff = false;
       } else {
         erase();
-        mvaddstrc(8, 1, white,
-            "The cops have raided the ${l.getName()}, an unoccupied safehouse.");
+        if (l.type == SiteType.homelessEncampment) {
+          mvaddstrc(8, 1, white,
+              "The cops have raided the ${l.getName()}.  No LCS members were present.");
+        } else {
+          mvaddstrc(8, 1, white,
+              "The cops have raided the ${l.getName()}, an unoccupied safehouse.");
+        }
         await getKey();
 
         int y = 9;
