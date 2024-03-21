@@ -71,7 +71,7 @@ Future<void> advanceMonth() async {
   await checkForDefeat();
   await dispersalCheck();
 
-  if (publishers.isNotEmpty && !disbanding) {
+  if (!disbanding) {
     //DO SPECIAL EDITIONS
     LootType? loot = await chooseSpecialEdition();
 
