@@ -1057,7 +1057,7 @@ Future<void> chaseGiveUp() async {
     p.dropWeaponAndAmmo();
     p.activity.type = ActivityType.none;
     if (p.prisoner != null) {
-      if (p.prisoner!.squadId == null) hostagefreed++;
+      if (p.prisoner!.align != Alignment.liberal) hostagefreed++;
       await freehostage(p, FreeHostageMessage.newLine);
     }
   }

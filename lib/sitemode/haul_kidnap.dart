@@ -285,7 +285,7 @@ Future<void> freehostage(Creature cr, FreeHostageMessage situation) async {
       }
     }
 
-    if (prisoner.hireId == null) {
+    if (prisoner.align != Alignment.liberal) {
       encounter.add(prisoner);
       conservatize(prisoner);
     } else {
