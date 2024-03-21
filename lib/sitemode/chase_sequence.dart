@@ -1050,15 +1050,15 @@ Future<void> chaseGiveUp() async {
   vehiclePool.removeWhere((v) => chaseSequence!.friendcar.contains(v));
   chaseSequence!.friendcar.clear();
   int hostagefreed = 0;
-  for (Creature p in squad) {
-    p.squadId = null;
+  for (Creature p in squad.toList()) {
+    p.squad = null;
     p.carId = null;
     p.location = ps;
     p.dropWeaponAndAmmo();
     p.activity.type = ActivityType.none;
     if (p.prisoner != null) {
       if (p.prisoner!.align != Alignment.liberal) hostagefreed++;
-      await freehostage(p, FreeHostageMessage.newLine);
+      await freehostage(p, FreeHostageMessage.none);
     }
   }
   for (BodyPart w in pool.expand((p) => p.body.parts)) {
@@ -1066,6 +1066,7 @@ Future<void> chaseGiveUp() async {
   }
   clearMessageArea();
   clearCommandArea();
+  clearMapArea(lower: false);
   setColor(purple);
   move(16, 1);
   if (mode != GameMode.carChase) {

@@ -292,7 +292,7 @@ Future<void> freehostage(Creature cr, FreeHostageMessage situation) async {
       await captureCreature(prisoner);
     }
   } else {
-    if (prisoner.hireId != null) {
+    if (prisoner.align == Alignment.liberal) {
       prisoner.squad = null;
       prisoner.die();
       prisoner.location = null;
