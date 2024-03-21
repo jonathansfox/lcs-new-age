@@ -319,7 +319,7 @@ Future<void> prisonScene(Creature g) async {
         oneIn(5)) {
       escaped = 2;
       experience =
-          " codes a virus on a smuggled phone that opens all the prison doors!";
+          " codes a virus on a smuggled phone that opens the prison doors!";
     } else if (g.skillCheck(Skill.disguise, Difficulty.formidable) &&
         oneIn(5)) {
       escaped = 1;
@@ -331,13 +331,13 @@ Future<void> prisonScene(Creature g) async {
         oneIn(5)) {
       escaped = 1;
       experience =
-          " jimmies the cell door and cuts the outer fence in the dead of night!";
+          " jimmies the cell door and cuts the fence in the dead of night!";
     } else if (g.skillCheck(Skill.science, Difficulty.challenging) &&
         g.skillCheck(Skill.martialArts, Difficulty.challenging) &&
         oneIn(5)) {
       escaped = 1;
       experience =
-          " intentionally ODs on smuggled drugs, then breaks out of the medical ward!";
+          " ODs on smuggled drugs, then breaks out of the medical ward!";
     }
   }
 
