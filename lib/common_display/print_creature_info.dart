@@ -143,8 +143,7 @@ void printTopSkills(int y, int x, Creature cr, int numberToPrint,
     int levelXP = (cr.skillXP(s) / skillXpNeeded(level) * 100).floor();
     if (cr.skillCap(s) > 0 && cr.rawSkill[s]! >= cr.skillCap(s)) {
       setColor(lightBlue);
-    } else if (cr.rawSkillXP[s]! > 100 + (10 * cr.rawSkill[s]!) &&
-        cr.rawSkill[s]! < cr.skillCap(s)) {
+    } else if (levelXP >= 100 && cr.rawSkill[s]! < cr.skillCap(s)) {
       setColor(white);
     } else if (cr.rawSkill[s]! < 1) {
       if (cr.rawSkillXP[s]! > 0) {
@@ -162,7 +161,11 @@ void printTopSkills(int y, int x, Creature cr, int numberToPrint,
     }
     addstr(": ");
     if (knowledge > i + 2) {
-      addstr("$level.$levelXP");
+      if (levelXP < 100) {
+        addstr("$level.$levelXP");
+      } else {
+        addstr("$level.99+");
+      }
     } else {
       addstr("?");
     }
