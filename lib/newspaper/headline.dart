@@ -1,4 +1,7 @@
 import 'package:lcs_new_age/gamestate/game_state.dart';
+import 'package:lcs_new_age/location/location.dart';
+import 'package:lcs_new_age/location/location_type.dart';
+import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/newspaper/display_news.dart';
 import 'package:lcs_new_age/newspaper/news_story.dart';
 import 'package:lcs_new_age/politics/views.dart';
@@ -51,12 +54,24 @@ int displayStoryHeader(NewsStory ns, bool liberalguardian, View? header) {
       y = 13;
     case NewsStories.squadEscapedSiege:
     case NewsStories.squadFledAttack:
-      displayCenteredNewsFont("LCS ESCAPES", 5);
-      displayCenteredNewsFont("POLICE SIEGE", 13);
+      Location? nsloc = ns.loc;
+      if ((nsloc is Site) && nsloc.type == SiteType.homelessEncampment) {
+        displayCenteredNewsFont("LCS ESCAPES", 5);
+        displayCenteredNewsFont("POLICE SWEEP", 13);
+      } else {
+        displayCenteredNewsFont("LCS ESCAPES", 5);
+        displayCenteredNewsFont("POLICE SIEGE", 13);
+      }
     case NewsStories.squadDefended:
     case NewsStories.squadBrokeSiege:
-      displayCenteredNewsFont("LCS FIGHTS", 5);
-      displayCenteredNewsFont("OFF COPS", 13);
+      Location? nsloc = ns.loc;
+      if ((nsloc is Site) && nsloc.type == SiteType.homelessEncampment) {
+        displayCenteredNewsFont("HOMELESS RIOT", 5);
+        displayCenteredNewsFont("REPELS COPS", 13);
+      } else {
+        displayCenteredNewsFont("LCS FIGHTS", 5);
+        displayCenteredNewsFont("OFF COPS", 13);
+      }
     case NewsStories.squadKilledInSiegeAttack:
     case NewsStories.squadKilledInSiegeEscape:
       if (!liberalguardian) {
