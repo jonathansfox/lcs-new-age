@@ -263,7 +263,7 @@ void initSiteName(Site loc) {
       if (nineteenEightyFour) {
         loc.rename("Ministry of Peace", "Minipax");
       } else {
-        loc.name += "${lastName(Gender.whiteMalePatriarch)} Army Base";
+        loc.name = "${lastName(Gender.whiteMalePatriarch)} Army Base";
         loc.shortName = "Army Base";
       }
     case SiteType.pawnShop:
