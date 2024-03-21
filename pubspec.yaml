@@ -18,6 +18,9 @@ dependencies:
   json_annotation: ^4.8.1
   file_saver: ^0.2.12
   file_picker: ^6.2.0
+  source_map_stack_trace: ^2.1.1
+  source_maps: ^0.10.12
+  http: ^1.2.1
 
 dev_dependencies:
   flutter_test:
