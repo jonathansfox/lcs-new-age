@@ -1116,8 +1116,7 @@ Future<ChaseOutcome> soloChaseSequence(Creature cr, int pursuitStrength,
   activeSquadMemberIndex = ops;
 
   if (ret.won) {
-    cr.squad = oldSquad;
-    cr.carId = null;
+    cr.squadId = oldSquad?.id;
   } else {
     oldSquad?.members.remove(cr);
   }
