@@ -51,7 +51,7 @@ class Site extends Location {
   int heat = 0;
   @JsonKey()
   bool hasFlag = false;
-  @JsonKey()
+  @JsonKey(includeToJson: true, includeFromJson: true, defaultValue: false)
   bool _businessFront = false;
   bool get businessFront {
     if (type == SiteType.barAndGrill) {
