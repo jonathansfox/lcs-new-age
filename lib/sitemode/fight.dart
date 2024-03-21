@@ -681,8 +681,8 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
       int strength = a.attribute(Attribute.strength);
       if (strength > strengthmax) strength = (strengthmax + strength) ~/ 2;
       mod += strength - strengthmin;
-      armorpiercing += (strength - strengthmin) ~/ 4;
-      //debugPrint("Strength bonus: $mod");
+      armorpiercing += strength - strengthmin;
+      debugPrint("Strength bonus: $mod");
     }
 
     //SKILL BONUS FOR GOOD ROLL
