@@ -608,6 +608,10 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
       continue;
     }
     int size = p.size;
+    if (sneakAttack) {
+      if (p.weakSpot) size *= 4;
+      if (!p.critical) continue;
+    }
     if (aroll + bonus > droll + 10) {
       if (p.weakSpot) size *= 2;
       if (p.critical) size *= 2;
