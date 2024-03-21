@@ -53,7 +53,11 @@ Future<void> planSiteVisit() async {
           thisDistrict == squadLocation?.district) {
         addstrc(white, " (Current Location)");
       } else if (thisSite?.controller == SiteController.lcs) {
-        addstrc(lightGreen, " (LCS Safehouse)");
+        if (thisSite!.heatProtection <= 5) {
+          addstrc(lightGreen, " (LCS Temp Shelter)");
+        } else {
+          addstrc(lightGreen, " (LCS Safehouse)");
+        }
       } else if (thisSite?.controller == SiteController.ccs &&
           (ccscherrybusted || thisSite?.mapped == true)) {
         addstrc(red, " (CCS Safehouse)");
@@ -72,9 +76,9 @@ Future<void> planSiteVisit() async {
         int heat = thisSite.heat;
         int heatProtection = thisSite.heatProtection;
         mvaddstrc(y, 54, lightGray, "Heat: ");
-        addstrc(heat > heatProtection ? yellow : darkGray, "$heat%");
+        addstrc(heat > heatProtection ? red : darkGray, "$heat%");
         mvaddstrc(y, 66, lightGray, "Secrecy: ");
-        addstrc(heat > heatProtection ? yellow : darkGray, "$heatProtection%");
+        addstrc(heat > heatProtection ? red : darkGray, "$heatProtection%");
       }
       if (thisCity != null) {
         mvaddstrc(y, 50, darkGray, thisCity.description);
