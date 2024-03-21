@@ -154,21 +154,21 @@ class Site extends Location {
   int get foodDaysLeft => (compound.rations / numberEating).round();
 
   int get heatProtection {
-    int protection = 1;
-    if (type == SiteType.homelessEncampment) protection = 0;
-    if (type == SiteType.tenement) protection = 3;
-    if (type == SiteType.apartment) protection = 6;
+    int protection = 15;
+    if (type == SiteType.homelessEncampment) protection = 3;
+    if (type == SiteType.tenement) protection = 30;
+    if (type == SiteType.apartment) protection = 60;
     if (type == SiteType.upscaleApartment || discreet || businessFront) {
-      protection = 8;
+      protection = 80;
     }
     if (laws[Law.flagBurning] == DeepAlignment.archConservative) {
       if (hasFlag) {
-        protection += 3;
+        protection += 30;
       } else {
-        protection -= 1;
+        protection -= 10;
       }
     }
-    return (protection * 10).clamp(0, 95);
+    return protection.clamp(0, 95);
   }
 
   @override
