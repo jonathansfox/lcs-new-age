@@ -1339,7 +1339,7 @@ Future<void> _siteModeAux() async {
             }
           }
 
-          await conquertextccs();
+          await conquerTextCCS();
 
           //RESET MODE
           mode = GameMode.base;
@@ -1618,7 +1618,7 @@ Future<void> _siteModeAux() async {
 
             await getKey();
 
-            await conquertext();
+            await conquerText();
             await escapeSiege(true);
 
             //RESET MODE

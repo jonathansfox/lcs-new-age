@@ -36,16 +36,6 @@ import 'package:lcs_new_age/title_screen/game_over.dart';
 import 'package:lcs_new_age/utils/colors.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 
-Future<void> resolvesafehouses() async {
-  for (Site l in sites) {
-    if (l.controller == SiteController.lcs && l.siege.underSiege) {
-      cleanGoneSquads();
-      activeSafehouse = l; // hack for calling giveup()
-      await giveup();
-    }
-  }
-}
-
 /* siege - updates upcoming sieges */
 Future<void> siegeCheck() async {
   if (disbanding) return;
@@ -840,7 +830,7 @@ Future<void> siegeTurn() async {
 }
 
 /* siege - handles giving up */
-Future<void> giveup() async {
+Future<void> siegeDefeat() async {
   Site? loc = activeSafehouse ?? activeSquad?.members.firstOrNull?.base;
   if (loc == null) return;
 
@@ -1034,9 +1024,10 @@ Future<SallyForthResult> sallyForthPart3(Site loc) async {
   encounter.clear();
 
   if (siege.escalationState == SiegeEscalation.police) {
+    // TODO: ENCMAX-9
     if (loc.type == SiteType.homelessEncampment) {
       // Regular cops sweeping the homeless camp
-      for (int e = 0; e < ENCMAX - 9; e++) {
+      for (int e = 0; e < ENCMAX - 15; e++) {
         if (deathSquadsActive) {
           encounter.add(Creature.fromId(CreatureTypeIds.deathSquad));
         } else if (gangUnitsActive) {
@@ -1048,7 +1039,7 @@ Future<SallyForthResult> sallyForthPart3(Site loc) async {
       // Bystanders that might help out
       prepareEncounter(loc.type, false, addToExisting: true);
       prepareEncounter(loc.type, false, addToExisting: true);
-      for (int e = ENCMAX - 9; e < encounter.length; e++) {
+      for (int e = ENCMAX - 15; e < encounter.length; e++) {
         encounter[e].align = Alignment.liberal;
       }
     } else {
@@ -1084,7 +1075,7 @@ Future<SallyForthResult> sallyForthPart3(Site loc) async {
       await escapeSiege(false);
       return SallyForthResult.escaped;
     case ChaseOutcome.capture:
-      await giveup();
+      await siegeDefeat();
       return SallyForthResult.defeated;
     case ChaseOutcome.death:
       await checkForDefeat();
@@ -1098,7 +1089,7 @@ Future<SallyForthResult> sallyForthPart3(Site loc) async {
         mvaddstr(16, 1, "The siege is broken!");
       }
       await getKey();
-      await conquertext();
+      await conquerText();
       await escapeSiege(true);
       return SallyForthResult.brokeSiege;
   }
@@ -1207,7 +1198,9 @@ Future<void> sallyForthPart2(Site loc) async {
   // If you fail, make sure the safehouse isn't under siege anymore by
   // forcing you to "give up".
   if (result == SallyForthResult.defeated) {
-    await resolvesafehouses();
+    cleanGoneSquads();
+    activeSafehouse = loc;
+    await siegeDefeat();
   }
 }
 
@@ -1396,7 +1389,7 @@ Future<void> escapeSiege(bool won) async {
 }
 
 /* siege - flavor text when you fought off the raid */
-Future<void> conquertext() async {
+Future<void> conquerText() async {
   //GIVE INFO SCREEN
 
   erase();
@@ -1421,7 +1414,7 @@ Future<void> conquertext() async {
 }
 
 /* siege - flavor text when you crush a CCS safe house */
-Future<void> conquertextccs() async {
+Future<void> conquerTextCCS() async {
   //GIVE INFO SCREEN
   erase();
   mvaddstrc(1, 26, lightGreen, "* * * * *   VICTORY   * * * * *");

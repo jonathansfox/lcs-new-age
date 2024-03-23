@@ -289,6 +289,8 @@ Future<ChaseOutcome> footChaseSequence({
     await getKey();
   }
 
+  bool ranAway = false;
+
   while (true) {
     if (autoPromoteFromSitePool != null) {
       autopromote(autoPromoteFromSitePool);
@@ -348,6 +350,7 @@ Future<ChaseOutcome> footChaseSequence({
           criminalizeparty(Crime.resistingArrest);
         }
         if (c == Key.d) {
+          ranAway = true;
           await evasiverun();
           await enemyattack();
           await creatureadvance();
@@ -367,14 +370,22 @@ Future<ChaseOutcome> footChaseSequence({
         if (showStandardText) {
           setColor(white);
           clearMessageArea();
-          mvaddstr(16, 1, "It looks like you've lost them!");
+          if (!ranAway) {
+            mvaddstr(16, 1, "A Liberal outcome!");
+          } else {
+            mvaddstr(16, 1, "It looks like you've lost them!");
+          }
           await getKey();
         }
         for (BodyPart w in pool.expand((p) => p.body.parts)) {
           w.bleeding = false;
         }
         mode = GameMode.base;
-        return ChaseOutcome.escape;
+        if (ranAway) {
+          return ChaseOutcome.escape;
+        } else {
+          return ChaseOutcome.victory;
+        }
       }
     }
   }
