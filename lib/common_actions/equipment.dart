@@ -140,7 +140,7 @@ Future<void> equip(List<Item>? loot) async {
               errmsg = "No spare ammo!";
               continue;
             }
-            consolidateLoot(loot);
+            consolidateLoot(loot, sort: false);
             continue;
           }
           if (increaseammo) {
@@ -214,7 +214,7 @@ Future<void> equip(List<Item>? loot) async {
             }
           }
 
-          consolidateLoot(loot);
+          consolidateLoot(loot, sort: false);
         }
       }
       c = -1;
@@ -251,7 +251,7 @@ Future<void> equip(List<Item>? loot) async {
     if (c >= Key.num1 && c <= Key.num1 + squad.length - 1) {
       int p = c - Key.num1;
       squad[p].dropWeaponAndAmmo(lootPile: loot);
-      consolidateLoot(loot);
+      consolidateLoot(loot, sort: false);
     }
 
     //PAGE UP
@@ -509,7 +509,7 @@ Future<void> equipmentBaseAssign() async {
   }
 }
 
-void consolidateLoot(List<Item>? loot) {
+void consolidateLoot(List<Item>? loot, {bool sort = true}) {
   if (loot == null) return;
   int l, l2;
 
@@ -524,7 +524,7 @@ void consolidateLoot(List<Item>? loot) {
     }
   }
 
-  loot.sort();
+  if (sort) loot.sort();
 }
 
 Future<int> promptAmount(int min, int max) async {
