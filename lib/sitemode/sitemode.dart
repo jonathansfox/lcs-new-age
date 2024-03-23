@@ -1226,7 +1226,7 @@ Future<void> _siteModeAux() async {
 
           //If you survived
           if (gotout) {
-            await _squadCleanup();
+            await squadCleanup();
 
             //END SITE MODE
             if (activeSiteUnderSiege) {
@@ -1314,7 +1314,7 @@ Future<void> _siteModeAux() async {
         if (ccsBossKills >= 1 &&
             !activeSiteUnderSiege &&
             activeSite!.controller == SiteController.ccs) {
-          await _squadCleanup();
+          await squadCleanup();
 
           //INFORM
           clearMessageArea();
@@ -1607,7 +1607,7 @@ Future<void> _siteModeAux() async {
               }
             }
 
-            await _squadCleanup();
+            await squadCleanup();
 
             //INFORM
             clearMessageArea();
@@ -2060,7 +2060,7 @@ Future<void> _openDoor(bool restricted) async {
   }
 }
 
-Future<void> _squadCleanup() async {
+Future<void> squadCleanup() async {
   //Check for hauled prisoners/corpses
   for (Creature p in squad.toList()) {
     p.location = p.base;

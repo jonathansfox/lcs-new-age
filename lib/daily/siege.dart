@@ -1024,10 +1024,9 @@ Future<SallyForthResult> sallyForthPart3(Site loc) async {
   encounter.clear();
 
   if (siege.escalationState == SiegeEscalation.police) {
-    // TODO: ENCMAX-9
     if (loc.type == SiteType.homelessEncampment) {
       // Regular cops sweeping the homeless camp
-      for (int e = 0; e < ENCMAX - 15; e++) {
+      for (int e = 0; e < ENCMAX - 9; e++) {
         if (deathSquadsActive) {
           encounter.add(Creature.fromId(CreatureTypeIds.deathSquad));
         } else if (gangUnitsActive) {
@@ -1039,7 +1038,7 @@ Future<SallyForthResult> sallyForthPart3(Site loc) async {
       // Bystanders that might help out
       prepareEncounter(loc.type, false, addToExisting: true);
       prepareEncounter(loc.type, false, addToExisting: true);
-      for (int e = ENCMAX - 15; e < encounter.length; e++) {
+      for (int e = ENCMAX - 9; e < encounter.length; e++) {
         encounter[e].align = Alignment.liberal;
       }
     } else {
@@ -1090,6 +1089,7 @@ Future<SallyForthResult> sallyForthPart3(Site loc) async {
       }
       await getKey();
       await conquerText();
+      await squadCleanup();
       await escapeSiege(true);
       return SallyForthResult.brokeSiege;
   }
@@ -1352,6 +1352,7 @@ Future<void> escapeSiege(bool won) async {
         pool.removeAt(i);
         continue;
       }
+      p.prisoner = null;
 
       //BASE EVERYONE LEFT AT HOMELESS CAMP
       p.squad = null;
