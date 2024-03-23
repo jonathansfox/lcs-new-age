@@ -176,7 +176,7 @@ class Creature {
   @JsonKey(includeFromJson: false, includeToJson: false)
   Squad? get squad => squads.where((s) => s.id == squadId).firstOrNull;
   set squad(Squad? s) {
-    squad?.members.remove(this);
+    squad?.members.removeWhere((c) => c.id == id);
     squadId = s?.id;
     s?.members.add(this);
   }
