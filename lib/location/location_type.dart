@@ -39,7 +39,7 @@ enum SiteType {
   juiceBar("Juice Bar", "Juice Bar"),
   latteStand("Latte", "Latte Stand"),
   veganCoOp("Vegan", "Vegan Co-op"),
-  internetCafe("Cyber Cafe", "Internet Cafe"),
+  internetCafe("Net Cafe", "Internet Cafe"),
   barAndGrill("Deagle Bar", "Desert Eagle Bar & Grill"),
   publicPark("Park", "Public Park"),
   bunker("Bunker", "Robert E. Lee Bunker"),

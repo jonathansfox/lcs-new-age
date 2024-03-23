@@ -37,9 +37,9 @@ class ArmorType extends ItemType {
   int limbArmor = 0;
   bool fireResistant = false;
   bool coversHead = false;
-  bool coversBody = false;
-  bool coversArms = false;
-  bool coversLegs = false;
+  bool coversBody = true;
+  bool coversArms = true;
+  bool coversLegs = true;
   bool concealsFace = false;
   String? _shortName;
   String get shortName => _shortName ?? name;
