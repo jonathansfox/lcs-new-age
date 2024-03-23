@@ -715,7 +715,7 @@ void clearEncounterArea() {
 }
 
 void clearMapArea({bool lower = true, bool upper = true}) {
-  int startY = upper ? 8 : 15;
+  int startY = upper ? 8 : 18;
   int endY = lower ? 25 : 15;
   eraseArea(startY: startY, endY: endY, startX: 53, endX: 80);
   makeDelimiter();
