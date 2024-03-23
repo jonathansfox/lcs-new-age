@@ -182,8 +182,7 @@ void printWounds(Creature cr, {int y = 2, int x = 49}) {
       addstr("Ripped off");
     } else if (p.cleanOff) {
       addstr("Clean sever");
-    }
-    if (!p.wounded) {
+    } else if (!p.wounded) {
       setColor(lightGreen);
       addstr(cr.align == Alignment.liberal ? "Liberal" : "Healthy");
     } else {
