@@ -219,9 +219,9 @@ void initSiteName(Site loc) {
   switch (loc.type) {
     case SiteType.policeStation:
       if (deathSquadsActive) {
-        loc.rename("Death Squad HQ", "Death Squad HQ");
+        loc.rename("Death Squad HQ", "Death HQ");
       } else {
-        loc.rename("Police Station", "Police Station");
+        loc.rename("Police Station", "Police");
       }
     case SiteType.courthouse:
       if (laws[Law.deathPenalty] == DeepAlignment.archConservative) {
@@ -231,10 +231,10 @@ void initSiteName(Site loc) {
       }
     case SiteType.fireStation:
       if (noProfanity) {
-        loc.rename("Fireman HQ", "Fireman HQ");
+        loc.rename("Fireman HQ", "Fire HQ");
         loc.hidden = false;
       } else {
-        loc.rename("Fire Station", "Fire Station");
+        loc.rename("Fire Station", "Fire Dept.");
         loc.hidden = true;
       }
     case SiteType.prison:
@@ -249,9 +249,9 @@ void initSiteName(Site loc) {
       }
     case SiteType.nuclearPlant:
       if (laws[Law.nuclearPower] == DeepAlignment.eliteLiberal) {
-        loc.rename("Nuclear Waste Center", "NWaste Center");
+        loc.rename("Nuclear Waste Center", "Nuclear");
       } else {
-        loc.rename("Nuclear Power Plant", "NPower Plant");
+        loc.rename("Nuclear Power Plant", "Nuclear");
       }
     case SiteType.intelligenceHQ:
       if (nineteenEightyFour) {
@@ -278,7 +278,7 @@ void initSiteName(Site loc) {
       if (corporateFeudalism) {
         loc.rename("CEO Castle", "CEO Castle");
       } else {
-        loc.rename("CEO Residence", "CEO House");
+        loc.rename("CEO Mansion", "CEO House");
       }
     case SiteType.warehouse:
       do {
@@ -332,13 +332,13 @@ void initSiteName(Site loc) {
     case SiteType.upscaleApartment:
       do {
         String name = lastName();
-        loc.shortName = "$name Condos";
+        loc.shortName = "Condos";
         loc.name = "$name Condominiums";
       } while (loc.isDuplicateLocation());
     case SiteType.apartment:
       do {
         String name = lastName();
-        loc.shortName = "$name Apts";
+        loc.shortName = "Apartment";
         loc.name = "$name Apartments";
       } while (loc.isDuplicateLocation());
     case SiteType.tenement:
@@ -352,14 +352,14 @@ void initSiteName(Site loc) {
       } while (loc.isDuplicateLocation());
     case SiteType.geneticsLab:
       loc.name = "${lastName()} Genetics";
-      loc.shortName = "Genetics Lab";
+      loc.shortName = "Genetics";
     case SiteType.cosmeticsLab:
       loc.name = "${lastName()} Cosmetics";
-      loc.shortName = "Cosmetics Lab";
+      loc.shortName = "Cosmetics";
     case SiteType.carDealership:
       String name = firstName(Gender.whiteMalePatriarch);
       loc.name = "$name's Used Cars";
-      loc.shortName = "Used Cars";
+      loc.shortName = "Car Dealer";
     case SiteType.departmentStore:
       loc.name = "${lastName()}'s Department Store";
       loc.shortName = "Dept. Store";
@@ -374,14 +374,11 @@ void initSiteName(Site loc) {
           switch (lcsRandom(4)) {
             case 0:
               loc.name += "Recreational Drugs Center";
-              loc.shortName = "Drugs Center";
+              loc.shortName = "Drug Shop";
             case 1:
-              loc.name += "Coffee House";
-              loc.shortName = "Coffee House";
-            case 2:
               loc.name += "Cannabis Lounge";
-              loc.shortName = "Cannabis Lounge";
-            case 3:
+              loc.shortName = "Pot Lounge";
+            case 2:
               loc.name += "Marijuana Dispensary";
               loc.shortName = "Dispensary";
           }
@@ -399,7 +396,7 @@ void initSiteName(Site loc) {
       const veggie = ["Asparagus", "Tofu", "Broccoli", "Radish", "Eggplant"];
       const noun = ["Forest", "Rainbow", "Garden", "Farm", "Meadow"];
       loc.name = "${veggie.random} ${noun.random} Vegan Co-op";
-      loc.shortName = "Vegan Co-op";
+      loc.shortName = "Vegan";
     case SiteType.internetCafe:
       const adj = ["Electric", "Wired", "Nano", "Micro", "Techno"];
       const noun = ["Panda", "Troll", "Latte", "Unicorn", "Pixie"];
@@ -409,7 +406,7 @@ void initSiteName(Site loc) {
       const adj = ["Frothy", "Milky", "Caffeine", "Morning", "Evening"];
       const noun = ["Mug", "Cup", "Jolt", "Wonder", "Express"];
       loc.name = "${adj.random} ${noun.random} Latte Stand";
-      loc.shortName = "Latte Stand";
+      loc.shortName = "Latte";
     case SiteType.publicPark:
       loc.name = "${lastName()} Park";
       loc.shortName = "Park";

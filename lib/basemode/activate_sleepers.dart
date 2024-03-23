@@ -37,9 +37,9 @@ Future<void> activateSleepers() async {
     mvaddstr(0, 0, "Activate Sleeper Agents");
     makeDelimiter(y: 1);
     mvaddstr(1, 4, "CODE NAME");
-    mvaddstr(1, 25, "JOB");
+    mvaddstr(1, 24, "JOB");
     mvaddstr(1, 42, "SITE");
-    mvaddstr(1, 57, "ACTIVITY");
+    mvaddstr(1, 58, "ACTIVITY");
 
     int y = 2;
     for (Creature tempp in temppool.skip(page * 9).take(9)) {
@@ -48,7 +48,7 @@ Future<void> activateSleepers() async {
       addstr(" - ");
       addstr(tempp.name);
 
-      mvaddstr(y, 25, tempp.type.name);
+      mvaddstr(y, 24, tempp.type.name);
 
       mvaddstr(y + 1, 6, "Effectiveness: ");
 
@@ -65,15 +65,15 @@ Future<void> activateSleepers() async {
       } else {
         setColor(green);
       }
-      addstr("${(tempp.infiltration * 100 + 0.5).round()}%");
+      addstr("${(tempp.infiltration * 100).ceil()}%");
 
       mvaddstrc(y, 42, lightGray,
           tempp.workLocation.getName(short: true, includeCity: true));
 
-      move(y, 57);
-      // Let's add some color here...
+      move(y, 58);
       setColor(tempp.activity.type.color);
-      addstr(tempp.activity.type.name);
+      addstr(tempp.activity.type.label);
+      y += 2;
     }
 
     mvaddstrc(22, 0, lightGray, "Press a Letter to Assign an Activity.");
