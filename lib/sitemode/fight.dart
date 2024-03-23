@@ -683,7 +683,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
       // Melee attacks: Maximum strength bonus, minimum
       // strength to deliver full damage
       int strength = a.attribute(Attribute.strength);
-      if (strength > strengthmax) strength = (strengthmax + strength) ~/ 2;
+      if (strength > strengthmax) strength = strengthmax;
       mod += strength - strengthmin;
       armorpiercing += strength - strengthmin;
       debugPrint("Strength bonus: $mod");
