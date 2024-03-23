@@ -364,13 +364,13 @@ int _mediaSegmentPower() {
   return segmentpower;
 }
 
-Future<dynamic> tvBroadcast() async {
-  await _mediaBroadcast(
+Future<bool> tvBroadcast() async {
+  return await _mediaBroadcast(
       "camera", View.cableNews, "TV", "viewers", CreatureTypeIds.newsAnchor);
 }
 
-Future<dynamic> radioBroadcast() async {
-  await _mediaBroadcast("microphone", View.amRadio, "radio", "listeners",
+Future<bool> radioBroadcast() async {
+  return await _mediaBroadcast("microphone", View.amRadio, "radio", "listeners",
       CreatureTypeIds.radioPersonality);
 }
 
@@ -389,7 +389,7 @@ String _mediaQualityDescription(
   };
 }
 
-Future<dynamic> _mediaBroadcast(String takeover, View mediaView, String medium,
+Future<bool> _mediaBroadcast(String takeover, View mediaView, String medium,
     String viewername, String celebrityType) async {
   siteAlarm = true;
 
@@ -427,26 +427,28 @@ Future<dynamic> _mediaBroadcast(String takeover, View mediaView, String medium,
 
   //PRISONER PARTS
   for (Creature p in activeSquad!.livingMembers) {
-    if (p.prisoner?.alive == true &&
-        p.prisoner?.type.id == celebrityType &&
-        p.prisoner?.align == Alignment.conservative) {
-      viewhit = View.issues.random;
-      await encounterMessage(
-          "The hostage ${p.prisoner!.name} is forced on air to ",
-          line2: "discuss ${_mediaIssueDescription(viewhit)}.");
+    if (p.prisoner != null) {
+      if (p.prisoner?.alive == true &&
+          p.prisoner?.type.id == celebrityType &&
+          p.prisoner?.align == Alignment.conservative) {
+        viewhit = View.issues.random;
+        await encounterMessage(
+            "The hostage ${p.prisoner!.name} is forced on air to ",
+            line2: "discuss ${_mediaIssueDescription(viewhit)}.");
 
-      int usegmentpower = 10; //FAME BONUS
-      usegmentpower += p.prisoner!.attribute(Attribute.intelligence);
-      usegmentpower += p.prisoner!.attribute(Attribute.heart);
-      usegmentpower += p.prisoner!.attribute(Attribute.charisma);
-      usegmentpower += p.prisoner!.skill(Skill.persuasion);
+        int usegmentpower = 10; //FAME BONUS
+        usegmentpower += p.prisoner!.attribute(Attribute.intelligence);
+        usegmentpower += p.prisoner!.attribute(Attribute.heart);
+        usegmentpower += p.prisoner!.attribute(Attribute.charisma);
+        usegmentpower += p.prisoner!.skill(Skill.persuasion);
 
-      changePublicOpinion(viewhit, (usegmentpower / 2).round());
+        changePublicOpinion(viewhit, (usegmentpower / 2).round());
 
-      segmentpower += usegmentpower;
-    } else {
-      await encounterMessage(
-          "${p.prisoner!.name}, the hostage, is kept off-air.");
+        segmentpower += usegmentpower;
+      } else {
+        await encounterMessage(
+            "${p.prisoner!.name}, the hostage, is kept off-air.");
+      }
     }
   }
 
