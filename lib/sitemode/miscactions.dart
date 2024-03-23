@@ -493,8 +493,7 @@ Future<void> partyrescue(TileSpecial special) async {
 
   for (Creature rescue in waitingForRescue) {
     if (freeslots > 0 && (hostslots == 0 || oneIn(2))) {
-      squad.add(rescue);
-      rescue.squadId = activeSquad!.id;
+      rescue.squad = activeSquad;
       rescue.location = null;
       rescue.base = squad[0].base;
       rescue.justEscaped = true;

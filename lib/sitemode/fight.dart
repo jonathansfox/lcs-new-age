@@ -1991,8 +1991,7 @@ void autopromote(Site loc) {
       if (pool[pl].alive &&
           pool[pl].squadId == null &&
           pool[pl].align == Alignment.liberal) {
-        pool[pl].squadId = activeSquad!.id;
-        squad.add(pool[pl]);
+        pool[pl].squad = activeSquad;
         break;
       }
     }

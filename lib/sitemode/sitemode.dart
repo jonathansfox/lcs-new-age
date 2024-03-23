@@ -1002,8 +1002,7 @@ Future<void> _siteModeAux() async {
                 pool.add(newcr);
                 stats.recruits++;
 
-                squad.add(newcr);
-                newcr.squadId = activeSquad!.id;
+                newcr.squad = activeSquad;
 
                 actgot++;
                 partysize++;
