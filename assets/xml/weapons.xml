@@ -789,13 +789,12 @@
             <hit_description>slashing</hit_description>
             <skill>KNIFE</skill>
             <strentgh_min>1</strentgh_min>
-            <strength_max>6</strength_max>
+            <strength_max>4</strength_max>
             <random_damage>61</random_damage>
             <fixed_damage>10</fixed_damage>
             <can_backstab>true</can_backstab>
             <cuts>true</cuts>
             <bleeding>true</bleeding>
-            <armorpiercing>2</armorpiercing>
             <number_attacks>3</number_attacks>
             <successive_attacks_difficulty>4</successive_attacks_difficulty>
         </attack>
@@ -854,7 +853,7 @@
             <attack_description>lunges at</attack_description>
             <hit_description>stabbing</hit_description>
             <strength_min>1</strength_min>
-            <strength_max>5</strength_max>
+            <strength_max>6</strength_max>
             <skill>KNIFE</skill>
             <random_damage>61</random_damage>
             <fixed_damage>10</fixed_damage>
@@ -862,7 +861,6 @@
             <cuts>true</cuts>
             <bleeding>true</bleeding>
             <damages_armor>true</damages_armor>
-            <armorpiercing>2</armorpiercing>
             <number_attacks>3</number_attacks>
             <successive_attacks_difficulty>4</successive_attacks_difficulty>
         </attack>
@@ -893,7 +891,7 @@
             <cuts>true</cuts>
             <bleeding>true</bleeding>
             <damages_armor>true</damages_armor>
-            <armorpiercing>2</armorpiercing>
+            <armorpiercing>1</armorpiercing>
             <severtype>CLEAN</severtype>
         </attack>
     </weapontype>
@@ -1038,7 +1036,6 @@
             <cuts>true</cuts>
             <bleeding>true</bleeding>
             <damages_armor>true</damages_armor>
-            <armorpiercing>1</armorpiercing>
         </attack>
     </weapontype>
 
@@ -1061,7 +1058,6 @@
             <cuts>true</cuts>
             <bleeding>true</bleeding>
             <damages_armor>true</damages_armor>
-            <armorpiercing>1</armorpiercing>
             <number_attacks>3</number_attacks>
             <successive_attacks_difficulty>4</successive_attacks_difficulty>
         </attack>
@@ -1130,7 +1126,7 @@
             <cuts>true</cuts>
             <bleeding>true</bleeding>
             <damages_armor>true</damages_armor>
-            <armorpiercing>2</armorpiercing>
+            <armorpiercing>1</armorpiercing>
             <severtype>CLEAN</severtype>
         </attack>
     </weapontype>
@@ -1152,7 +1148,7 @@
             <random_damage>4</random_damage>
             <fixed_damage>1</fixed_damage>
             <cuts>true</cuts>
-            <armorpiercing>4</armorpiercing>
+            <armorpiercing>3</armorpiercing>
         </attack>
     </weapontype>
 

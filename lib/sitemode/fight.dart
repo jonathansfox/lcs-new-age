@@ -632,7 +632,19 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
       str += " hits the ";
     }
 
-    str += hitPart.name.toLowerCase();
+    if (t.armor.covers(hitPart)) {
+      if (hitPart.weakSpot && t.armor.type.headArmor > 4) {
+        str += "helmet";
+      } else if (hitPart.critical && t.armor.type.bodyArmor > 4) {
+        str += "body armor";
+      } else if (t.armor.type.limbArmor > 4) {
+        str += "${hitPart.name.toLowerCase()} armor";
+      } else {
+        str += hitPart.name.toLowerCase();
+      }
+    } else {
+      str += hitPart.name.toLowerCase();
+    }
 
     // show multiple hits
     if ((attackUsed.alwaysDescribeHit || bursthits > 1) &&
@@ -685,7 +697,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
       int strength = a.attribute(Attribute.strength);
       if (strength > strengthmax) strength = strengthmax;
       mod += strength - strengthmin;
-      armorpiercing += strength - strengthmin;
+      armorpiercing += (strength - strengthmin) ~/ 2;
       debugPrint("Strength bonus: $mod");
     }
 
@@ -696,19 +708,29 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
     //Health and poor accuracy will only avoid critical hits, not stop low-damage attacks
     if (mod < 0) mod = 0;
 
+    int predamamount = damamount;
+    bool bruiseOnly = false;
     damamount =
         damagemod(t, attackUsed, damamount, hitPart, armorpiercing, mod);
+    if (damamount < predamamount / 4 && damamount < 20 && damamount > 0) {
+      bruiseOnly = true;
+      str += " to little effect";
+    }
     //debugPrint("Damage after mod: $damamount");
 
     if (damamount > 0) {
       Creature target = t;
 
-      hitPart.bleeding = attackUsed.bleeds;
-      hitPart.cut = attackUsed.cuts;
-      hitPart.torn = attackUsed.tears;
-      hitPart.shot = attackUsed.shoots;
-      hitPart.burned = attackUsed.burns;
-      hitPart.bruised = attackUsed.bruises;
+      if (bruiseOnly) {
+        hitPart.bruised = true;
+      } else {
+        hitPart.bleeding = attackUsed.bleeds;
+        hitPart.cut = attackUsed.cuts;
+        hitPart.torn = attackUsed.tears;
+        hitPart.shot = attackUsed.shoots;
+        hitPart.burned = attackUsed.burns;
+        hitPart.bruised = attackUsed.bruises;
+      }
 
       int severamount = 200;
       if (hitPart.weakSpot) {
@@ -717,7 +739,9 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
         severamount *= 4;
       }
 
-      if (severtype != SeverType.none && damamount >= severamount) {
+      if (severtype != SeverType.none &&
+          damamount >= severamount &&
+          !bruiseOnly) {
         if (severtype == SeverType.clean) {
           hitPart.cleanOff = true;
           if (hitPart.critical && !hitPart.weakSpot) {
@@ -1274,13 +1298,16 @@ int healthmodroll(int aroll, Creature a) {
 /* adjusts attack damage based on armor, other factors */
 int damagemod(Creature t, Attack attackUsed, int damamount,
     BodyPart hitlocation, int armorpenetration, int mod) {
-  int armor;
+  int armor = 0;
   if (hitlocation.weakSpot) {
     armor = t.armor.type.headArmor;
   } else if (hitlocation.critical) {
     armor = t.armor.type.bodyArmor;
   } else {
     armor = t.armor.type.limbArmor;
+  }
+  if (!t.armor.covers(hitlocation)) {
+    armor = 0;
   }
   int naturalArmor = hitlocation.naturalArmor;
   if (attackUsed.burns) {
@@ -1467,9 +1494,10 @@ Future<void> severloot(Creature cr, List<Item> loot) async {
 
 /* damages the selected armor if it covers the body part specified */
 void armordamage(Armor armor, BodyPart bp, int damamount) {
-  if (armor.covers(bp) && lcsRandom(armor.type.durability) < damamount) {
+  int d2 = armor.type.durability ~/ 2;
+  if (armor.covers(bp) && lcsRandom(d2) + d2 < damamount) {
     if (armor.damaged) {
-      if (lcsRandom(damamount ~/ armor.quality) < armor.type.durability) {
+      if (lcsRandom(damamount * armor.quality) > lcsRandom(d2 * 2) + d2 * 2) {
         armor.quality += 1;
       }
     } else {
