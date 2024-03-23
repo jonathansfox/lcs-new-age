@@ -191,7 +191,7 @@ class Site extends Location {
   }
 
   bool isDuplicateLocation() {
-    return sites.any((e) => e.name == name);
+    return sites.any((e) => e != this && e.name == name);
   }
 
   /* add all items from a list to a location, and deal with money properly */
