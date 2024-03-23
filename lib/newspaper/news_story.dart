@@ -1,11 +1,9 @@
 import 'package:collection/collection.dart';
-import 'package:lcs_new_age/common_display/common_display.dart';
 import 'package:lcs_new_age/creature/creature.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/location/siege.dart';
 import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/politics/views.dart';
-import 'package:lcs_new_age/utils/lcsrandom.dart';
 
 class NewsStory {
   NewsStory.unpublished(this.type);
@@ -123,20 +121,4 @@ enum NewsStoryEvent {
   bankVaultRobbery,
   bankTellerRobbery,
   bankStickup,
-}
-
-String generateFiller(int amount) {
-  String story = "&r${randomCityName()} - ";
-  for (int par = 0; amount > 0; amount--) {
-    par++;
-    for (int i = 0; i < lcsRandom(10) + 3; i++) {
-      story += "~";
-    }
-    if (amount > 1) story += " ";
-    if (par > 50 && lcsRandom(5) != 0 && amount > 20) {
-      par = 0;
-      story += "&r  ";
-    }
-  }
-  return story;
 }

@@ -1,5 +1,7 @@
 /* news - show major news story */
 
+import 'dart:math';
+
 import 'package:collection/collection.dart';
 import 'package:lcs_new_age/common_display/common_display.dart';
 import 'package:lcs_new_age/creature/creature_type.dart';
@@ -9,6 +11,7 @@ import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/location/siege.dart';
 import 'package:lcs_new_age/newspaper/ads.dart';
+import 'package:lcs_new_age/newspaper/filler.dart';
 import 'package:lcs_new_age/newspaper/headline.dart';
 import 'package:lcs_new_age/newspaper/layout.dart';
 import 'package:lcs_new_age/newspaper/major_event.dart';
@@ -772,10 +775,11 @@ void displayNewsStory(
     }
 
     List<String> words = paragraph.split(" ");
-    int span = storyXEnd[y] - storyXStart[y] + 1;
     List<String> line = [];
     int lineLength = 0;
     for (String word in words) {
+      int lineY = min(y + lines.length, storyXStart.length - 1);
+      int span = storyXEnd[lineY] - storyXStart[lineY] + 1;
       if (lineLength + line.length + word.length + 1 > span) {
         int spacesNeeded = span - lineLength;
         while (spacesNeeded > 0) {
