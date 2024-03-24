@@ -40,9 +40,9 @@ class CreatureType {
   (int, int) infiltration = (0, 30);
   DateTime get randomBirthay =>
       date.subtract(Duration(days: (365 * (age.rollDouble())).round()));
-  int extraAttributePoints = 0;
+  (int, int) extraAttributePoints = (0, 0);
   Map<Attribute, (int, int)> attributePoints = {
-    for (Attribute a in Attribute.values) a: (0, 0)
+    for (Attribute a in Attribute.values) a: (1, 10)
   };
   Map<Skill, (int, int)> skillPoints = {
     for (Skill s in Skill.values) s: (0, 0)

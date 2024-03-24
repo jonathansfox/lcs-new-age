@@ -1,4 +1,6 @@
 /* ensures that the creature's work location is appropriate to its type */
+import 'dart:math';
+
 import 'package:lcs_new_age/creature/attributes.dart';
 import 'package:lcs_new_age/creature/conversion.dart';
 import 'package:lcs_new_age/creature/creature.dart';
@@ -44,26 +46,45 @@ Creature creatureBuilder(Creature creature, {Alignment? align}) {
 }
 
 void _giveAttributes(Creature creature, CreatureType type) {
-  for (Attribute attribute in Attribute.values) {
-    if (attribute == Attribute.wisdom) continue;
-    if (attribute == Attribute.heart) {
-      if (creature.align == Alignment.liberal) {
-        List<int> pool = _6d3pool();
-        creature.rawAttributes[Attribute.heart] = _highest3(pool);
-        creature.rawAttributes[Attribute.wisdom] = _lowest3(pool);
-      } else if (creature.align == Alignment.conservative) {
-        List<int> pool = _6d3pool();
-        creature.rawAttributes[Attribute.heart] = _lowest3(pool);
-        creature.rawAttributes[Attribute.wisdom] = _highest3(pool);
-      } else {
-        creature.rawAttributes[Attribute.heart] = _5d3dropExtremes();
-        creature.rawAttributes[Attribute.wisdom] = _5d3dropExtremes();
-      }
-    } else {
-      creature.rawAttributes[attribute] = _3d3();
+  for (Attribute a in type.attributePoints.keys) {
+    int minPoints = type.attributePoints[a]!.$1;
+    int maxPoints = type.attributePoints[a]!.$2;
+    if ((a == Attribute.heart && creature.align == Alignment.liberal) ||
+        (a == Attribute.wisdom && creature.align == Alignment.conservative)) {
+      minPoints = max(6, minPoints);
+      maxPoints = max(10, maxPoints);
+    } else if ((a == Attribute.wisdom && creature.align == Alignment.liberal) ||
+        (a == Attribute.heart && creature.align == Alignment.conservative)) {
+      minPoints = min(1, minPoints);
+      maxPoints = min(4, maxPoints);
+    } else if (creature.align == Alignment.moderate &&
+        (a == Attribute.heart || a == Attribute.wisdom)) {
+      minPoints = max(3, minPoints);
+      maxPoints = min(7, maxPoints);
     }
+    creature.rawAttributes[a] =
+        minPoints + lcsRandom(maxPoints - minPoints + 1);
   }
-  for (int i = 0; i < type.extraAttributePoints; i++) {}
+  int total = creature.rawAttributes.values.reduce((a, b) => a + b);
+  int roll = type.extraAttributePoints.$1 +
+      lcsRandom(
+          type.extraAttributePoints.$2 - type.extraAttributePoints.$1 + 1);
+  int extraAttributePoints = roll + 35 - total;
+  int extraPointValue = extraAttributePoints.sign;
+  for (int i = 0; i < extraAttributePoints.abs(); i++) {
+    Iterable<Attribute> possibleAttributes = Attribute.values.where((element) {
+      int total = creature.rawAttributes[element]! + extraPointValue;
+      return total >= type.attributePoints[element]!.$1 &&
+          total <= type.attributePoints[element]!.$2;
+    });
+    if (possibleAttributes.isEmpty) break;
+    Attribute attribute = possibleAttributes.random;
+    creature.rawAttributes[attribute] =
+        creature.rawAttributes[attribute]! + extraPointValue;
+  }
+  total = creature.rawAttributes.values.reduce((a, b) => a + b);
+  debugPrint(
+      "Total attributes: $total ${creature.age} ${creature.align} (${creature.rawAttributes})");
 }
 
 void _giveEquipment(Creature creature, CreatureType type) {
@@ -122,7 +143,8 @@ void _giveGender(Creature creature, CreatureType type) {
 
 void _giveSkills(Creature creature, CreatureType type) {
   for (MapEntry<Skill, (int, int)> entry in type.skillPoints.entries) {
-    creature.rawSkill[entry.key] = entry.value.$1 + lcsRandom(entry.value.$2);
+    creature.rawSkill[entry.key] =
+        entry.value.$1 + lcsRandom(entry.value.$2 - entry.value.$1 + 1);
   }
   int randomskills = lcsRandom(4) + 4;
   if (creature.age > 20) {
@@ -149,30 +171,4 @@ void _giveSkills(Creature creature, CreatureType type) {
       if (randomskills <= 0 || lcsRandom(2) == 0) break;
     }
   }
-}
-
-// ignore: non_constant_identifier_names
-int _3d3() {
-  return lcsRandom(3) + lcsRandom(3) + lcsRandom(3) + 3;
-}
-
-// ignore: non_constant_identifier_names
-List<int> _6d3pool() {
-  return [for (int i = 0; i < 6; i++) lcsRandom(3) + 1]..sort();
-}
-
-int _lowest3(List<int> pool) {
-  return pool[0] + pool[1] + pool[2];
-}
-
-int _highest3(List<int> pool) {
-  int pl = pool.length;
-  return pool[pl - 1] + pool[pl - 2] + pool[pl - 3];
-}
-
-// ignore: non_constant_identifier_names
-int _5d3dropExtremes() {
-  List<int> rolls = [for (int i = 0; i < 5; i++) lcsRandom(3) + 1];
-  rolls.sort();
-  return rolls[1] + rolls[2] + rolls[3];
 }

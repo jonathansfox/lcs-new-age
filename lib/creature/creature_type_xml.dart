@@ -63,7 +63,11 @@ void parseCreatureType(CreatureType type, XmlElement xml) {
           _ => parseRange(element.innerText) ?? type.age,
         };
       case "attribute_points":
-        type.extraAttributePoints = int.tryParse(element.innerText) ?? 0;
+        (int, int)? range = parseRange(element.innerText);
+        if (range != null) {
+          range = (range.$1 - 40, range.$2 - 40);
+          type.extraAttributePoints = range;
+        }
       case "attributes":
         for (XmlElement e in element.childElements) {
           Attribute? att;

@@ -1537,9 +1537,9 @@ Elements marked as hardcoded may have their values overridden by the game.
         <armor>ARMOR_CLOTHES</armor>
         <age>MATURE</age>
         <attributes>
-            <agility>8-10</agility>
+            <agility>6-10</agility>
             <health>6-10</health>
-            <strength>6-10</strength>
+            <strength>8-10</strength>
         </attributes>
         <gender>MALE BIAS</gender>
         <skills>
@@ -1614,13 +1614,13 @@ Elements marked as hardcoded may have their values overridden by the game.
         <alignment>LIBERAL</alignment>
         <attribute_points>7-66</attribute_points>
         <attributes>
-            <agility>1-50</agility>
-            <charisma>1-50</charisma>
-            <health>1-50</health>
-            <heart>1-50</heart>
-            <intelligence>1-50</intelligence>
-            <strength>1-50</strength>
-            <wisdom>1-50</wisdom>
+            <agility>1-30</agility>
+            <charisma>1-30</charisma>
+            <health>1-30</health>
+            <heart>1-30</heart>
+            <intelligence>1-30</intelligence>
+            <strength>1-30</strength>
+            <wisdom>1-30</wisdom>
         </attributes>
         <money>20-50</money>
         <talkreceptive>1</talkreceptive>
