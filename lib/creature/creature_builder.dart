@@ -83,8 +83,6 @@ void _giveAttributes(Creature creature, CreatureType type) {
         creature.rawAttributes[attribute]! + extraPointValue;
   }
   total = creature.rawAttributes.values.reduce((a, b) => a + b);
-  debugPrint(
-      "Total attributes: $total ${creature.age} ${creature.align} (${creature.rawAttributes})");
 }
 
 void _giveEquipment(Creature creature, CreatureType type) {
