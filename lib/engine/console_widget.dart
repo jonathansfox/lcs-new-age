@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/services.dart';
 import 'package:lcs_new_age/engine/console.dart';
 import 'package:lcs_new_age/engine/console_char.dart';
@@ -6,22 +8,58 @@ import 'package:lcs_new_age/utils/colors.dart';
 import 'package:pixel_snap/material.dart';
 
 class ConsoleWidget extends StatefulWidget {
-  ConsoleWidget(this.console, {super.key});
+  const ConsoleWidget(this.console, {super.key});
   final Console console;
-  final FocusNode focusNode = FocusNode();
 
   @override
   State<ConsoleWidget> createState() => _ConsoleWidgetState();
 }
 
 class _ConsoleWidgetState extends State<ConsoleWidget> {
+  late final FocusNode focusNode;
+  late final FocusAttachment focusAttachment;
+  bool hasFocus = false;
+
   @override
   void initState() {
+    focusNode = FocusNode(onKeyEvent: _onKeyEvent);
+    focusNode.addListener(_handleFocusChange);
+    focusAttachment = focusNode.attach(context);
     widget.console.flush = () {
       console.stale = true;
       setState(() {});
     };
     super.initState();
+  }
+
+  KeyEventResult _onKeyEvent(FocusNode node, KeyEvent value) {
+    if ((value is KeyDownEvent || value is KeyRepeatEvent) &&
+        ![
+          LogicalKeyboardKey.altLeft,
+          LogicalKeyboardKey.altRight,
+          LogicalKeyboardKey.tab
+        ].contains(value.logicalKey)) {
+      debugPrint("Key event: $value");
+      console.keyEvent(value);
+      return KeyEventResult.handled;
+    }
+    return KeyEventResult.ignored;
+  }
+
+  void _handleFocusChange() {
+    if (focusNode.hasFocus != hasFocus) {
+      debugPrint("Focus changed: ${focusNode.hasFocus}");
+      setState(() {
+        hasFocus = focusNode.hasFocus;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    focusNode.removeListener(_handleFocusChange);
+    focusNode.dispose();
+    super.dispose();
   }
 
   double textSpanWidth = 1;
@@ -148,39 +186,47 @@ class _ConsoleWidgetState extends State<ConsoleWidget> {
 
   @override
   Widget build(BuildContext context) {
+    focusAttachment.reparent();
     TextSpan fg = consoleDataToTextSpan(false);
     return Material(
-      color: black,
-      child: SizedBox(
-        width: textSpanWidth,
-        height: textSpanHeight,
-        child: GestureDetector(
-          onTap: widget.focusNode.requestFocus,
-          child: KeyboardListener(
-            focusNode: widget.focusNode,
-            autofocus: true,
-            onKeyEvent: (value) {
-              if (value is KeyDownEvent || value is KeyRepeatEvent) {
-                widget.console.keyEvent(value);
-              }
-            },
-            child: Stack(
-              children: [
-                background(),
-                Positioned.fill(
-                  child: CustomPaint(painter: BlockPainter(console)),
+      color: Color.lerp(darkGray, black, 0.8),
+      child: Center(
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Material(
+            color: black,
+            child: SizedBox(
+              width: textSpanWidth,
+              height: textSpanHeight,
+              child: GestureDetector(
+                onTap: () {
+                  debugPrint("Requesting focus");
+                  focusNode.requestFocus();
+                  debugPrint("Widget has focus: ${focusNode.hasFocus}");
+                  SystemChannels.textInput
+                      // ignore: discarded_futures
+                      .invokeMethod("TextInput.show")
+                      .ignore();
+                },
+                child: Stack(
+                  children: [
+                    background(),
+                    Positioned.fill(
+                      child: CustomPaint(painter: BlockPainter(console)),
+                    ),
+                    RichText(
+                      text: fg,
+                      softWrap: false,
+                      textHeightBehavior: const TextHeightBehavior(
+                        applyHeightToFirstAscent: false,
+                        applyHeightToLastDescent: false,
+                        leadingDistribution: TextLeadingDistribution.even,
+                      ),
+                    ),
+                    ...graphics(),
+                  ],
                 ),
-                RichText(
-                  text: fg,
-                  softWrap: false,
-                  textHeightBehavior: const TextHeightBehavior(
-                    applyHeightToFirstAscent: false,
-                    applyHeightToLastDescent: false,
-                    leadingDistribution: TextLeadingDistribution.even,
-                  ),
-                ),
-                ...graphics(),
-              ],
+              ),
             ),
           ),
         ),

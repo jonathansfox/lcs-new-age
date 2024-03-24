@@ -20,9 +20,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         backgroundColor: Color.lerp(darkGray, black, 0.8),
-        body: Center(
-          child: ConsoleWidget(engine.console),
-        ),
+        body: ConsoleWidget(engine.console),
       ),
     );
   }
