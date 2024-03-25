@@ -1,4 +1,5 @@
 import 'package:lcs_new_age/basemode/activities.dart';
+import 'package:lcs_new_age/basemode/help_system.dart';
 import 'package:lcs_new_age/common_display/common_display.dart';
 import 'package:lcs_new_age/common_display/print_creature_info.dart';
 import 'package:lcs_new_age/common_display/print_party.dart';
@@ -219,6 +220,9 @@ Future<void> _activateOne(Creature c) async {
     }
     if (isBackKey(key)) {
       break;
+    }
+    if (key == "?".codePoint) {
+      await helpOnActivity(c.activity.type);
     }
   }
 }

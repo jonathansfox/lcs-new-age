@@ -19,6 +19,26 @@ void addstrc(Color fg, String s) {
   addstr(s);
 }
 
+void addparagraph(int y1, int x1, int y2, int x2, String s) {
+  console.move(y1, x1);
+  List<String> lines = s.split("\n");
+  for (int i = 0; i < lines.length; i++) {
+    List<String> words = lines[i].split(" ");
+    for (int j = 0; j < words.length; j++) {
+      if (console.x + words[j].length + 1 > x2) {
+        console.move(console.y + 1, x1);
+        if (console.y > y2) return;
+        if (words[j].isEmpty) continue;
+      } else if (j != 0) {
+        addstr(" ");
+      }
+      addstr(words[j]);
+    }
+    move(console.y + 1, x1);
+    if (console.y > y2) return;
+  }
+}
+
 void mvaddstr(int y, int x, String s) => console.mvaddstr(y, x, s);
 void mvaddstrc(int y, int x, Color fg, String s) {
   setColor(fg);
