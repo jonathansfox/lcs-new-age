@@ -50,7 +50,6 @@ Future<void> siteMode(Site loc) async {
   siteAlienated = SiteAlienation.none;
   siteCrime = 0;
   await initsite(loc);
-  sitestory = newsStories[newsStories.length - 1];
   mode = GameMode.site;
 
   if (!loc.siege.underSiege) {
@@ -1798,6 +1797,7 @@ Future<void> _siteModeAux() async {
 /* site - determines spin on site news story, "too hot" timer */
 Future<void> _resolveSite() async {
   sitestory!.positive = (siteAlienated != SiteAlienation.none) ? -1 : 1;
+  if (!newsStories.contains(sitestory!)) newsStories.add(sitestory!);
   if (siteCrime > 50 + lcsRandom(50)) {
     if (activeSite!.controller == SiteController.unaligned) {
       // Capture a warehouse or crack den?
@@ -1918,7 +1918,7 @@ Future<void> _openDoor(bool restricted) async {
 
   if (alarmed) {
     // Unlocked but alarmed door, clearly marked as such
-    clearMessageArea();
+    clearMessageArea(false);
 
     setColor(white);
     move(16, 1);

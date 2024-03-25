@@ -308,7 +308,8 @@ Future<void> _squadDepart(Squad s) async {
         base = site;
       }
       if (c == Key.t || c == Key.b) {
-        sitestory = NewsStory.prepare(NewsStories.squadSiteAction)..loc = site;
+        sitestory = NewsStory.unpublished(NewsStories.squadSiteAction)
+          ..loc = site;
         await siteMode(site);
       }
   }

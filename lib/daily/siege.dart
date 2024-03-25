@@ -1291,7 +1291,7 @@ Future<void> escapeOrEngage() async {
   autopromote(loc);
 
   //START FIGHTING
-  NewsStory.prepare(loc.siege.underAttack
+  sitestory = NewsStory.prepare(loc.siege.underAttack
       ? NewsStories.squadFledAttack
       : NewsStories.squadEscapedSiege)
     ..positive = 1
