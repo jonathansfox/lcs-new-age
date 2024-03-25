@@ -24,9 +24,9 @@ Future<void> advanceCCSDefeatStoryline() async {
     case CCSExposure.lcsGotData:
       break;
     case CCSExposure.exposed:
-      newsStories.add(ccsBackerArrestStory());
+      ccsBackerArrestStory();
     case CCSExposure.nobackers:
-      newsStories.add(await ccsFbiRaidStory());
+      await ccsFbiRaidStory();
   }
 }
 
