@@ -9,6 +9,8 @@ import 'package:lcs_new_age/common_display/common_display.dart';
 import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/gamestate/time.dart';
+import 'package:lcs_new_age/location/location_type.dart';
+import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
 import 'package:lcs_new_age/title_screen/launch_game.dart';
 import 'package:lcs_new_age/title_screen/title_screen.dart';
@@ -184,6 +186,7 @@ Future<bool> loadGameFromSave(SaveFile selectedSave) async {
   } else {
     debugPrint("Loading game from ${selectedSave.version}");
     gameState = selectedSave.gameState!;
+    applyBugFixes(selectedSave.version);
     return true;
   }
 }
@@ -338,4 +341,19 @@ int compareVersionStrings(String a, String b) {
     return -1;
   }
   return 0;
+}
+
+void applyBugFixes(String version) {
+  if (compareVersionStrings(version, "1.0.5") < 0) {
+    // Fix for the bug where CCS safehouses don't get marked as such if you
+    // play in "We Didn't Start The Fire" mode
+    if (ccsActive) {
+      for (Site s in sites.where((s) =>
+          s.controller == SiteController.unaligned &&
+          [SiteType.barAndGrill, SiteType.bombShelter, SiteType.bunker]
+              .contains(s.type))) {
+        s.controller = SiteController.ccs;
+      }
+    }
+  }
 }

@@ -1515,7 +1515,10 @@ Future<void> specialOvalOffice() async {
 }
 
 Future<void> specialCCSBoss() async {
-  if (siteAlarm || activeSiteUnderSiege) {
+  if (activeSite?.controller != SiteController.ccs) {
+    await encounterMessage("Cool boss arena. It's empty at the moment.");
+    return;
+  } else if (siteAlarm || activeSiteUnderSiege) {
     levelMap[locx][locy][locz].special = TileSpecial.none;
     await encounterMessage("The CCS leader is ready for you!");
 

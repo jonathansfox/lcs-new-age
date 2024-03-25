@@ -1,6 +1,7 @@
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/location/city.dart';
 import 'package:lcs_new_age/location/location_type.dart';
+import 'package:lcs_new_age/location/site.dart';
 
 class Area {
   Area(this.name, this.description);
@@ -152,4 +153,14 @@ void makeWorld() {
       SiteType.intelligenceHQ,
       SiteType.armyBase,
     ]);
+
+  // If the CCS is active, give them control of their safehouses
+  if (ccsActive) {
+    for (Site s in sites.where((s) =>
+        s.controller == SiteController.unaligned &&
+        [SiteType.barAndGrill, SiteType.bombShelter, SiteType.bunker]
+            .contains(s.type))) {
+      s.controller = SiteController.ccs;
+    }
+  }
 }
