@@ -99,6 +99,8 @@ Future<void> doActivityGraffiti(List<Creature> graffiti) async {
       graffiti[s].activity.view = issue;
       power = 0;
       graffiti[s].train(Skill.art, 10);
+    } else {
+      addjuice(graffiti[s], 1, 50);
     }
 
     graffiti[s].train(Skill.art, 4);
