@@ -1831,7 +1831,8 @@ Future<void> captureCreature(Creature t) async {
       t.wantedForCrimes.updateAll((key, value) => 0);
     }
   } else {
-    t.location = findSiteInSameCity(activeSite!.city, SiteType.policeStation);
+    t.location = findSiteInSameCity(
+        activeSite?.city ?? t.site?.city, SiteType.policeStation);
   }
 
   t.squad = null;
