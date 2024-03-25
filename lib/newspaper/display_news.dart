@@ -86,7 +86,7 @@ Future<void> displayStory(
               "three raids were successful. Seventeen suspects were killed in the fighting, and twenty-three are "
               "now in custody."
               "&r"
-              "  The Conservative Crime Squad fell on hard times when the alternative newspaper Liberal Guardian published "
+              "  The Conservative Crime Squad fell on hard times when the alternative news site Liberal Guardian published "
               "1147 pages of documents showing extensive government support for the group. The ensuing scandal "
               "led to the arrest of twenty-five members of Congress, as well as several leadership figures in the "
               "Conservative Party's National Committee."
