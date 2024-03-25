@@ -135,7 +135,7 @@ Future<void> doActivityTrouble(List<Creature> trouble) async {
     }
 
     for (int h = 0; h < trouble.length; h++) {
-      addjuice(trouble[h], juiceval, 40);
+      addjuice(trouble[h], juiceval, 50);
     }
   }
 }
