@@ -608,7 +608,7 @@ Future<void> displayStory(
       story += ".\"  "
           "&r";
 
-      generateFiller(200);
+      story += generateFiller(200);
       displayNewsStory(story, storyXStart, storyXEnd, y);
     case NewsStories.kidnapReport:
       int y = 2;
@@ -676,7 +676,7 @@ Future<void> displayStory(
           "surrounding area yesterday."
           "&r";
 
-      generateFiller(200);
+      story += generateFiller(200);
       displayNewsStory(story, storyXStart, storyXEnd, y);
 
     default:
