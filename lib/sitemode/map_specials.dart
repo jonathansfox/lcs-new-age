@@ -1466,7 +1466,7 @@ Future<void> specialBankMoney() async {
     }
     _specialBankMoneySWATCounter++;
     for (int i = 0; i < 9; i++) {
-      encounter.add(Creature.fromId("CREATRUE_SWAT"));
+      encounter.add(Creature.fromId("CREATURE_SWAT"));
     }
     printEncounter();
     await getKey();
