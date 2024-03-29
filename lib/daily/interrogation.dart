@@ -1050,11 +1050,11 @@ Future<void> tendHostage(InterrogationSession intr) async {
   }
 
   //Lead interrogator gets bonus experience
-  if (techniques[Technique.kill] == false) {
-    lead.train(Skill.psychology, attack ~/ 2 + 1);
+  if (techniques[Technique.kill] != true) {
+    lead.train(Skill.psychology, 20);
     //Others also get experience
     for (int i = 0; i < tenders.length; i++) {
-      tenders[i].train(Skill.psychology, attack ~/ 4 + 1);
+      tenders[i].train(Skill.psychology, 10);
     }
   }
 
