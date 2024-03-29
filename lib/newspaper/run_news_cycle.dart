@@ -31,7 +31,7 @@ Future<void> runNewsCycle() async {
 Future<void> generateRandomEventNewsStories() async {
   // Conservative Crime Squad Strikes!
   if (ccsActive && lcsRandom(30) < ccsState.index) {
-    newsStories.add(ccsStrikesStory());
+    ccsStrikesStory();
   }
 
   // The slow defeat of the Conservative Crime Squad...
