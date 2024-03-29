@@ -555,6 +555,7 @@ Future<void> evasiverun() async {
         }
 
         p.squad = null;
+        p.location = p.base;
 
         printParty();
       } else if (yourspeed[p]! < theirbest - 10) {
