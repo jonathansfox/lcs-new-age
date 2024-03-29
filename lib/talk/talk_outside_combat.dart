@@ -591,9 +591,11 @@ Future<bool> talkToBankTeller(Creature a, Creature tk) async {
         siteAlienated = SiteAlienation.alienatedEveryone;
 
         for (SiteTile t in levelMap.all) {
+          t.locked = false;
           if (t.special == TileSpecial.bankVault) {
-            t.locked = false;
-            if (t.metal) t.door = false;
+            for (SiteTile n in t.neighbors()) {
+              n.door = false;
+            }
             t.special = TileSpecial.none;
           }
         }
