@@ -39,7 +39,7 @@ class _ConsoleWidgetState extends State<ConsoleWidget> {
           LogicalKeyboardKey.altRight,
           LogicalKeyboardKey.tab
         ].contains(value.logicalKey)) {
-      debugPrint("Key event: $value");
+      //debugPrint("Key event: $value");
       console.keyEvent(value);
       return KeyEventResult.handled;
     }
