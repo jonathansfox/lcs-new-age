@@ -14,6 +14,7 @@ import 'package:lcs_new_age/politics/laws.dart';
 import 'package:lcs_new_age/politics/politics.dart';
 import 'package:lcs_new_age/politics/views.dart';
 import 'package:lcs_new_age/title_screen/questions.dart';
+import 'package:lcs_new_age/title_screen/title_screen.dart';
 import 'package:lcs_new_age/utils/colors.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 
@@ -121,6 +122,11 @@ Future<void> makeCharacter() async {
   founder.rawAttributes[Attribute.charisma] = 5;
   for (Skill s in Skill.values) {
     founder.rawSkill[s] = 0;
+  }
+
+  if (megaFounderCheat) {
+    founder.rawAttributes.forEach((a, i) => founder.rawAttributes[a] = 30 + i);
+    founder.rawSkill.forEach((s, i) => founder.rawSkill[s] = 30 + i);
   }
 
   bool letMeChoose = true;
