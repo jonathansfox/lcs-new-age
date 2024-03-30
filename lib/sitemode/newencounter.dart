@@ -63,7 +63,6 @@ void prepareEncounter(SiteType type, bool sec, {bool addToExisting = false}) {
   if (activeSite?.controller == SiteController.ccs &&
       (type != SiteType.barAndGrill || sec)) {
     weights.add(CreatureTypeIds.ccsVigilante, 50);
-    weights.add(CreatureTypeIds.ccsArchConservative, 2);
     weights.add(CreatureTypeIds.sexWorker, 5);
     weights.add(CreatureTypeIds.crackhead, 5);
     weights.add(CreatureTypeIds.priest, 5);
