@@ -32,6 +32,8 @@ Creature creatureBuilder(Creature creature, {Alignment? align}) {
   _giveSkills(creature, type);
   _giveGender(creature, type);
 
+  creature.infiltration = type.infiltration.rollDouble() / 100;
+
   applyHardcodedCreatureTypeStuff(creature, type);
 
   // Convert to Conservative if alienated
