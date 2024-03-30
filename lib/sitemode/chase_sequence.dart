@@ -31,6 +31,7 @@ import 'package:lcs_new_age/sitemode/haul_kidnap.dart';
 import 'package:lcs_new_age/sitemode/map_specials.dart';
 import 'package:lcs_new_age/sitemode/miscactions.dart';
 import 'package:lcs_new_age/sitemode/site_display.dart';
+import 'package:lcs_new_age/sitemode/sitemap.dart';
 import 'package:lcs_new_age/title_screen/game_over.dart';
 import 'package:lcs_new_age/utils/colors.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
@@ -749,6 +750,7 @@ void makeChasers(SiteType? sitetype, int sitecrime) {
           creatureType = CreatureTypeIds.cop;
         }
     }
+    if (pnum > ENCMAX) pnum = ENCMAX;
     for (n = 0; n < pnum; n++) {
       encounter.add(Creature.fromId(creatureType));
     }
@@ -790,11 +792,15 @@ void makeChasers(SiteType? sitetype, int sitecrime) {
 
   for (Creature e in encounter.where((e) => e.carId == null)) {
     int v;
+    int goal = 4;
+    while (!load.any((l) => l < goal)) {
+      goal++;
+    }
     do {
       v = lcsRandom(chaseSequence!.enemycar.length);
       e.carId = chaseSequence!.enemycar[v].id;
       e.isDriver = false;
-    } while (load[v] >= 4);
+    } while (load[v] >= goal);
     load[v]++;
   }
 }
