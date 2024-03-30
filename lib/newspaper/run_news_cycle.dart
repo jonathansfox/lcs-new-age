@@ -255,7 +255,7 @@ void handlePublicOpinionImpact(NewsStory ns) {
     }
   } else {
     lcsResponsible = true;
-    changePublicOpinion(View.lcsLiked, 2 + impact);
+    changePublicOpinion(View.lcsKnown, 2 + impact.abs());
     impactDirection = Alignment.liberal;
     if (ns.positive > 0) {
       changePublicOpinion(View.lcsLiked, impact);
