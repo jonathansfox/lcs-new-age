@@ -95,9 +95,13 @@ Future<void> siegeCheck() async {
       // but let them bleed it off in the process
       if (p.heat > 0) {
         crimes += (p.heat / 10).ceil();
-        p.heat -= min(4, p.heat);
+        p.heat -= min(max(4, p.heat ~/ 30), p.heat);
       }
     }
+
+    // Update location heat
+    l.heat += ((crimes - l.heat - l.heatProtection) / 10).ceil();
+    if (l.heat < 0) l.heat = 0;
 
     int huntingSpeed = 0;
     if (l.heat > l.heatProtection) {
@@ -113,10 +117,6 @@ Future<void> siegeCheck() async {
       // Reduce the cooldown between raids
       l.siege.timeUntilCops = l.siege.timeUntilCops + 1;
     } else if (l.siege.timeUntilCops == -1) {
-      // Update location heat
-      l.heat += ((crimes - l.heat - l.heatProtection) / 10).ceil();
-      if (l.heat < 0) l.heat = 0;
-
       // Begin planning siege if high heat on location
       if (huntingSpeed > 0 && (oneIn(60 ~/ huntingSpeed))) {
         // Set time until siege is carried out
