@@ -75,12 +75,13 @@ class CreatureType {
   bool reportsToPolice = false;
   bool intimidationResistant = false;
   bool canPerformArrests = false;
-  bool enemyEvenWhenNotConservative = false;
   bool animal = false;
   bool dog = false;
   bool get tank => id == CreatureTypeIds.tank;
   int? recruitActivityDifficulty;
   bool edgelord = false;
+
+  bool get enemyEvenWhenNotConservative => id == CreatureTypeIds.cop;
 
   bool get freeable {
     if (id == CreatureTypeIds.childLaborer ||
