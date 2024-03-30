@@ -204,12 +204,21 @@ class Politics {
   }
 
   Map<DeepAlignment, double> voterSpread(double percentLiberal) {
-    double normalized = percentLiberal / 100;
-    double eliteLiberal = pow(normalized, 4).toDouble();
-    double liberal = pow(normalized, 3) - eliteLiberal;
-    double moderate = pow(normalized, 2) - eliteLiberal - liberal;
-    double conservative = normalized - eliteLiberal - liberal - moderate;
-    double archConservative = 1 - normalized;
+    int fact(int n) {
+      if (n <= 1) return 1;
+      return n * fact(n - 1);
+    }
+
+    num chos(int n, int k) => fact(n) / (fact(k) * fact(n - k));
+    num pr(int n, int k, double p) =>
+        chos(n, k) * pow(p, k) * pow(1 - p, n - k);
+
+    double p = percentLiberal / 100;
+    double eliteLiberal = pr(4, 4, p).toDouble();
+    double liberal = pr(4, 3, p).toDouble();
+    double moderate = pr(4, 2, p).toDouble();
+    double conservative = pr(4, 1, p).toDouble();
+    double archConservative = pr(4, 0, p).toDouble();
     return {
       DeepAlignment.archConservative: archConservative,
       DeepAlignment.conservative: conservative,
