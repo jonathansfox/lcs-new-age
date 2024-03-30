@@ -139,7 +139,7 @@ class Politics {
     }
     if (coloredByLcsOpinions) {
       // Power from people who haven't heard of the LCS or don't care
-      double rawPower = power * (100 - publicOpinion[View.lcsKnown]! / 100);
+      double rawPower = power * ((100 - publicOpinion[View.lcsKnown]!) / 100);
       // Power from people who have opinions about the LCS
       double affectedPower = power - rawPower;
       double lcsPopularity = publicOpinion[View.lcsLiked]!;
