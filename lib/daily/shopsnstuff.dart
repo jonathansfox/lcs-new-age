@@ -79,7 +79,7 @@ Future<void> hospitalize(Site loc, Creature patient) async {
 
   if (time > 0) {
     patient.clinicMonthsLeft = time;
-    patient.squadId = null;
+    patient.squad = null;
     patient.location = loc;
 
     makeDelimiter();
@@ -92,8 +92,6 @@ Future<void> hospitalize(Site loc, Creature patient) async {
     addstr(".");
 
     await getKey();
-
-    patient.squad = null;
   }
 }
 
