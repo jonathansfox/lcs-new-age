@@ -317,7 +317,7 @@ Future<void> congress() async {
           addstr("Dead in Congress");
         } else if (billStatus[c] == BillStatus.vetoOverride) {
           setColor(billdir[c] > 0 ? lightGreen : red);
-          addstr("FORCED BY CONGRESS");
+          addstr("VETO OVERRIDDEN");
         } else {
           setColor(white);
           addstr("*** VETO ***");
