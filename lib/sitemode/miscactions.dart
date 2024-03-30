@@ -480,8 +480,10 @@ Future<void> partyrescue(TileSpecial special) async {
   int hostslots =
       activeSquad!.livingMembers.where((e) => e.prisoner == null).length;
 
-  List<Creature> waitingForRescue = activeSquad!.livingMembers
+  List<Creature> waitingForRescue = pool
       .where((p) =>
+          p.isActiveLiberal &&
+          p.squad != activeSquad &&
           p.location == activeSite &&
           !p.sleeperAgent &&
           !(special == TileSpecial.prisonControlLow &&
