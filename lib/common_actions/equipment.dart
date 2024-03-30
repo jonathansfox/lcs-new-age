@@ -43,7 +43,7 @@ Future<void> equip(List<Item>? loot) async {
     for (int l = page * 18; l < loot.length && l < page * 18 + 18; l++) {
       String s = loot[l].equipTitle();
 
-      if (loot[l].stackSize > 1) {
+      if (loot[l].stackSize > 1 && !loot[l].type.isMoney) {
         s += " x${loot[l].stackSize}";
       }
       String let = letterAPlus(l - page * 18, capitalize: true);
