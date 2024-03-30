@@ -101,17 +101,19 @@ Future<bool> talkAboutIssues(Creature a, Creature tk) async {
 
     await getKey();
 
-    mvaddstrc(++y, 1, white,
-        "After more discussion, ${tk.name} agrees to come by later tonight.");
-
-    await getKey();
-
-    tk.nameCreature();
-
-    RecruitmentSession recruitSession = RecruitmentSession(tk, a);
-    recruitmentSessions.add(recruitSession);
-
-    encounter.remove(tk);
+    if (!poolAndProspects.contains(tk)) {
+      mvaddstrc(++y, 1, white,
+          "After more discussion, ${tk.name} agrees to come by later tonight.");
+      await getKey();
+      tk.nameCreature();
+      RecruitmentSession recruitSession = RecruitmentSession(tk, a);
+      recruitmentSessions.add(recruitSession);
+      encounter.remove(tk);
+    } else {
+      mvaddstrc(
+          ++y, 1, white, "They chat briefly, but ${tk.name} has work to do.");
+      await getKey();
+    }
     return true;
   } else {
     y++;

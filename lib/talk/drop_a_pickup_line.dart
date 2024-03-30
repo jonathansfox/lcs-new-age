@@ -164,7 +164,8 @@ Future<bool> doYouComeHereOften(Creature a, Creature tk) async {
   await getKey();
 
   int difficulty = Difficulty.hard;
-  if (tk.type.id == CreatureTypeIds.corporateCEO) {
+  if (tk.type.id == CreatureTypeIds.corporateCEO ||
+      tk.type.id == CreatureTypeIds.president) {
     difficulty = Difficulty.heroic;
   }
 
@@ -184,6 +185,12 @@ Future<bool> doYouComeHereOften(Creature a, Creature tk) async {
   }
 
   bool succeeded = a.skillCheck(Skill.seduction, difficulty);
+  if ((tk.seduced && tk.hireId == a.id) ||
+      datingSessions.any((d) => d.lcsMember == a && d.dates.contains(tk))) {
+    succeeded = true;
+  } else if (poolAndProspects.contains(tk)) {
+    succeeded = false;
+  }
   if ((tk.type.animal &&
           laws[Law.animalRights] != DeepAlignment.eliteLiberal &&
           !a.type.animal) ||
@@ -399,25 +406,27 @@ Future<bool> doYouComeHereOften(Creature a, Creature tk) async {
     await getKey();
 
     mvaddstrc(
-        ++y, 1, white, "${a.name} and ${tk.name} make plans for tonight.  ");
+        ++y, 1, white, "${a.name} and ${tk.name} make plans for tonight.");
 
     await getKey();
 
-    DatingSession? newd =
-        datingSessions.firstWhereOrNull((element) => element.lcsMember == a);
-    if (newd == null) {
-      newd = DatingSession(a, a.location!.city);
-      datingSessions.add(newd);
+    if (!poolAndProspects.contains(tk)) {
+      DatingSession? newd =
+          datingSessions.firstWhereOrNull((element) => element.lcsMember == a);
+      if (newd == null) {
+        newd = DatingSession(a.id, a.location!.city);
+        datingSessions.add(newd);
+      }
+
+      tk.nameCreature();
+
+      tk.location = a.location;
+      tk.base = a.base;
+
+      newd.dates.add(tk);
+
+      encounter.remove(tk);
     }
-
-    tk.nameCreature();
-
-    tk.location = a.location;
-    tk.base = a.base;
-
-    newd.dates.add(tk);
-
-    encounter.remove(tk);
   } else {
     String responds = "responds";
     if (a.indecent) {
@@ -432,6 +441,8 @@ Future<bool> doYouComeHereOften(Creature a, Creature tk) async {
       } else {
         addstr("\"This ain't Brokeback Mountain, son.\"");
       }
+    } else if (tk.type.id == CreatureTypeIds.president) {
+      addstr("\"The last thing I need is another sex scandal.\"");
     } else if (noProfanity) {
       switch (line) {
         case 0:

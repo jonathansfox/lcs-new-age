@@ -16,7 +16,7 @@ class UniqueCreatures {
       _$UniqueCreaturesFromJson(json);
   Map<String, dynamic> toJson() => _$UniqueCreaturesToJson(this);
 
-  @JsonKey()
+  @JsonKey(includeToJson: true, includeFromJson: true)
   Creature? _ceo;
   @JsonKey(includeFromJson: false, includeToJson: false)
   Creature get ceo {
@@ -24,17 +24,20 @@ class UniqueCreatures {
     return _ceo!;
   }
 
-  @JsonKey()
+  @JsonKey(includeToJson: true, includeFromJson: true)
   Creature? _president;
   @JsonKey(includeFromJson: false, includeToJson: false)
   Creature get president {
     _president ??= Creature.fromId(CreatureTypeIds.president)
-      ..name = "President ${politics.execName[Exec.president]}"
-      ..align = politics.exec[Exec.president]!.shallow;
+      ..properName = politics.execName[Exec.president]!.firstLast
+      ..name = "President ${politics.execName[Exec.president]!.last}"
+      ..align = politics.exec[Exec.president]!.shallow
+      ..alreadyNamed = true
+      ..infiltration = 1;
     return _president!;
   }
 
-  @JsonKey()
+  @JsonKey(includeToJson: true, includeFromJson: true)
   Creature? _aceLiberalAttorney;
   @JsonKey(includeFromJson: false, includeToJson: false)
   Creature get aceLiberalAttorney {
@@ -47,7 +50,7 @@ class UniqueCreatures {
     return _aceLiberalAttorney!;
   }
 
-  @JsonKey()
+  @JsonKey(includeToJson: true, includeFromJson: true)
   Creature? _aceAttorneyArchRival;
   @JsonKey(includeFromJson: false, includeToJson: false)
   Creature get aceAttorneyArchRival {
@@ -58,4 +61,15 @@ class UniqueCreatures {
 
   void newCEO() => _ceo = null;
   void newPresident() => _president = null;
+
+  void syncWithPool() {
+    if (_ceo != null) {
+      _ceo = poolAndProspects.firstWhere((p) => p.id == _ceo!.id,
+          orElse: () => _ceo!);
+    }
+    if (_president != null) {
+      _president = poolAndProspects.firstWhere((p) => p.id == _president!.id,
+          orElse: () => _president!);
+    }
+  }
 }

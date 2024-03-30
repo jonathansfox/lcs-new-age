@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:lcs_new_age/basemode/activities.dart';
 import 'package:lcs_new_age/common_display/common_display.dart';
@@ -29,22 +30,17 @@ part 'dating.g.dart';
 
 @JsonSerializable()
 class DatingSession {
-  DatingSession(this.lcsMember, this.city);
+  DatingSession(this.lcsMemberId, this.city);
   factory DatingSession.fromJson(Map<String, dynamic> json) =>
       _$DatingSessionFromJson(json);
   Map<String, dynamic> toJson() => _$DatingSessionToJson(this);
 
-  Map<String, dynamic> toJSON() {
-    return {
-      'dates': dates.map((c) => c.id).toList(),
-      'lcsMember': lcsMember.id,
-      'city': city.id,
-      'timeLeft': timeLeft,
-    };
-  }
-
   List<Creature> dates = [];
-  Creature lcsMember;
+  @JsonKey(defaultValue: 0)
+  int lcsMemberId;
+  @JsonKey(includeToJson: false, disallowNullValue: false)
+  Creature? get lcsMember => pool.firstWhereOrNull((e) => e.id == lcsMemberId);
+  set lcsMember(Creature? c) => lcsMemberId = c?.id ?? lcsMemberId;
   City city;
   int timeLeft = 0;
 }
@@ -52,18 +48,17 @@ class DatingSession {
 Future<void> doDates() async {
   for (int d = datingSessions.length - 1; d >= 0; d--) {
     DatingSession date = datingSessions[d];
-    Creature p = date.lcsMember;
+    Creature p = date.lcsMember!;
     // Stand up dates if 1) dater does not exist, or
     // 2) dater was not able to return to a safehouse today (and is not in the hospital)
-    if (p.site != null &&
+    if (date.timeLeft > 0 ||
         (p.site?.controller == SiteController.lcs ||
             p.site?.type == SiteType.universityHospital ||
-            p.site?.type == SiteType.clinic) &&
-        (p.site?.city == date.city || date.timeLeft > 0)) {
+            p.site?.type == SiteType.clinic && p.site?.city == date.city)) {
       //VACATION
       if (date.timeLeft > 0) {
         p.vacationDaysLeft = --date.timeLeft;
-        if (date.timeLeft == 0) {
+        if (date.timeLeft <= 0) {
           Site? hs = findSiteInSameCity(date.city, SiteType.homelessEncampment);
           if (p.base?.siege.underSiege == false) p.base = hs;
           p.location = p.base;

@@ -263,6 +263,7 @@ Future<void> presidentialElection() async {
         politics.fillCabinetPost(e);
       }
     }
+    uniqueCreatures.newPresident();
   }
 }
 

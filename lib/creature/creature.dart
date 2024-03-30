@@ -565,7 +565,7 @@ class Creature {
   @JsonKey(includeFromJson: false, includeToJson: false)
   int get scheduldeDates {
     return datingSessions
-        .where((m) => m.lcsMember.id == id)
+        .where((m) => m.lcsMember?.id == id)
         .fold(0, (previousValue, element) => element.dates.length);
   }
 

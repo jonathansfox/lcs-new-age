@@ -148,6 +148,9 @@ enum SiteAlienation {
 
 GameState gameState = GameState();
 List<Creature> get pool => gameState.lcs.pool;
+Iterable<Creature> get poolAndProspects => pool
+    .followedBy(datingSessions.expand((d) => d.dates))
+    .followedBy(recruitmentSessions.map((r) => r.recruit));
 List<Site> get sites => gameState.sites;
 Iterable<Location> get allLocations =>
     Iterable.castFrom<Site, Location>(gameState.sites)

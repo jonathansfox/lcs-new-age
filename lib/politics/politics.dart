@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:lcs_new_age/creature/gender.dart';
 import 'package:lcs_new_age/creature/name.dart';
+import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
 import 'package:lcs_new_age/politics/laws.dart';
 import 'package:lcs_new_age/politics/views.dart';
@@ -105,6 +106,7 @@ class Politics {
         .contains(exec[Exec.president])) {
       presidentParty = PoliticalParty.democrat;
     }
+    uniqueCreatures.newPresident();
   }
 
   void fillCabinetPost(Exec position) {

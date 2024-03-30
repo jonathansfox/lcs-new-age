@@ -182,13 +182,12 @@ Future<bool> loadGameFromSave(SaveFile selectedSave) async {
   if (selectedSave.gameState == null) {
     debugPrint("Generating crash report from ${selectedSave.version}");
     gameState = GameState.fromJson(selectedSave.saveData);
-    return true;
   } else {
     debugPrint("Loading game from ${selectedSave.version}");
     gameState = selectedSave.gameState!;
-    applyBugFixes(selectedSave.version);
-    return true;
   }
+  applyBugFixes(selectedSave.version);
+  return true;
 }
 
 Future<void> deleteSave(SaveFile selectedSave) async {
@@ -344,6 +343,7 @@ int compareVersionStrings(String a, String b) {
 }
 
 void applyBugFixes(String version) {
+  gameState.uniqueCreatures.syncWithPool();
   if (compareVersionStrings(version, "1.0.5") < 0) {
     // Fix for the bug where CCS safehouses don't get marked as such if you
     // play in "We Didn't Start The Fire" mode

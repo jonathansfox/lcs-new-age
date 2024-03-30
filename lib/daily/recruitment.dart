@@ -11,6 +11,7 @@ import 'package:lcs_new_age/gamestate/ledger.dart';
 import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
 import 'package:lcs_new_age/politics/laws.dart';
+import 'package:lcs_new_age/politics/politics.dart';
 import 'package:lcs_new_age/politics/views.dart';
 import 'package:lcs_new_age/utils/colors.dart';
 import 'package:lcs_new_age/utils/interface_options.dart';
@@ -388,11 +389,18 @@ Future<void> sleeperizePrompt(
       converted.site?.hidden = false;
       converted.base = converted.site;
       liberalize(converted);
+      if (converted == uniqueCreatures.president) {
+        politics.exec[Exec.president] = DeepAlignment.eliteLiberal;
+      }
       break;
     } else if ((isBackKey(c)) && !selection) {
       converted.location = recruiter.location;
       converted.base = recruiter.base;
       liberalize(converted);
+      if (converted == uniqueCreatures.ceo) uniqueCreatures.newCEO();
+      if (converted == uniqueCreatures.president) {
+        politics.promoteVP();
+      }
       break;
     } else if (isPageUp(c) ||
         c == Key.upArrow ||
