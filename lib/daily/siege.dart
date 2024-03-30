@@ -1175,7 +1175,7 @@ Future<void> sallyForthPart2(Site loc) async {
       if (p.location == activeSafehouse &&
           p.alive &&
           p.align == Alignment.liberal) {
-        squads.last.members[i] = p;
+        squads.last.members.add(p);
         p.squadId = squads.last.id;
         if (++i >= 6) break;
       }
