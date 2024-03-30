@@ -123,8 +123,12 @@ Future<void> planSiteVisit() async {
       if (area == squadLocation?.city) {
         aSquad.activity = Activity.none();
         break;
-      } else {
+      } else if (area is City) {
+        area = null;
+      } else if (area == null) {
         area = squadLocation?.city;
+      } else {
+        area = area.city;
       }
     }
   }
