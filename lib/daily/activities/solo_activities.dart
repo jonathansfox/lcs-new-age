@@ -62,6 +62,10 @@ Future<void> soloActivities() async {
     ActivityType type = entry.key;
     List<Creature> people = entry.value;
     switch (type) {
+      case ActivityType.visit:
+        for (Creature p in people) {
+          p.activity = Activity.none();
+        }
       case ActivityType.none:
         for (Creature p in people) {
           await doActivityRepairArmor(p);

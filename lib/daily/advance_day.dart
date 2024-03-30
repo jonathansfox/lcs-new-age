@@ -44,8 +44,8 @@ Future<void> advanceDay() async {
   if (!disbanding) {
     _moveSquadlessToBases();
     await _tendHostages();
-    await soloActivities();
     await _advanceSquads();
+    await soloActivities();
   }
   if (!disbanding) await _dailyHealing();
   await dispersalCheck();
@@ -139,7 +139,7 @@ Future<void> _advanceSquads() async {
       }
       s.activity = Activity(ActivityType.none);
       for (Creature c in s.members) {
-        c.activity = Activity(ActivityType.none);
+        c.activity = Activity(ActivityType.visit);
       }
     }
   }
