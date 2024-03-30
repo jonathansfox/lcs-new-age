@@ -89,7 +89,9 @@ void _giveAttributes(Creature creature, CreatureType type) {
 
 void _giveEquipment(Creature creature, CreatureType type) {
   ArmorType? armorType = type.randomArmor;
-  if (armorType != null) creature.equippedArmor = Armor(armorType.idName);
+  if (armorType != null && armorType.idName != "ARMOR_NONE") {
+    creature.equippedArmor = Armor(armorType.idName);
+  }
   type.randomWeaponFor(creature);
   creature.money = type.money.roll();
 }
