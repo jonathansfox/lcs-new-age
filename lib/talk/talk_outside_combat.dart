@@ -254,7 +254,7 @@ Future<bool> heyIWantToRentARoom(Creature a, Creature tk) async {
           addstr(".");
 
           await getKey();
-          clearMessageArea();
+          clearSceneAreas();
         }
         mvaddstr(9, 1, "${a.name} says, ");
         mvaddstrc(10, 1, lightGreen,
