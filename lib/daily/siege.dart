@@ -314,7 +314,7 @@ Future<void> siegeCheck() async {
     }
 
     //CONSERVATIVE CRIME SQUAD
-    if (ccsState.index >= CCSStrength.sieges.index) {
+    if (ccsActive && ccsState.index >= CCSStrength.sieges.index) {
       if (l.heat > l.heatProtection &&
           l.siege.timeuntilccs == -1 &&
           !l.siege.underSiege &&
