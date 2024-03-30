@@ -576,7 +576,7 @@ Future<void> reviewMode(ReviewMode mode) async {
               cleanGoneSquads();
 
               pool.remove(tempp);
-              break;
+              return reviewMode(mode);
             }
           } else if (c == Key.k &&
               tempp.isActiveLiberal &&
