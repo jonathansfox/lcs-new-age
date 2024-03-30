@@ -46,7 +46,7 @@ enum SiteType {
   armyBase("Army Base", "Army Base"),
   bank("Bank", "First American Bank"),
   liberalPartyHQ("Lib. HQ", "Liberal Party HQ"),
-  whiteHouse("Pres House", "White House"),
+  whiteHouse("WhiteHouse", "White House"),
   // districts
   downtown("Downtown", "Downtown"),
   commercialDistrict("Commercial", "Commercial District"),
