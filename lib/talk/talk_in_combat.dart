@@ -549,7 +549,7 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
       }
     }
 
-    for (Creature squaddie in squad) {
+    for (Creature squaddie in squad.toList()) {
       squaddie.wantedForCrimes[Crime.theft] =
           (squaddie.wantedForCrimes[Crime.theft] ?? 0) + stolen;
       await captureCreature(squaddie);
