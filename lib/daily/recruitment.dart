@@ -217,7 +217,7 @@ Future<bool> completeRecruitMeeting(RecruitmentSession r, Creature p) async {
   while (true) {
     int c = await getKey();
 
-    if (c == Key.c && p.subordinatesLeft >= 0 && r.eagerness >= 4) {
+    if (c == Key.c && p.subordinatesLeft > 0 && r.eagerness >= 4) {
       move(y, 0);
       addstr(p.name);
       addstr(" offers to let ");
