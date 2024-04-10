@@ -298,7 +298,7 @@ Future<void> characterCreationQuestions(Creature founder, bool choose) async {
       }),
       _Option("I let people pay me for sex.  I needed the money to survive.",
           "+2 Seduction, +1 Street Smarts, +1 Heart", () {
-        founder.adjustSkill(Skill.persuasion, 1);
+        founder.adjustSkill(Skill.seduction, 2);
         founder.adjustSkill(Skill.streetSmarts, 1);
         founder.adjustAttribute(Attribute.heart, 1);
       }),
