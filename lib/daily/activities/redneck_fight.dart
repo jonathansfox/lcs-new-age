@@ -19,7 +19,7 @@ Future<void> redneckFight(Creature cr) async {
     wonfight = true;
   } else {
     for (int count = 0; count <= lcsRandom(5) + 2; count++) {
-      if (cr.skillRoll(Skill.martialArts) > lcsRandom(6) + count) {
+      if (cr.skillRoll(Skill.martialArts) > 16 + count) {
         await showMessage(
             "${cr.name} ${[
               "breaks the arm of the nearest person!",
