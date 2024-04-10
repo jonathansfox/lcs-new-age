@@ -425,10 +425,10 @@ Future<void> reviewMode(ReviewMode mode) async {
     if (c >= Key.a && c <= Key.s) {
       int p = page * 19 + (c - Key.a);
       if (p < temppool.length) {
-        Creature tempp = temppool[p];
         int page = 0;
         //const int pagenum=2;
         while (true) {
+          Creature tempp = temppool[p];
           erase();
 
           move(0, 0);
