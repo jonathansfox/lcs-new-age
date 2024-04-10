@@ -21,7 +21,10 @@ part 'recruitment.g.dart';
 
 @JsonSerializable()
 class RecruitmentSession {
-  RecruitmentSession(this.recruit, this.recruiter) {
+  RecruitmentSession(this.recruit, [Creature? recruiter]) {
+    if (recruiter != null) {
+      this.recruiter = recruiter;
+    }
     if (lcsRandom(100) < publicOpinion[View.lcsKnown]!) {
       double bonus = politics.publicMood();
       double rollSize = 100 - bonus;
@@ -44,8 +47,12 @@ class RecruitmentSession {
   Map<String, dynamic> toJson() => _$RecruitmentSessionToJson(this);
 
   Creature recruit;
-  @JsonCreatureReferenceById()
-  Creature recruiter;
+  int? _recruiterId;
+  @JsonKey(name: "recruiter")
+  int get recruiterId => _recruiterId ?? recruiter.id;
+  set recruiterId(int id) => _recruiterId = id;
+  @JsonKey(includeToJson: false, includeFromJson: false)
+  late Creature recruiter;
 
   int rawEagerness = 0;
   @JsonKey(includeToJson: false, includeFromJson: false)

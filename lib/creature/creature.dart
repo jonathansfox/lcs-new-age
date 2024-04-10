@@ -680,17 +680,3 @@ class Creature {
     }
   }
 }
-
-class JsonCreatureReferenceById implements JsonConverter<Creature, int> {
-  const JsonCreatureReferenceById();
-
-  @override
-  Creature fromJson(int json) {
-    return pool.firstWhere((element) => element.id == json);
-  }
-
-  @override
-  int toJson(Creature object) {
-    return object.id;
-  }
-}

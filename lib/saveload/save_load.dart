@@ -6,6 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:file_saver/file_saver.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:lcs_new_age/common_display/common_display.dart';
+import 'package:lcs_new_age/daily/recruitment.dart';
 import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/gamestate/time.dart';
@@ -344,6 +345,11 @@ int compareVersionStrings(String a, String b) {
 
 void applyBugFixes(String version) {
   gameState.uniqueCreatures.syncWithPool();
+  for (RecruitmentSession recruitmentSession in gameState.recruitmentSessions) {
+    recruitmentSession.recruiter = pool.firstWhere(
+        (p) => p.id == recruitmentSession.recruiterId,
+        orElse: () => pool[0]);
+  }
   if (compareVersionStrings(version, "1.0.5") < 0) {
     // Fix for the bug where CCS safehouses don't get marked as such if you
     // play in "We Didn't Start The Fire" mode
