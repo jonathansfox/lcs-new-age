@@ -94,6 +94,8 @@ Future<void> doActivityTeach(List<Creature> teachers) async {
         if (p.skill(skill) < teacher.skill(skill) &&
             p.skill(skill) < p.skillCap(skill)) {
           workload++;
+        } else {
+          continue;
         }
         // Teach based on teacher's skill in the topic plus skill in teaching, minus
         // student's skill in the topic
