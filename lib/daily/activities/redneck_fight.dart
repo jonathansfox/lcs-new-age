@@ -3,6 +3,7 @@ import 'package:lcs_new_age/common_actions/common_actions.dart';
 import 'package:lcs_new_age/common_display/common_display.dart';
 import 'package:lcs_new_age/creature/body.dart';
 import 'package:lcs_new_age/creature/creature.dart';
+import 'package:lcs_new_age/creature/difficulty.dart';
 import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/utils/colors.dart';
@@ -19,7 +20,7 @@ Future<void> redneckFight(Creature cr) async {
     wonfight = true;
   } else {
     for (int count = 0; count <= lcsRandom(5) + 2; count++) {
-      if (cr.skillRoll(Skill.martialArts) > 16 + count) {
+      if (cr.skillRoll(Skill.martialArts) > Difficulty.hard + count) {
         await showMessage(
             "${cr.name} ${[
               "breaks the arm of the nearest person!",
@@ -56,7 +57,7 @@ Future<void> redneckFight(Creature cr) async {
           "${cr.name} beat the ${noProfanity ? "[tar]" : "shit"} out of everyone who got close!",
           color: lightGreen);
       addjuice(cr, 30, 300);
-      if (cr.blood > 70) cr.blood = 70;
+      if (cr.blood > cr.maxBlood * 0.7) cr.blood = (cr.maxBlood * 0.7).round();
     }
   }
 
