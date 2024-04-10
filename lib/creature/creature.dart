@@ -216,6 +216,7 @@ class Creature {
   @JsonKey(includeFromJson: false, includeToJson: false)
   bool get isLiberal => align == Alignment.liberal;
 
+  @JsonKey(includeFromJson: true, includeToJson: true, defaultValue: 1)
   double _blood = 1;
   @JsonKey(includeFromJson: false, includeToJson: false)
   int get blood => (_blood * maxBlood).round().clamp(0, maxBlood);
