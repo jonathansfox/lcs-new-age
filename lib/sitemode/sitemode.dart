@@ -49,6 +49,7 @@ Future<void> siteMode(Site loc) async {
   siteOnFire = false;
   siteAlienated = SiteAlienation.none;
   siteCrime = 0;
+  encounter.clear();
   await initsite(loc);
   mode = GameMode.site;
 
@@ -167,6 +168,8 @@ Future<void> siteMode(Site loc) async {
   }
 
   await _siteModeAux();
+
+  encounter.clear();
 }
 
 Future<void> _siteModeAux() async {
