@@ -23,6 +23,8 @@ import 'package:lcs_new_age/location/location_type.dart';
 import 'package:lcs_new_age/location/siege.dart';
 import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/monthly/advance_month.dart';
+import 'package:lcs_new_age/saveload/save_load.dart';
+import 'package:lcs_new_age/title_screen/game_over.dart';
 import 'package:lcs_new_age/utils/colors.dart';
 
 Future<bool> baseMode() async {
@@ -154,6 +156,9 @@ Future<bool> baseMode() async {
         await updateTheSlogan();
       case Key.num0:
         activeSquadMember = null;
+      case Key.x:
+        await autoSaveGame();
+        endGame();
       default:
         if (activeSquad != null) {
           int squadIndex = c - Key.num1;
@@ -381,6 +386,7 @@ void baseModeOptionsDisplay(Site? loc) {
     }
   }
   mvaddstrc(22, 40, lightGray, "S - Free Speech: the Liberal Slogan");
+  mvaddstrc(23, 40, lightGray, "X - Live to fight evil another day");
 
   if (loc?.hasFlag ?? false) {
     setColorConditional(sieged, ifTrue: lightGreen, ifFalse: lightGray);
