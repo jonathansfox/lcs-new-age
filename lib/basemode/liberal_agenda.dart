@@ -47,10 +47,10 @@ Future<bool> liberalAgenda([AgendaVibe vibe = AgendaVibe.ongoing]) async {
       _alignmentKey(23);
     }
     int c = await getKey();
-    if (isPageUp(c)) {
+    if (isPageUp(c) || c == Key.leftArrow) {
       page = AgendaPage
           .values[(page.index - 1).clamp(0, AgendaPage.values.length - 1)];
-    } else if (isPageDown(c)) {
+    } else if (isPageDown(c) || c == Key.rightArrow) {
       page = AgendaPage
           .values[(page.index + 1).clamp(0, AgendaPage.values.length - 1)];
     } else if (c == Key.l && vibe != AgendaVibe.ongoing) {
