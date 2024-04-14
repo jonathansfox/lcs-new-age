@@ -553,7 +553,7 @@ Future<DateResult> dateResult(int aroll, int troll, DatingSession d, Creature e,
 
       move(y++, 0);
       addstr("But ${p.name} is already dating ");
-      int numRelationships = p.relationshipsLeft - p.maxRelationships;
+      int numRelationships = p.maxRelationships - p.relationshipsLeft;
       if (numRelationships == 1) {
         addstr("someone.");
       } else {
