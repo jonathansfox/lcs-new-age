@@ -737,7 +737,7 @@ Future<void> reviewMode(ReviewMode mode) async {
 Future<void> assembleSquad(Squad? cursquad) async {
   Site? culloc;
   int p;
-  if (cursquad != null) culloc = squads[0].site;
+  if (cursquad != null) culloc = cursquad.site;
 
   bool newsquad = false;
   if (cursquad == null) {
