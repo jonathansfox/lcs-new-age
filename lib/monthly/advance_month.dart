@@ -416,8 +416,12 @@ Future<void> advanceMonth() async {
         p.permanentHealthDamage += healthdamage;
       }
 
-      if (p.blood <= 20 && p.clinicMonthsLeft <= 2) p.blood = 50;
-      if (p.blood <= 50 && p.clinicMonthsLeft <= 1) p.blood = 75;
+      if (p.blood <= p.maxBlood * 0.5 && p.clinicMonthsLeft <= 2) {
+        p.blood = (p.maxBlood * 0.5).floor();
+      }
+      if (p.blood <= p.maxBlood * 0.75 && p.clinicMonthsLeft <= 1) {
+        p.blood = (p.maxBlood * 0.75).floor();
+      }
 
       // If at clinic and in critical condition, transfer to university hospital
       if (p.clinicMonthsLeft > 2 && p.site?.type == SiteType.clinic) {
@@ -436,7 +440,7 @@ Future<void> advanceMonth() async {
 
       // End treatment
       if (p.clinicMonthsLeft == 0) {
-        p.blood = 100;
+        p.blood = p.maxBlood;
         await showMessage("${p.name} has left the ${p.site!.name}.");
 
         Site? hs =
