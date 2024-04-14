@@ -469,7 +469,11 @@ Future<void> siegeCheck() async {
     }
 
     //HICKS
-    if (!l.siege.underSiege && offendedHicks && oneIn(120) && numpres > 0) {
+    if (l.heat > l.heatProtection &&
+        !l.siege.underSiege &&
+        offendedHicks &&
+        oneIn(120) &&
+        numpres > 0) {
       erase();
       mvaddstrc(8, 1, white,
           "Masses dissatisfied with your lack of respect for right-wing media");
