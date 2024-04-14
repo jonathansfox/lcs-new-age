@@ -1862,7 +1862,7 @@ Future<void> _fightSubdued() async {
       stolen++;
     }
   }
-  for (Creature c in squad) {
+  for (Creature c in squad.toList()) {
     c.wantedForCrimes.update(Crime.theft, (value) => value + stolen);
     await captureCreature(c);
   }

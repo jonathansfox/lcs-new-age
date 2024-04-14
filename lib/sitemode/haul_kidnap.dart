@@ -333,7 +333,7 @@ Future<void> squadHaulImmobileAllies(bool dead) async {
 
   while (true) {
     bool removed = false;
-    for (Creature p in squad) {
+    for (Creature p in squad.toList()) {
       if ((!p.alive && dead) ||
           (p.alive && !p.hasWheelchair && !p.canWalk && !dead)) {
         if (hostslots == 0 || p.body.fellApart) {

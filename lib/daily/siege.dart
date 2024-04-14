@@ -1261,7 +1261,7 @@ Future<void> escapeOrEngage() async {
     if (squads[sq] != activeSquad && squads[sq].members.isNotEmpty) {
       if (squads[sq].members.first.location == loc) {
         if (activeSquad != null) {
-          for (Creature p in activeSquad!.members) {
+          for (Creature p in activeSquad!.members.toList()) {
             p.squad = null;
           }
           squads.removeAt(sq);

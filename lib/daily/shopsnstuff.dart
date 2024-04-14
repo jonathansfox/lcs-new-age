@@ -63,7 +63,7 @@ Future<void> hospital(Site loc) async {
     }
 
     if (c == Key.f) {
-      for (Creature p in squad) {
+      for (Creature p in squad.toList()) {
         await hospitalize(loc, p);
       }
       break;
