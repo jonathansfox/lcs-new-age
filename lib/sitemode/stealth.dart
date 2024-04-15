@@ -16,22 +16,22 @@ import 'package:lcs_new_age/utils/lcsrandom.dart';
 
 /* checks if your liberal activity is noticed */
 Future<void> noticeCheck(
-    {int difficulty = Difficulty.easy, Creature? exclude}) async {
+    {int difficulty = Difficulty.average, Creature? exclude}) async {
   if (siteAlarm) return;
 
   int sneak = -1;
 
   Creature? sneaker;
   for (Creature p in activeSquad!.livingMembers) {
-    if (p.skill(Skill.stealth) > sneak) {
-      sneak = p.skill(Skill.stealth);
+    if (sneaker == null || p.skillRoll(Skill.stealth, take10: true) < sneak) {
+      sneak = p.skillRoll(Skill.stealth, take10: true);
       sneaker = p;
     }
   }
   if (sneaker == null) return;
   for (Creature e in encounter) {
     //Prisoners shouldn't shout for help.
-    if (e.name != "Prisoner" ||
+    if (e.name == "Prisoner" ||
         e == exclude ||
         sneaker.skillCheck(Skill.stealth, difficulty)) {
       continue;
