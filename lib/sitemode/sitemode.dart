@@ -595,7 +595,7 @@ Future<void> _siteModeAux() async {
         if (currentTile.special != TileSpecial.none) {
           await useTileSpecial();
         } else if (!(currentTile.graffitiLCS || currentTile.megaBloody) &&
-            currentTile.neighbors().any((t) => !t.wall)) {
+            currentTile.neighbors().any((t) => t.wall)) {
           if (activeSquad!.livingMembers
               .any((c) => c.weapon.type.canGraffiti)) {
             await specialGraffiti();
