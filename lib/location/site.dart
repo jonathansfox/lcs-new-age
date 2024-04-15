@@ -282,7 +282,7 @@ void initSiteName(Site loc) {
       }
     case SiteType.warehouse:
       do {
-        loc.name = "Abandoned ";
+        loc.name = ["Abandoned ", "Forgotten ", "Old ", "Haunted "].random;
         switch (lcsRandom(10)) {
           case 0:
             loc.name += "Meat Plant";
@@ -294,26 +294,53 @@ void initSiteName(Site loc) {
             loc.name += "Paper Mill";
             loc.shortName = "Paper Mill";
           case 3:
-            loc.name += "Cement Factory";
-            loc.shortName = "Cement";
+            loc.name += "Schoolhouse";
+            loc.shortName = "School";
           case 4:
-            loc.name += "Fertilizer Plant";
-            loc.shortName = "Fertilizer";
+            loc.name += "Motel";
+            loc.shortName = "Old Motel";
           case 5:
-            loc.name += "Drill Factory";
-            loc.shortName = "Drill";
+            loc.name += "Bus Garage";
+            loc.shortName = "Bus Garage";
           case 6:
             loc.name += "Steel Plant";
-            loc.shortName = "Steel";
+            loc.shortName = "Steel Plant";
           case 7:
-            loc.name += "Packing Plant";
-            loc.shortName = "Packing";
+            loc.name += "Church";
+            loc.shortName = "Old Church";
           case 8:
             loc.name += "Toy Factory";
-            loc.shortName = "Toy";
+            loc.shortName = "Toymakers";
           case 9:
-            loc.name += "Building Site";
-            loc.shortName = "Building";
+            loc.name += "Train Station";
+            loc.shortName = "Station";
+          case 10:
+            loc.name += "Auto Plant";
+            loc.shortName = "Auto Plant";
+          case 11:
+            loc.name += "Textile Mill";
+            loc.shortName = "Textile Mill";
+          case 12:
+            loc.name += "Cannery";
+            loc.shortName = "Cannery";
+          case 13:
+            loc.name += "Office Building";
+            loc.shortName = "Offices";
+          case 14:
+            loc.name += "Brewery";
+            loc.shortName = "Brewery";
+          case 15:
+            loc.name += "Clinic";
+            loc.shortName = "Old Clinic";
+          case 16:
+            loc.name += "Library";
+            loc.shortName = "Library";
+          case 17:
+            loc.name += "Museum";
+            loc.shortName = "Museum";
+          case 18:
+            loc.name += "Restaurant";
+            loc.shortName = "Restaurant";
         }
       } while (loc.isDuplicateLocation());
     case SiteType.dirtyIndustry:
