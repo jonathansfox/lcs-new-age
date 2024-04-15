@@ -56,7 +56,12 @@ Future<void> planSiteVisit() async {
         if (thisSite!.heatProtection <= 5) {
           addstrc(lightGreen, " (LCS Temp Shelter)");
         } else {
-          addstrc(lightGreen, " (LCS Safehouse)");
+          if (thisSite.creaturesPresent.isEmpty &&
+              !thisSite.compound.upgraded) {
+            addstrc(lightGreen, " (Potential Safehouse)");
+          } else {
+            addstrc(lightGreen, " (LCS Safehouse)");
+          }
         }
       } else if (thisSite?.controller == SiteController.ccs &&
           (ccscherrybusted || thisSite?.mapped == true)) {
