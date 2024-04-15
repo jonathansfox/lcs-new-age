@@ -19,4 +19,15 @@ class Compound {
   bool cameras = false;
   int diesel = 0;
   int rations = 0;
+
+  bool get upgraded =>
+      fortified ||
+      videoRoom ||
+      hackerDen ||
+      boobyTraps ||
+      aaGun ||
+      bollards ||
+      generator ||
+      solarPanels ||
+      cameras;
 }
