@@ -838,7 +838,7 @@ Future<void> siegeDefeat() async {
   Site? loc = activeSafehouse ?? activeSquad?.members.firstOrNull?.base;
   if (loc == null) return;
 
-  if (loc.controller == SiteController.lcs) {
+  if (loc.controller == SiteController.lcs && loc.rent > 1) {
     loc.controller = SiteController.unaligned;
   }
 
