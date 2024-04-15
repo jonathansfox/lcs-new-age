@@ -66,6 +66,8 @@ class CursesMovie {
     bool pted;
     List<CursesMovieFrame> lastFramesPainted = [];
 
+    eraseArea(startY: y, startX: x, endY: y + movie.dimy, endX: x + movie.dimx);
+
     Stopwatch sw = Stopwatch()..start();
     do {
       pted = false;
