@@ -311,7 +311,7 @@ void locHeader([Site? loc]) {
     if (activeSquad == null) addstr("No Squad Selected, ");
     addstr("${loc.getName(includeCity: true)}, ");
   }
-  addstr("${getMonth(month)} $day, $year");
+  addstr("${getMonthShort(month)} $day, $year");
   if (loc == null) {
     mvaddstrc(3, 6, darkGray, "To form a new squad:");
     mvaddstr(4, 6, "1) R - Review Assets and Form Squads");
