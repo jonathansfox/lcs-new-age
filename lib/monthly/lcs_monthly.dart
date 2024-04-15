@@ -399,8 +399,8 @@ Future<void> printNews(LootType li, int publishers) async {
         "Be on guard for retaliation.  This guy is still rich as fuck...");
   } else if (li.idName == "LOOT_CEOLOVELETTERS") {
     mvaddstr(6, 1,
-        "The Liberal Guardian runs a story featuring salacious love letters from a major CEO");
-    move(7, 1);
+        "The Liberal Guardian runs a story featuring salacious love letters from a");
+    mvaddstr(7, 1, "major CEO ");
     changePublicOpinion(View.lcsKnown, 10);
     changePublicOpinion(View.lcsLiked, 10);
     switch (lcsRandom(8)) {
