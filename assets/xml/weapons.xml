@@ -1070,7 +1070,7 @@
         <shortname_future>Holopaint</shortname_future>
         <graffiti>true</graffiti>
         <fencevalue>2</fencevalue>
-        <suspicious>false</suspicious>
+        <suspicious>true</suspicious>
         <size>5</size>
         <attack>
             <priority>1</priority>
