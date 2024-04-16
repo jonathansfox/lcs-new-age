@@ -10,7 +10,7 @@ import 'package:lcs_new_age/title_screen/new_game.dart';
 import 'package:lcs_new_age/title_screen/world.dart';
 import 'package:lcs_new_age/utils/colors.dart';
 
-const String gameVersion = "1.1.0";
+const String gameVersion = "1.1.1";
 bool megaFounderCheat = false;
 
 Future<void> titleScreen() async {
