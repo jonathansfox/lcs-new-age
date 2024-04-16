@@ -853,7 +853,7 @@
             <attack_description>lunges at</attack_description>
             <hit_description>stabbing</hit_description>
             <strength_min>1</strength_min>
-            <strength_max>6</strength_max>
+            <strength_max>4</strength_max>
             <skill>KNIFE</skill>
             <random_damage>61</random_damage>
             <fixed_damage>10</fixed_damage>
