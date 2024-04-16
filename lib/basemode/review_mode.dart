@@ -839,7 +839,7 @@ Future<void> assembleSquad(Squad? cursquad) async {
       setColor(darkGray);
     }
     move(24, 40);
-    addstr("9 - Dissolve the squads.");
+    addstr("9 - Dissolve the squad.");
 
     int c = await getKey();
 
@@ -915,7 +915,7 @@ Future<void> assembleSquad(Squad? cursquad) async {
       break;
     }
     if (c == '9'.codePoint) {
-      for (int p = 0; p < cursquad.members.length; p++) {
+      for (int p = cursquad.members.length - 1; p >= 0; p--) {
         cursquad.members[p].squad = null;
       }
     }
