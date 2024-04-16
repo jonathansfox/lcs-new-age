@@ -150,7 +150,9 @@ Future<String> mvgetstr(int y, int x, {String? starting}) async {
   mvaddstr(y, x, "$s▂");
   while (true) {
     String c = await getKeyCaseSensitive();
-    if (isBackKey(c.codePoint) && c.codePoint != Key.space) {
+    if (isBackKey(c.codePoint) &&
+        c.codePoint != Key.space &&
+        c.codePoint != Key.x) {
       return s;
     } else if (c.codePoint == Key.backspace) {
       if (s.isNotEmpty) {
