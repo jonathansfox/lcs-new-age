@@ -146,11 +146,15 @@ Future<UnlockResult> bash(BashTypes type) async {
       }
   }
 
+  Creature? maxp;
   if (crowable) {
     crowable = false;
 
     for (Creature p in squad) {
-      if (p.weapon.type.autoBreakLock) crowable = true;
+      if (p.weapon.type.autoBreakLock) {
+        crowable = true;
+        maxp = p;
+      }
     }
 
     if (!crowable) //didn't find in hands of any squad member
@@ -160,6 +164,7 @@ Future<UnlockResult> bash(BashTypes type) async {
           Weapon w = activeSquad!.loot[l] as Weapon;
           if (w.type.autoBreakLock) {
             crowable = true;
+            maxp = activeSquad!.livingMembers.first;
           }
         }
       }
@@ -167,7 +172,6 @@ Future<UnlockResult> bash(BashTypes type) async {
   }
 
   int maxattack = 0;
-  Creature? maxp;
 
   if (!crowable) {
     for (Creature p in activeSquad!.livingMembers) {
