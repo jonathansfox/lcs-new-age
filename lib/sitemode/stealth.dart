@@ -683,6 +683,7 @@ DisguiseQuality disguiseQuality(Creature cr) {
           "ARMOR_EXPENSIVESUIT",
           "ARMOR_EXPENSIVEDRESS",
           "ARMOR_SECURITYUNIFORM",
+          "ARMOR_SERVANTUNIFORM",
         ].contains(cr.armor.type.idName)) {
           uniformed = DisguiseQuality.inconspicuous;
         }
