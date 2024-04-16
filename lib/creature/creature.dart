@@ -427,7 +427,28 @@ class Creature {
       roll -= (maxBlood - blood) * 4 ~/ maxBlood;
       roll += body.combatRollModifier;
     }
-    return roll + attMod + skillMod;
+    roll = roll + attMod + skillMod;
+    if (skill == Skill.stealth) {
+      roll = stealthMod(roll);
+    }
+    return roll;
+  }
+
+  int stealthMod(int value) {
+    double stealth = armor.type.stealthValue.toDouble();
+    for (int i = 1; i < armor.quality; i++) {
+      stealth *= 0.8;
+    }
+    if (armor.damaged) {
+      stealth *= 0.5;
+    }
+
+    value = ((value * stealth) / 2).round();
+    // Shredded clothes get you no stealth.
+    if (armor.quality > armor.type.qualityLevels) {
+      value = 0;
+    }
+    return value;
   }
 
   bool skillCheck(Skill skill, int difficulty,
