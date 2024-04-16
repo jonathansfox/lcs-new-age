@@ -391,14 +391,14 @@ class ConfigSiteScript extends ConfigSiteCommand {
     // Look through bottom level for secure and unsecure tiles.
     for (int xi = xstart; xi <= xend; xi++) {
       for (int yi = ystart; yi <= yend; yi++) {
-        if (!(levelMap[xi][yi][0].flag &
+        if (!(levelMap[xi][yi][zstart].flag &
                     (SITEBLOCK_DOOR |
                         SITEBLOCK_BLOCK |
                         SITEBLOCK_EXIT |
                         SITEBLOCK_OUTDOOR) >
                 0) &&
-            levelMap[xi][yi][0].special == TileSpecial.none) {
-          if (levelMap[xi][yi][0].flag & SITEBLOCK_RESTRICTED > 0) {
+            levelMap[xi][yi][zstart].special == TileSpecial.none) {
+          if (levelMap[xi][yi][zstart].flag & SITEBLOCK_RESTRICTED > 0) {
             secure.add((xi, yi));
           } else {
             unsecure.add((xi, yi));
@@ -606,7 +606,13 @@ class ConfigSiteUnique extends ConfigSiteCommand {
 
     // Place unique
     List<Coordinates> secure = [], unsecure = [];
-    for (SiteTile node in levelMap.all) {
+    for (SiteTile node in levelMap.all.where((node) =>
+        node.x >= xstart &&
+        node.x <= xend &&
+        node.y >= ystart &&
+        node.y <= yend &&
+        node.z >= zstart &&
+        node.z <= zend)) {
       if (node.door || node.wall || node.exit || node.outdoor) continue;
       if (node.special == TileSpecial.none) {
         if (node.restricted) {
