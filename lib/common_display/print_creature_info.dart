@@ -162,7 +162,11 @@ void printTopSkills(int y, int x, Creature cr, int numberToPrint,
     addstr(": ");
     if (knowledge > i + 2) {
       if (levelXP < 100) {
-        addstr("$level.$levelXP");
+        addstr("$level.");
+        if (levelXP < 10) {
+          addstr("0");
+        }
+        addstr(levelXP.toString());
       } else {
         addstr("$level.99+");
       }
