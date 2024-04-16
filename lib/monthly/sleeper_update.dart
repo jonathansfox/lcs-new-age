@@ -272,9 +272,7 @@ Future<void> sleeperSpy(Creature cr, Map<View, int> libpower) async {
     Item it = Loot(itemType);
     homes?.loot.add(it);
     erase();
-    mvaddstr(6, 1, "Sleeper ${cr.name} has leaked $itemType.");
-    addstr(cr.name);
-    addstr(" has leaked $description.");
+    mvaddstr(6, 1, "Sleeper ${cr.name} has leaked $description.");
     mvaddstr(7, 1, "The dead drop is at the homeless camp.");
     await getKey();
   }
