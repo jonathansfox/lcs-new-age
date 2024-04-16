@@ -882,6 +882,7 @@ Future<void> assembleSquad(Squad? cursquad) async {
         if (conf) {
           if (tempp.squadId == cursquad.id) {
             tempp.squad = null;
+            cursquad.members.remove(tempp);
           } else if (partysize < 6) {
             tempp.squad = cursquad;
           }
