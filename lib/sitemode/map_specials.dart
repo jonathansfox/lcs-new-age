@@ -378,7 +378,6 @@ Future<void> specialLabCosmeticsCagedAnimals() async {
   }
 
   if (result != UnlockResult.noAttempt) {
-    await alienationCheck(false);
     await noticeCheck();
     levelMap[locx][locy][locz].special = TileSpecial.none;
   }
@@ -512,9 +511,6 @@ Future<void> specialLabGeneticCagedAnimals() async {
       await encounterMessage(
           "Uh, maybe that idea was Conservative in retrospect...");
       siteAlarm = true;
-      await alienationCheck(true);
-    } else {
-      await alienationCheck(false);
     }
   } else if (result != UnlockResult.noAttempt) {
     await noticeCheck();
@@ -870,7 +866,6 @@ Future<void> specialPolluterEquipment() async {
 Future<void> _vandalizeTile() async {
   delayedSuspicion(20 + lcsRandom(10));
 
-  await alienationCheck(false);
   await noticeCheck(difficulty: Difficulty.heroic);
   levelMap[locx][locy][locz].special = TileSpecial.none;
   levelMap[locx][locy][locz].debris = true;

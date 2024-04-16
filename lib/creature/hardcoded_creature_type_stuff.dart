@@ -157,7 +157,7 @@ void applyHardcodedCreatureTypeStuff(Creature cr, CreatureType type) {
         cr.rawSkill[Skill.martialArts] = lcsRandom(2) + 1;
       }
     case CreatureTypeIds.firefighter:
-      if (noProfanity) {
+      if (fahrenheit451) {
         cr.giveWeaponAndAmmo("WEAPON_FLAMETHROWER", 4);
         cr.reload(false);
         cr.rawSkill[Skill.heavyWeapons] = lcsRandom(3) + 2;
