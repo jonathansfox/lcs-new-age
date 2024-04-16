@@ -1,6 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/services.dart';
 import 'package:lcs_new_age/engine/console_char.dart';
@@ -49,8 +50,8 @@ class Console {
     int endY = CONSOLE_HEIGHT,
     int endX = CONSOLE_WIDTH,
   }) {
-    for (int y = startY; y < endY; y++) {
-      for (int x = startX; x < endX; x++) {
+    for (int y = max(startY, 0); y < min(endY, buffer.length); y++) {
+      for (int x = max(startX, 0); x < min(endX, buffer[y].length); x++) {
         buffer[y][x] = ConsoleChar.blank();
       }
     }
