@@ -49,6 +49,7 @@ Future<void> doActivityTeach(List<Creature> teachers) async {
           Skill.martialArts,
           Skill.dodge,
           Skill.firstAid,
+          Skill.firearms,
         ];
       default:
         continue;
