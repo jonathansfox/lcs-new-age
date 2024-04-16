@@ -95,7 +95,7 @@ Future<void> siegeCheck() async {
       // but let them bleed it off in the process
       if (p.heat > 0) {
         crimes += (p.heat / 10).ceil();
-        p.heat -= min(max(4, p.heat ~/ 30), p.heat);
+        p.heat -= min(max(4, p.heat ~/ 200), p.heat);
       }
     }
 
