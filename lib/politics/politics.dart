@@ -149,7 +149,7 @@ class Politics {
       affectedPower = affectedPower * (100 + moralAuthority) / 100;
       power = rawPower + affectedPower;
     } else if (coloredByCcsOpinions) {
-      power = power * (100 - publicOpinion[View.ccsLiked]! / 100);
+      power = power * (100 - publicOpinion[View.ccsLiked]!) / 100;
     }
     if (view == View.lcsKnown) {
       power = power.clamp(-5, 50);

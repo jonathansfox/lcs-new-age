@@ -858,6 +858,7 @@ Future<bool> obstacledrive(
           await getKey();
           criminalizeparty(Crime.murder);
           addDramaToSiteStory(Drama.killedSomebody);
+          sitestory?.positive = 0;
         }
       }
     case CarChaseObstacles.child:

@@ -471,7 +471,7 @@ Future<void> _siteModeAux() async {
       }
 
       if (havehostage) {
-        await alienationCheck(true);
+        await alienationCheck(false);
         siteCrime += 5;
         criminalizeAll(activeSquad!.livingMembers, Crime.kidnapping);
       }
@@ -1110,7 +1110,6 @@ Future<void> _siteModeAux() async {
           //int maxsleightofhand=0;
           int beststealer = 0;
           juiceparty(1, 50);
-          await alienationCheck(false);
           await noticeCheck();
           siteCrime++;
           addDramaToSiteStory(Drama.stoleSomething);
@@ -1984,8 +1983,6 @@ Future<void> _openDoor(bool restricted) async {
 
             siteAlarm = true;
             await getKey();
-
-            await alienationCheck(false);
           }
         }
 
@@ -2039,7 +2036,6 @@ Future<void> _openDoor(bool restricted) async {
         }
 
         if (result != UnlockResult.noAttempt) {
-          await alienationCheck(true);
           await noticeCheck(difficulty: Difficulty.heroic);
         }
 

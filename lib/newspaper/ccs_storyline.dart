@@ -14,7 +14,7 @@ import 'package:lcs_new_age/utils/lcsrandom.dart';
 NewsStory ccsStrikesStory() {
   return NewsStory.prepare(
       oneIn(10) ? NewsStories.ccsKilledInSiteAction : NewsStories.ccsSiteAction)
-    ..positive = oneIn(4) ? -1 : 1
+    ..positive = 1
     ..loc = sites.where((s) => s.controller != SiteController.ccs).random;
 }
 

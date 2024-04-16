@@ -1198,7 +1198,6 @@ Elements marked as hardcoded may have their values overridden by the game.
         </skills>
         <kidnap_resistant>1</kidnap_resistant>
         <intimidation_resistant>true</intimidation_resistant>
-        <can_perform_arrests>true</can_perform_arrests>
         <edgelord>true</edgelord>
     </creaturetype>
     <creaturetype idname="CREATURE_HICK">
@@ -1308,6 +1307,7 @@ Elements marked as hardcoded may have their values overridden by the game.
         <seethroughdisguise>  5</seethroughdisguise>
         <kidnap_resistant>1</kidnap_resistant>
         <reports_to_police>1</reports_to_police>
+        <can_perform_arrests>true</can_perform_arrests>
     </creaturetype>
     <creaturetype idname="CREATURE_HIPPIE">
         <type_name>Hippie</type_name>

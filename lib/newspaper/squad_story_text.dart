@@ -173,20 +173,17 @@ String squadStoryTextOpening(NewsStory ns, bool liberalguardian, bool ccs) {
         story += "to a spokesperson from the police department.";
         story += "&r";
       } else {
-        story += "A group of thugs calling itself the Liberal Crime Squad ";
+        story +=
+            "A group of terrorists calling itself the Liberal Crime Squad ";
         story += "went on a rampage yesterday, according ";
         story += "to a spokesperson from the police department.";
       }
     } else {
-      if (ns.positive > 0) {
+      if (ns.positive > 0 || liberalguardian) {
         story += "The Liberal Crime Squad has struck again.  ";
         story += "&r";
       } else {
-        if (!liberalguardian) {
-          story += "The Liberal Crime Squad has gone on a rampage.  ";
-        } else {
-          story += "A Liberal Crime Squad operation went horribly wrong.  ";
-        }
+        story += "The Liberal Crime Squad has gone on a rampage.  ";
         story += "&r";
       }
     }
@@ -258,18 +255,13 @@ String squadStoryTextOpening(NewsStory ns, bool liberalguardian, bool ccs) {
         story += "&r";
       }
     } else {
-      if (ns.positive > 0) {
+      if (ns.positive > 0 || liberalguardian) {
         story +=
             "The Liberal Crime Squad has struck again, albeit with a tragic end.  ";
         story += "&r";
       } else {
-        if (!liberalguardian) {
-          story +=
-              "The Liberal Crime Squad has gone on a rampage, and they got what they deserved.  ";
-        } else {
-          story +=
-              "A Liberal Crime Squad operation went horribly wrong, and came to a tragic end.  ";
-        }
+        story +=
+            "The Liberal Crime Squad has gone on a rampage, and they got what they deserved.  ";
         story += "&r";
       }
     }

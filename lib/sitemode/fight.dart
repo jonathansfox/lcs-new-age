@@ -777,12 +777,27 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
 
       if ((hitPart.critical && hitPart.missing) || target.blood <= 0) {
         bool alreadydead = !target.alive;
+        bool alienate = false;
 
         if (!alreadydead) {
           target.die();
 
           int killjuice = 5 + (t.juice / 20).round();
           if ((t.align.index - a.align.index).abs() == 2) {
+            if (t.type.majorEnemy || t.type.tank) {
+              killjuice += 50;
+            }
+            if (activeSite?.siege.underSiege == false &&
+                mode == GameMode.site) {
+              if (!t.type.majorEnemy &&
+                  !t.type.canPerformArrests &&
+                  !t.type.lawEnforcement &&
+                  !t.type.edgelord &&
+                  !t.type.ccsMember &&
+                  !t.type.tank) {
+                killjuice = 0;
+              }
+            }
             addjuice(a, killjuice, 1000); // Instant juice
           } else {
             addjuice(a, -killjuice, -50);
@@ -806,6 +821,12 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
               (!target.type.animal || animalsArePeopleToo) &&
               !sneakAttack) {
             siteCrime += 10;
+            if (t.type.majorEnemy) {
+              siteCrime += 90;
+            }
+            if (mode == GameMode.site && !activeSiteUnderSiege) {
+              alienate = true;
+            }
             addDramaToSiteStory(Drama.killedSomebody);
             if (a.squad == activeSquad) {
               criminalizeparty(Crime.murder);
@@ -822,10 +843,12 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
           clearMessageArea();
           addDeathMessage(target);
 
+          if (alienate) await alienationCheck(true);
+
           printParty();
           printEncounter();
 
-          await getKey();
+          if (!alienate) await getKey();
 
           if (target.prisoner != null) {
             await freehostage(t, FreeHostageMessage.newLine);

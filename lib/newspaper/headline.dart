@@ -95,7 +95,7 @@ int displayStoryHeader(NewsStory ns, bool liberalguardian, View? header) {
         y = 13;
       }
     default:
-      if (ns.positive > 0) {
+      if (ns.positive > 0 || liberalguardian) {
         if (lcscherrybusted || liberalguardian) {
           if (!liberalguardian) {
             if (ns.priority > 250) {
@@ -153,12 +153,8 @@ int displayStoryHeader(NewsStory ns, bool liberalguardian, View? header) {
           displayCenteredNewsFont("SQUAD STRIKES", 13);
         }
       } else {
-        if (lcscherrybusted || liberalguardian) {
-          if (!liberalguardian) {
-            displayCenteredNewsFont("LCS RAMPAGE", 5);
-          } else {
-            displayCenteredNewsFont("LCS SORRY", 5);
-          }
+        if (lcscherrybusted) {
+          displayCenteredNewsFont("LCS RAMPAGE", 5);
           y = 13;
         } else {
           displayCenteredNewsFont("LIBERAL CRIME", 5);

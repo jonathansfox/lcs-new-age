@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:lcs_new_age/basemode/activities.dart';
 import 'package:lcs_new_age/creature/creature.dart';
 import 'package:lcs_new_age/creature/creature_type.dart';
@@ -55,7 +57,7 @@ Future<void> displayNewsStories() async {
       skill = Skill.persuasion;
     }
     if (skill != null) {
-      guardianPower += c.skillRoll(skill);
+      guardianPower += c.skillRoll(skill) - 10;
       c.train(skill, 10);
       if (noProfanity) criminalize(c, Crime.unlawfulSpeech);
     }
@@ -97,9 +99,7 @@ Future<void> displayNewsStories() async {
         n.positive = 0;
       }
       await displayStory(n, liberalguardian, issueFocus);
-      if (n.positive > 0) {
-        n.positive += 1;
-      }
+      n.positive += 1;
     } else {
       await displayStory(n, false, null);
     }
@@ -331,6 +331,19 @@ void handlePublicOpinionImpact(NewsStory ns) {
     changePublicOpinion(issue, impact,
         coloredByLcsOpinions: lcsResponsible,
         coloredByCcsOpinions: ccsResponsible);
+    if (lcsResponsible) {
+      double swayed =
+          publicOpinion[issue]! / 10 - publicOpinion[View.lcsLiked]!;
+      if (swayed > 0) {
+        changePublicOpinion(View.lcsLiked, swayed.round());
+      }
+    } else if (ccsResponsible) {
+      double swayed = (100 - publicOpinion[issue]!) / 10 -
+          (100 - publicOpinion[View.ccsLiked]!);
+      if (swayed > 0) {
+        changePublicOpinion(View.ccsLiked, -swayed.round());
+      }
+    }
   }
 }
 
@@ -476,14 +489,12 @@ void setpriority(NewsStory ns) {
       // priority accordingly
       ns.drama.add(Drama.brokeDownDoor);
       ns.priority = 1;
-      if (ns.positive == 0) {
-        ns.priority += 7;
-      }
       ns.drama.add(Drama.attacked);
       ns.priority += 4 * (lcsRandom(10) + 1);
       if (lcsRandom(ccsState.index + 1) > 0) {
         ns.drama.add(Drama.killedSomebody);
         ns.priority += lcsRandom(10) * 30;
+        ns.positive = 0;
       }
       if (lcsRandom(ccsState.index + 1) > 0) {
         ns.drama.add(Drama.stoleSomething);

@@ -174,7 +174,7 @@ Future<void> kidnapattempt() async {
       bool present = encounter.any((e) => e.alive);
 
       if (present) {
-        await alienationCheck(true);
+        await alienationCheck(false);
         siteAlarm = true;
         siteCrime += 5;
         criminalizeAll(squad, Crime.kidnapping);
@@ -243,7 +243,7 @@ Future<void> releasehostage() async {
     await getKey();
 
     siteAlarm = true;
-    await alienationCheck(true);
+    await alienationCheck(false);
   }
 }
 

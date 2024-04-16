@@ -8,6 +8,7 @@ import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/location/location_type.dart';
 import 'package:lcs_new_age/location/siege.dart';
+import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
 import 'package:lcs_new_age/sitemode/site_display.dart';
 import 'package:lcs_new_age/sitemode/sitemap.dart';
@@ -56,8 +57,10 @@ Future<void> noticeCheck(
 }
 
 /* checks if your liberal behavior/attack alienates anyone */
-Future<bool> alienationCheck(bool mistake) async {
-  if (activeSiteUnderSiege) return false;
+Future<bool> alienationCheck(bool evenIfNoWitnesses) async {
+  if (activeSiteUnderSiege || activeSite?.controller == SiteController.ccs) {
+    return false;
+  }
 
   bool alienate = false;
   bool alienatebig = false;
@@ -71,8 +74,7 @@ Future<bool> alienationCheck(bool mistake) async {
     if (e.name == "Prisoner" || e.type.id == CreatureTypeIds.prisoner) continue;
 
     if (e.alive &&
-        (e.align == Alignment.moderate ||
-            (e.align == Alignment.liberal && mistake))) {
+        (e.align == Alignment.moderate || e.align == Alignment.liberal)) {
       noticer.add(e);
     }
   }
@@ -86,6 +88,8 @@ Future<bool> alienationCheck(bool mistake) async {
       }
       conservatize(n);
     }
+
+    if (evenIfNoWitnesses) alienatebig = true;
 
     if (alienatebig) siteAlienated = SiteAlienation.alienatedEveryone;
     if (alienate && siteAlienated != SiteAlienation.alienatedEveryone) {
