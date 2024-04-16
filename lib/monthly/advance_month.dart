@@ -298,38 +298,34 @@ Future<void> advanceMonth() async {
 
         //Confession check
         if ((lcsRandom(copstrength) > libstrength) && (p.hireId != null)) {
-          bool nullify = false;
+          // p breaks under the pressure and tells the cops everything
           Creature p2 = pool.firstWhere((p2) => p2.id == p.hireId);
-
           if (p2.alive && p2.site?.type != SiteType.prison) {
             //Charge the boss with racketeering!
             criminalize(p2, Crime.racketeering);
             //Rack up testimonies against the boss in court!
             p2.confessions++;
           }
-          if (!nullify) {
-            //Issue a raid on this guy's base!
-            p.base?.heat += 300;
+          //Issue a raid on this guy's base!
+          p.base?.heat += 300;
 
-            erase();
-            mvaddstrc(8, 1, white, p.name);
-            if (p.brainwashed) {
-              addstr(" has reverted to Conservatism in police custody!");
-            } else {
-              addstr(" has broken under the pressure and ratted you out!");
-            }
-
-            await getKey();
-
-            mvaddstrc(9, 1, white,
-                "The traitor will testify in court, and safehouses may be compromised.");
-
-            await getKey();
-            p.squad = null;
-            pool.remove(p);
-            continue; //no trial for this person; skip to next person
+          erase();
+          mvaddstrc(8, 1, white, p.name);
+          if (p.brainwashed) {
+            addstr(" has reverted to Conservatism in police custody!");
+          } else {
+            addstr(" has broken under the pressure and ratted you out!");
           }
-          //else continue to trial
+
+          await getKey();
+
+          mvaddstrc(9, 1, white,
+              "The traitor will testify in court, and safehouses may be compromised.");
+
+          await getKey();
+          p.squad = null;
+          pool.remove(p);
+          continue; //no trial for this person; skip to next person
         }
 
         await showMessage("${p.name} is moved to the courthouse for trial.");
