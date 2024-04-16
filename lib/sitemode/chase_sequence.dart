@@ -1110,8 +1110,8 @@ Future<ChaseOutcome> soloChaseSequence(Creature cr, int pursuitStrength,
       cr.location ??
       cr.base?.district ??
       cr.base?.city ??
-      Site(SiteType.armsDealer, cities.first, cities.first.districts.first)
-    ..name = "In The Bugfield");
+      (Site(SiteType.armsDealer, cities.first, cities.first.districts.first)
+        ..name = "In The Bugfield"));
   makeChasers(chaseSequence?.site?.type, pursuitStrength);
   Squad? oldSquad = cr.squad;
   Squad sq = Squad();
