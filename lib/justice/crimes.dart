@@ -70,15 +70,17 @@ int crimeHeat(Crime crime) {
       return 20;
     case Crime.drugDistribution:
     case Crime.creditCardFraud:
-      return 5;
     case Crime.flagBurning:
     case Crime.unlawfulSpeech:
     case Crime.juryTampering:
     case Crime.grandTheftAuto:
+      return 5;
     case Crime.harboring:
     case Crime.unlawfulBurial:
     case Crime.breakingAndEntering:
     case Crime.dataTheft:
+    case Crime.vandalism:
+    case Crime.cyberVandalism:
       return 1;
     case Crime.illegalEntry:
     case Crime.assault:
@@ -86,9 +88,7 @@ int crimeHeat(Crime crime) {
     case Crime.prostitution:
     case Crime.publicNudity:
     case Crime.loitering:
-    case Crime.vandalism:
     case Crime.disturbingThePeace:
-    case Crime.cyberVandalism:
       return 0;
   }
 }
