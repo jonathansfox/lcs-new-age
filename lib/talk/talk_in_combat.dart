@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:lcs_new_age/common_actions/common_actions.dart';
 import 'package:lcs_new_age/creature/attributes.dart';
 import 'package:lcs_new_age/creature/creature.dart';
 import 'package:lcs_new_age/creature/creature_type.dart';
@@ -123,7 +124,7 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
               addstr(" is too young to die!");
           }
           encounter.removeAt(i);
-          liberal.juice += 2; // Instant juice!
+          addjuice(liberal, 2, 1000); // Instant juice!
 
           await getKey();
         }
@@ -400,7 +401,7 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
             move(16, 1);
             for (Creature squaddie in squad) {
               // Instant juice for successful hostage negotiation
-              squaddie.juice += 15;
+              addjuice(squaddie, 15, 1000);
               if (squaddie.prisoner?.alive == true &&
                   squaddie.prisoner?.isEnemy == true) {
                 squaddie.prisoner = null;

@@ -1,4 +1,5 @@
 import 'package:lcs_new_age/basemode/activities.dart';
+import 'package:lcs_new_age/common_actions/common_actions.dart';
 import 'package:lcs_new_age/common_display/common_display.dart';
 import 'package:lcs_new_age/creature/attributes.dart';
 import 'package:lcs_new_age/creature/conversion.dart';
@@ -263,10 +264,7 @@ Future<void> sleeperSpy(Creature cr, Map<View, int> libpower) async {
   }
 
   // Improves juice, as confidence improves
-  if (cr.juice < 100) {
-    cr.juice += 10;
-    if (cr.juice > 100) cr.juice = 100;
-  }
+  addjuice(cr, 10, 100);
 
   cr.workSite?.mapped = true;
 
@@ -349,10 +347,7 @@ Future<void> sleeperEmbezzle(Creature cr, Map<View, int> libpower) async {
   }
 
   // Improves juice, as confidence improves
-  if (cr.juice < 100) {
-    cr.juice += 10;
-    if (cr.juice > 100) cr.juice = 100;
-  }
+  addjuice(cr, 10, 100);
 
   int income;
   switch (cr.type.id) {
@@ -385,10 +380,7 @@ Future<void> sleeperSteal(Creature cr, Map<View, int> libpower) async {
     return;
   }
   // Improves juice, as confidence improves
-  if (cr.juice < 100) {
-    cr.juice += 10;
-    if (cr.juice > 100) cr.juice = 100;
-  }
+  addjuice(cr, 10, 100);
 
   cr.infiltration -= lcsRandom(10) * 0.01 - 0.02;
 
