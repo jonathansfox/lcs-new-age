@@ -1021,7 +1021,7 @@ enum SallyForthResult {
 
 // Siege -- Mass combat outside safehouse
 Future<SallyForthResult> sallyForthPart3(Site loc) async {
-  reloadparty(false);
+  await reloadparty(false);
   Siege siege = loc.siege;
   activeSite = loc;
 

@@ -180,7 +180,7 @@ Future<void> _siteModeAux() async {
     c.location = activeSite;
   }
 
-  reloadparty(false);
+  await reloadparty(false);
 
   bool bailOnBase = true;
   if (activeSite == squad.first.base) bailOnBase = false;
@@ -771,7 +771,7 @@ Future<void> _siteModeAux() async {
       }
 
       if (c == Key.l && (!enemy || !siteAlarm)) {
-        reloadparty(true);
+        await reloadparty(true);
         printParty();
         refresh();
         await creatureadvance();
@@ -1169,6 +1169,8 @@ Future<void> _siteModeAux() async {
           }
         } else if (enemy) {
           await disguisecheck(encounterTimer);
+        } else {
+          await reloadparty(false, showText: true);
         }
 
         await creatureadvance();

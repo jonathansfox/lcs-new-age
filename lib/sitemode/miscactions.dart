@@ -545,12 +545,27 @@ Future<void> partyrescue(TileSpecial special) async {
   }
 }
 
-void reloadparty(bool wasteful) {
+Future<bool> reloadparty(bool wasteful, {bool showText = false}) async {
+  bool didReload = false;
   for (Creature p in activeSquad!.livingMembers) {
+    bool pReloaded = false;
+    String message = "";
     if (p.hasThrownWeapon) {
-      p.readyAnotherThrowingWeapon();
+      pReloaded = p.readyAnotherThrowingWeapon();
+      message = "${p.name} readies another ${p.weapon.getName()}.";
     } else if (p.canReload()) {
-      p.reload(wasteful);
+      pReloaded = p.reload(wasteful);
+      message = "${p.name} reloads.";
+    }
+    if (pReloaded) {
+      didReload = true;
+      if (showText && message.isNotEmpty) {
+        clearMessageArea();
+        printParty();
+        mvaddstrc(16, 1, white, message);
+        await getKey();
+      }
     }
   }
+  return didReload;
 }

@@ -86,7 +86,7 @@ Future<void> handleChaseSquadOptions(int c) async {
 }
 
 Future<ChaseOutcome> carChaseSequence() async {
-  reloadparty(false);
+  await reloadparty(false);
 
   //BAIL IF NO CHASERS
   if (encounter.isEmpty) return ChaseOutcome.victory;
@@ -268,7 +268,7 @@ Future<ChaseOutcome> footChaseSequence({
   Site? autoPromoteFromSitePool,
 }) async {
   //NOTE: THIS FUNCTION RETURNS TRUE IF ANYBODY ESCAPES
-  reloadparty(false);
+  await reloadparty(false);
 
   //NUKE ALL CARS
   chaseSequence!.enemycar.clear();
