@@ -81,7 +81,7 @@ Future<void> doActivityGraffiti(List<Creature> graffiti) async {
 
         String quality = power > 3 ? " beautiful" : "";
         await showMessage(
-            "${graffiti[s].name} has completed a$quality mural about ${issue.name}.");
+            "${graffiti[s].name} has completed a$quality mural about ${issue.label}.");
 
         graffiti[s].activity.view = null;
         addjuice(graffiti[s], power, power * 20);
@@ -94,7 +94,7 @@ Future<void> doActivityGraffiti(List<Creature> graffiti) async {
     } else if (oneIn(max(30 - graffiti[s].skill(Skill.art) * 2, 5))) {
       issue = View.issues.random;
       await showMessage(
-          "${graffiti[s].name} has begun work on a large mural about ${issue.name}.");
+          "${graffiti[s].name} has begun work on a large mural about ${issue.label}.");
 
       graffiti[s].activity.view = issue;
       power = 0;
