@@ -261,7 +261,7 @@ Future<void> advanceMonth() async {
             laws[Law.deathPenalty] == DeepAlignment.archConservative &&
                 laws[Law.immigration] == DeepAlignment.archConservative;
         await showMessage(
-            "${p.name} has been handed over to the INS and ${execute ? "executed" : "deported"}!",
+            "${p.name} has been handed over to ICE and ${execute ? "executed" : "deported"}!",
             color: purple);
 
         p.squad = null;
