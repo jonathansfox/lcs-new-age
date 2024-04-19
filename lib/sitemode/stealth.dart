@@ -496,11 +496,7 @@ DisguiseQuality disguiseQuality(Creature cr) {
             uniformed = DisguiseQuality.inconspicuous;
           }
           if (cr.armor.type.idName == "ARMOR_SWATARMOR") {
-            if (activeSite!.hasHighSecurity) {
-              uniformed = DisguiseQuality.inconspicuous;
-            } else {
-              uniformed = DisguiseQuality.authorityFigure;
-            }
+            uniformed = DisguiseQuality.inconspicuous;
           }
         }
       case SiteType.whiteHouse:
