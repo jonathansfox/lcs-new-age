@@ -894,6 +894,7 @@ Future<void> _siteModeAux() async {
                   TileSpecial.radioBroadcastStudio => "S",
                   TileSpecial.signOne => "?",
                   TileSpecial.table => "t",
+                  TileSpecial.tent => "t",
                   TileSpecial.parkBench => "b",
                   TileSpecial.signTwo => "?",
                   TileSpecial.signThree => "?",
@@ -1288,6 +1289,7 @@ Future<void> _siteModeAux() async {
           case TileSpecial.apartmentLandlord:
           case TileSpecial.ceoOffice:
           case TileSpecial.table:
+          case TileSpecial.tent:
           case TileSpecial.computer:
           case TileSpecial.parkBench:
           case TileSpecial.bankTeller:
@@ -1663,6 +1665,19 @@ Future<void> _siteModeAux() async {
               await getKey();
 
               prepareEncounter(siteType, false);
+            case TileSpecial.tent:
+              clearMessageArea();
+              setColor(white);
+              move(16, 1);
+              currentTile.special = TileSpecial.none;
+              if (siteAlarm || siteAlienated.alienated) {
+                addstr("Somebody is hiding in the tent.");
+              } else {
+                addstr("Someone is in the tent.");
+              }
+              await getKey();
+
+              prepareEncounter(siteType, false, num: 1);
             case TileSpecial.parkBench:
               clearMessageArea();
               setColor(white);

@@ -100,6 +100,7 @@ Future<void> useTileSpecial() async {
     case TileSpecial.apartmentLandlord:
     case TileSpecial.table:
     case TileSpecial.computer:
+    case TileSpecial.tent:
     case TileSpecial.parkBench:
     case TileSpecial.clubBouncer:
     case TileSpecial.clubBouncerSecondVisit:

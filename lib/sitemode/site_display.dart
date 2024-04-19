@@ -130,6 +130,8 @@ void printSiteMap(int x, int y, int z) {
       str = "Stairs Down";
     case TileSpecial.table:
       str = "Table";
+    case TileSpecial.tent:
+      str = "Tent";
     case TileSpecial.computer:
       str = "Computer";
     case TileSpecial.parkBench:
@@ -652,6 +654,8 @@ void printBlock(int x, int y, int z, int px, int py) {
         mvaddstr(py, px + 1, "DN\u2193");
       case TileSpecial.table:
         mvaddstr(py, px, "TABLE");
+      case TileSpecial.tent:
+        mvaddstr(py, px, "TENT");
       case TileSpecial.computer:
         mvaddstr(py, px + 1, "CPU");
       case TileSpecial.parkBench:

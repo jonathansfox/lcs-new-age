@@ -135,6 +135,7 @@ enum TileSpecial {
   signOne,
   table,
   computer,
+  tent,
   parkBench,
   stairsUp,
   stairsDown,
@@ -332,6 +333,7 @@ Future<void> initsite(Site loc) async {
   // Some sites need a minimum amount of graffiti
   int graffitiquota = 0;
   if (loc.type == SiteType.publicPark) graffitiquota = 5;
+  if (loc.type == SiteType.homelessEncampment) graffitiquota = 2;
   if (loc.type == SiteType.drugHouse) graffitiquota = 30;
   if (loc.type == SiteType.tenement) graffitiquota = 10;
   for (int i = 0; i < loc.changes.length; i++) {
@@ -489,9 +491,10 @@ void buildSiteFromTabScript(Site loc) {
     case SiteType.upscaleApartment:
       buildSite("RESIDENTIAL_APARTMENT");
     case SiteType.warehouse:
-    case SiteType.homelessEncampment:
     case SiteType.drugHouse:
       buildSite("GENERIC_UNSECURE");
+    case SiteType.homelessEncampment:
+      buildSite("OUTDOOR_HOMELESS");
     case SiteType.bank:
     case SiteType.barAndGrill:
     case SiteType.bombShelter:
@@ -774,6 +777,9 @@ void addOldMapSpecials(Site loc) {
         } else {
           tile.special = TileSpecial.table;
         }
+      }
+      if (loc.type == SiteType.homelessEncampment) {
+        tile.special = TileSpecial.tent;
       }
     }
   }

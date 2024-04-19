@@ -22,7 +22,8 @@ extension AddToMap on Map<String, int> {
 }
 
 /* generates a new random encounter */
-void prepareEncounter(SiteType type, bool sec, {bool addToExisting = false}) {
+void prepareEncounter(SiteType type, bool sec,
+    {bool addToExisting = false, int? num}) {
   if (!addToExisting) encounter.clear();
 
   Map<String, int> weights = {};
@@ -75,7 +76,7 @@ void prepareEncounter(SiteType type, bool sec, {bool addToExisting = false}) {
       encounter.add(cr);
     }
   } else {
-    int encnum = 6;
+    int encnum = num ?? 6;
     switch (type) {
       case SiteType.drugHouse:
         weights.add(CreatureTypeIds.teenager, 100);

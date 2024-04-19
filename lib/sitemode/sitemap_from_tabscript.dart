@@ -521,6 +521,7 @@ TileSpecial specialLookup(String value) {
     "APARTMENT_LANDLORD" => TileSpecial.apartmentLandlord,
     "APARTMENT_SIGN" => TileSpecial.signOne,
     "RESTAURANT_TABLE" => TileSpecial.table,
+    "TENT" => TileSpecial.tent,
     "CAFE_COMPUTER" => TileSpecial.computer,
     "PARK_BENCH" => TileSpecial.parkBench,
     "STAIRS_UP" => TileSpecial.stairsUp,
