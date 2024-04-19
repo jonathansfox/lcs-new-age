@@ -230,7 +230,8 @@ Future<void> disguisecheck(int timer) async {
             noticed = true;
             break;
           } else {
-            int result = c.skillRoll(Skill.disguise);
+            int penalty = disguiseQuality(c).penalty;
+            int result = c.skillRoll(Skill.disguise) + penalty;
             result -= timer;
             if (result < disguiseDifficulty) {
               // That was not very casual, dude.
@@ -416,6 +417,15 @@ enum DisguiseQuality {
         return false;
     }
   }
+
+  int get penalty => switch (this) {
+        DisguiseQuality.hidden => 0,
+        DisguiseQuality.inconspicuous => 0,
+        DisguiseQuality.authorityFigure => -2,
+        DisguiseQuality.unusual => -4,
+        DisguiseQuality.disturbing => -8,
+        DisguiseQuality.trespassing => -100,
+      };
 }
 
 /* checks if a creature's uniform is appropriate to the location */

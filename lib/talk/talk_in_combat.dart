@@ -17,6 +17,7 @@ import 'package:lcs_new_age/politics/politics.dart';
 import 'package:lcs_new_age/politics/views.dart';
 import 'package:lcs_new_age/sitemode/fight.dart';
 import 'package:lcs_new_age/sitemode/site_display.dart';
+import 'package:lcs_new_age/sitemode/stealth.dart';
 import 'package:lcs_new_age/utils/colors.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 
@@ -498,7 +499,9 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
 
     for (Creature e in encounter) {
       if (e.alive && e.isEnemy) {
-        int roll = liberal.skillRoll(Skill.disguise);
+        DisguiseQuality disguise = disguiseQuality(liberal);
+        int penalty = disguise.penalty;
+        int roll = liberal.skillRoll(Skill.disguise) + penalty;
         int diff = e.attribute(Attribute.heart) < 2
             ? Difficulty.challenging
             : Difficulty.average;
