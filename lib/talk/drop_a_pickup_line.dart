@@ -164,9 +164,12 @@ Future<bool> doYouComeHereOften(Creature a, Creature tk) async {
   await getKey();
 
   int difficulty = Difficulty.hard;
+  if (tk.type.majorEnemy) {
+    difficulty = Difficulty.heroic;
+  }
   if (tk.type.id == CreatureTypeIds.corporateCEO ||
       tk.type.id == CreatureTypeIds.president) {
-    difficulty = Difficulty.heroic;
+    difficulty = Difficulty.legendary;
   }
 
   if (a.indecent) {
