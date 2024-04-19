@@ -40,6 +40,26 @@ class Politics {
     p.laws[Law.military] = DeepAlignment.conservative;
     p.laws[Law.prisons] = DeepAlignment.conservative;
     p.laws[Law.torture] = DeepAlignment.liberal;
+    p.changePublicOpinion(View.womensRights, 5);
+    p.changePublicOpinion(View.animalResearch, -30);
+    p.changePublicOpinion(View.policeBehavior, -5);
+    p.changePublicOpinion(View.intelligence, -5);
+    p.changePublicOpinion(View.deathPenalty, 5);
+    p.changePublicOpinion(View.nuclearPower, 5);
+    p.changePublicOpinion(View.pollution, -5);
+    p.changePublicOpinion(View.sweatshops, -5);
+    p.changePublicOpinion(View.lgbtRights, 20);
+    p.changePublicOpinion(View.corporateCulture, -5);
+    p.changePublicOpinion(View.freeSpeech, 20);
+    p.changePublicOpinion(View.gunControl, -5);
+    p.changePublicOpinion(View.taxes, 5);
+    p.changePublicOpinion(View.civilRights, 5);
+    p.changePublicOpinion(View.drugs, 5);
+    p.changePublicOpinion(View.immigration, 5);
+    p.changePublicOpinion(View.military, -5);
+    p.changePublicOpinion(View.prisons, -5);
+    p.changePublicOpinion(View.torture, 20);
+    p.publicInterest.updateAll((k, v) => 0);
     return p;
   }
   factory Politics.fromJson(Map<String, dynamic> json) =>
