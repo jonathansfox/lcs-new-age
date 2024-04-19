@@ -26,7 +26,6 @@ void makeWorld() {
     ..addDistrict("U-District", "University District").addSites([
       SiteType.apartment,
       SiteType.universityHospital,
-      SiteType.clinic,
       SiteType.geneticsLab,
       SiteType.cosmeticsLab,
       SiteType.veganCoOp,
@@ -70,7 +69,6 @@ void makeWorld() {
       SiteType.warehouse,
       SiteType.apartment,
       SiteType.universityHospital,
-      SiteType.clinic,
       SiteType.juiceBar,
       SiteType.internetCafe,
       SiteType.dirtyIndustry,
@@ -116,7 +114,6 @@ void makeWorld() {
     ..addDistrict("Seaport", "Seaport Area").addSites([
       SiteType.warehouse,
       SiteType.tenement,
-      SiteType.clinic,
       SiteType.geneticsLab,
       SiteType.cosmeticsLab,
       SiteType.dirtyIndustry,
@@ -140,7 +137,6 @@ void makeWorld() {
       SiteType.policeStation,
       SiteType.courthouse,
       SiteType.bank,
-      SiteType.clinic,
       SiteType.universityHospital,
       SiteType.homelessEncampment,
     ])
