@@ -220,7 +220,9 @@ Future<void> disguisecheck(int timer) async {
           result -= timer;
           if (result < stealthDifficulty) spotted = true;
         }
+      }
 
+      for (Creature c in squad) {
         // Spotted! Act casual.
         if (spotted) {
           // Scary weapons are not very casual.
@@ -240,6 +242,7 @@ Future<void> disguisecheck(int timer) async {
           }
         }
       }
+
       if (noticed) break;
     } while (noticer.isNotEmpty);
 
