@@ -28,7 +28,7 @@ enum SiteType {
   intelligenceHQ("Intel HQ", "Intelligence HQ"),
   fireStation("Fire Dept.", "Fire Station"),
   sweatshop("Sweatshop", "Sweatshop"),
-  dirtyIndustry("D Industry", "Dirty Industry"),
+  dirtyIndustry("Dty Industry", "Dirty Industry"),
   nuclearPlant("Nuclear", "Nuclear Plant"),
   warehouse("Warehouse", "Abandoned Warehouse"),
   corporateHQ("Corp. HQ", "Corporate HQ"),
