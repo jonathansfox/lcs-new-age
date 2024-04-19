@@ -1164,7 +1164,7 @@ Future<void> sallyForthPart2(Site loc) async {
   for (Squad s in squads
       .where((s) => s != activeSquad && s.members.any((p) => p.location == loc))
       .toList()) {
-    for (Creature c in s.members) {
+    for (Creature c in s.members.toList()) {
       c.squad = null;
     }
     squads.remove(s);
