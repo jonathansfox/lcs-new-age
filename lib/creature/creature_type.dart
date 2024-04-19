@@ -68,7 +68,7 @@ class CreatureType {
 
   List<String> encounterNames = [];
   String get randomEncounterName => encounterNames.randomOrNull ?? name;
-  bool talkReceptive = true;
+  bool talkReceptive = false;
   int seeThroughStealth = 3;
   int seeThroughDisguise = 3;
   bool kidnapResistant = false;
