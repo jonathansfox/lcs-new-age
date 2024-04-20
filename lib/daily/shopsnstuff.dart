@@ -161,7 +161,7 @@ Future<void> dealership(Site loc) async {
       }
     }
 
-    mvaddstrc(10, 1, carToSell != null ? lightGray : darkGray,
+    mvaddstrc(10, 1, carToSell == null ? lightGray : darkGray,
         "G - Get a Liberal car");
 
     move(11, 1);
