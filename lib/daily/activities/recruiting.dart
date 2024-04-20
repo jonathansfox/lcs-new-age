@@ -78,6 +78,9 @@ Future<void> doActivityRecruit(Creature cr) async {
       if (isBackKey(c)) break;
       c -= 'a'.codePoint;
       if (c >= 0 && c < encounter.length) {
+        siteAlarm = false;
+        siteAlienated = SiteAlienation.none;
+
         Creature target = encounter[c];
         erase();
         mvaddstrc(0, 0, white, "Adventures in Liberal Recruitment");
