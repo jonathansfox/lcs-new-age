@@ -125,6 +125,7 @@ enum TileSpecial {
   intelSupercomputer,
   sweatshopEquipment,
   polluterEquipment,
+  labEquipment,
   nuclearControlRoom,
   ceoSafe,
   ceoOffice,
@@ -753,10 +754,14 @@ void addOldMapSpecials(Site loc) {
         !tile.outdoor &&
         tile.restricted &&
         oneIn(10)) {
-      if (loc.type == SiteType.cosmeticsLab) {
-        tile.special = TileSpecial.cagedRabbits;
-      } else if (loc.type == SiteType.geneticsLab) {
-        tile.special = TileSpecial.cagedMonsters;
+      if (oneIn(2)) {
+        if (loc.type == SiteType.cosmeticsLab) {
+          tile.special = TileSpecial.cagedRabbits;
+        } else if (loc.type == SiteType.geneticsLab) {
+          tile.special = TileSpecial.cagedMonsters;
+        }
+      } else {
+        tile.special = TileSpecial.labEquipment;
       }
     }
     if (tile.flag == 0 && oneIn(10)) {

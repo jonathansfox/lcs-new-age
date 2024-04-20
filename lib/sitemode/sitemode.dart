@@ -881,6 +881,7 @@ Future<void> _siteModeAux() async {
                   TileSpecial.displayCase => "d",
                   TileSpecial.polluterEquipment => "P",
                   TileSpecial.sweatshopEquipment => "S",
+                  TileSpecial.labEquipment => "L",
                   TileSpecial.stairsDown => "↓",
                   TileSpecial.stairsUp => "↑",
                   TileSpecial.none => throw UnimplementedError(),

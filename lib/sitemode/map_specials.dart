@@ -64,6 +64,8 @@ Future<void> useTileSpecial() async {
       await specialSweatshopEquipment();
     case TileSpecial.polluterEquipment:
       await specialPolluterEquipment();
+    case TileSpecial.labEquipment:
+      await specialLabEquipment();
     case TileSpecial.ceoSafe:
       await specialCEOSafe();
     case TileSpecial.armory:
@@ -860,6 +862,16 @@ Future<void> specialPolluterEquipment() async {
   if (!smash) return;
 
   changePublicOpinion(View.pollution, 2, coloredByLcsOpinions: true);
+
+  await _vandalizeTile();
+}
+
+Future<void> specialLabEquipment() async {
+  bool smash = await sitemodePrompt(
+      "You see some lab equipment.", "Destroy it? (Yes or No)");
+  if (!smash) return;
+
+  changePublicOpinion(View.animalResearch, 2, coloredByLcsOpinions: true);
 
   await _vandalizeTile();
 }

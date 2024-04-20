@@ -511,6 +511,7 @@ TileSpecial specialLookup(String value) {
     "INTEL_SUPERCOMPUTER" => TileSpecial.intelSupercomputer,
     "SWEATSHOP_EQUIPMENT" => TileSpecial.sweatshopEquipment,
     "POLLUTER_EQUIPMENT" => TileSpecial.polluterEquipment,
+    "LAB_EQUIPMENT" => TileSpecial.labEquipment,
     "NUCLEAR_ONOFF" => TileSpecial.nuclearControlRoom,
     "HOUSE_PHOTOS" => TileSpecial.ceoSafe,
     "ARMYBASE_ARMORY" => TileSpecial.armory,

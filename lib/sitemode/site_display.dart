@@ -105,6 +105,8 @@ void printSiteMap(int x, int y, int z) {
       str = "Textile Equipment";
     case TileSpecial.polluterEquipment:
       str = "Factory Equipment";
+    case TileSpecial.labEquipment:
+      str = "Lab Equipment";
     case TileSpecial.armory:
       str = "Armory";
     case TileSpecial.ceoOffice:
@@ -630,6 +632,7 @@ void printBlock(int x, int y, int z, int px, int py) {
         mvaddstr(py, px, "INTEL");
       case TileSpecial.sweatshopEquipment:
       case TileSpecial.polluterEquipment:
+      case TileSpecial.labEquipment:
         mvaddstr(py, px, "EQUIP");
       case TileSpecial.armory:
         mvaddstr(py, px, "ARMRY");
