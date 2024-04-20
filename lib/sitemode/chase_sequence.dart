@@ -563,6 +563,7 @@ Future<void> evasiverun() async {
         clearMessageArea();
         String message = p.name;
         switch (encounter[0].type.id) {
+          case CreatureTypeIds.policeChief:
           case CreatureTypeIds.cop:
             message += " is seized, ";
             if (laws[Law.policeReform]! >= DeepAlignment.liberal) {

@@ -483,6 +483,37 @@ Elements marked as hardcoded may have their values overridden by the game.
             <stuns>true</stuns>
         </social_attack>
     </creaturetype>
+    <creaturetype idname="CREATURE_POLICE_CHIEF">
+        <type_name>Chief of Police</type_name>
+        <encounter_name>Chief of Police</encounter_name>
+        <weapon>WEAPON_SHOTGUN_PUMP</weapon>
+        <armor>ARMOR_POLICEARMOR</armor>
+        <age>MATURE</age>
+        <alignment>CONSERVATIVE</alignment>
+        <attributes>
+            <agility>6-10</agility>
+            <health>6-10</health>
+            <strength>6-10</strength>
+            <wisdom>8-10</wisdom>
+            <heart>1</heart>
+        </attributes>
+        <gender>MALE BIAS</gender>
+        <infiltration>80-100</infiltration>
+        <juice>500-750</juice>
+        <money>150-200</money>
+        <skills>
+            <driving>1-2</driving>
+            <psychology>3-6</psychology>
+            <martialArts>4-8</martialArts>
+            <firearms>6-10</firearms>
+        </skills>
+        <seethroughstealth>11</seethroughstealth>
+        <seethroughdisguise>11</seethroughdisguise>
+        <reports_to_police>1</reports_to_police>
+        <kidnap_resistant>1</kidnap_resistant>
+        <intimidation_resistant>true</intimidation_resistant>
+        <can_perform_arrests>true</can_perform_arrests>
+    </creaturetype>
     <creaturetype idname="CREATURE_SWAT">
         <type_name>SWAT Officer</type_name>
         <weapon>WEAPON_SMG_MP5</weapon>

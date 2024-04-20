@@ -100,7 +100,8 @@ class CreatureType {
       id == CreatureTypeIds.newsAnchor ||
       id == CreatureTypeIds.eminentScientist ||
       id == CreatureTypeIds.conservativeJudge ||
-      id == CreatureTypeIds.ccsArchConservative;
+      id == CreatureTypeIds.ccsArchConservative ||
+      id == CreatureTypeIds.policeChief;
 
   bool get preciousToHicks =>
       id == CreatureTypeIds.radioPersonality ||
@@ -108,6 +109,7 @@ class CreatureType {
 
   bool get lawEnforcement =>
       id == CreatureTypeIds.cop ||
+      id == CreatureTypeIds.policeChief ||
       id == CreatureTypeIds.swat ||
       id == CreatureTypeIds.deathSquad ||
       id == CreatureTypeIds.gangUnit ||
@@ -144,6 +146,7 @@ class CreatureTypeIds {
   static const String bankManager = "CREATURE_BANK_MANAGER";
   static const String teenager = "CREATURE_TEENAGER";
   static const String cop = "CREATURE_COP";
+  static const String policeChief = "CREATURE_POLICE_CHIEF";
   static const String swat = "CREATURE_SWAT";
   static const String deathSquad = "CREATURE_DEATHSQUAD";
   static const String firefighter = "CREATURE_FIREFIGHTER";

@@ -123,6 +123,7 @@ bool testWorkLocation(CreatureType type, Site location) {
         SiteType.ceoHouse,
       ]);
     case CreatureTypeIds.cop:
+    case CreatureTypeIds.policeChief:
     case CreatureTypeIds.gangUnit:
     case CreatureTypeIds.swat:
     case CreatureTypeIds.deathSquad:

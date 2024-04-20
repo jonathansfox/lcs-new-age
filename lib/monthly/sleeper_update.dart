@@ -106,6 +106,7 @@ void sleeperInfluence(Creature cr, Map<View, int> libpower) {
     case CreatureTypeIds.president:
     case CreatureTypeIds.eminentScientist:
     case CreatureTypeIds.ccsArchConservative:
+    case CreatureTypeIds.policeChief:
       power *= 20;
     case CreatureTypeIds.deathSquad:
     case CreatureTypeIds.educator:
@@ -189,6 +190,7 @@ void sleeperInfluence(Creature cr, Map<View, int> libpower) {
     case CreatureTypeIds.deathSquad:
     case CreatureTypeIds.swat:
     case CreatureTypeIds.cop:
+    case CreatureTypeIds.policeChief:
     case CreatureTypeIds.gangUnit:
     case CreatureTypeIds.educator:
     case CreatureTypeIds.prisonGuard:
@@ -297,6 +299,7 @@ Future<void> sleeperSpy(Creature cr, Map<View, int> libpower) async {
     case CreatureTypeIds.deathSquad:
     case CreatureTypeIds.swat:
     case CreatureTypeIds.cop:
+    case CreatureTypeIds.policeChief:
     case CreatureTypeIds.gangUnit:
       // Cops can leak police files to you
       if (noLeakToday(Law.policeReform)) break;

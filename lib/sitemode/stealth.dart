@@ -197,6 +197,7 @@ Future<void> disguisecheck(int timer) async {
           stealthDifficulty = Difficulty.heroic;
           disguiseDifficulty = Difficulty.average;
         case CreatureTypeIds.secretService:
+        case CreatureTypeIds.policeChief:
           stealthDifficulty = Difficulty.formidable;
           disguiseDifficulty = Difficulty.formidable;
         default:

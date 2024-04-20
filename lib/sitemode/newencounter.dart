@@ -610,6 +610,7 @@ void prepareEncounter(SiteType type, bool sec,
         weights.add(CreatureTypeIds.secretary, 10);
         weights.add(CreatureTypeIds.officeWorker, 10);
       case SiteType.policeStation:
+        weights.add(CreatureTypeIds.policeChief, 20);
         weights.add(CreatureTypeIds.labTech, 1);
         weights.add(CreatureTypeIds.corporateManager, 1);
         weights.add(CreatureTypeIds.janitor, 50);

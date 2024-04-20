@@ -935,7 +935,9 @@ Future<void> _siteModeAux() async {
         bool subdue = false;
         for (int i = 0; i < encounter.length; i++) {
           if (encounter[i].blood > 60 &&
-              (encounter[i].type.id == CreatureTypeIds.cop)) {
+              (encounter[i].type.id == CreatureTypeIds.cop ||
+                  encounter[i].type.id == CreatureTypeIds.policeChief ||
+                  encounter[i].type.id == CreatureTypeIds.swat)) {
             subdue = true;
             // Don't subdue squad if someone is still in good condition.
             for (int j = 0; j < activeSquad!.livingMembers.length; j++) {

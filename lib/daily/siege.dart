@@ -62,11 +62,19 @@ Future<void> siegeCheck() async {
   int numpres;
   for (Site l in sites) {
     if (l.controller != SiteController.lcs) continue;
+    bool policeChiefCompromised = pool.any((p) =>
+        p.sleeperAgent &&
+        p.site?.type == SiteType.policeStation &&
+        p.site?.city == l.city &&
+        p.type.id == CreatureTypeIds.policeChief);
     if (findSiteInSameCity(l.city, SiteType.policeStation)!.isClosed) {
       l.heat = (l.heat * 0.95).floor();
       continue;
     }
     if (l.siege.underSiege) continue;
+    if (policeChiefCompromised) {
+      l.heat = (l.heat * 0.95).floor();
+    }
     numpres = 0;
     // CHECK FOR CRIMINALS AT THIS BASE
     int crimes = 0;
@@ -109,6 +117,9 @@ Future<void> siegeCheck() async {
         huntingSpeed = 5;
       } else {
         huntingSpeed = max(1, min(l.heat ~/ l.heatProtection, 5));
+      }
+      if (policeChiefCompromised) {
+        huntingSpeed = 1;
       }
     }
     if (l.siege.timeUntilCops > 0) {

@@ -639,6 +639,9 @@ Future<void> displayStory(
             case CreatureTypeIds.conservativeJudge:
               displayCenteredNewsFont("JUDGE", 5);
               displayCenteredNewsFont("KIDNAPPED", 13);
+            case CreatureTypeIds.policeChief:
+              displayCenteredNewsFont("TOP COP", 5);
+              displayCenteredNewsFont("KIDNAPPED", 13);
             case CreatureTypeIds.cop:
             case CreatureTypeIds.gangUnit:
             case CreatureTypeIds.deathSquad:
