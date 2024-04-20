@@ -61,19 +61,19 @@ void sleeperInfluence(Creature cr, Map<View, int> libpower) {
   // Profession specific skills
   switch (cr.type.id) {
     case CreatureTypeIds.artCritic:
-      power += cr.skill(Skill.writing);
-      power += cr.skill(Skill.art);
+      power += cr.skill(Skill.writing) * 3;
+      power += cr.skill(Skill.art) * 2;
     case CreatureTypeIds.painter:
     case CreatureTypeIds.sculptor:
-      power += cr.skill(Skill.art);
+      power += cr.skill(Skill.art) * 5;
     case CreatureTypeIds.musicCritic:
-      power += cr.skill(Skill.writing);
-      power += cr.skill(Skill.music);
+      power += cr.skill(Skill.writing) * 3;
+      power += cr.skill(Skill.music) * 2;
     case CreatureTypeIds.musician:
-      power += cr.skill(Skill.music);
+      power += cr.skill(Skill.music) * 5;
     case CreatureTypeIds.author:
     case CreatureTypeIds.journalist:
-      power += cr.skill(Skill.writing);
+      power += cr.skill(Skill.writing) * 5;
     case CreatureTypeIds.conservativeJudge:
       power += cr.skill(Skill.writing);
       power += cr.skill(Skill.law);
@@ -87,7 +87,7 @@ void sleeperInfluence(Creature cr, Map<View, int> libpower) {
       power += cr.skill(Skill.business);
     case CreatureTypeIds.priest:
     case CreatureTypeIds.nun:
-      power += cr.skill(Skill.religion);
+      power += cr.skill(Skill.religion) * 5;
     case CreatureTypeIds.educator:
       power += cr.skill(Skill.psychology);
     case CreatureTypeIds.teacher:
@@ -105,6 +105,7 @@ void sleeperInfluence(Creature cr, Map<View, int> libpower) {
     case CreatureTypeIds.corporateCEO:
     case CreatureTypeIds.president:
     case CreatureTypeIds.eminentScientist:
+    case CreatureTypeIds.ccsArchConservative:
       power *= 20;
     case CreatureTypeIds.deathSquad:
     case CreatureTypeIds.educator:
