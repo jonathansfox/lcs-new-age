@@ -46,7 +46,7 @@ Future<void> activateRegulars() async {
           y,
           41,
           c.site?.isPartOfTheJusticeSystem == true ? yellow : lightGray,
-          c.location?.name ?? "In Hiding");
+          c.location?.getName(short: true) ?? "In Hiding");
       mvaddstrc(y, 57, c.activity.color, c.activity.description);
       y++;
     }
