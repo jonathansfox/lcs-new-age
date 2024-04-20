@@ -288,7 +288,7 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
           executer.heartDamage++;
           siteCrime += 10;
           addDramaToSiteStory(Drama.killedSomebody);
-          criminalize(executer, Crime.murder);
+          criminalizeparty(Crime.murder);
 
           if (executer.prisoner!.type.preciousToHicks) {
             siteCrime += 30;

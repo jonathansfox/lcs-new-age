@@ -495,7 +495,7 @@ Future<bool> talkToBankTeller(Creature a, Creature tk) async {
         await getKey();
 
         siteAlarm = true;
-        criminalize(a, Crime.bankRobbery);
+        criminalizeparty(Crime.bankRobbery);
         addDramaToSiteStory(Drama.bankTellerRobbery);
         siteCrime += 30;
         encounter.add(Creature.fromId("CREATURE_MERC"));
@@ -521,7 +521,7 @@ Future<bool> talkToBankTeller(Creature a, Creature tk) async {
 
         await getKey();
 
-        criminalize(a, Crime.bankRobbery);
+        criminalizeparty(Crime.bankRobbery);
         addDramaToSiteStory(Drama.bankTellerRobbery);
         siteCrime += 30;
         siteAlarmTimer = 0;

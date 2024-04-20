@@ -656,7 +656,7 @@ Future<void> specialCourthouseJury() async {
     siteAlienated = SiteAlienation.alienatedEveryone;
     siteCrime += 10;
     addDramaToSiteStory(Drama.juryTampering);
-    criminalize(maxp, Crime.juryTampering);
+    criminalizeparty(Crime.juryTampering);
   }
 }
 
