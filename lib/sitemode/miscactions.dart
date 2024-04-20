@@ -486,7 +486,8 @@ Future<void> partyrescue(TileSpecial special) async {
 
   List<Creature> waitingForRescue = pool
       .where((p) =>
-          p.isActiveLiberal &&
+          p.alive &&
+          p.isLiberal &&
           p.squad != activeSquad &&
           p.location == activeSite &&
           !p.sleeperAgent &&
