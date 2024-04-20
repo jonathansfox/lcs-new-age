@@ -1111,14 +1111,12 @@ Future<void> _siteModeAux() async {
         }
 
         if (tookground) {
-          //int maxsleightofhand=0;
-          int beststealer = 0;
           juiceparty(1, 50);
           await noticeCheck();
           siteCrime++;
           addDramaToSiteStory(Drama.stoleSomething);
           if (enemy && siteAlarm) {
-            criminalize(squad[beststealer], Crime.theft);
+            criminalizeAll(squad, Crime.theft);
           }
         }
 
