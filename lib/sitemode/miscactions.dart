@@ -418,17 +418,6 @@ Future<bool> _mediaBroadcast(String takeover, View mediaView, String medium,
 
   int segmentpower = _mediaSegmentPower();
 
-  await encounterMessage(
-      _mediaQualityDescription(segmentpower, medium, viewername));
-
-  //CHECK PUBLIC OPINION
-  changePublicOpinion(View.lcsKnown, 10);
-  changePublicOpinion(View.lcsLiked,
-      ((segmentpower - 50) * (publicOpinion[View.amRadio]! / 200)).round());
-  changePublicOpinion(viewhit,
-      ((segmentpower - 50) * (publicOpinion[View.amRadio]! / 100)).round(),
-      coloredByLcsOpinions: true);
-
   //PRISONER PARTS
   for (Creature p in activeSquad!.livingMembers) {
     if (p.prisoner != null) {
@@ -455,6 +444,17 @@ Future<bool> _mediaBroadcast(String takeover, View mediaView, String medium,
       }
     }
   }
+
+  await encounterMessage(
+      _mediaQualityDescription(segmentpower, medium, viewername));
+
+  //CHECK PUBLIC OPINION
+  changePublicOpinion(View.lcsKnown, 10);
+  changePublicOpinion(View.lcsLiked,
+      ((segmentpower - 50) * (publicOpinion[View.amRadio]! / 200)).round());
+  changePublicOpinion(viewhit,
+      ((segmentpower - 50) * (publicOpinion[View.amRadio]! / 100)).round(),
+      coloredByLcsOpinions: true);
 
   if (siteAlienated.index >= SiteAlienation.alienatedModerates.index &&
       segmentpower >= 40) {
