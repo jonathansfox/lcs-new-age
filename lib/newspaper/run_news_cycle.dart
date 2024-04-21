@@ -245,27 +245,13 @@ void handlePublicOpinionImpact(NewsStory ns) {
       ns.type == NewsStories.ccsKilledInSiteAction) {
     ccsResponsible = true;
     impactDirection = Alignment.conservative;
-    if (ns.positive > 0) {
-      changePublicOpinion(
-          View.ccsLiked, -impact); //Negative numbers = favorable for CCS
-    } else {
-      changePublicOpinion(View.ccsLiked, impact);
-    }
   } else {
     lcsResponsible = true;
-    changePublicOpinion(View.lcsKnown, 2 + impact.abs());
+    changePublicOpinion(View.lcsKnown, impact);
     impactDirection = Alignment.liberal;
-    if (ns.positive > 0) {
-      changePublicOpinion(View.lcsLiked, impact);
-    } else {
-      changePublicOpinion(View.lcsLiked, -impact);
-    }
   }
   if (impactDirection == Alignment.conservative) impact = -impact;
   if (impactDirection == Alignment.moderate) impact = 0;
-
-  // Impact gun control issue
-  changePublicOpinion(View.gunControl, (impact / 10).abs().ceil());
 
   if (ns.loc == null) return;
 
@@ -329,6 +315,24 @@ void handlePublicOpinionImpact(NewsStory ns) {
     changePublicOpinion(issue, impact,
         coloredByLcsOpinions: lcsResponsible,
         coloredByCcsOpinions: ccsResponsible);
+  }
+  if (lcsResponsible) {
+    if (ns.positive > 0) {
+      changePublicOpinion(View.lcsLiked, impact);
+    } else {
+      changePublicOpinion(View.lcsLiked, -impact);
+      changePublicOpinion(View.gunControl, impact ~/ 5);
+    }
+  } else if (ccsResponsible) {
+    if (ns.positive > 0) {
+      changePublicOpinion(
+          View.ccsLiked, -impact); //Negative numbers = favorable for CCS
+    } else {
+      changePublicOpinion(View.ccsLiked, impact);
+      changePublicOpinion(View.gunControl, impact ~/ 5);
+    }
+  }
+  for (View issue in issues) {
     if (lcsResponsible) {
       double swayed =
           publicOpinion[issue]! / 10 - publicOpinion[View.lcsLiked]!;
