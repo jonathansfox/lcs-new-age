@@ -843,10 +843,10 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
           clearMessageArea();
           addDeathMessage(target);
 
-          if (alienate) await alienationCheck(true);
-
           printParty();
           printEncounter();
+
+          if (alienate) alienate = await alienationCheck(true);
 
           if (!alienate) await getKey();
 
