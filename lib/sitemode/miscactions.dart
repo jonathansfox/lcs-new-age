@@ -345,7 +345,7 @@ String _mediaIssueDescription(View v) => switch (v) {
       View.cableNews => "Conservative media bias",
       View.lcsKnown => "the LCS",
       View.lcsLiked => "the LCS",
-      View.ccsLiked => "the CCS",
+      View.ccsHated => "the CCS",
     };
 
 int _mediaSegmentPower() {

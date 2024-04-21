@@ -43,7 +43,7 @@ Future<void> advanceMonth() async {
           s.controller = SiteController.ccs;
         }
         ccsState = CCSStrength.active;
-        publicOpinion[View.ccsLiked] = 100 - politics.publicMood();
+        publicOpinion[View.ccsHated] = 100 - politics.publicMood();
       }
     case CCSStrength.active:
       if (politics.publicMood() > 80) {
@@ -143,10 +143,10 @@ Future<void> advanceMonth() async {
         }
         if (align == Alignment.liberal) {
           politics.backgroundInfluence.update(View.lcsKnown, (a) => a + power);
-          politics.backgroundInfluence.update(View.ccsLiked, (a) => a + power);
+          politics.backgroundInfluence.update(View.ccsHated, (a) => a + power);
         } else if (align == Alignment.conservative) {
           politics.backgroundInfluence.update(View.lcsKnown, (a) => a - power);
-          politics.backgroundInfluence.update(View.ccsLiked, (a) => a - power);
+          politics.backgroundInfluence.update(View.ccsHated, (a) => a - power);
         }
       }
     }
@@ -166,7 +166,7 @@ Future<void> advanceMonth() async {
     //   changePublicOpinion(View.POLITICALVIOLENCE,-1,0);
     //   continue;
     //}
-    if (v == View.ccsLiked) continue;
+    if (v == View.ccsHated) continue;
     if (v != View.amRadio && v != View.cableNews) {
       double balance = libpower[v]! - conspower;
 

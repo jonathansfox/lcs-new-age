@@ -587,7 +587,7 @@ Future<void> printNews(LootType li, Iterable<Creature> publishers) async {
     mvaddstr(20, 1,
         "This is the beginning of the end for the Conservative Crime Squad.");
 
-    issues.addAll([View.intelligence, View.ccsLiked]);
+    issues.addAll([View.intelligence, View.ccsHated]);
     potency = 100;
     ccsExposure = CCSExposure.exposed;
   } else if (li.idName == "LOOT_INTHQDISK" ||

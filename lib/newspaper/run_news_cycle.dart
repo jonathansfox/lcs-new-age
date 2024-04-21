@@ -326,9 +326,9 @@ void handlePublicOpinionImpact(NewsStory ns) {
   } else if (ccsResponsible) {
     if (ns.positive > 0) {
       changePublicOpinion(
-          View.ccsLiked, -impact); //Negative numbers = favorable for CCS
+          View.ccsHated, -impact); //Negative numbers = favorable for CCS
     } else {
-      changePublicOpinion(View.ccsLiked, impact);
+      changePublicOpinion(View.ccsHated, impact);
       changePublicOpinion(View.gunControl, impact ~/ 5);
     }
   }
@@ -341,9 +341,9 @@ void handlePublicOpinionImpact(NewsStory ns) {
       }
     } else if (ccsResponsible) {
       double swayed = (100 - publicOpinion[issue]!) / 10 -
-          (100 - publicOpinion[View.ccsLiked]!);
+          (100 - publicOpinion[View.ccsHated]!);
       if (swayed > 0) {
-        changePublicOpinion(View.ccsLiked, -swayed.round());
+        changePublicOpinion(View.ccsHated, -swayed.round());
       }
     }
   }

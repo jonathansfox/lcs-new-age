@@ -28,7 +28,7 @@ enum View {
   // crime squads
   lcsKnown("LCS Known"),
   lcsLiked("LCS Liked"),
-  ccsLiked("CCS Liked");
+  ccsHated("CCS Hated");
 
   const View(this.label);
 

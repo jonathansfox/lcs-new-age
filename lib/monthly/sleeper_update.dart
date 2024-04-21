@@ -233,7 +233,7 @@ void sleeperInfluence(Creature cr, Map<View, int> libpower) {
     case CreatureTypeIds.ccsMolotov:
     case CreatureTypeIds.ccsSniper:
     case CreatureTypeIds.ccsVigilante:
-      addIssues([View.ccsLiked, View.issues.random], power);
+      addIssues([View.ccsHated, View.issues.random], power);
     default: // Affect a random issue
       addIssues([View.issues.random], power);
   }

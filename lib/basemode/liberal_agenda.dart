@@ -325,7 +325,7 @@ void _pollsPage(int start) {
   }
   for (int i = start; y < 22 && i < View.values.length; i++, y++) {
     View v = View.values[i];
-    if (v == View.ccsLiked &&
+    if (v == View.ccsHated &&
         (ccsState == CCSStrength.inHiding ||
             ccsState == CCSStrength.defeated)) {
       continue;
@@ -346,7 +346,7 @@ void _pollsPage(int start) {
 
     double survey = politics.publicOpinion[v]!;
     if (v == View.lcsLiked) survey = politics.lcsApproval();
-    if (v == View.ccsLiked) survey = politics.ccsApproval();
+    if (v == View.ccsHated) survey = politics.ccsApproval();
     if (survey < 20) {
       setColor(DeepAlignment.archConservative.color);
     } else if (survey < 40) {
@@ -419,7 +419,7 @@ void _pollsPage(int start) {
         addstr("have heard of the Liberal Crime Squad");
       case View.lcsLiked:
         addstr("support the Liberal Crime Squad");
-      case View.ccsLiked:
+      case View.ccsHated:
         addstr("hate the Conservative Crime Squad");
     }
   }
@@ -583,7 +583,7 @@ String _concernString(View view) {
       } else {
         return "soft luxury prisons";
       }
-    case View.ccsLiked:
+    case View.ccsHated:
       if (publicOpinion[view]! > 50) {
         return "the CCS terrorists";
       } else {

@@ -60,7 +60,7 @@ NewsStory ccsBackerArrestStory() {
       (v) => DeepAlignment
           .values[min(DeepAlignment.values.length - 1, v.index + 2)]);
   changePublicOpinion(View.policeBehavior, 50);
-  changePublicOpinion(View.ccsLiked, 50);
+  changePublicOpinion(View.ccsHated, 50);
 
   return ns;
 }

@@ -169,12 +169,14 @@ class Politics {
       affectedPower = affectedPower * (100 + moralAuthority) / 100;
       power = rawPower + affectedPower;
     } else if (coloredByCcsOpinions) {
-      power = power * (100 - publicOpinion[View.ccsLiked]!) / 100;
+      power = power * (100 - publicOpinion[View.ccsHated]!) / 100;
     }
     if (view == View.lcsKnown) {
       power = power.clamp(-5, 50);
-    } else if (view == View.lcsLiked || view == View.ccsLiked) {
-      power = power.clamp(-50, 5);
+    } else if (view == View.lcsLiked) {
+      power = power.clamp(-25, 10);
+    } else if (view == View.ccsHated) {
+      power = power.clamp(-10, 25);
     }
     power = (power * (1 + existingInterest / 50)).round();
     publicInterest[view] = (existingInterest + power.abs()).round();
@@ -283,7 +285,7 @@ class Politics {
 
   double ccsApproval() {
     double mood = 100 - publicMood();
-    double ccsPopularity = publicOpinion[View.ccsLiked]!;
+    double ccsPopularity = publicOpinion[View.ccsHated]!;
     double totalSupport = (ccsPopularity + mood) / 2;
     return voterSpread(totalSupport)[DeepAlignment.archConservative]! * 100;
   }
