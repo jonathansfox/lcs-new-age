@@ -76,12 +76,7 @@ Future<void> advanceMonth() async {
     LootType? loot = await chooseSpecialEdition();
 
     if (loot != null) {
-      await printNews(loot, publishers.length);
-
-      if (loot.idName == "LOOT_INTHQDISK" ||
-          loot.idName == "LOOT_SECRETDOCUMENTS") {
-        criminalizeAll(publishers, Crime.treason);
-      }
+      await printNews(loot, publishers);
     }
   }
 

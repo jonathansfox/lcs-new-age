@@ -1,7 +1,12 @@
 /* monthly - LCS finances report */
 import 'package:collection/collection.dart';
+import 'package:lcs_new_age/basemode/activities.dart';
+import 'package:lcs_new_age/common_actions/common_actions.dart';
 import 'package:lcs_new_age/common_actions/equipment.dart';
 import 'package:lcs_new_age/common_display/common_display.dart';
+import 'package:lcs_new_age/creature/creature.dart';
+import 'package:lcs_new_age/creature/difficulty.dart';
+import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/gamestate/ledger.dart';
@@ -11,6 +16,7 @@ import 'package:lcs_new_age/items/item.dart';
 import 'package:lcs_new_age/items/loot.dart';
 import 'package:lcs_new_age/items/loot_type.dart';
 import 'package:lcs_new_age/items/weapon_type.dart';
+import 'package:lcs_new_age/justice/crimes.dart';
 import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/politics/views.dart';
 import 'package:lcs_new_age/utils/colors.dart';
@@ -346,83 +352,146 @@ Future<LootType?> chooseSpecialEdition() async {
 }
 
 /* monthly - guardian - prints liberal guardian special editions */
-Future<void> printNews(LootType li, int publishers) async {
+Future<void> printNews(LootType li, Iterable<Creature> publishers) async {
   erase();
   setColor(white);
 
+  int reception(int basePotency) {
+    Creature? leader;
+    Skill? skillUsed;
+    int power = publishers.length +
+        publishers.fold(0, (best, p) {
+          Skill skill = p.activity.type == ActivityType.writeGuardian
+              ? Skill.writing
+              : Skill.persuasion;
+          int roll = p.skillRoll(skill);
+          if (skill == Skill.persuasion) roll -= 5;
+          if (roll > best) {
+            best = roll;
+            leader = p;
+            skillUsed = skill;
+          }
+          return best;
+        });
+    String article = switch (skillUsed) {
+      Skill.writing => "article",
+      Skill.persuasion => "stream",
+      _ => "piece",
+    };
+    String leadersArticle = "${leader?.name ?? "The squad"}'s $article";
+    if (power < 4) {
+      mvaddstr(9, 1,
+          "The information is posted to the internet with little fanfare.");
+      mvaddstr(10, 1,
+          "Some conspiracy theorists mention it, but most people know or don't believe.");
+      return basePotency ~/ 5;
+    } else if (power < 8) {
+      mvaddstr(9, 1, "$leadersArticle about this doesn't have much impact.");
+      mvaddstr(10, 1,
+          "The information is taken up by watchdog groups but never really catches on.");
+      return basePotency ~/ 4;
+    } else if (power < 12) {
+      mvaddstr(9, 1, "$leadersArticle about this gets more views than usual.");
+      mvaddstr(10, 1,
+          "A prominent journalist investigates further, but can't prove it's true.");
+      return basePotency ~/ 3;
+    } else if (power < 16) {
+      mvaddstr(9, 1, "$leadersArticle about this lays out the evidence.");
+      mvaddstr(10, 1,
+          "The story is picked up by several major networks and publications.");
+      return basePotency ~/ 2;
+    } else if (power < 20) {
+      mvaddstr(9, 1, "$leadersArticle about this is electrifying.");
+      mvaddstr(10, 1,
+          "The major networks and publications take it up and run it for weeks.");
+      return basePotency;
+    } else {
+      mvaddstr(
+          9, 1, "$leadersArticle about this transforms the media narrative.");
+      mvaddstr(10, 1,
+          "The major networks and publications fixate on the story for weeks.");
+      mvaddstr(11, 1,
+          "The information is so explosive that it becomes a national scandal.");
+      return (basePotency * 1.5).round();
+    }
+  }
+
+  if (li.idName == "LOOT_INTHQDISK" || li.idName == "LOOT_SECRETDOCUMENTS") {
+    criminalizeAll(publishers, Crime.treason);
+  }
+
+  List<View> issues = [View.lcsLiked, View.lcsKnown];
+  int potency = 10;
+
   if (li.idName == "LOOT_CEOPHOTOS") // Tmp -XML
   {
-    changePublicOpinion(View.lcsKnown, 10);
-    changePublicOpinion(View.lcsLiked, 10);
     mvaddstr(6, 1,
         "The Liberal Guardian runs a story featuring photos of a major CEO");
     move(7, 1);
     switch (lcsRandom(10)) {
       case 0:
         addstr("sexually assaulting animals.");
-        changePublicOpinion(View.animalResearch, 15);
+        issues.add(View.animalResearch);
       case 1:
         addstr("digging up graves and sleeping with the dead.");
       case 2:
         addstr("participating in a murder.");
-        changePublicOpinion(View.policeBehavior, 15);
-        changePublicOpinion(View.justices, 10);
+        issues.add(View.policeBehavior);
+        issues.add(View.justices);
       case 3:
         addstr("pointing guns at photos of the CEO's employees.");
-        changePublicOpinion(View.gunControl, 10);
+        issues.add(View.gunControl);
       case 4:
         addstr("tongue-kissing an infamous dictator.");
       case 5:
         addstr(
             "on a date with an EPA regulator overseeing the CEO's facilities.");
-        changePublicOpinion(View.pollution, 10);
+        issues.add(View.pollution);
       case 6:
         addstr("shaking hands with the Grand Wizard of the KKK.");
-        changePublicOpinion(View.civilRights, 15);
+        issues.add(View.civilRights);
       case 7:
         addstr("waving a Nazi flag at a supremacist rally.");
-        changePublicOpinion(View.civilRights, 15);
+        issues.add(View.civilRights);
       case 8:
         addstr("torturing an employee with a hot iron.");
-        changePublicOpinion(View.sweatshops, 10);
+        issues.add(View.sweatshops);
       case 9:
         addstr(
             "on a date with an FDA regulator overseeing the CEO's products.");
-        changePublicOpinion(View.genetics, 10);
+        issues.add(View.genetics);
     }
-    mvaddstr(9, 1,
-        "The major networks and publications take it up and run it for weeks.");
-    changePublicOpinion(View.ceoSalary, 50);
-    changePublicOpinion(View.corporateCulture, 50);
+
+    issues.add(View.ceoSalary);
+    issues.add(View.corporateCulture);
+    potency = reception(50);
     offendedCorps = true;
-    mvaddstr(10, 1,
-        "Be on guard for retaliation.  This guy is still rich as fuck...");
+    mvaddstr(console.y + 2, 1,
+        "Be on guard for retaliation.  This guy is not the forgiving type...");
   } else if (li.idName == "LOOT_CEOLOVELETTERS") {
     mvaddstr(6, 1,
         "The Liberal Guardian runs a story featuring salacious love letters from a");
     mvaddstr(7, 1, "major CEO ");
-    changePublicOpinion(View.lcsKnown, 10);
-    changePublicOpinion(View.lcsLiked, 10);
     switch (lcsRandom(8)) {
       case 0:
         addstr("addressed to his pet dog.  Yikes.");
-        changePublicOpinion(View.animalResearch, 15);
+        issues.add(View.animalResearch);
       case 1:
         addstr("to the judge that acquit him in a corruption trial.");
-        changePublicOpinion(View.justices, 15);
+        issues.add(View.justices);
       case 2:
         addstr(
             "to a subordinate, demanding she submit to a sexual relationship.");
-        changePublicOpinion(View.womensRights, 10);
+        issues.add(View.womensRights);
       case 3:
         addstr("to himself.  They're very steamy.");
       case 4:
         addstr("implying that he has enslaved his houseservants.");
-        changePublicOpinion(View.sweatshops, 10);
+        issues.add(View.sweatshops);
       case 5:
         addstr("to the FDA official overseeing the CEO's products.");
-        changePublicOpinion(View.genetics, 10);
-        changePublicOpinion(View.pollution, 10);
+        issues.add(View.genetics);
+        issues.add(View.pollution);
       case 6:
         addstr(
             "that alternate between romantic and threats of extreme violence.");
@@ -430,62 +499,64 @@ Future<void> printNews(LootType li, int publishers) async {
         addstr(
             "promising someone company profits in exchange for sexual favors.");
     }
-    mvaddstr(9, 1,
-        "The major networks and publications take it up and run it for weeks.");
-    changePublicOpinion(View.ceoSalary, 50);
-    changePublicOpinion(View.corporateCulture, 50);
+    issues.add(View.ceoSalary);
+    issues.add(View.corporateCulture);
+    potency = reception(50);
     offendedCorps = true;
-    mvaddstr(10, 1,
+    mvaddstr(console.y + 2, 1,
         "Be on guard for retaliation.  This guy is not the forgiving type...");
+    for (Creature c in publishers) {
+      addjuice(c, 20, 1000);
+    }
   } else if (li.idName == "LOOT_CEOTAXPAPERS") {
     mvaddstr(6, 1,
         "The Liberal Guardian runs a story featuring a major CEO's tax papers ");
     move(7, 1);
-    changePublicOpinion(View.lcsKnown, 10);
-    changePublicOpinion(View.lcsLiked, 10);
     switch (lcsRandom(1)) {
       default:
         addstr("showing that he has engaged in consistent tax evasion.");
-        changePublicOpinion(View.taxes, 25);
+        issues.add(View.taxes);
     }
-    mvaddstr(9, 1,
-        "The major networks and publications take it up and run it for weeks.");
-    changePublicOpinion(View.ceoSalary, 50);
-    changePublicOpinion(View.corporateCulture, 50);
+    issues.add(View.ceoSalary);
+    issues.add(View.corporateCulture);
+    potency = reception(50);
     offendedCorps = true;
-    mvaddstr(10, 1,
+    mvaddstr(console.y + 2, 1,
         "Be on guard for retaliation.  This guy is not the forgiving type...");
+    for (Creature c in publishers) {
+      addjuice(c, 20, 1000);
+    }
   } else if (li.idName == "LOOT_CORPFILES") {
     mvaddstr(
         6, 1, "The Liberal Guardian runs a story featuring Corporate files");
     move(7, 1);
-    changePublicOpinion(View.lcsKnown, 10);
-    changePublicOpinion(View.lcsLiked, 10);
     switch (lcsRandom(5)) {
       case 0:
         addstr("describing a genetic monster created in a lab.");
-        changePublicOpinion(View.genetics, 50);
+        issues.add(View.genetics);
       case 1:
         addstr("with a list of \"suspected\" LGBT employees.");
-        changePublicOpinion(View.lgbtRights, 50);
+        issues.add(View.lgbtRights);
       case 2:
         addstr(
             "containing a memo: \"Terminate the pregnancy, I terminate you.\"");
-        changePublicOpinion(View.womensRights, 50);
+        issues.add(View.womensRights);
       case 3:
         addstr("cheerfully describing foreign corporate sweatshops.");
-        changePublicOpinion(View.sweatshops, 50);
+        issues.add(View.sweatshops);
       case 4:
         addstr("describing an intricate tax scheme.");
-        changePublicOpinion(View.taxes, 50);
+        issues.add(View.taxes);
     }
-    mvaddstr(9, 1,
-        "The major networks and publications take it up and run it for weeks.");
-    changePublicOpinion(View.ceoSalary, 50);
-    changePublicOpinion(View.corporateCulture, 50);
+    issues.add(View.ceoSalary);
+    issues.add(View.corporateCulture);
+    potency = reception(50);
     offendedCorps = true;
     mvaddstr(10, 1,
         "Be on guard for retaliation.  These guys don't like to lose...");
+    for (Creature c in publishers) {
+      addjuice(c, 20, 1000);
+    }
   } else if (li.idName == "LOOT_CCS_BACKERLIST") {
     mvaddstr(5, 1,
         "The Liberal Guardian runs more than one thousand pages of documents about ");
@@ -516,57 +587,56 @@ Future<void> printNews(LootType li, int publishers) async {
     mvaddstr(20, 1,
         "This is the beginning of the end for the Conservative Crime Squad.");
 
-    changePublicOpinion(View.intelligence, 50);
-    changePublicOpinion(View.ccsLiked, 100);
+    issues.addAll([View.intelligence, View.ccsLiked]);
+    potency = 100;
     ccsExposure = CCSExposure.exposed;
   } else if (li.idName == "LOOT_INTHQDISK" ||
       li.idName == "LOOT_SECRETDOCUMENTS") {
     mvaddstr(6, 1,
         "The Liberal Guardian runs a story featuring CIA and other intelligence files ");
     move(7, 1);
-    changePublicOpinion(View.lcsKnown, 10);
-    changePublicOpinion(View.lcsLiked, 10);
     switch (lcsRandom(6)) {
       case 0:
         addstr("documenting the overthrow of a government.");
       case 1:
         addstr(
             "documenting the planned assassination of a Liberal federal judge.");
-        changePublicOpinion(View.justices, 50);
+        issues.add(View.justices);
       case 2:
         addstr("containing private information on innocent citizens.");
       case 3:
         addstr("documenting \"harmful speech\" made by innocent citizens.");
-        changePublicOpinion(View.freeSpeech, 50);
+        issues.add(View.freeSpeech);
       case 4:
         addstr("used to keep tabs on LGBT citizens.");
-        changePublicOpinion(View.lgbtRights, 50);
+        issues.add(View.lgbtRights);
       case 5:
         addstr("documenting the infiltration of a pro-choice group.");
-        changePublicOpinion(View.womensRights, 50);
+        issues.add(View.womensRights);
     }
-    mvaddstr(9, 1,
-        "The major networks and publications take it up and run it for weeks.");
-    changePublicOpinion(View.intelligence, 50);
+    issues.add(View.intelligence);
+    potency = reception(50);
     offendedCia = true;
-    mvaddstr(10, 1,
+    mvaddstr(console.y + 2, 1,
         "Be on guard for retaliation.  These guys REALLY don't like to lose...");
+    for (Creature c in publishers) {
+      addjuice(c, 50, 1000);
+      criminalize(c, Crime.treason);
+    }
   } else if (li.idName == "LOOT_POLICERECORDS") {
     mvaddstr(
         6, 1, "The Liberal Guardian runs a story featuring police records ");
     move(7, 1);
-    changePublicOpinion(View.lcsKnown, 10);
-    changePublicOpinion(View.lcsLiked, 10);
-    switch (lcsRandom(6)) {
+    switch (lcsRandom(7)) {
       case 0:
         addstr("documenting human rights abuses by the force.");
-        changePublicOpinion(View.torture, 15);
+        issues.add(View.torture);
       case 1:
         addstr("documenting a pattern of torturing suspects.");
-        changePublicOpinion(View.torture, 50);
+        issues.add(View.torture);
       case 2:
         addstr("documenting a systematic invasion of privacy by the force.");
-        changePublicOpinion(View.intelligence, 15);
+        issues.add(View.intelligence);
       case 3:
         addstr("documenting a forced confession.");
       case 4:
@@ -574,86 +644,88 @@ Future<void> printNews(LootType li, int publishers) async {
       case 5:
         addstr(
             "documenting gladiatorial matches held between prisoners by guards.");
-        changePublicOpinion(View.deathPenalty, 25);
-        changePublicOpinion(View.prisons, 25);
+        issues.add(View.deathPenalty);
+        issues.add(View.prisons);
+      case 6:
+        addstr(
+            "documenting the coverup of several killings of unarmed Black men.");
+        issues.add(View.civilRights);
     }
-    mvaddstr(9, 1,
-        "The major networks and publications take it up and run it for weeks.");
-    changePublicOpinion(View.policeBehavior, 50);
-    mvaddstr(10, 1,
+    issues.add(View.policeBehavior);
+    potency = reception(50);
+    mvaddstr(console.y + 2, 1,
         "The cops hate this, but what else is new?  They're already on your ass.");
   } else if (li.idName == "LOOT_JUDGEFILES") {
     mvaddstr(6, 1,
         "The Liberal Guardian runs a story with evidence of a Conservative judge ");
     move(7, 1);
-    changePublicOpinion(View.lcsKnown, 10);
-    changePublicOpinion(View.lcsLiked, 10);
     switch (lcsRandom(2)) {
       case 0:
         addstr("taking bribes to acquit murderers.");
       case 1:
         addstr("promising Conservative rulings in exchange for appointments.");
     }
-    mvaddstr(8, 1,
-        "The major networks and publications take it up and run it for weeks.");
-    changePublicOpinion(View.justices, 50);
-    mvaddstr(9, 1,
+    issues.add(View.justices);
+    potency = reception(50);
+    mvaddstr(console.y + 2, 1,
         "This Judge is too weak to pose a real threat to you moving forward.");
+    for (Creature c in publishers) {
+      addjuice(c, 20, 1000);
+    }
   } else if (li.idName == "LOOT_RESEARCHFILES") {
     mvaddstr(
         6, 1, "The Liberal Guardian runs a story featuring research papers ");
     move(7, 1);
-    changePublicOpinion(View.lcsKnown, 10);
-    changePublicOpinion(View.lcsLiked, 10);
     switch (lcsRandom(4)) {
       case 0:
         addstr("documenting horrific animal rights abuses.");
-        changePublicOpinion(View.animalResearch, 50);
+        issues.add(View.animalResearch);
       case 1:
         addstr("studying the effects of torture on cats.");
-        changePublicOpinion(View.animalResearch, 50);
+        issues.add(View.animalResearch);
       case 2:
         addstr("covering up the accidental creation of a genetic monster.");
-        changePublicOpinion(View.genetics, 50);
+        issues.add(View.genetics);
       case 3:
         addstr("showing human test subjects dying under genetic research.");
-        changePublicOpinion(View.genetics, 50);
+        issues.add(View.genetics);
     }
-    mvaddstr(9, 1,
-        "The major networks and publications take it up and run it for weeks.");
-    mvaddstr(10, 1,
+    potency = reception(50);
+    mvaddstr(console.y + 2, 1,
         "The research company is too small to pose a real threat to you.");
+    for (Creature c in publishers) {
+      addjuice(c, 20, 1000);
+    }
   } else if (li.idName == "LOOT_PRISONFILES") {
     mvaddstr(
         6, 1, "The Liberal Guardian runs a story featuring prison documents ");
     move(7, 1);
-    changePublicOpinion(View.lcsKnown, 10);
-    changePublicOpinion(View.lcsLiked, 10);
-    changePublicOpinion(View.prisons, 50);
-    switch (lcsRandom(4)) {
+    switch (lcsRandom(5)) {
       case 0:
         addstr("documenting human rights abuses by prison guards.");
       case 1:
         addstr("documenting a prison torture case.");
-        changePublicOpinion(View.torture, 50);
+        issues.add(View.torture);
       case 2:
         addstr("documenting widespread corruption among prison employees.");
       case 3:
         addstr(
             "documenting gladiatorial matches held between prisoners by guards.");
-        changePublicOpinion(View.deathPenalty, 25);
+      case 4:
+        addstr("referring to prisoners using a wide variety of racist slurs.");
+        issues.add(View.civilRights);
     }
-    mvaddstr(9, 1,
-        "The major networks and publications take it up and run it for weeks.");
-    changePublicOpinion(View.deathPenalty, 25);
-    mvaddstr(10, 1,
+    issues.addAll([View.prisons, View.deathPenalty]);
+    potency = reception(50);
+    mvaddstr(console.y + 2, 1,
         "The prison system doesn't love this, but what are they gonna do?  Jail you?");
+    for (Creature c in publishers) {
+      addjuice(c, 20, 1000);
+    }
   } else if (li.idName == "LOOT_CABLENEWSFILES") {
     mvaddstr(
         6, 1, "The Liberal Guardian runs a story featuring cable news memos ");
     move(7, 1);
-    changePublicOpinion(View.lcsKnown, 10);
-    changePublicOpinion(View.lcsLiked, 10);
     switch (lcsRandom(4)) {
       case 0:
         addstr("calling their news 'the vanguard of Conservative thought'.");
@@ -663,20 +735,20 @@ Future<void> printNews(LootType li, int publishers) async {
         addstr("planning to drum up a false scandal about a Liberal figure.");
       case 3:
         addstr("instructing a female anchor to 'get sexier or get a new job'.");
-        changePublicOpinion(View.womensRights, 20);
+        issues.add(View.womensRights);
     }
-    mvaddstr(9, 1,
-        "The major networks and publications take it up and run it for weeks.");
-    changePublicOpinion(View.cableNews, 50);
+    issues.add(View.cableNews);
     offendedHicks = true;
-    mvaddstr(10, 1,
+    potency = reception(50);
+    mvaddstr(console.y + 2, 1,
         "This is bound to get the Conservative masses a little riled up...");
+    for (Creature c in publishers) {
+      addjuice(c, 20, 1000);
+    }
   } else if (li.idName == "LOOT_AMRADIOFILES") {
     mvaddstr(
         6, 1, "The Liberal Guardian runs a story featuring AM radio plans ");
     move(7, 1);
-    changePublicOpinion(View.lcsKnown, 10);
-    changePublicOpinion(View.lcsLiked, 10);
     switch (lcsRandom(4)) {
       case 0:
         addstr("calling listeners 'sheep to be told what to think'.");
@@ -686,14 +758,20 @@ Future<void> printNews(LootType li, int publishers) async {
         addstr("planning to drum up a false scandal about a Liberal figure.");
       case 3:
         addstr("to systematically promote hostility toward Black people.");
-        changePublicOpinion(View.civilRights, 25);
+        issues.add(View.civilRights);
     }
-    mvaddstr(9, 1,
-        "The major networks and publications take it up and run it for weeks.");
-    changePublicOpinion(View.amRadio, 50);
+    issues.add(View.amRadio);
+    potency = reception(50);
     offendedHicks = true;
-    mvaddstr(10, 1,
+    mvaddstr(console.y + 2, 1,
         "This is bound to get the Conservative masses a little riled up...");
+    for (Creature c in publishers) {
+      addjuice(c, 20, 1000);
+    }
+  }
+
+  for (View issue in issues) {
+    changePublicOpinion(issue, potency);
   }
 
   await getKey();
