@@ -25,7 +25,6 @@ import 'package:lcs_new_age/utils/lcsrandom.dart';
 
 Future<void> sleeperEffect(Creature cr, Map<View, int> libpower) async {
   if (disbanding) cr.activity.type = ActivityType.sleeperLiberal;
-  bool infiltrate = true;
 
   switch (cr.activity.type) {
     case ActivityType.sleeperLiberal:
@@ -33,19 +32,15 @@ Future<void> sleeperEffect(Creature cr, Map<View, int> libpower) async {
       cr.infiltration -= 0.02;
     case ActivityType.sleeperEmbezzle:
       await sleeperEmbezzle(cr, libpower);
-      infiltrate = false;
     case ActivityType.sleeperSteal:
       await sleeperSteal(cr, libpower);
-      infiltrate = false;
     case ActivityType.sleeperRecruit:
       await sleeperRecruit(cr, libpower);
     case ActivityType.sleeperSpy:
       await sleeperSpy(cr, libpower);
     default:
-      break;
+      cr.infiltration += 0.01 * lcsRandom(5) + 0.01;
   }
-
-  if (infiltrate) cr.infiltration += lcsRandom(8) * 0.01 - 0.02;
 
   cr.infiltration = cr.infiltration.clamp(0.0, 1.0);
 }
@@ -254,8 +249,8 @@ Future<void> sleeperSpy(Creature cr, Map<View, int> libpower) async {
       findSiteInSameCity(cr.workSite?.city, SiteType.homelessEncampment);
 
   if (lcsRandom(100) > 100 * cr.infiltration) {
-    cr.juice -= 1;
-    if (cr.juice < -2) {
+    cr.infiltration -= 0.05;
+    if (cr.infiltration < 0) {
       erase();
       mvaddstr(6, 1, "Sleeper ${cr.name} has been caught snooping around.");
       mvaddstr(8, 1, "The Liberal is now homeless and jobless...");
@@ -267,12 +262,14 @@ Future<void> sleeperSpy(Creature cr, Map<View, int> libpower) async {
       cr.dropWeaponAndAmmo();
       cr.activity = Activity.none();
       cr.sleeperAgent = false;
+    } else {
+      erase();
+      mvaddstr(6, 1, "Sleeper ${cr.name} has been caught snooping around.");
+      mvaddstr(8, 1, "The Liberal's infiltration score has taken a hit.");
+      await getKey();
     }
     return;
   }
-
-  // Improves juice, as confidence improves
-  addjuice(cr, 10, 100);
 
   cr.workSite?.mapped = true;
 
@@ -282,10 +279,14 @@ Future<void> sleeperSpy(Creature cr, Map<View, int> libpower) async {
     erase();
     mvaddstr(6, 1, "Sleeper ${cr.name} has leaked $description.");
     mvaddstr(7, 1, "The dead drop is at the homeless camp.");
+
+    mvaddstr(9, 1, "An investigation is being launched to find the leaker.");
+    mvaddstr(10, 1, "The Liberal's infiltration score has taken a hit.");
+
+    cr.infiltration -= 0.2;
+    addjuice(cr, 50, 1000);
     await getKey();
   }
-
-  bool noLeakToday(Law law) => lcsRandom(laws[law]!.index + 3) > 0;
 
   if (homes?.siege.underSiege != false || !canSeeThings) return;
 
@@ -294,7 +295,6 @@ Future<void> sleeperSpy(Creature cr, Map<View, int> libpower) async {
     case CreatureTypeIds.agent:
     case CreatureTypeIds.president:
       // Agents can leak intelligence files to you
-      if (noLeakToday(Law.privacy)) break;
       await leak("LOOT_SECRETDOCUMENTS", "secret intelligence files");
     case CreatureTypeIds.deathSquad:
     case CreatureTypeIds.swat:
@@ -302,32 +302,21 @@ Future<void> sleeperSpy(Creature cr, Map<View, int> libpower) async {
     case CreatureTypeIds.policeChief:
     case CreatureTypeIds.gangUnit:
       // Cops can leak police files to you
-      if (noLeakToday(Law.policeReform)) break;
       await leak("LOOT_POLICERECORDS", "secret police records");
     case CreatureTypeIds.corporateManager:
     case CreatureTypeIds.corporateCEO:
-      // Can leak corporate files to you
-      if (cr.type.id != CreatureTypeIds.corporateCEO &&
-          noLeakToday(Law.corporate)) {
-        break;
-      }
       await leak("LOOT_CORPFILES", "secret corporate documents");
     case CreatureTypeIds.educator:
     case CreatureTypeIds.prisonGuard:
-      if (noLeakToday(Law.prisons)) break;
       await leak("LOOT_PRISONFILES", "internal prison records");
     case CreatureTypeIds.newsAnchor:
-      if (noLeakToday(Law.freeSpeech)) break;
       await leak("LOOT_CABLENEWSFILES", "proof of systemic Cable News bias");
     case CreatureTypeIds.radioPersonality:
-      if (noLeakToday(Law.freeSpeech)) break;
       await leak("LOOT_AMRADIOFILES", "proof of systemic AM Radio bias");
     case CreatureTypeIds.labTech:
     case CreatureTypeIds.eminentScientist:
-      if (noLeakToday(Law.animalRights)) break;
       await leak("LOOT_RESEARCHFILES", "internal animal research reports");
     case CreatureTypeIds.conservativeJudge:
-      if (!oneIn(5)) break;
       await leak("LOOT_JUDGEFILES", "compromising files about another Judge");
     case CreatureTypeIds.ccsArchConservative:
       if (ccsExposure.index >= CCSExposure.lcsGotData.index) break;
@@ -342,19 +331,22 @@ Future<void> sleeperSpy(Creature cr, Map<View, int> libpower) async {
 ///*
 ///********************************
 Future<void> sleeperEmbezzle(Creature cr, Map<View, int> libpower) async {
+  bool takingHeat = false;
   if (lcsRandom(100) > 90 * cr.infiltration) {
-    cr.juice -= 1;
-    if (cr.juice < -2) {
+    cr.infiltration -= 0.2;
+    if (cr.infiltration < 0) {
       await showMessage(
           "Sleeper ${cr.name} has been arrested while embezzling funds.");
       criminalize(cr, Crime.embezzlement);
       await captureCreature(cr);
+      return;
+    } else {
+      takingHeat = true;
     }
-    return;
   }
 
   // Improves juice, as confidence improves
-  addjuice(cr, 10, 100);
+  addjuice(cr, 10, 1000);
 
   int income;
   switch (cr.type.id) {
@@ -369,6 +361,16 @@ Future<void> sleeperEmbezzle(Creature cr, Map<View, int> libpower) async {
       income = (500 * cr.infiltration).round();
   }
   ledger.addFunds(income, Income.embezzlement);
+
+  erase();
+  mvaddstrc(6, 1, lightGray, "Sleeper ${cr.name} has embezzled \$$income.");
+
+  if (takingHeat) {
+    erase();
+    mvaddstr(8, 1,
+        "Unfortunately, Conservatives have noticed funds are going missing.");
+    mvaddstr(9, 1, "The Liberal's infiltration score has taken a hit.");
+  }
 }
 
 Future<void> sleeperSteal(Creature cr, Map<View, int> libpower) async {
@@ -376,18 +378,24 @@ Future<void> sleeperSteal(Creature cr, Map<View, int> libpower) async {
       findSiteInSameCity(cr.workSite?.city, SiteType.homelessEncampment);
   if (camp == null) return;
 
-  if (lcsRandom(100) > 90 * cr.infiltration) {
-    cr.juice -= 1;
-    if (cr.juice < -2) {
+  bool takingHeat = false;
+
+  if (lcsRandom(100) > 95 * cr.infiltration) {
+    cr.infiltration -= 0.2;
+    if (cr.infiltration < 0) {
       await showMessage(
           "Sleeper ${cr.name} has been arrested while stealing things.");
       criminalize(cr, Crime.theft);
       await captureCreature(cr);
+      return;
+    } else {
+      takingHeat = true;
+      erase();
+      await getKey();
     }
-    return;
   }
   // Improves juice, as confidence improves
-  addjuice(cr, 10, 100);
+  addjuice(cr, 10, 1000);
 
   cr.infiltration -= lcsRandom(10) * 0.01 - 0.02;
 
@@ -398,7 +406,12 @@ Future<void> sleeperSteal(Creature cr, Map<View, int> libpower) async {
   }
   erase();
   mvaddstrc(6, 1, lightGray,
-      "Sleeper $numberOfItems has dropped a package off at the homeless camp.");
+      "Sleeper ${cr.name} has dropped a package off at the homeless camp.");
+  if (takingHeat) {
+    mvaddstr(8, 1,
+        "Unfortunately, the Conservatives have noticed things are going missing.");
+    mvaddstr(9, 1, "The Liberal's infiltration score has taken a hit.");
+  }
   await getKey();
 }
 
