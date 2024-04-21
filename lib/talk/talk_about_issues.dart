@@ -241,7 +241,7 @@ Map<Law, _DiscussionPoint> _discussionPoints = {
   Law.freeSpeech: _DiscussionPoint(
       "Protests and demonstrations are regularly and often brutally suppressed in",
       "this country.  People have to watch what they write -- even what they read.",
-      "They government won't let me fucking swear!",
+      "The government won't let me fucking swear!",
       "People get mad if you swear a lot in public.",
       "Don't be offensive and you'll be fine.")
     ..noProfanityStupidPrompt = "The government won't let me [kindly] swear!",
