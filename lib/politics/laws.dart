@@ -16,7 +16,7 @@ enum Law {
     "Minimal animal welfare laws stop only the most extravagant abuses.",
     "Use of animals in farming and research is governed by animal welfare laws.",
     "A bill of animal rights is in place governing their treatment.",
-    "Animals may speak, vote, marry, and become US citizens.",
+    "Animals may own property, speak, marry, and become US citizens.",
   ]),
   policeReform("Police Regulation", [
     "Policing is administered by corporations and has a draft.",
