@@ -9,6 +9,7 @@ import 'package:lcs_new_age/items/attack.dart';
 import 'package:lcs_new_age/items/weapon_type.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
 import 'package:lcs_new_age/politics/laws.dart';
+import 'package:lcs_new_age/politics/views.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 
 Map<String, CreatureType> creatureTypes = {};
@@ -122,6 +123,27 @@ class CreatureType {
       id == CreatureTypeIds.ccsMolotov ||
       id == CreatureTypeIds.ccsSniper ||
       id == CreatureTypeIds.ccsVigilante;
+
+  void applyOnDeathPublicOpinionEffects() {
+    switch (id) {
+      case CreatureTypeIds.corporateCEO:
+        changePublicOpinion(View.ceoSalary, 5);
+        changePublicOpinion(View.corporateCulture, 3);
+      case CreatureTypeIds.radioPersonality:
+        changePublicOpinion(View.amRadio, 5);
+      case CreatureTypeIds.newsAnchor:
+        changePublicOpinion(View.cableNews, 5);
+      case CreatureTypeIds.eminentScientist:
+        changePublicOpinion(View.genetics, 3);
+        changePublicOpinion(View.animalResearch, 3);
+      case CreatureTypeIds.conservativeJudge:
+        changePublicOpinion(View.justices, 5);
+      case CreatureTypeIds.policeChief:
+        changePublicOpinion(View.policeBehavior, 5);
+      default:
+        break;
+    }
+  }
 }
 
 enum CreatureTypeAlignment { liberal, moderate, conservative, any }

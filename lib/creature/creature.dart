@@ -375,6 +375,10 @@ class Creature {
             laws[Law.animalRights] == DeepAlignment.eliteLiberal)) {
       stats.kills++;
     }
+
+    if (align == Alignment.conservative) {
+      type.applyOnDeathPublicOpinionEffects();
+    }
   }
 
   void adjustAttribute(Attribute a, int amount) {
