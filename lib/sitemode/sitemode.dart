@@ -798,8 +798,20 @@ Future<void> _siteModeAux() async {
                   !activeSite!.siege.camerasOff;
               setColor(lightGray);
               if (tile.wall) {
-                setColor(lightGray, background: lightGray);
-                addchar(' ');
+                if (tile.neighbors().any((t) => t.graffitiLCS)) {
+                  setColor(green, background: lightGray);
+                  addchar("℄");
+                } else if (tile.neighbors().any((t) => t.graffitiCCS)) {
+                  setColor(darkRed, background: lightGray);
+                  addchar("ℭ");
+                } else if (tile.neighbors().any((t) => t.graffitiOther)) {
+                  setColor(black, background: lightGray);
+                  // Gang graffiti
+                  addchar("Ω");
+                } else {
+                  setColor(lightGray, background: lightGray);
+                  addchar(' ');
+                }
               } else if (tile.door) {
                 // Pick color
                 if (tile.metal) {
