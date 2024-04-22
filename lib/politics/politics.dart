@@ -276,18 +276,20 @@ class Politics {
   int presidentialApproval() => approvalForAlign(exec[Exec.president]!, true);
 
   double lcsApproval() {
-    double mood = publicMood();
+    //double mood = publicMood();
     double lcsPopularity = publicOpinion[View.lcsLiked]!;
-    double totalSupport = (lcsPopularity + mood) / 2;
-    double heardOfLcs = publicOpinion[View.lcsKnown]!;
-    return voterSpread(totalSupport)[DeepAlignment.eliteLiberal]! * heardOfLcs;
+    //double totalSupport = (lcsPopularity + mood) / 2;
+    //double heardOfLcs = publicOpinion[View.lcsKnown]!;
+    //return voterSpread(totalSupport)[DeepAlignment.eliteLiberal]! * heardOfLcs;
+    return lcsPopularity;
   }
 
   double ccsApproval() {
-    double mood = 100 - publicMood();
+    //double mood = publicMood();
     double ccsPopularity = publicOpinion[View.ccsHated]!;
-    double totalSupport = (ccsPopularity + mood) / 2;
-    return voterSpread(totalSupport)[DeepAlignment.archConservative]! * 100;
+    //double totalSupport = (ccsPopularity + mood) / 2;
+    //return voterSpread(totalSupport)[DeepAlignment.archConservative]! * 100;
+    return ccsPopularity;
   }
 
   List<View> viewsForLaw(Law law) => switch (law) {
