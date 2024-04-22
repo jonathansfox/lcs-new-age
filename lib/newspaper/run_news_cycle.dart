@@ -325,11 +325,10 @@ void handlePublicOpinionImpact(NewsStory ns) {
     }
   } else if (ccsResponsible) {
     if (ns.positive > 0) {
-      changePublicOpinion(
-          View.ccsHated, -impact); //Negative numbers = favorable for CCS
-    } else {
       changePublicOpinion(View.ccsHated, impact);
-      changePublicOpinion(View.gunControl, impact ~/ 5);
+    } else {
+      changePublicOpinion(View.ccsHated, -impact);
+      changePublicOpinion(View.gunControl, -impact ~/ 5);
     }
   }
   for (View issue in issues) {
