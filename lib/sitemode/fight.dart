@@ -23,12 +23,12 @@ import 'package:lcs_new_age/location/location_type.dart';
 import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/newspaper/news_story.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
-import 'package:lcs_new_age/politics/laws.dart';
 import 'package:lcs_new_age/sitemode/haul_kidnap.dart';
 import 'package:lcs_new_age/sitemode/map_specials.dart';
 import 'package:lcs_new_age/sitemode/site_display.dart';
 import 'package:lcs_new_age/sitemode/sitemap.dart';
 import 'package:lcs_new_age/sitemode/stealth.dart';
+import 'package:lcs_new_age/talk/talk_in_combat.dart';
 import 'package:lcs_new_age/utils/colors.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 
@@ -44,7 +44,7 @@ Future<void> youattack() async {
 
     for (Creature e in encounter) {
       if (e.alive) {
-        if (e.isEnemy) {
+        if (e.isEnemy && !e.nonCombatant) {
           if (e.type.tank && e.stunned == 0) {
             superEnemies.add(e);
           } else if ((e.attack.socialDamage || e.attack.averageDamage > 20) &&
@@ -61,6 +61,9 @@ Future<void> youattack() async {
     }
 
     if (superEnemies.isEmpty && dangerousEnemies.isEmpty && enemies.isEmpty) {
+      if (encounter.any((e) => e.isEnemy && e.alive)) {
+        await intimidate(p);
+      }
       return;
     }
 
@@ -201,9 +204,6 @@ Future<void> enemyattack() async {
     " runs away screaming!",
   ];
 
-  bool armed =
-      activeSquad?.members.any((s) => s.equippedWeapon != null) ?? false;
-
   for (int i = encounter.length - 1; i >= 0; i--) {
     Creature e = encounter[i];
     if (!e.alive) continue;
@@ -219,47 +219,13 @@ Future<void> enemyattack() async {
     }
 
     if (mode != GameMode.carChase) {
-      // Encountered creature will flee if:
-      // (a) Non-Conservative, and not recently converted via music or some other mechanism
-      // (b) Conservative, no juice, unarmed, non-tank/animal, enemy is armed, and fails a morale check based in part on injury level
-      // (c) Conservative, and lost more than 55% blood
-      // (d) There's a fire, they are not firefighters, and they fail a random check
-      // Encountered creatures will never flee if they are tanks, animals, or so hurt they can't move
-      int fire = 0;
-      if (mode == GameMode.site) {
-        if (levelMap[locx][locy][locz].fireStart ||
-            levelMap[locx][locy][locz].fireEnd) {
-          fire = 1;
-        } else if (levelMap[locx][locy][locz].firePeak) {
-          fire = 2;
-        }
-      }
+      bool runsAway = e.calculateWillRunAway();
 
-      int fear = e.maxBlood - e.blood;
-      if (armed && e.isEnemy) fear += 100;
-      if (e.blood < e.maxBlood * 0.45) fear += 100;
-      if (!e.armor.type.fireResistant) fear += fire * lcsRandom(100);
-      int courage = e.juice + lcsRandom(50);
-      if (!e.isEnemy) {
-        if (!activeSiteUnderSiege) {
-          fear += 500;
-        } else {
-          courage += 100;
-        }
-      }
-      if (e.type.canPerformArrests) courage += 200;
-      if (e.equippedWeapon != null) courage += 100;
-      if (e.type.tank) courage += 2000;
-      if (e.type.animal) courage += 200;
-      if (e.type.freeable) courage += 1000;
-      if (e.type.majorEnemy) courage += 2000;
-      if (e.justConverted) courage += 2000;
-
-      if (fear > courage && e.body is HumanoidBody) {
+      if (runsAway && e.body is HumanoidBody) {
         if (!await incapacitated(e, false)) {
           clearMessageArea();
 
-          mvaddstr(16, 1, e.name);
+          mvaddstrc(16, 1, white, e.name);
           if (e.body.legok < 2 || e.blood < e.maxBlood * 0.45) {
             addstr(escapeCrawling.random);
           } else {
@@ -794,7 +760,8 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
                   !t.type.lawEnforcement &&
                   !t.type.edgelord &&
                   !t.type.ccsMember &&
-                  !t.type.tank) {
+                  !t.type.tank &&
+                  t.calculateWillRunAway()) {
                 killjuice = 0;
               }
             }
@@ -803,9 +770,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
             addjuice(a, -killjuice, -50);
           }
 
-          if (target.isEnemy &&
-              (!t.type.animal ||
-                  laws[Law.animalRights] == DeepAlignment.eliteLiberal)) {
+          if (target.isEnemy && (!t.type.animal || animalsArePeopleToo)) {
             if (activeSiteUnderSiege) activeSite!.siege.kills++;
             if (activeSiteUnderSiege && t.type.tank) {
               activeSite!.siege.tanks--;

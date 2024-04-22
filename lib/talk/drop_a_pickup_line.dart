@@ -8,7 +8,6 @@ import 'package:lcs_new_age/daily/dating.dart';
 import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
-import 'package:lcs_new_age/politics/laws.dart';
 import 'package:lcs_new_age/sitemode/site_display.dart';
 import 'package:lcs_new_age/utils/colors.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
@@ -194,9 +193,7 @@ Future<bool> doYouComeHereOften(Creature a, Creature tk) async {
   } else if (poolAndProspects.contains(tk)) {
     succeeded = false;
   }
-  if ((tk.type.animal &&
-          laws[Law.animalRights] != DeepAlignment.eliteLiberal &&
-          !a.type.animal) ||
+  if ((tk.type.animal && animalsArePeopleToo && !a.type.animal) ||
       tk.type.tank) {
     mvaddstrc(y++, 1, white, tk.name);
 

@@ -9,6 +9,7 @@ import 'package:lcs_new_age/creature/creature_work_locations.dart';
 import 'package:lcs_new_age/creature/gender.dart';
 import 'package:lcs_new_age/creature/hardcoded_creature_type_stuff.dart';
 import 'package:lcs_new_age/creature/skills.dart';
+import 'package:lcs_new_age/gamestate/game_mode.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/items/armor.dart';
 import 'package:lcs_new_age/items/armor_type.dart';
@@ -37,11 +38,17 @@ Creature creatureBuilder(Creature creature, {Alignment? align}) {
   applyHardcodedCreatureTypeStuff(creature, type);
 
   // Convert to Conservative if alienated
-  if ((siteAlienated != SiteAlienation.none &&
-          creature.align == Alignment.moderate) ||
-      (siteAlienated == SiteAlienation.alienatedEveryone &&
-          creature.align == Alignment.liberal)) {
-    conservatize(creature);
+  if (mode == GameMode.site) {
+    if ((siteAlienated != SiteAlienation.none &&
+            creature.align == Alignment.moderate) ||
+        (siteAlienated == SiteAlienation.alienatedEveryone &&
+            creature.align == Alignment.liberal)) {
+      conservatize(creature);
+    }
+
+    if (siteAlarm && creature.align == Alignment.conservative) {
+      creature.nonCombatant = creature.calculateWillRunAway();
+    }
   }
 
   return creature;

@@ -26,7 +26,7 @@ import 'package:lcs_new_age/location/location.dart';
 import 'package:lcs_new_age/location/siege.dart';
 import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
-import 'package:lcs_new_age/politics/laws.dart';
+import 'package:lcs_new_age/sitemode/sitemap.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 import 'package:lcs_new_age/vehicles/vehicle.dart';
 
@@ -245,6 +245,8 @@ class Creature {
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
+  bool nonCombatant = false;
+  @JsonKey(includeFromJson: false, includeToJson: false)
   bool get isHoldingBody => prisoner != null;
   @JsonKey(includeFromJson: false, includeToJson: false)
   bool get canWalk => alive && body.canWalk;
@@ -371,8 +373,7 @@ class Creature {
     if (align == Alignment.liberal) {
       stats.martyrs++;
     } else if (align == Alignment.conservative &&
-        (!type.animal ||
-            laws[Law.animalRights] == DeepAlignment.eliteLiberal)) {
+        (!type.animal || animalsArePeopleToo)) {
       stats.kills++;
     }
 
@@ -704,5 +705,42 @@ class Creature {
         spareAmmo = ammo.split([9, ammo.stackSize, count].reduce(min)) as Ammo;
       }
     }
+  }
+
+  bool calculateWillRunAway() {
+    int fire = 0;
+    if (mode == GameMode.site) {
+      if (levelMap[locx][locy][locz].fireStart ||
+          levelMap[locx][locy][locz].fireEnd) {
+        fire = 1;
+      } else if (levelMap[locx][locy][locz].firePeak) {
+        fire = 2;
+      }
+    }
+    bool armed =
+        activeSquad?.members.any((s) => s.equippedWeapon != null) ?? false;
+    int fear = maxBlood - blood;
+    if (isEnemy && armed) fear += 100;
+    if (blood < maxBlood * 0.45) fear += 100;
+    if (!armor.type.fireResistant) fear += fire * 100;
+    if (nonCombatant) fear += 1000;
+    int courage = juice + lcsRandom(50);
+    if (!isEnemy) {
+      if (!activeSiteUnderSiege) {
+        fear += 500;
+      } else {
+        courage += 100;
+      }
+    }
+    if (type.canPerformArrests || type.lawEnforcement) courage += 200;
+    if (type.ccsMember) courage += 200;
+    if (equippedWeapon != null) courage += 100;
+    if (type.tank) courage += 2000;
+    if (type.animal) courage += 200;
+    if (type.freeable) courage += 1000;
+    if (type.majorEnemy) courage += 2000;
+    if (justConverted) courage += 2000;
+
+    return fear > courage;
   }
 }

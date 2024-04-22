@@ -66,71 +66,7 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
   }
 
   if (c == 'a'.codePoint) {
-    mvaddstrc(16, 1, white, "${liberal.name}: ");
-    move(17, 1);
-    setColor(lightGreen);
-
-    switch (lcsRandom(4)) {
-      case 0:
-        // Formatting the slogan so that it always has quotes around it and punctuation
-        if (slogan[0] != '"') addchar('"');
-        addstr(slogan);
-        int last = slogan.length;
-        if (last > 0 &&
-            slogan[last - 1] != '"' &&
-            slogan[last - 1] != '!' &&
-            slogan[last - 1] != '.' &&
-            slogan[last - 1] != '?') {
-          addchar('!');
-        }
-        if (last > 0 && slogan[last - 1] != '"') addchar('"');
-
-      case 1:
-        addstr("Die, you Conservative swine!");
-      case 2:
-        addstr("We're the Liberal Crime Squad!");
-      case 3:
-        addstr("Praying won't help you now!");
-    }
-
-    await getKey();
-
-    setColor(white);
-
-    for (int i = encounter.length - 1; i >= 0; i--) {
-      Creature e = encounter[i];
-      if (e.alive && e.isEnemy) {
-        int attack =
-            (liberal.juice / 50 + publicOpinion[View.lcsKnown]! / 10).round();
-        int defense = e.attributeRoll(Attribute.wisdom);
-
-        if (attack > defense) {
-          if (e.type.intimidationResistant) {
-            if (lcsRandom(3) > 0) continue;
-          }
-          clearMessageArea();
-          mvaddstr(16, 1, e.name);
-          switch (lcsRandom(6)) {
-            case 0:
-              addstr(" chickens out!");
-            case 1:
-              addstr(" backs off!");
-            case 2:
-              addstr(" doesn't want to die!");
-            case 3:
-              addstr(" is out of there!");
-            case 4:
-              addstr(" has a family!");
-            case 5:
-              addstr(" is too young to die!");
-          }
-          encounter.removeAt(i);
-          addjuice(liberal, 2, 1000); // Instant juice!
-
-          await getKey();
-        }
-      }
-    }
+    await intimidate(liberal);
   } else if (c == 'b'.codePoint) {
     mvaddstrc(16, 1, white, "${liberal.name}: ");
     setColor(lightGreen);
@@ -562,4 +498,99 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
     activeSite?.siege.activeSiegeType = SiegeType.none;
   }
   return true;
+}
+
+Future<void> intimidate(Creature liberal) async {
+  clearMessageArea();
+  mvaddstrc(16, 1, white, "${liberal.name}: ");
+  move(17, 1);
+  setColor(lightGreen);
+
+  switch (lcsRandom(15)) {
+    case 0:
+      // Formatting the slogan so that it always has quotes around it and punctuation
+      if (slogan[0] != '"') addchar('"');
+      addstr(slogan);
+      int last = slogan.length;
+      if (last > 0 &&
+          slogan[last - 1] != '"' &&
+          slogan[last - 1] != '!' &&
+          slogan[last - 1] != '.' &&
+          slogan[last - 1] != '?') {
+        addchar('!');
+      }
+      if (last > 0 && slogan[last - 1] != '"') addchar('"');
+
+    case 1:
+      addstr("Run, you Conservative swine!");
+    case 2:
+      addstr("We're the Liberal Crime Squad!");
+    case 3:
+      addstr("Praying won't help you now!");
+    case 4:
+      addstr("You fight like a dairy farmer!");
+    case 5:
+      addstr("You're in the wrong place!");
+    case 6:
+      addstr("Don't mess with the LCS!");
+    case 7:
+      addstr("You're in for it now!");
+    case 8:
+      addstr("I'll kill you!");
+    case 9:
+      addstr("Run away, and never return!");
+    case 10:
+      addstr(noProfanity ? "[Please leave!]" : "Get the fuck out of here!");
+    case 11:
+      addstr("I swear to Darwin I'll end you!");
+    case 12:
+      addstr("Don't make me ${noProfanity ? "[be mean]" : "fuck you up"}!");
+    case 13:
+      addstr("I pity the fool who stands against me!");
+    case 14:
+      addstr("Anybody feel like dying a hero?");
+  }
+
+  await getKey();
+
+  for (int i = encounter.length - 1; i >= 0; i--) {
+    Creature e = encounter[i];
+    if (e.alive && e.isEnemy) {
+      int attack =
+          (liberal.juice / 50 + publicOpinion[View.lcsKnown]! / 10).round();
+      int defense = e.attributeRoll(Attribute.wisdom);
+      if (e.type.intimidationResistant) defense = defense * 2;
+
+      if (attack > defense || e.nonCombatant) {
+        clearMessageArea();
+        mvaddstrc(16, 1, white, e.name);
+        switch (lcsRandom(10)) {
+          case 0:
+            addstr(" chickens out!");
+          case 1:
+            addstr(" backs off!");
+          case 2:
+            addstr(" doesn't want to die!");
+          case 3:
+            addstr(" is out of there!");
+          case 4:
+            addstr(" has a family!");
+          case 5:
+            addstr(" is too young to die!");
+          case 6:
+            addstr(" scatters!");
+          case 7:
+            addstr(" runs away!");
+          case 8:
+            addstr(" flees!");
+          case 9:
+            addstr(" is gone!");
+        }
+        encounter.removeAt(i);
+        addjuice(liberal, 2, 1000); // Instant juice!
+
+        await getKey();
+      }
+    }
+  }
 }

@@ -5,6 +5,7 @@ import 'package:lcs_new_age/creature/creature.dart';
 import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_mode.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
+import 'package:lcs_new_age/politics/alignment.dart';
 import 'package:lcs_new_age/sitemode/sitemap.dart';
 import 'package:lcs_new_age/utils/colors.dart';
 
@@ -742,12 +743,17 @@ void printBasicEncounter() {
 
   int px = 1, py = 19;
   for (Creature e in encounter) {
+    String name = e.name;
     if (!e.alive) {
       setColor(darkGray);
     } else {
       setColor(e.align.color);
+      if (e.align == Alignment.conservative && e.nonCombatant) {
+        name = name.toLowerCase();
+        setColor(darkRed);
+      }
     }
-    mvaddstr(py, px, e.name);
+    mvaddstr(py, px, name);
 
     px += 18;
     if (px > 37) {

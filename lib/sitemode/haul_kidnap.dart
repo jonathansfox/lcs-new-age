@@ -9,7 +9,6 @@ import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/justice/crimes.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
-import 'package:lcs_new_age/politics/laws.dart';
 import 'package:lcs_new_age/sitemode/advance.dart';
 import 'package:lcs_new_age/sitemode/fight.dart';
 import 'package:lcs_new_age/sitemode/map_specials.dart';
@@ -54,8 +53,7 @@ Future<void> kidnapattempt() async {
   for (Creature e in encounter) {
     if (e.alive &&
         e.align == Alignment.conservative &&
-        (!e.type.animal ||
-            laws[Law.animalRights] == DeepAlignment.eliteLiberal) &&
+        (!e.type.animal || animalsArePeopleToo) &&
         (!e.weapon.type.protectsAgainstKidnapping || e.blood <= 20) &&
         !e.type.tank) {
       viableTargets.add(e);

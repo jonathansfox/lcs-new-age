@@ -79,7 +79,7 @@ Future<bool> alienationCheck(bool evenIfNoWitnesses) async {
     }
   }
 
-  if (noticer.isNotEmpty) {
+  if (noticer.isNotEmpty || evenIfNoWitnesses) {
     for (Creature n in noticer) {
       if (n.align == Alignment.liberal) {
         alienatebig = true;
@@ -87,6 +87,7 @@ Future<bool> alienationCheck(bool evenIfNoWitnesses) async {
         alienate = true;
       }
       conservatize(n);
+      n.nonCombatant = true;
     }
 
     if (evenIfNoWitnesses) alienatebig = true;
@@ -97,9 +98,8 @@ Future<bool> alienationCheck(bool evenIfNoWitnesses) async {
     }
 
     if (oldSiteAlienation.index < siteAlienated.index) {
-      setColor(yellow);
-
       clearMessageArea();
+      setColor(yellow);
       move(16, 1);
       if (siteAlienated == SiteAlienation.alienatedModerates) {
         addstr("We've alienated the masses here!");
