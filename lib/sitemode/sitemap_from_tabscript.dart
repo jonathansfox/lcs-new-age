@@ -388,17 +388,15 @@ class ConfigSiteScript extends ConfigSiteCommand {
         secureAbove = [],
         unsecure = [],
         unsecureAbove = [];
+    bool validTile(int x, int y, int z) =>
+        !levelMap[x][y][z].losObstructed &&
+        !levelMap[x][y][z].outdoor &&
+        levelMap[x][y][z].special == TileSpecial.none;
     // Look through bottom level for secure and unsecure tiles.
     for (int xi = xstart; xi <= xend; xi++) {
       for (int yi = ystart; yi <= yend; yi++) {
-        if (!(levelMap[xi][yi][zstart].flag &
-                    (SITEBLOCK_DOOR |
-                        SITEBLOCK_BLOCK |
-                        SITEBLOCK_EXIT |
-                        SITEBLOCK_OUTDOOR) >
-                0) &&
-            levelMap[xi][yi][zstart].special == TileSpecial.none) {
-          if (levelMap[xi][yi][zstart].flag & SITEBLOCK_RESTRICTED > 0) {
+        if (validTile(xi, yi, zstart)) {
+          if (levelMap[xi][yi][zstart].restricted) {
             secure.add((xi, yi));
           } else {
             unsecure.add((xi, yi));
@@ -410,14 +408,8 @@ class ConfigSiteScript extends ConfigSiteCommand {
       // Look through level above for secure and unsecure tiles.
       for (int xi = xstart; xi <= xend; xi++) {
         for (int yi = ystart; yi <= yend; yi++) {
-          if (!(levelMap[xi][yi][zi].flag &
-                      (SITEBLOCK_DOOR |
-                          SITEBLOCK_BLOCK |
-                          SITEBLOCK_EXIT |
-                          SITEBLOCK_OUTDOOR) >
-                  0) &&
-              levelMap[xi][yi][zi].special == TileSpecial.none) {
-            if (levelMap[xi][yi][zi].flag & SITEBLOCK_RESTRICTED > 0) {
+          if (validTile(xi, yi, zi)) {
+            if (levelMap[xi][yi][zi].restricted) {
               secureAbove.add((xi, yi));
             } else {
               unsecureAbove.add((xi, yi));
@@ -428,7 +420,7 @@ class ConfigSiteScript extends ConfigSiteCommand {
       // Stairs in secure areas should only lead into secure areas.
       // Removing secure tiles without secure tiles above them.
       int i, j;
-      for (i = unsecure.length - 1; i >= 0; i--) {
+      for (i = secure.length - 1; i >= 0; i--) {
         for (j = 0; j < (secureAbove.length); j++) {
           if (secureAbove[j] == secure[i]) {
             break;
