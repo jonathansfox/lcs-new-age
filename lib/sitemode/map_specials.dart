@@ -606,8 +606,8 @@ Future<void> specialCourthouseJury() async {
     }
   }
 
-  maxp.train(Skill.persuasion, 20);
-  maxp.train(Skill.law, 20);
+  maxp.train(Skill.persuasion, 50);
+  maxp.train(Skill.law, 50);
 
   if (maxp.skillCheck(Skill.persuasion, Difficulty.hard) &&
       maxp.skillCheck(Skill.law, Difficulty.challenging)) {
