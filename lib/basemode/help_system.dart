@@ -72,10 +72,12 @@ Future<void> helpOnActivity(ActivityType type) async {
           "streaming.\n\n"
           "The greatest power of the Liberal Guardian comes when you publish "
           "a special edition. This requires you to have collected "
-          "some secret documents to leak. You don't need to have "
-          "anyone write or stream regularly to publish a special edition, you "
-          "just need to get out there and uncover the truth, and you'll get "
-          "the opportunity to run a special edition at the end of the month.");
+          "some secret documents to leak. Once you've dug something up, "
+          "you'll get the opportunity to run a special edition at the end of "
+          "the month. You don't NEED to have "
+          "anyone write or stream regularly to publish a special edition, but "
+          "there isn't much point without them. Writers are better than "
+          "streamers for maximizing the impact of a special edition.");
     case ActivityType.streamGuardian:
       head("=== Stream for the Liberal Guardian ===");
       body("The Liberal Guardian is the LCS's media presence. In another era, "
@@ -88,10 +90,12 @@ Future<void> helpOnActivity(ActivityType type) async {
           "before your message can really cut through the propaganda.\n\n"
           "The greatest power of the Liberal Guardian comes when you publish "
           "a special edition. This requires you to have collected "
-          "some secret documents to leak. You don't need to have "
-          "anyone write or stream regularly to publish a special edition, you "
-          "just need to get out there and uncover the truth, and you'll get "
-          "the opportunity to run a special edition at the end of the month.");
+          "some secret documents to leak. Once you've dug something up, "
+          "you'll get the opportunity to run a special edition at the end of "
+          "the month. You don't NEED to have "
+          "anyone write or stream regularly to publish a special edition, but "
+          "there isn't much point without them. Writers are better than "
+          "streamers for maximizing the impact of a special edition.");
     case ActivityType.donations:
       head("=== Solicit Donations ===");
       body("Soliciting donations is a safe way to raise funds for the LCS.  "
