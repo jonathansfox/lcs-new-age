@@ -1838,10 +1838,12 @@ Future<void> _resolveSite() async {
         activeSite!.controller =
             SiteController.lcs; // Capture safehouse for the glory of the LCS!
         activeSite!.closed = 0;
-        activeSite!.heat = 100;
+        activeSite!.heat = siteCrime;
       } else {
         activeSite!.closed = siteCrime ~/ 10; // Close down site
       }
+    } else if (activeSite!.controller == SiteController.lcs) {
+      activeSite!.heat += siteCrime; // Increase heat
     }
 
     // Out sleepers
