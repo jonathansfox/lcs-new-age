@@ -63,7 +63,7 @@ Future<UnlockResult> unlock(UnlockTypes type) async {
     if (p.skillCheck(Skill.security, difficulty)) {
       //skill goes up in proportion to the chance of you failing.
       if (maxattack <= difficulty) {
-        p.train(Skill.security, 10 * difficulty);
+        p.train(Skill.security, 6 * difficulty);
       }
       clearMessageArea(false);
       mvaddstrc(16, 1, white, "${p.name} ");
@@ -86,7 +86,7 @@ Future<UnlockResult> unlock(UnlockTypes type) async {
       //If people witness a successful unlock, they learn a little bit.
       for (Creature j in activeSquad!.livingMembers.where((j) => j != p)) {
         if (j.skill(Skill.security) < difficulty) {
-          j.train(Skill.security, 5 * difficulty);
+          j.train(Skill.security, 3 * difficulty);
         }
       }
 
