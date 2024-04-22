@@ -1828,7 +1828,11 @@ Future<void> _siteModeAux() async {
 
 /* site - determines spin on site news story, "too hot" timer */
 Future<void> _resolveSite() async {
-  sitestory!.positive = (siteAlienated != SiteAlienation.none) ? -1 : 1;
+  if (sitestory!.drama.any((d) => d == Drama.killedSomebody)) {
+    sitestory!.positive = -1;
+  } else {
+    sitestory!.positive = (siteAlienated != SiteAlienation.none) ? -1 : 1;
+  }
   if (!newsStories.contains(sitestory!)) newsStories.add(sitestory!);
   if (siteCrime > 50 + lcsRandom(50)) {
     if (activeSite!.controller == SiteController.unaligned) {
