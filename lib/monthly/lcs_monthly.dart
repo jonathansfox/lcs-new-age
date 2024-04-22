@@ -384,22 +384,22 @@ Future<void> printNews(LootType li, Iterable<Creature> publishers) async {
       mvaddstr(10, 1,
           "Some conspiracy theorists mention it, but most people know or don't believe.");
       return basePotency ~/ 5;
-    } else if (power < 8) {
+    } else if (power < 10) {
       mvaddstr(9, 1, "$leadersArticle about this doesn't have much impact.");
       mvaddstr(10, 1,
           "The information is taken up by watchdog groups but never really catches on.");
       return basePotency ~/ 4;
-    } else if (power < 12) {
+    } else if (power < 15) {
       mvaddstr(9, 1, "$leadersArticle about this gets more views than usual.");
       mvaddstr(10, 1,
           "A prominent journalist investigates further, but can't prove it's true.");
       return basePotency ~/ 3;
-    } else if (power < 16) {
+    } else if (power < 20) {
       mvaddstr(9, 1, "$leadersArticle about this lays out the evidence.");
       mvaddstr(10, 1,
           "The story is picked up by several major networks and publications.");
       return basePotency ~/ 2;
-    } else if (power < 20) {
+    } else if (power < 25) {
       mvaddstr(9, 1, "$leadersArticle about this is electrifying.");
       mvaddstr(10, 1,
           "The major networks and publications take it up and run it for weeks.");
@@ -419,7 +419,7 @@ Future<void> printNews(LootType li, Iterable<Creature> publishers) async {
     criminalizeAll(publishers, Crime.treason);
   }
 
-  List<View> issues = [View.lcsLiked, View.lcsKnown];
+  List<View> issues = [View.lcsKnown, View.lcsLiked];
   int potency = 10;
 
   if (li.idName == "LOOT_CEOPHOTOS") // Tmp -XML
@@ -551,7 +551,7 @@ Future<void> printNews(LootType li, Iterable<Creature> publishers) async {
     issues.add(View.corporateCulture);
     potency = reception(50);
     offendedCorps = true;
-    mvaddstr(10, 1,
+    mvaddstr(console.y + 2, 1,
         "Be on guard for retaliation.  These guys don't like to lose...");
     for (Creature c in publishers) {
       addjuice(c, 20, 1000);
