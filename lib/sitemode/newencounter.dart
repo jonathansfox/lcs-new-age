@@ -842,7 +842,7 @@ void prepareEncounter(SiteType type, bool sec,
         }
       case SiteType.corporateHQ:
         if (sec) weights.add(CreatureTypeIds.guardDog, 100);
-        weights.add(CreatureTypeIds.securityGuard, sec ? 40 : 400);
+        weights.add(CreatureTypeIds.securityGuard, sec ? 400 : 40);
         weights.add(CreatureTypeIds.corporateManager, 20);
         weights.add(CreatureTypeIds.janitor, 20);
         weights.add(CreatureTypeIds.secretary, 40);
