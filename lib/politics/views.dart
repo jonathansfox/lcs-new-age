@@ -1,3 +1,5 @@
+import 'package:json_annotation/json_annotation.dart';
+
 enum View {
   // political issues
   lgbtRights("LGBT Rights"),
@@ -28,6 +30,7 @@ enum View {
   // crime squads
   lcsKnown("LCS Known"),
   lcsLiked("LCS Liked"),
+  @JsonValue("ccsLiked")
   ccsHated("CCS Hated");
 
   const View(this.label);
