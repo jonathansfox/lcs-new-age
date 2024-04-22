@@ -1,5 +1,6 @@
 import 'package:lcs_new_age/basemode/activities.dart';
 import 'package:lcs_new_age/basemode/help_system.dart';
+import 'package:lcs_new_age/common_actions/equipment.dart';
 import 'package:lcs_new_age/common_display/common_display.dart';
 import 'package:lcs_new_age/common_display/print_creature_info.dart';
 import 'package:lcs_new_age/common_display/print_party.dart';
@@ -10,6 +11,7 @@ import 'package:lcs_new_age/creature/sort_creatures.dart';
 import 'package:lcs_new_age/daily/activities/recruiting.dart';
 import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
+import 'package:lcs_new_age/gamestate/squad.dart';
 import 'package:lcs_new_age/items/armor_type.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
 import 'package:lcs_new_age/utils/colors.dart';
@@ -148,7 +150,7 @@ Future<void> _activateOne(Creature c) async {
     _activity(ActivityType.bury, "Z - Corpse Disposal", state != 0,
         grayOut: !canDisposeCorpses);
     setColor(activeSafehouse?.siege.underSiege ?? false ? darkGray : lightGray);
-    //mvaddstr(_y++, 1, "E - Equip This Liberal");
+    mvaddstr(_y++, 1, "G - Equip This Liberal");
     _activity(ActivityType.none, "X - Nothing for Now", state != 0);
     mvaddstrc(19, 40, lightGray, "? - About the Selected Activity");
     mvaddstrc(20, 40, lightGray, "Enter - Confirm Selection");
@@ -200,6 +202,8 @@ Future<void> _activateOne(Creature c) async {
         if (canInterrogateHostages) {
           await _selectTendHostage(c);
         }
+      case Key.g:
+        await equipLiberal(c);
     }
     if (key >= Key.num0 && key <= Key.num9) {
       if (state == Key.a) {
@@ -765,4 +769,16 @@ Future<void> _selectTendHostage(Creature cr) async {
     onChoice: (index) => cr.activity =
         Activity(ActivityType.interrogation, idInt: hostages[index].id),
   );
+}
+
+Future<void> equipLiberal(Creature c) async {
+  //create a temp squad containing just this liberal
+  Squad? oldActiveSquad = activeSquad;
+  Squad newSquad = Squad();
+  newSquad.members.add(c);
+  squads.add(newSquad);
+  activeSquad = newSquad;
+  await equip(c.site?.loot);
+  activeSquad = oldActiveSquad;
+  squads.remove(newSquad);
 }
