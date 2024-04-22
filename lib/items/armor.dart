@@ -19,7 +19,7 @@ class Armor extends Item {
   bool bloody = false;
   @JsonKey()
   bool damaged = false;
-  @JsonKey()
+  @JsonKey(includeToJson: true, includeFromJson: true, defaultValue: 1)
   int _quality = 1;
 
   @override
@@ -31,6 +31,15 @@ class Armor extends Item {
   int get quality => _quality;
   set quality(int value) {
     _quality = value.clamp(1, type.qualityLevels);
+  }
+
+  @override
+  int get fenceValue {
+    if (quality <= type.qualityLevels) {
+      return type.fenceValue ~/ quality;
+    } else {
+      return 0;
+    }
   }
 
   @override
