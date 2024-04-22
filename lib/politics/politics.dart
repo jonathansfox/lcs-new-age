@@ -19,7 +19,7 @@ class Politics {
     p.publicOpinion[View.lcsKnown] = 0;
     p.publicOpinion[View.lcsLiked] = 5;
     p.laws[Law.abortion] = DeepAlignment.moderate;
-    p.laws[Law.animalRights] = DeepAlignment.archConservative;
+    p.laws[Law.animalRights] = DeepAlignment.conservative;
     p.laws[Law.policeReform] = DeepAlignment.conservative;
     p.laws[Law.privacy] = DeepAlignment.conservative;
     p.laws[Law.deathPenalty] = DeepAlignment.moderate;
