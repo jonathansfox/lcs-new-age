@@ -608,6 +608,12 @@ Future<void> specialCourthouseJury() async {
 
   maxp.train(Skill.persuasion, 50);
   maxp.train(Skill.law, 50);
+  for (Creature p in activeSquad!.livingMembers) {
+    if (p != maxp) {
+      p.train(Skill.persuasion, 25);
+      p.train(Skill.law, 25);
+    }
+  }
 
   if (maxp.skillCheck(Skill.persuasion, Difficulty.hard) &&
       maxp.skillCheck(Skill.law, Difficulty.challenging)) {
