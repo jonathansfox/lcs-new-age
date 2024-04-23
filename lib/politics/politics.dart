@@ -281,7 +281,7 @@ class Politics {
     //double totalSupport = (lcsPopularity + mood) / 2;
     double heardOfLcs = publicOpinion[View.lcsKnown]!;
     //return voterSpread(totalSupport)[DeepAlignment.eliteLiberal]! * heardOfLcs;
-    return lcsPopularity * heardOfLcs;
+    return lcsPopularity * heardOfLcs / 100;
   }
 
   double ccsApproval() {
