@@ -133,6 +133,7 @@ void makeWorld() {
   washingtonDC
     ..addCommercialDistrict()
     ..addDistrict("Downtown", "Downtown").addSites([
+      SiteType.upscaleApartment,
       SiteType.latteStand,
       SiteType.policeStation,
       SiteType.courthouse,
@@ -144,7 +145,8 @@ void makeWorld() {
       SiteType.publicPark,
       SiteType.whiteHouse,
     ])
-    ..addDistrict("Outskirts", "Arlington, VA", outOfTown: true).addSites([
+    ..addDistrict("Arlington", "Arlington, VA").addSites([
+      SiteType.warehouse,
       SiteType.prison,
       SiteType.intelligenceHQ,
       SiteType.armyBase,
