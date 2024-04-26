@@ -971,14 +971,14 @@ String majorEventStoryText(View? view, bool positive) {
           DeepAlignment.eliteLiberal => [
               "fucked",
               "encouraged listeners to call in and take a piss",
-              "screamed \"Fuck the police and those goddamn motherfuckers.  I got a fucking ticket this morning and I'm fucking pissed as shit.\"",
+              "screamed \"Fuck the police those goddamn motherfuckers.  I got a fucking ticket this morning and I'm fucking pissed as shit.\"",
               "breastfed from a lactating woman",
-              "masturbated",
+              "jerked off",
             ].random,
           DeepAlignment.archConservative => [
               "[laid down in a bed with a woman]",
               "encouraged listeners to call in and [visit the restroom]",
-              "screamed \"[Darn] the police and those [big dumb jerks].  I got a [stupid] ticket this morning and I'm [so angry].\"",
+              "screamed \"[Darn] the police those [big dumb jerks].  I got a [stupid] ticket this morning and I'm [so angry].\"",
               "[consumed milk] from [a woman]",
               "[caused God to kill a kitten]",
             ].random,
