@@ -789,11 +789,11 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
             if (t.type.majorEnemy) {
               siteCrime += 90;
             }
-            if (mode == GameMode.site && !activeSiteUnderSiege) {
-              alienate = true;
-            }
-            addDramaToSiteStory(Drama.killedSomebody);
             if (a.squad == activeSquad) {
+              if (mode == GameMode.site && !activeSiteUnderSiege) {
+                alienate = true;
+              }
+              addDramaToSiteStory(Drama.killedSomebody);
               criminalizeparty(Crime.murder);
             }
           }
