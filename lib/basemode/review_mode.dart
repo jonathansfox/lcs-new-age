@@ -126,13 +126,13 @@ Future<void> reviewAssetsAndFormSquads() async {
     setColor(lightGray);
     mvaddstr(21, 0, "Press V to Inspect Liberal finances.");
     move(22, 0);
-    addstr("Press a Letter to select a squads.  1-7 to view Liberal groups.");
+    addstr("Press a Letter to select a squad.  1-7 to view Liberal groups.");
     move(23, 0);
     addstr(pageStr);
-    addstr("  Press U to Promote Liberals.");
+    addstr(".  Press U to Promote Liberals.");
     move(24, 0);
     addstr(
-        "Press Z to Assemble a New squads.  Press T to Assign New Bases to the Squadless.");
+        "Press Z to Assemble a New Squad.  Press T to Assign New Bases to the Squadless.");
 
     int c = await getKey();
 
