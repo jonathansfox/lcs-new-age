@@ -356,17 +356,23 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
         int bonus = 0;
         move(17, 0);
         addstr(p.name);
+        bool ranged = false;
+        String weapon = "";
+        bool unseriousWeapon = false;
 
         if (p.weapon.type.rangedAttack != null) {
+          weapon = p.weapon.getName(sidearm: true);
           addstr(" comes back from the bathroom toting the ");
-          addstr(p.weapon.getName(sidearm: true));
+          addstr(weapon);
           move(18, 0);
           addstr("and threatens to blow the Conservative's brains out!");
 
           bonus = 5;
+          ranged = true;
         } else if (p.equippedWeapon != null) {
+          weapon = p.weapon.getName(sidearm: true);
           addstr(" grabs the Conservative from behind, holding the ");
-          addstr(p.weapon.getName(sidearm: true));
+          addstr(weapon);
           move(18, 0);
           addstr("to the corporate slave's throat!");
 
@@ -376,6 +382,7 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
             // Conservative emboldened by the fact that you're trying
             // to kidnap them with a gavel or some shit like that
             bonus = -1;
+            unseriousWeapon = true;
           }
         } else {
           addstr(" seizes the Conservative swine from behind and warns it");
@@ -396,7 +403,7 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
         if ((!e.type.kidnapResistant && lcsRandom(15) > 0) ||
             lcsRandom(2 + bonus) > 0) {
           setColor(lightGreen);
-          move(20, 0);
+          move(19, 0);
           addstr(e.name);
           if (bonus > 0) {
             addstr(" doesn't resist.");
@@ -406,7 +413,7 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
 
           await getKey();
 
-          move(22, 0);
+          move(20, 0);
           addstr(p.name);
           addstr(" kidnaps the Conservative!");
 
@@ -423,19 +430,31 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
           d.dates.remove(e);
           break;
         } else {
-          int y = 20;
-          if (lcsRandom(2) > 0) {
-            setColor(purple);
-            move(y++, 0);
-            addstr(e.name);
-            addstr(" manages to get away on the way back to the safehouse!");
-
+          int y = 19;
+          setColor(red);
+          move(y++, 0);
+          if (ranged) {
+            addstr("${e.name} brazenly tackles ${p.name}!");
+          } else {
+            addstr("${e.name} struggles and they both tumble to the ground!");
+          }
+          if (weapon != "") {
             await getKey();
+            if (unseriousWeapon) {
+              move(y++, 0);
+              addstrc(yellow, "The $weapon is knocked away uselessly.");
+            } else {
+              move(y++, 0);
+              addstrc(yellow, "The two struggle for control of the $weapon!");
+            }
+          }
+          await getKey();
 
-            y++;
+          if (lcsRandom(p.skill(Skill.martialArts) + 1) > 0) {
+            setColor(yellow);
             move(y++, 0);
-            addstr(p.name);
-            addstr(" has failed to kidnap the Conservative.");
+            addstr("${p.name} breaks free after a wild struggle.");
+            mvaddstr(y++, 0, "Unfortunately, the Conservative escapes...");
 
             // Charge with kidnapping
             p.wantedForCrimes[Crime.kidnapping] =
@@ -446,16 +465,26 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
             d.dates.remove(e);
             break;
           } else {
-            setColor(red);
             move(y++, 0);
-            addstr(e.name);
-            addstr("'s fist is the last thing ");
-            addstr(p.name);
-            addstr(" remembers seeing!");
-
-            await getKey();
-
-            y++;
+            if (weapon != "" && !unseriousWeapon) {
+              addstrc(
+                  red, "The Conservative manages to wrest the $weapon away!");
+              move(y++, 0);
+              await getKey();
+              if (p.weapon.type.attacks.any((a) => a.bruises)) {
+                addstr(
+                    "${e.name} swings the $weapon and knocks ${p.name} out!");
+              } else {
+                addstr(
+                    "${e.name} switches grips and clubs ${p.name} in the head!");
+              }
+            } else {
+              addstrc(red, e.name);
+              addstr("'s fist is the last thing ");
+              addstr(p.name);
+              addstr(" remembers seeing!");
+              await getKey();
+            }
             move(y++, 0);
             addstr("The Liberal wakes up in the police station...");
 
