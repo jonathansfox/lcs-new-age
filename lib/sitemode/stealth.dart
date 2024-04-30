@@ -206,7 +206,7 @@ Future<void> disguisecheck(int timer) async {
       }
 
       // Increase difficulty if Conservatives suspicious...
-      if (siteAlarmTimer == 1) {
+      if (siteAlarmTimer == 0) {
         stealthDifficulty += 6;
         disguiseDifficulty += 6;
       }
