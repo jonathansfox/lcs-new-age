@@ -737,5 +737,7 @@ void printWantedFor(Creature cr) {
     addstr("PUBLIC NUDITY");
   } else if (wanted[Crime.loitering] == true) {
     addstr("LOITERING");
+  } else if (wanted[Crime.illegalEntry] == true) {
+    addstr("DEPORTATION");
   }
 }
