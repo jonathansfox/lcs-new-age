@@ -509,7 +509,9 @@ class Creature {
   @JsonKey(includeFromJson: false, includeToJson: false)
   bool get isEnemy {
     if (align == Alignment.conservative) return true;
-    if (type.enemyEvenWhenNotConservative && !pool.contains(this)) {
+    if (type.enemyEvenWhenNotConservative &&
+        !justConverted &&
+        !pool.contains(this)) {
       return true;
     }
     return false;
