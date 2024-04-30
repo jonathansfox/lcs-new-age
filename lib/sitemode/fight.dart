@@ -225,7 +225,7 @@ Future<void> enemyattack() async {
         if (!await incapacitated(e, false)) {
           clearMessageArea();
 
-          mvaddstrc(16, 1, white, e.name);
+          mvaddstrc(9, 1, white, e.name);
           if (e.body.legok < 2 || e.blood < e.maxBlood * 0.45) {
             addstr(escapeCrawling.random);
           } else {
@@ -351,7 +351,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
   if ((a.willReload(mode == GameMode.carChase, forceMelee) ||
           a.hasThrownWeapon) &&
       !forceMelee) {
-    move(16, 1);
+    move(9, 1);
     if (a.hasThrownWeapon) {
       a.readyAnotherThrowingWeapon();
       addstr("${a.name} readies another ${a.weapon.getName()}.");
@@ -386,7 +386,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
   bool sneakAttack = false;
   bool addNastyOff = false;
 
-  mvaddstr(16, 1, "${a.name} ");
+  mvaddstr(9, 1, "${a.name} ");
   if (mistake) addstr("MISTAKENLY ");
   if (a.weapon.type.idName == "WEAPON_NONE") {
     if (oneIn(a.skill(Skill.martialArts) + 1)) {
@@ -545,7 +545,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
       if (alternate.attribute(Attribute.heart) > 8 &&
           alternate.attribute(Attribute.agility) > 4) {
         clearMessageArea();
-        mvaddstrc(16, 1, lightGreen, alternate.name);
+        mvaddstrc(9, 1, lightGreen, alternate.name);
         if (!t.alive) {
           addstr(" misguidedly");
         } else {
@@ -565,7 +565,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
     }
   }
 
-  move(17, 1);
+  move(10, 1);
   debugPrint("${a.name} rolls $aroll + $bonus, ${t.name} rolls $droll");
   Map<BodyPart, int> weights = {};
   for (BodyPart p in t.body.parts) {
@@ -739,7 +739,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
 
       levelMap[locx][locy][locz].bloody = true;
 
-      mvaddstrc(17, 1, a.align.color, str);
+      mvaddstrc(10, 1, a.align.color, str);
 
       if ((hitPart.critical && hitPart.missing) || target.blood <= 0) {
         bool alreadydead = !target.alive;
@@ -873,7 +873,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
                         !body.missingRightEye ||
                         !body.missingNose) &&
                     heavydam) {
-                  mvaddstr(16, 1, target.name);
+                  mvaddstr(9, 1, target.name);
                   if (attackUsed.shoots) {
                     addstr("'s face is blasted off!");
                   } else if (attackUsed.burns) {
@@ -897,7 +897,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
                 if (body.teeth > 0) {
                   int teethminus = lcsRandom(body.teeth) + 1;
 
-                  move(16, 1);
+                  move(9, 1);
                   if (teethminus > 1) {
                     if (teethminus == body.teeth) {
                       addstr("All ");
@@ -927,7 +927,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
                 }
               case 2:
                 if (!body.missingRightEye && heavydam) {
-                  mvaddstr(16, 1, target.name);
+                  mvaddstr(9, 1, target.name);
                   if (attackUsed.shoots) {
                     addstr("'s right eye is blasted out!");
                   } else if (attackUsed.burns) {
@@ -947,7 +947,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
                 }
               case 3:
                 if (!body.missingLeftEye && heavydam) {
-                  mvaddstr(16, 1, target.name);
+                  mvaddstr(9, 1, target.name);
                   if (attackUsed.shoots) {
                     addstr("'s left eye is blasted out!");
                   } else if (attackUsed.burns) {
@@ -967,7 +967,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
                 }
               case 4:
                 if (!body.missingTongue && heavydam) {
-                  mvaddstr(16, 1, target.name);
+                  mvaddstr(9, 1, target.name);
                   if (attackUsed.shoots) {
                     addstr("'s tongue is blasted off!");
                   } else if (attackUsed.burns) {
@@ -987,7 +987,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
                 }
               case 5:
                 if (!body.missingNose && heavydam) {
-                  mvaddstr(16, 1, target.name);
+                  mvaddstr(9, 1, target.name);
                   if (attackUsed.shoots) {
                     addstr("'s nose is blasted off!");
                   } else if (attackUsed.burns) {
@@ -1007,7 +1007,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
                 }
               case 6:
                 if (!body.brokenNeck && breakdam) {
-                  mvaddstr(16, 1, target.name);
+                  mvaddstr(9, 1, target.name);
                   if (attackUsed.shoots) {
                     addstr("'s neck bones are shattered!");
                   } else {
@@ -1028,7 +1028,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
             switch (lcsRandom(11)) {
               case 0:
                 if (!body.brokenUpperSpine && breakdam) {
-                  mvaddstr(16, 1, target.name);
+                  mvaddstr(9, 1, target.name);
                   if (attackUsed.shoots) {
                     addstr("'s upper spine is shattered!");
                   } else {
@@ -1042,7 +1042,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
                 }
               case 1:
                 if (!body.brokenLowerSpine && breakdam) {
-                  mvaddstr(16, 1, target.name);
+                  mvaddstr(9, 1, target.name);
                   if (attackUsed.shoots) {
                     addstr("'s lower spine is shattered!");
                   } else {
@@ -1056,7 +1056,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
                 }
               case 2:
                 if (body.puncturedRightLung && pokedam) {
-                  mvaddstr(16, 1, target.name);
+                  mvaddstr(9, 1, target.name);
                   if (attackUsed.shoots) {
                     addstr("'s right lung is blasted!");
                   } else if (attackUsed.tears) {
@@ -1072,7 +1072,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
                 }
               case 3:
                 if (body.puncturedLeftLung && pokedam) {
-                  mvaddstr(16, 1, target.name);
+                  mvaddstr(9, 1, target.name);
                   if (attackUsed.shoots) {
                     addstr("'s left lung is blasted!");
                   } else if (attackUsed.tears) {
@@ -1088,7 +1088,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
                 }
               case 4:
                 if (body.puncturedHeart && pokedam) {
-                  mvaddstr(16, 1, target.name);
+                  mvaddstr(9, 1, target.name);
                   if (attackUsed.shoots) {
                     addstr("'s heart is blasted!");
                   } else if (attackUsed.tears) {
@@ -1106,7 +1106,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
                 }
               case 5:
                 if (body.puncturedLiver && pokedam) {
-                  mvaddstr(16, 1, target.name);
+                  mvaddstr(9, 1, target.name);
                   if (attackUsed.shoots) {
                     addstr("'s liver is blasted!");
                   } else if (attackUsed.tears) {
@@ -1122,7 +1122,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
                 }
               case 6:
                 if (body.puncturedStomach && pokedam) {
-                  mvaddstr(16, 1, target.name);
+                  mvaddstr(9, 1, target.name);
                   if (attackUsed.shoots) {
                     addstr("'s stomach is blasted!");
                   } else if (attackUsed.tears) {
@@ -1138,7 +1138,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
                 }
               case 7:
                 if (body.puncturedRightKidney && pokedam) {
-                  mvaddstr(16, 1, target.name);
+                  mvaddstr(9, 1, target.name);
                   if (attackUsed.shoots) {
                     addstr("'s right kidney is blasted!");
                   } else if (attackUsed.tears) {
@@ -1154,7 +1154,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
                 }
               case 8:
                 if (body.puncturedLeftKidney && pokedam) {
-                  mvaddstr(16, 1, target.name);
+                  mvaddstr(9, 1, target.name);
                   if (attackUsed.shoots) {
                     addstr("'s left kidney is blasted!");
                   } else if (attackUsed.tears) {
@@ -1170,7 +1170,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
                 }
               case 9:
                 if (body.puncturedSpleen && pokedam) {
-                  mvaddstr(16, 1, target.name);
+                  mvaddstr(9, 1, target.name);
                   if (attackUsed.shoots) {
                     addstr("'s spleen is blasted!");
                   } else if (attackUsed.tears) {
@@ -1188,7 +1188,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
                 if (body.ribs > 0 && breakdam) {
                   int ribminus = lcsRandom(body.ribs) + 1;
 
-                  move(16, 1);
+                  move(9, 1);
                   if (ribminus > 1) {
                     if (ribminus == body.ribs) {
                       addstr("All ");
@@ -1234,11 +1234,11 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
         t.blood > 70 &&
         t.human &&
         t.getAttack(false, true, true) != null) {
-      mvaddstr(17, 1, "${t.name} knocks the blow aside and counters!");
+      mvaddstr(10, 1, "${t.name} knocks the blow aside and counters!");
       await getKey();
       await attack(t, a, false, forceMelee: true);
     } else {
-      move(17, 1);
+      move(10, 1);
       if (sneakAttack) {
         addstr(t.name);
         addstr([
@@ -1347,7 +1347,7 @@ Future<bool> socialAttack(Creature a, Creature t, Attack attackUsed) async {
   int resist = 0;
 
   clearMessageArea();
-  mvaddstrc(16, 1, white,
+  mvaddstrc(9, 1, white,
       "${a.name} ${attackUsed.attackDescription.random} ${t.name}!");
 
   int attack = a.skillRoll(attackUsed.skill);
@@ -1361,33 +1361,33 @@ Future<bool> socialAttack(Creature a, Creature t, Attack attackUsed) async {
 
   if ((t.type.tank || (t.type.animal && !animalsArePeopleToo)) ||
       (a.isEnemy && t.brainwashed)) {
-    mvaddstr(17, 1, "${t.name} is immune to the attack!");
+    mvaddstr(10, 1, "${t.name} is immune to the attack!");
   } else if (a.align == t.align) {
-    mvaddstr(17, 1, "${t.name} already agrees with ${a.name}.");
+    mvaddstr(10, 1, "${t.name} already agrees with ${a.name}.");
   } else if (attack > resist) {
     if (attackUsed.stuns) {
       t.stunned += (attack - resist) ~/ 4;
     }
     if (a.isEnemy) {
       if (t.juice > 100) {
-        mvaddstr(17, 1, "${t.name} loses juice!");
+        mvaddstr(10, 1, "${t.name} loses juice!");
         addjuice(t, -50, 100);
       } else if (lcsRandom(15) > t.attribute(Attribute.wisdom) ||
           t.attribute(Attribute.wisdom) < t.attribute(Attribute.heart)) {
-        mvaddstr(17, 1, "${t.name} is tainted with Wisdom!");
+        mvaddstr(10, 1, "${t.name} is tainted with Wisdom!");
         t.adjustAttribute(Attribute.wisdom, 1);
       } else if (t.align == Alignment.liberal && t.seduced) {
-        mvaddstr(17, 1, "${t.name} can't bear to leave!");
+        mvaddstr(10, 1, "${t.name} can't bear to leave!");
       } else {
         if (a.align == Alignment.conservative) {
-          mvaddstr(17, 1, "${t.name} is turned Conservative");
+          mvaddstr(10, 1, "${t.name} is turned Conservative");
           t.stunned = 0;
           if (t.prisoner != null) {
             await freehostage(t, FreeHostageMessage.continueLine);
           }
           addstr("!");
         } else {
-          mvaddstr(17, 1, "${t.name} doesn't want to fight anymore");
+          mvaddstr(10, 1, "${t.name} doesn't want to fight anymore");
           t.stunned = 0;
           if (t.prisoner != null) {
             await freehostage(t, FreeHostageMessage.continueLine);
@@ -1411,14 +1411,14 @@ Future<bool> socialAttack(Creature a, Creature t, Attack attackUsed) async {
       }
     } else {
       if (t.juice >= 1) {
-        mvaddstr(17, 1, "${t.name} seems less badass!");
+        mvaddstr(10, 1, "${t.name} seems less badass!");
         addjuice(t, -100, 0);
       } else if (!t.attributeCheck(Attribute.heart, Difficulty.average) ||
           t.attribute(Attribute.heart) < t.attribute(Attribute.wisdom)) {
-        mvaddstr(17, 1, "${t.name}'s Heart swells!");
+        mvaddstr(10, 1, "${t.name}'s Heart swells!");
         t.adjustAttribute(Attribute.heart, 1);
       } else {
-        mvaddstr(17, 1, "${t.name} has turned Liberal!");
+        mvaddstr(10, 1, "${t.name} has turned Liberal!");
         t.stunned = 0;
 
         liberalize(t);
@@ -1428,7 +1428,7 @@ Future<bool> socialAttack(Creature a, Creature t, Attack attackUsed) async {
       }
     }
   } else {
-    mvaddstr(17, 1, "${t.name} remains strong.");
+    mvaddstr(10, 1, "${t.name} remains strong.");
   }
 
   printParty();
@@ -1445,10 +1445,10 @@ Future<void> severloot(Creature cr, List<Item> loot) async {
 
   if (cr.equippedWeapon != null && armok == 0) {
     clearMessageArea();
-    mvaddstrc(16, 1, yellow, "The ");
+    mvaddstrc(9, 1, yellow, "The ");
     addstr(cr.weapon.getName(sidearm: true));
     addstr(" slips from");
-    mvaddstr(17, 1, cr.name);
+    mvaddstr(10, 1, cr.name);
     addstr("'s grasp.");
 
     await getKey();
@@ -1469,7 +1469,7 @@ Future<void> severloot(Creature cr, List<Item> loot) async {
           cr.equippedArmor?.covers(body!.torso) == true ||
       (body?.head.missing == true && cr.equippedArmor?.type.mask == true)) {
     clearMessageArea();
-    mvaddstrc(16, 1, yellow, cr.name);
+    mvaddstrc(9, 1, yellow, cr.name);
     addstr("'s ");
     addstr(cr.armor.shortName);
     addstr(" has been destroyed.");
@@ -1543,7 +1543,7 @@ Future<bool> incapacitated(Creature a, bool noncombat) async {
       if (noncombat) {
         clearMessageArea();
 
-        mvaddstrc(16, 1, white, "The ");
+        mvaddstrc(9, 1, white, "The ");
         addstr(a.name);
         switch (lcsRandom(3)) {
           case 0:
@@ -1560,7 +1560,7 @@ Future<bool> incapacitated(Creature a, bool noncombat) async {
       a.incapacitatedThisRound = false;
       if (noncombat) {
         clearMessageArea();
-        mvaddstrc(16, 1, white, "The ");
+        mvaddstrc(9, 1, white, "The ");
         addstr(a.name);
         switch (lcsRandom(3)) {
           case 0:
@@ -1581,7 +1581,7 @@ Future<bool> incapacitated(Creature a, bool noncombat) async {
       a.incapacitatedThisRound = false;
       if (noncombat) {
         clearMessageArea();
-        mvaddstrc(16, 1, white, a.name);
+        mvaddstrc(9, 1, white, a.name);
         switch (lcsRandom(54)) {
           case 0:
             addstr(" desperately cries out to Jesus.");
@@ -1738,7 +1738,7 @@ Future<bool> incapacitated(Creature a, bool noncombat) async {
     if (noncombat) {
       a.stunned--;
       clearMessageArea();
-      mvaddstrc(16, 1, white, a.name);
+      mvaddstrc(9, 1, white, a.name);
       switch (lcsRandom(11)) {
         case 0:
           addstr(" seems hesitant.");
@@ -1770,7 +1770,7 @@ Future<bool> incapacitated(Creature a, bool noncombat) async {
   } else if (!incapacitated && a.body.fullParalysis) {
     if (!noncombat) {
       clearMessageArea();
-      mvaddstrc(16, 1, white, a.name);
+      mvaddstrc(9, 1, white, a.name);
       switch (lcsRandom(5)) {
         case 0:
           addstr(" looks on with authority.");
@@ -1830,7 +1830,7 @@ Future<void> captureCreature(Creature t) async {
 void addDeathMessage(Creature cr) {
   setColor(yellow);
 
-  move(16, 1);
+  move(9, 1);
   String str = "";
 
   BodyPart? head = cr.body.parts.firstWhereOrNull((bp) => bp.name == "Head");
@@ -1842,7 +1842,7 @@ void addDeathMessage(Creature cr) {
       case 0:
         str += " reaches once where there ";
         addstr(str);
-        move(17, 1);
+        move(10, 1);
         if (mode != GameMode.carChase) {
           addstr("is no head, and falls.");
         } else {
@@ -1855,7 +1855,7 @@ void addDeathMessage(Creature cr) {
           str += " sits headless for a ";
         }
         addstr(str);
-        mvaddstr(17, 1, "moment then crumples over.");
+        mvaddstr(10, 1, "moment then crumples over.");
       case 2:
         str += " squirts ";
         if (noProfanity) {
@@ -1865,7 +1865,7 @@ void addDeathMessage(Creature cr) {
         }
         str += " out of the ";
         addstr(str);
-        move(17, 1);
+        move(10, 1);
         if (mode != GameMode.carChase) {
           addstr("neck and runs down the hall.");
         } else {
@@ -1874,7 +1874,7 @@ void addDeathMessage(Creature cr) {
       case 3:
         str += " sucks a last breath through ";
         addstr(str);
-        mvaddstr(17, 1, "the neck hole, then is quiet.");
+        mvaddstr(10, 1, "the neck hole, then is quiet.");
     }
   } else if (body?.missing == true) {
     str = cr.name;
@@ -1891,11 +1891,11 @@ void addDeathMessage(Creature cr) {
       case 0:
         str += " cries out one last time ";
         addstr(str);
-        mvaddstr(17, 1, "then is quiet.");
+        mvaddstr(10, 1, "then is quiet.");
       case 1:
         str += " gasps a last breath and ";
         addstr(str);
-        move(17, 1);
+        move(10, 1);
         if (noProfanity) {
           addstr("[makes a mess].");
         } else {
@@ -1904,27 +1904,27 @@ void addDeathMessage(Creature cr) {
       case 2:
         str += " murmurs quietly, breathing softly. ";
         addstr(str);
-        mvaddstr(17, 1, "Then all is silent.");
+        mvaddstr(10, 1, "Then all is silent.");
       case 3:
         str += " shouts \"FATHER!  Why have you ";
         addstr(str);
-        mvaddstr(17, 1, "forsaken me?\" and dies in a heap.");
+        mvaddstr(10, 1, "forsaken me?\" and dies in a heap.");
       case 4:
         str += " cries silently for mother, ";
         addstr(str);
-        mvaddstr(17, 1, "breathing slowly, then not at all.");
+        mvaddstr(10, 1, "breathing slowly, then not at all.");
       case 5:
         str += " breathes heavily, coughing up ";
         addstr(str);
-        mvaddstr(17, 1, "blood...  then is quiet.");
+        mvaddstr(10, 1, "blood...  then is quiet.");
       case 6:
         str += " silently drifts away, and ";
         addstr(str);
-        mvaddstr(17, 1, "is gone.");
+        mvaddstr(10, 1, "is gone.");
       case 7:
         str += " sweats profusely, murmurs ";
         addstr(str);
-        move(17, 1);
+        move(10, 1);
         if (noProfanity) {
           addstr("something [good] about Jesus, and dies.");
         } else {
@@ -1933,15 +1933,15 @@ void addDeathMessage(Creature cr) {
       case 8:
         str += " whines loudly, voice crackling, ";
         addstr(str);
-        mvaddstr(17, 1, "then curls into a ball, unmoving.");
+        mvaddstr(10, 1, "then curls into a ball, unmoving.");
       case 9:
         str += " shivers silently, whispering ";
         addstr(str);
-        mvaddstr(17, 1, "a prayer, then all is still.");
+        mvaddstr(10, 1, "a prayer, then all is still.");
       case 10:
         str += " speaks these final words: ";
         addstr(str);
-        move(17, 1);
+        move(10, 1);
         switch (cr.align) {
           case Alignment.liberal:
             addstr(slogan);

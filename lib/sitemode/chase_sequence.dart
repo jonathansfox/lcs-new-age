@@ -372,9 +372,9 @@ Future<ChaseOutcome> footChaseSequence({
           setColor(white);
           clearMessageArea();
           if (!ranAway) {
-            mvaddstr(16, 1, "A Liberal outcome!");
+            mvaddstr(9, 1, "A Liberal outcome!");
           } else {
-            mvaddstr(16, 1, "It looks like you've lost them!");
+            mvaddstr(9, 1, "It looks like you've lost them!");
           }
           await getKey();
         }
@@ -438,7 +438,7 @@ Future<void> evasivedrive() async {
     } else {
       clearMessageArea();
       setColor(yellow);
-      move(16, 1);
+      move(9, 1);
       addstr(theirRollsDriver[i].name);
       addstr(" is still on your tail!");
       await getKey();
@@ -466,7 +466,7 @@ Future<void> evasiverun() async {
 
     clearMessageArea();
     setColor(white);
-    move(16, 1);
+    move(9, 1);
 
     switch (lcsRandom(yourworst ~/ 5)) {
       case 1:
@@ -491,7 +491,7 @@ Future<void> evasiverun() async {
 
     if (e.type.tank && !oneIn(10)) {
       clearMessageArea();
-      mvaddstrc(16, 1, yellow, e.name);
+      mvaddstrc(9, 1, yellow, e.name);
       switch (lcsRandom(4)) {
         case 0:
           addstr(" plows through a brick wall like it was nothing!");
@@ -506,7 +506,7 @@ Future<void> evasiverun() async {
       await getKey();
     } else if (chaser < yourworst) {
       clearMessageArea();
-      mvaddstrc(16, 1, lightBlue, e.name);
+      mvaddstrc(9, 1, lightBlue, e.name);
       if (e.type.tank) {
         addstr(" tips into a pool. The tank is trapped!");
       } else {
@@ -517,7 +517,7 @@ Future<void> evasiverun() async {
       await getKey();
     } else {
       clearMessageArea();
-      mvaddstrc(16, 1, yellow, e.name);
+      mvaddstrc(9, 1, yellow, e.name);
       addstr(" is still on your tail!");
       await getKey();
     }
@@ -534,7 +534,7 @@ Future<void> evasiverun() async {
       if (yourspeed[p]! > theirbest) {
         if (i == 0 && othersleft == 0) break;
         clearMessageArea();
-        mvaddstrc(16, 1, lightBlue, p.name);
+        mvaddstrc(9, 1, lightBlue, p.name);
         addstr(" breaks away!");
         await getKey();
 
@@ -607,7 +607,7 @@ Future<void> evasiverun() async {
 
         printParty();
         printChaseEncounter();
-        mvaddstrc(16, 1, lightBlue, message);
+        mvaddstrc(9, 1, lightBlue, message);
 
         await getKey();
       } else {
@@ -647,7 +647,7 @@ Future<bool> drivingupdate() async {
         driver = p;
 
         clearMessageArea();
-        mvaddstrc(16, 1, yellow, p.name);
+        mvaddstrc(9, 1, yellow, p.name);
         addstr(" takes over the wheel.");
         printParty();
         await getKey();
@@ -816,15 +816,15 @@ Future<bool> obstacledrive(
     CarChaseObstacles obstacle, CarChaseReaction reaction) async {
   Future<void> slowDown(String safemove, String reckless) async {
     clearMessageArea();
-    mvaddstrc(16, 1, yellow, "You slow down and $safemove.");
+    mvaddstrc(9, 1, yellow, "You slow down and $safemove.");
     await getKey();
     if (oneIn(3)) {
-      mvaddstrc(17, 1, red, "The Conservative bastards $reckless!");
+      mvaddstrc(10, 1, red, "The Conservative bastards $reckless!");
       await getKey();
       await enemyattack();
       await youattack();
     } else {
-      mvaddstrc(17, 1, yellow, "The Conservatives slow down as well.");
+      mvaddstrc(10, 1, yellow, "The Conservatives slow down as well.");
       await getKey();
     }
   }
@@ -852,10 +852,10 @@ Future<bool> obstacledrive(
         await slowDown("navigate the market", "crash through it");
       } else if (reaction == CarChaseReaction.speedUp) {
         clearMessageArea();
-        mvaddstrc(16, 1, yellow, "Fruit smashes all over the windshield!");
+        mvaddstrc(9, 1, yellow, "Fruit smashes all over the windshield!");
         await getKey();
         if (oneIn(5)) {
-          mvaddstrc(17, 1, red, "A fruit seller is squashed!");
+          mvaddstrc(10, 1, red, "A fruit seller is squashed!");
           await getKey();
           criminalizeparty(Crime.murder);
           addDramaToSiteStory(Drama.killedSomebody);
@@ -876,9 +876,9 @@ Future<bool> dodgedrive(
     {CarChaseReaction style = CarChaseReaction.dodge}) async {
   clearMessageArea();
   if (style == CarChaseReaction.dodge) {
-    mvaddstrc(16, 1, yellow, "You swerve to avoid the obstacle!");
+    mvaddstrc(9, 1, yellow, "You swerve to avoid the obstacle!");
   } else if (style == CarChaseReaction.speedUp) {
-    mvaddstrc(16, 1, yellow, "You ride the accelerator!");
+    mvaddstrc(9, 1, yellow, "You ride the accelerator!");
   }
   await getKey();
 
@@ -916,7 +916,7 @@ Future<void> crashfriendlycar(Vehicle v) async {
 
   //CRASH CAR
   clearMessageArea();
-  mvaddstrc(16, 1, purple, "Your ");
+  mvaddstrc(9, 1, purple, "Your ");
   addstr(v.fullName());
   addstr(crashesFlavorText.random);
   printParty();
@@ -953,7 +953,7 @@ Future<void> crashfriendlycar(Vehicle v) async {
         // Instant death
         if (p.prisoner!.alive) {
           clearMessageArea();
-          mvaddstrc(16, 1, red, p.prisoner!.name);
+          mvaddstrc(9, 1, red, p.prisoner!.name);
           addstr(diesFlavorText.random);
           printParty();
           await getKey();
@@ -969,7 +969,7 @@ Future<void> crashfriendlycar(Vehicle v) async {
       if (p.blood <= 0) {
         // Inform the player
         clearMessageArea();
-        mvaddstrc(16, 1, red, p.name);
+        mvaddstrc(9, 1, red, p.name);
         int range = 3;
         if (p.body.fullParalysis) range -= 1;
         switch (lcsRandom(range)) {
@@ -993,7 +993,7 @@ Future<void> crashfriendlycar(Vehicle v) async {
       } else {
         // Inform the player of character survival
         clearMessageArea();
-        mvaddstrc(16, 1, yellow, p.name);
+        mvaddstrc(9, 1, yellow, p.name);
         int roll = lcsRandom(3);
         if (p.body.fullParalysis) roll = 1;
         switch (roll) {
@@ -1043,14 +1043,14 @@ Future<void> crashenemycar(Vehicle v) async {
 
   //CRASH CAR
   clearMessageArea();
-  mvaddstrc(16, 1, lightBlue, "The ");
+  mvaddstrc(9, 1, lightBlue, "The ");
   addstr(v.fullName());
   switch (lcsRandom(3)) {
     case 0:
       addstr(" slams into a building.");
     case 1:
       addstr(" spins out and crashes.");
-      move(17, 1);
+      move(10, 1);
       if (victimsum > 1) {
         addstr("Everyone inside is peeled off against the pavement.");
       } else if (victimsum == 1) {
@@ -1088,14 +1088,14 @@ Future<void> chaseGiveUp() async {
   clearCommandArea();
   clearMapArea(lower: false);
   setColor(purple);
-  move(16, 1);
+  move(9, 1);
   if (mode != GameMode.carChase) {
     addstr("You stop and are arrested.");
   } else {
     addstr("You pull over and are arrested.");
   }
   if (hostagefreed > 0) {
-    mvaddstr(17, 1, "Your hostage");
+    mvaddstr(10, 1, "Your hostage");
     if (hostagefreed > 1) {
       addstr("s are free.");
     } else {
@@ -1149,7 +1149,7 @@ Future<void> backOffEnemyCar(Vehicle v) async {
   Creature driver = encounter.firstWhere((e) => e.carId == v.id && e.isDriver);
   clearMessageArea();
   setColor(lightBlue);
-  move(16, 1);
+  move(9, 1);
   addstr(driver.name);
   switch (lcsRandom(4)) {
     case 1:

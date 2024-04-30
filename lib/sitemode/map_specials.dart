@@ -226,7 +226,7 @@ Future<void> specialBouncerAssessSquad() async {
         rejected = REJECTED_CCS;
       }
     }
-    move(17, 1);
+    move(10, 1);
     switch (rejected) {
       case REJECTED_CCS:
         setColor(red);
@@ -394,29 +394,28 @@ Future<void> specialReadSign(TileSpecial sign) async {
     case TileSpecial.signOne:
       switch (activeSite!.type) {
         case SiteType.nuclearPlant:
-          mvaddstr(16, 1, "Welcome to the NPP Nuclear Plant. Please enjoy");
-          mvaddstr(17, 1, "the museum displays in the gift shop.");
+          mvaddstr(9, 1, "Welcome to the NPP Nuclear Plant. Please enjoy");
+          mvaddstr(10, 1, "the museum displays in the gift shop.");
         case SiteType.tenement:
         case SiteType.apartment:
         case SiteType.upscaleApartment:
-          mvaddstr(16, 1, "The landlord's office is the first door");
-          mvaddstr(17, 1, "on the left.");
+          mvaddstr(9, 1, "The landlord's office is the first door");
+          mvaddstr(10, 1, "on the left.");
         default:
-          mvaddstr(16, 1, "\"Keep Calm and Carry On\"");
+          mvaddstr(9, 1, "\"Keep Calm and Carry On\"");
       }
     case TileSpecial.signTwo:
       switch (activeSite!.type) {
         default:
-          mvaddstr(
-              16, 1, "\"Great work is done by people who do great work.\"");
+          mvaddstr(9, 1, "\"Great work is done by people who do great work.\"");
       }
     case TileSpecial.signThree:
       switch (activeSite!.type) {
         default:
-          mvaddstr(16, 1, "Employees Only");
+          mvaddstr(9, 1, "Employees Only");
       }
     default:
-      mvaddstr(16, 1, "\"The best way not to fail is to succeed.\"");
+      mvaddstr(9, 1, "\"The best way not to fail is to succeed.\"");
   }
 
   await getKey();
@@ -447,11 +446,11 @@ Future<void> specialNuclearOnOff() async {
   }
 
   if (maxs != null) {
-    mvaddstrc(16, 1, white, maxs.name);
+    mvaddstrc(9, 1, white, maxs.name);
     addstr(" presses the big red button!");
     await getKey();
 
-    mvaddstr(17, 1, ".");
+    mvaddstr(10, 1, ".");
     await getKey();
     addstr(".");
     await getKey();
@@ -459,9 +458,9 @@ Future<void> specialNuclearOnOff() async {
     await getKey();
 
     if (laws[Law.nuclearPower] == DeepAlignment.eliteLiberal) {
-      mvaddstr(16, 1, "Nuclear waste is released into the water!");
+      mvaddstr(9, 1, "Nuclear waste is released into the water!");
       await getKey();
-      mvaddstr(17, 1, "But why?  The squad feels a bit Conservative.");
+      mvaddstr(10, 1, "But why?  The squad feels a bit Conservative.");
       await getKey();
 
       changePublicOpinion(View.nuclearPower, 15);
@@ -741,10 +740,10 @@ Future<void> specialIntelSupercomputer() async {
   if (result == UnlockResult.unlocked) {
     clearMessageArea();
 
-    mvaddstrc(16, 1, white, "The Squad obtains sensitive information");
+    mvaddstrc(9, 1, white, "The Squad obtains sensitive information");
     if (ccsActive && ccsExposure == CCSExposure.none) {
       addstr(",");
-      mvaddstr(17, 1, "including a list of government backers of the CCS.");
+      mvaddstr(10, 1, "including a list of government backers of the CCS.");
 
       Item it = Loot("LOOT_CCS_BACKERLIST");
       activeSquad!.loot.add(it);
@@ -811,7 +810,7 @@ Future<void> specialGraffiti() async {
 Future<bool> sitemodePromptOneLine(String line) async {
   clearMessageArea();
 
-  mvaddstrc(16, 1, white, line);
+  mvaddstrc(9, 1, white, line);
 
   while (true) {
     int c = await getKey();
@@ -824,9 +823,9 @@ Future<bool> sitemodePromptOneLine(String line) async {
 Future<bool> sitemodePrompt(String line1, String line2) async {
   clearMessageArea();
 
-  mvaddstrc(16, 1, white, line1);
+  mvaddstrc(9, 1, white, line1);
 
-  mvaddstr(17, 1, line2);
+  mvaddstr(10, 1, line2);
 
   while (true) {
     int c = await getKey();
@@ -840,10 +839,10 @@ Future<void> encounterMessage(String message,
     {String? line2, Color color = white}) async {
   clearMessageArea();
 
-  mvaddstrc(16, 1, color, message);
+  mvaddstrc(9, 1, color, message);
 
   if (line2 != null) {
-    mvaddstr(17, 1, line2);
+    mvaddstr(10, 1, line2);
   }
 
   await getKey();
@@ -1182,7 +1181,7 @@ Future<void> specialSecurity(bool metaldetect) async {
     }
   }
   setColor(white);
-  move(16, 1);
+  move(9, 1);
   if (siteAlarm) {
     addstr("The security checkpoint is abandoned.");
 
@@ -1235,7 +1234,7 @@ Future<void> specialSecurity(bool metaldetect) async {
       }
     }
   }
-  move(17, 1);
+  move(10, 1);
   setColor(rejectReason == NOT_REJECTED ? lightGreen : red);
   switch (rejectReason) {
     case REJECTED_NUDE:
@@ -1472,7 +1471,7 @@ Future<void> specialBankMoney() async {
       oneIn(2) &&
       _specialBankMoneySWATCounter < 2) {
     setColor(red);
-    move(17, 1);
+    move(10, 1);
     if (_specialBankMoneySWATCounter > 0) {
       addstr("Another SWAT team moves in!!");
     } else {
@@ -1510,7 +1509,7 @@ Future<void> specialOvalOffice() async {
   if (siteAlarm) {
     await encounterMessage("The President isn't here...");
 
-    mvaddstr(17, 1, "Secret Service agents ambush the squad!");
+    mvaddstr(10, 1, "Secret Service agents ambush the squad!");
     await getKey();
     for (int e = 0; e < 6; e++) {
       encounter.add(Creature.fromId(CreatureTypeIds.secretService));
@@ -1592,8 +1591,8 @@ Future<void> lootGroundSite() async {
     addLootToSquad(item);
     String s = item.equipTitle();
     clearMessageArea();
-    mvaddstrc(16, 1, lightGray, "You find: ");
-    mvaddstr(17, 1, s);
+    mvaddstrc(9, 1, lightGray, "You find: ");
+    mvaddstr(10, 1, s);
 
     await getKey(); //wait for key press before clearing.
   }

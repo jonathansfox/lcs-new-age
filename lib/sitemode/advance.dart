@@ -32,7 +32,7 @@ Future<void> creatureadvance() async {
         if (p.prisoner!.align != Alignment.liberal) {
           clearMessageArea();
           setColor(white);
-          move(16, 1);
+          move(9, 1);
           addstr(p.name);
           addstr(" drops ");
           addstr(p.prisoner!.name);
@@ -92,7 +92,7 @@ Future<void> creatureadvance() async {
         clearMessageArea();
 
         setColor(yellow);
-        move(16, 1);
+        move(9, 1);
         addstr("The Squad smells Conservative panic.");
 
         printEncounter();
@@ -227,10 +227,10 @@ Future<void> advancecreature(Creature cr) async {
           topmedical.skillCheck(Skill.firstAid, Difficulty.formidable)) {
         clearMessageArea();
         setColor(lightGreen);
-        move(16, 1);
+        move(9, 1);
         addstr(topmedical.name);
         addstr(" was able to slow the bleeding of");
-        move(17, 1);
+        move(10, 1);
         addstr(cr.name);
         addstr("'s wounds.");
 
@@ -274,7 +274,7 @@ Future<void> advancecreature(Creature cr) async {
       await creatureDie(cr, true);
     } else if (burndamage > 0) {
       setColor(darkRed);
-      move(16, 1);
+      move(9, 1);
       addstr(cr.name);
       addstr(" is burned!");
 

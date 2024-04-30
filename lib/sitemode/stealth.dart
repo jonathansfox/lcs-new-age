@@ -39,8 +39,8 @@ Future<void> noticeCheck(
     } else {
       clearMessageArea();
 
-      mvaddstrc(16, 1, red, "${e.name} observes your Liberal activity ");
-      move(17, 1);
+      mvaddstrc(9, 1, red, "${e.name} observes your Liberal activity ");
+      move(10, 1);
       if (e.align == Alignment.conservative) {
         addstr("and lets forth a piercing Conservative alarm cry!");
       } else {
@@ -100,7 +100,7 @@ Future<bool> alienationCheck(bool evenIfNoWitnesses) async {
     if (oldSiteAlienation.index < siteAlienated.index) {
       clearMessageArea();
       setColor(yellow);
-      move(16, 1);
+      move(9, 1);
       if (siteAlienated == SiteAlienation.alienatedModerates) {
         addstr("We've alienated the masses here!");
       } else {
@@ -256,7 +256,7 @@ Future<void> disguisecheck(int timer) async {
 
       if (timer == 0) {
         setColor(lightBlue);
-        move(16, 1);
+        move(9, 1);
 
         if (partysize > 1) {
           addstr("The squad");
@@ -277,7 +277,7 @@ Future<void> disguisecheck(int timer) async {
       }
 
       if (squaddieThatBlewIt != null && oneIn(2)) {
-        mvaddstrc(16, 1, yellow, squaddieThatBlewIt.name);
+        mvaddstrc(9, 1, yellow, squaddieThatBlewIt.name);
         addstr([
           " coughs.",
           " accidentally mumbles the slogan.",
@@ -295,7 +295,7 @@ Future<void> disguisecheck(int timer) async {
       } else if (!noticed) {
         /*
         setColor(lightBlue);
-        move(16, 1);
+        move(9, 1);
 
         if (partysize > 1) {
           addstr("The squad");
@@ -313,7 +313,7 @@ Future<void> disguisecheck(int timer) async {
 
     clearMessageArea();
 
-    mvaddstrc(16, 1, red, n.name);
+    mvaddstrc(9, 1, red, n.name);
     if (siteAlarmTimer != 0 && weapon == WeaponCheckResult.ok && !n.type.dog) {
       if ((siteType == SiteType.tenement ||
               siteType == SiteType.apartment ||
@@ -344,7 +344,7 @@ Future<void> disguisecheck(int timer) async {
     } else {
       if (weapon != WeaponCheckResult.ok && !n.type.dog) {
         addstr(" sees the Squad's Liberal Weapons ");
-        move(17, 1);
+        move(10, 1);
         if (n.align == Alignment.conservative) {
           addstr("and lets forth a piercing Conservative alarm cry!");
         } else {
@@ -352,7 +352,7 @@ Future<void> disguisecheck(int timer) async {
         }
       } else {
         addstr(" looks at the Squad with Intolerance ");
-        move(17, 1);
+        move(10, 1);
         if (n.align == Alignment.conservative) {
           if (n.type.dog) {
             addstr("and launches into angry Conservative barking!");

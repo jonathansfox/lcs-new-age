@@ -68,9 +68,9 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
   if (c == 'a'.codePoint) {
     await intimidate(liberal);
   } else if (c == 'b'.codePoint) {
-    mvaddstrc(16, 1, white, "${liberal.name}: ");
+    mvaddstrc(9, 1, white, "${liberal.name}: ");
     setColor(lightGreen);
-    move(17, 1);
+    move(10, 1);
     switch (lcsRandom(6)) {
       case 0:
         addstr("\"Back off or the hostage dies!\"");
@@ -104,8 +104,8 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
           e.blood > 70 &&
           (e.type.canPerformArrests || e.type.edgelord));
       if (e != null) {
-        mvaddstrc(16, 1, white, "${e.name}:");
-        move(17, 1);
+        mvaddstrc(9, 1, white, "${e.name}:");
+        move(10, 1);
         if (e.align != Alignment.conservative ||
             (e.type.id == CreatureTypeIds.secretService &&
                 exec[Exec.president]! > DeepAlignment.conservative)) {
@@ -163,7 +163,7 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
       }
       if (!noretreat || e == null) {
         clearMessageArea();
-        mvaddstrc(16, 1, white, "The ploy works! The Conservatives back off.");
+        mvaddstrc(9, 1, white, "The ploy works! The Conservatives back off.");
         for (int i = encounter.length - 1; i >= 0; i--) {
           if (encounter[i].alive && encounter[i].isEnemy) {
             encounter.removeAt(i);
@@ -207,7 +207,7 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
             }
           }
 
-          move(16, 1);
+          move(9, 1);
           setColor(red);
           if (executer.weapon.type.rangedAttack?.usesAmmo == true &&
               executer.weapon.ammo > 0) {
@@ -219,7 +219,7 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
 
           await getKey();
 
-          mvaddstrc(17, 1, white,
+          mvaddstrc(10, 1, white,
               "${executer.name} Heartlessly drops ${executer.prisoner!.name}'s body.");
           executer.heartDamage++;
           siteCrime += 10;
@@ -237,9 +237,9 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
 
           if (hostages > 1 && !e.type.edgelord) {
             clearMessageArea();
-            mvaddstrc(16, 1, white, "${e.name}: ");
+            mvaddstrc(9, 1, white, "${e.name}: ");
             setColor(red);
-            move(17, 1);
+            move(10, 1);
             if (noProfanity) {
               addstr("\"Fuck! ");
             } else {
@@ -267,10 +267,10 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
             await getKey();
           }
         } else if (c == 'b'.codePoint) {
-          move(16, 1);
-          mvaddstrc(16, 1, white, "${liberal.name}: ");
+          move(9, 1);
+          mvaddstrc(9, 1, white, "${liberal.name}: ");
           setColor(lightGreen);
-          move(17, 1);
+          move(10, 1);
           switch (lcsRandom(5)) {
             case 0:
               if (hostages > 1) {
@@ -292,9 +292,9 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
 
           if (e.type.edgelord) {
             clearMessageArea();
-            mvaddstrc(16, 1, white, "${e.name}: ");
+            mvaddstrc(9, 1, white, "${e.name}: ");
             setColor(red);
-            move(17, 1);
+            move(10, 1);
             switch (lcsRandom(5)) {
               case 0:
                 addstr("\"Do I look like a loving person?\"");
@@ -311,9 +311,9 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
             await getKey();
           } else {
             clearMessageArea();
-            mvaddstrc(16, 1, white, "${e.name}: ");
+            mvaddstrc(9, 1, white, "${e.name}: ");
             setColor(red);
-            move(17, 1);
+            move(10, 1);
             switch (lcsRandom(4)) {
               case 0:
                 addstr("\"Yes. Nice and easy.\"");
@@ -335,7 +335,7 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
 
             clearMessageArea();
             setColor(white);
-            move(16, 1);
+            move(9, 1);
             for (Creature squaddie in squad) {
               // Instant juice for successful hostage negotiation
               addjuice(squaddie, 15, 1000);
@@ -357,14 +357,14 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
     } else {
       setColor(white);
       clearMessageArea();
-      move(16, 1);
+      move(9, 1);
       addstr("${target.name} isn't interested in your pathetic threats.");
 
       await getKey();
     }
   } else if (c == 'c'.codePoint) {
     setColor(white);
-    move(16, 1);
+    move(9, 1);
     if (activeSiteUnderSiege) {
       addstr("${liberal.name} ");
       switch (activeSite!.siege.activeSiegeType) {
@@ -376,10 +376,10 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
           switch (lcsRandom(2)) {
             case 0:
               addstr("pretends to be Mountain ");
-              mvaddstr(17, 1, "like Patrick Swayze in Next of Kin.");
+              mvaddstr(10, 1, "like Patrick Swayze in Next of Kin.");
             case 1:
               addstr("squeals like Ned Beatty ");
-              mvaddstr(17, 1, "in Deliverance.");
+              mvaddstr(10, 1, "in Deliverance.");
           }
         case SiegeType.ccs:
           switch (lcsRandom(3)) {
@@ -425,7 +425,7 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
         addstrc(lightGreen, " on the floor.");
       } else {
         addstr("${liberal.name} talks like a Conservative ");
-        mvaddstr(17, 1, "and pretends to belong here.");
+        mvaddstr(10, 1, "and pretends to belong here.");
       }
     }
 
@@ -452,7 +452,7 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
       clearMessageArea();
 
       setColor(red);
-      move(16, 1);
+      move(9, 1);
       if (target.type.id == CreatureTypeIds.hick) {
         addstr("But ${target.name} weren't born yesterday.");
       } else {
@@ -467,7 +467,7 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
       await getKey();
     } else {
       clearMessageArea();
-      mvaddstrc(16, 1, lightGreen, "The Enemy is fooled and departs.");
+      mvaddstrc(9, 1, lightGreen, "The Enemy is fooled and departs.");
       await getKey();
 
       for (int i = encounter.length - 1; i >= 0; i--) {
@@ -502,8 +502,8 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
 
 Future<void> intimidate(Creature liberal) async {
   clearMessageArea();
-  mvaddstrc(16, 1, white, "${liberal.name}: ");
-  move(17, 1);
+  mvaddstrc(9, 1, white, "${liberal.name}: ");
+  move(10, 1);
   setColor(lightGreen);
 
   switch (lcsRandom(15)) {
@@ -563,7 +563,7 @@ Future<void> intimidate(Creature liberal) async {
 
       if (attack > defense || e.nonCombatant) {
         clearMessageArea();
-        mvaddstrc(16, 1, white, e.name);
+        mvaddstrc(9, 1, white, e.name);
         switch (lcsRandom(10)) {
           case 0:
             addstr(" chickens out!");

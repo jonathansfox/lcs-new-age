@@ -108,7 +108,7 @@ Future<void> kidnapattempt() async {
       //HIT!
       if (aroll > droll) {
         setColor(white);
-        move(16, 1);
+        move(9, 1);
         addstr(kidnapper.name);
         addstr(" snatches ");
         addstr(target.name);
@@ -119,7 +119,7 @@ Future<void> kidnapattempt() async {
         await getKey();
 
         setColor(red);
-        move(17, 1);
+        move(10, 1);
         addstr(target.name);
         addstr(" is struggling and screaming!");
 
@@ -135,14 +135,14 @@ Future<void> kidnapattempt() async {
       clearMessageArea();
 
       setColor(white);
-      move(16, 1);
+      move(9, 1);
       addstr(kidnapper.name);
       addstr(" shows ");
       addstr(target.name);
       addstr(" the ");
       addstr(kidnapper.weapon.getName(sidearm: true));
       addstr(" ");
-      move(17, 1);
+      move(10, 1);
       addstr("and says, ");
       setColor(lightGreen);
       if (noProfanity) {
@@ -196,10 +196,9 @@ Future<void> releasehostage() async {
   if (!activeSquad!.livingMembers.any(
       (e) => e.prisoner != null && e.prisoner!.align != Alignment.liberal)) {
     setColor(white);
-    move(16, 1);
-    addstr("No hostages are being held.       ");
-    move(17, 1);
-    addstr("                                  ");
+    clearMessageArea();
+    move(9, 1);
+    addstr("No hostages are being held.");
 
     await getKey();
 
@@ -232,11 +231,9 @@ Future<void> releasehostage() async {
 
   if (!siteAlarm) {
     setColor(white);
-    move(16, 1);
-    addstr("The hostage shouts for help!      ");
-    //Next message.
-    move(17, 1);
-    addstr("                                  ");
+    clearMessageArea();
+    move(9, 1);
+    addstr("The hostage shouts for help!");
 
     await getKey();
 
@@ -270,7 +267,7 @@ Future<void> freehostage(Creature cr, FreeHostageMessage situation) async {
     } else if (situation == FreeHostageMessage.newLine) {
       clearMessageArea();
       setColor(white);
-      move(16, 1);
+      move(9, 1);
       if (prisoner.hireId == null) {
         addstr("A hostage escapes!");
       } else {
@@ -317,7 +314,7 @@ Future<void> squadHaulImmobileAllies(bool dead) async {
         p.prisoner != null) {
       clearMessageArea();
       setColor(yellow);
-      move(16, 1);
+      move(9, 1);
       addstr(p.name);
       addstr(" can no longer handle ");
       addstr(p.prisoner!.name);
@@ -338,7 +335,7 @@ Future<void> squadHaulImmobileAllies(bool dead) async {
           if (!p.alive) {
             clearMessageArea();
             setColor(yellow);
-            move(16, 1);
+            move(9, 1);
             addstr("Nobody can carry Martyr ");
             addstr(p.name);
             addstr(".");
@@ -351,7 +348,7 @@ Future<void> squadHaulImmobileAllies(bool dead) async {
           } else {
             clearMessageArea();
             setColor(yellow);
-            move(16, 1);
+            move(9, 1);
             addstr(p.name);
             addstr(" is left to be captured.");
 
@@ -367,7 +364,7 @@ Future<void> squadHaulImmobileAllies(bool dead) async {
 
               clearMessageArea();
               setColor(yellow);
-              move(16, 1);
+              move(9, 1);
               addstr(p2.name);
               addstr(" hauls ");
               addstr(p.name);

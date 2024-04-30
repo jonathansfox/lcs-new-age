@@ -66,7 +66,7 @@ Future<UnlockResult> unlock(UnlockTypes type) async {
         p.train(Skill.security, 6 * difficulty);
       }
       clearMessageArea(false);
-      mvaddstrc(16, 1, white, "${p.name} ");
+      mvaddstrc(9, 1, white, "${p.name} ");
       switch (type) {
         case UnlockTypes.door:
           addstr("unlocks the door!");
@@ -96,7 +96,7 @@ Future<UnlockResult> unlock(UnlockTypes type) async {
     } else {
       clearMessageArea(false);
       setColor(white);
-      move(16, 1);
+      move(9, 1);
 
       int i;
       //gain some experience for failing only if you could have succeeded.
@@ -118,7 +118,7 @@ Future<UnlockResult> unlock(UnlockTypes type) async {
     }
   } else {
     clearMessageArea();
-    mvaddstrc(16, 1, white, "You can't find anyone to do the job.");
+    mvaddstrc(9, 1, white, "You can't find anyone to do the job.");
 
     await getKey();
   }
@@ -191,7 +191,7 @@ Future<UnlockResult> bash(BashTypes type) async {
 
   if (crowable || maxp.attributeCheck(Attribute.strength, difficulty)) {
     clearMessageArea(false);
-    mvaddstrc(16, 1, white, maxp.name);
+    mvaddstrc(9, 1, white, maxp.name);
     addstr(" ");
     switch (type) {
       case BashTypes.door:
@@ -223,7 +223,7 @@ Future<UnlockResult> bash(BashTypes type) async {
             activeSite!.type == SiteType.intelligenceHQ) &&
         !siteAlarm) {
       siteAlarm = true;
-      move(17, 1);
+      move(10, 1);
       setColor(red);
       addstr("Alarms go off!");
 
@@ -233,7 +233,7 @@ Future<UnlockResult> bash(BashTypes type) async {
     return UnlockResult.unlocked;
   } else {
     clearMessageArea(false);
-    mvaddstrc(16, 1, white, maxp.name);
+    mvaddstrc(9, 1, white, maxp.name);
     switch (type) {
       case BashTypes.door:
         if (maxp.hasWheelchair) {
@@ -278,7 +278,7 @@ Future<UnlockResult> hack(HackTypes type) async {
 
     if (maxattack > difficulty) {
       clearMessageArea();
-      mvaddstrc(16, 1, white, hacker.name);
+      mvaddstrc(9, 1, white, hacker.name);
       if (!blind) addstr(" has");
       switch (type) {
         case HackTypes.supercomputer:
@@ -294,7 +294,7 @@ Future<UnlockResult> hack(HackTypes type) async {
       return UnlockResult.unlocked;
     } else {
       clearMessageArea();
-      mvaddstrc(16, 1, white, hacker.name);
+      mvaddstrc(9, 1, white, hacker.name);
       addstr(" couldn't");
       if (blind) addstr(" see how to");
       switch (type) {
@@ -310,7 +310,7 @@ Future<UnlockResult> hack(HackTypes type) async {
     }
   } else {
     clearMessageArea();
-    mvaddstrc(16, 1, white, "You can't find anyone to do the job.");
+    mvaddstrc(9, 1, white, "You can't find anyone to do the job.");
 
     await getKey();
   }
@@ -563,7 +563,7 @@ Future<bool> reloadparty(bool wasteful, {bool showText = false}) async {
       if (showText && message.isNotEmpty) {
         clearMessageArea();
         printParty();
-        mvaddstrc(16, 1, white, message);
+        mvaddstrc(9, 1, white, message);
         await getKey();
       }
     }
