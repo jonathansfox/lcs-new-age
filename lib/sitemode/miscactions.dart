@@ -414,7 +414,7 @@ Future<bool> _mediaBroadcast(String takeover, View mediaView, String medium,
 
   View viewhit = View.issues.random;
   await encounterMessage("The Squad takes control of the $takeover and ",
-      line2: "talks about ${_mediaIssueDescription(View.issues.random)}.");
+      line2: "talks about ${_mediaIssueDescription(viewhit)}.");
 
   int segmentpower = _mediaSegmentPower();
 
