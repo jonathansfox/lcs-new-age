@@ -607,7 +607,7 @@ void printBlock(int x, int y, int z, int px, int py) {
   if (levelMapTile(x, y, z).siegeTrap) {
     setColor(yellow, background: backcolor);
     mvaddstr(py + 1, px, "TRAP!");
-  } else if (levelMapTile(x, y, z).siegeUnit) {
+  } else if (levelMapTile(x, y, z).siegeUnitDamaged) {
     setColor(darkRed, background: backcolor);
     mvaddstr(py + 2, px, "enemy");
   } else if (levelMapTile(x, y, z).special != TileSpecial.none) {
