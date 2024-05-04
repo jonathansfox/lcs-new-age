@@ -33,22 +33,18 @@ enum HackTypes { supercomputer, vault }
 /* unlock attempt */
 Future<UnlockResult> unlock(UnlockTypes type) async {
   int difficulty = switch (type) {
-    UnlockTypes.door => Difficulty.easy,
     UnlockTypes.cage => Difficulty.veryEasy,
+    UnlockTypes.door => switch (securityable(activeSite!.type)) {
+        0 => Difficulty.easy,
+        1 => Difficulty.average,
+        _ => Difficulty.hard,
+      },
     UnlockTypes.cageHard => Difficulty.average,
+    UnlockTypes.safe => Difficulty.formidable,
     UnlockTypes.cell => Difficulty.formidable,
     UnlockTypes.armory => Difficulty.heroic,
-    UnlockTypes.safe => Difficulty.heroic,
     UnlockTypes.vault => Difficulty.heroic,
   };
-
-  if (type == UnlockTypes.door) {
-    if (securityable(activeSite!.type) == 1) {
-      difficulty = Difficulty.challenging;
-    } else if (securityable(activeSite!.type) > 1) {
-      difficulty = Difficulty.hard;
-    }
-  }
 
   int maxattack = activeSquad!.livingMembers
       .fold(1, (best, p) => max(best, p.skill(Skill.security)));
