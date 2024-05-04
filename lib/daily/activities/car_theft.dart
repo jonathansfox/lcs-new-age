@@ -17,7 +17,7 @@ import 'package:lcs_new_age/utils/lcsrandom.dart';
 import 'package:lcs_new_age/vehicles/vehicle.dart';
 import 'package:lcs_new_age/vehicles/vehicle_type.dart';
 
-enum CarKeyLocation { ignition, sunblock, glove, frontSeat, backSeat }
+enum CarKeyLocation { ignition, sunblock, glove, frontSeat, backSeat, muffler }
 
 class CarTheftScene {
   CarTheftScene(this.cr);
@@ -235,8 +235,8 @@ class CarTheftScene {
         String location;
 
         if (keyLocation == null) {
-          difficulty = Difficulty.mythic;
-          location = "in SPACE. With ALIENS. Seriously.";
+          difficulty = 100;
+          location = "in the bugfield!";
         } else {
           switch (keyLocation) {
             case CarKeyLocation.ignition:
@@ -254,6 +254,9 @@ class CarTheftScene {
             case CarKeyLocation.backSeat:
               difficulty = Difficulty.hard;
               location = "under the back seat!";
+            case CarKeyLocation.muffler:
+              difficulty = Difficulty.legendary;
+              location = "taped to the muffler!";
           }
         }
         if (cr.attributeCheck(Attribute.intelligence, difficulty)) {
