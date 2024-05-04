@@ -151,7 +151,7 @@ class CarTheftScene {
 
   Future<void> _startCar() async {
     CarKeyLocation? keyLocation = CarKeyLocation.values.random;
-    if (oneIn(5)) keyLocation = null;
+    if (!oneIn(5)) keyLocation = null;
     int nervousness = 0;
     int timesSearchedForKeys = 0;
 
