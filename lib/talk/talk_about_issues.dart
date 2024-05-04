@@ -55,8 +55,8 @@ Future<bool> talkAboutIssues(Creature a, Creature tk) async {
 
   if (tk.align == Alignment.conservative) difficulty += 15;
   if (!tk.type.talkReceptive) difficulty += 15;
-  if (youAreStupid) difficulty += 10;
-  if (issueTooLiberal) difficulty += 10;
+  if (youAreStupid) difficulty += 9;
+  if (issueTooLiberal) difficulty += 9;
 
   succeeded = a.skillCheck(Skill.persuasion, difficulty);
   debugPrint("Talk about issues: $succeeded, $difficulty");
