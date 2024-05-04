@@ -203,7 +203,7 @@ class CarTheftScene {
 
       //HOTWIRE CAR
       if (c == Key.a) {
-        if (cr.skillCheck(Skill.security, Difficulty.challenging)) {
+        if (cr.skillCheck(Skill.security, Difficulty.hard)) {
           cr.train(Skill.security, 50);
           mvaddstrc(y++, 0, white, "${cr.name} hotwires the car!");
           await getKey();
