@@ -134,7 +134,7 @@ List<(String, String)> randomMonsterTalkBad = [
   ("\"Woah, uh... shit!\"", "\"Foolish mortal!\""),
   ("\"Don't kill us!\"", "\"Pathetic human! You're already dead!\""),
   ("\"Oh crap!\"", "\"Where is your god now, mortal?!\""),
-  ("\"Uhhh... down, boy?\"", "\"I'm a girl, fool!\""),
+  ("\"Uhhh... down, boy?\"", "\"You dare call me a boy? Fool!\""),
   ("\"Don't eat me!\"", "\"I will feast on your flesh!\""),
   (
     "\"Excuse me, I am, uh...\"",
