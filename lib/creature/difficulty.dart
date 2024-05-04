@@ -1,13 +1,13 @@
 class Difficulty {
   static const int automatic = 1;
-  static const int veryEasy = 4;
-  static const int easy = 7;
-  static const int average = 10;
-  static const int challenging = 13;
-  static const int hard = 16;
-  static const int formidable = 19;
-  static const int heroic = 22;
-  static const int superHeroic = 25;
-  static const int legendary = 28;
-  static const int mythic = 31;
+  static const int veryEasy = 7;
+  static const int easy = 10;
+  static const int average = 13;
+  static const int challenging = 16;
+  static const int hard = 19;
+  static const int formidable = 22;
+  static const int heroic = 25;
+  static const int superHeroic = 28;
+  static const int legendary = 31;
+  static const int mythic = 34;
 }
