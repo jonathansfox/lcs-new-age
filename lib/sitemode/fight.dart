@@ -664,21 +664,19 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
       if (strength > strengthmax) strength = strengthmax;
       mod += strength - strengthmin;
       armorpiercing += (strength - strengthmin) ~/ 2;
-      debugPrint("Strength bonus: $mod");
     }
 
-    //SKILL BONUS FOR GOOD ROLL
-    mod += aroll - droll;
-    //debugPrint("Bonus after good roll: $mod");
-
-    //Health and poor accuracy will only avoid critical hits, not stop low-damage attacks
-    if (mod < 0) mod = 0;
+    // DAMAGE BONUS FROM HIGH SKILL
+    mod += a.skill(wsk);
 
     int predamamount = damamount;
     bool bruiseOnly = false;
     damamount =
         damagemod(t, attackUsed, damamount, hitPart, armorpiercing, mod);
-    if (damamount < predamamount / 4 && damamount < 20 && damamount > 0) {
+    if (damamount < predamamount / 4 &&
+        damamount < 20 &&
+        damamount > 0 &&
+        damamount < t.blood / 4) {
       bruiseOnly = true;
       str += " to little effect";
     }
@@ -1317,7 +1315,7 @@ int damagemod(Creature t, Attack attackUsed, int damamount,
       "Armor: $armor, $armorpenetration penetration, pre-armor mod: $mod");
 
   armor = armor - armorpenetration;
-  if (armor > 0) mod = -armor;
+  if (armor > 0) mod = mod - armor * max(2, armor);
 
   debugPrint(
       "Damage mod: $mod, damage before application: $damamount, final armor $armor");
