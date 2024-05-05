@@ -513,10 +513,10 @@ void printFullCreatureStats(Creature cr,
   // Add seduction stats
   move(19, 0);
   int lovers = cr.relationships.length;
-  if (lovers > 0) {
-    addstr("$lovers Romantic Interest");
-    if (lovers > 1) addstr("s");
-  }
+  int maxLovers = cr.maxRelationships;
+  addstr("$lovers Lover");
+  if (lovers != 1) addstr("s");
+  addstr(" / $maxLovers Max");
   // Any dates with potential love interests scheduled?
   if (cr.scheduldeDates > 0) {
     move(19, 55);
