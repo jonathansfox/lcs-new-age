@@ -48,7 +48,11 @@ class DatingSession {
 Future<void> doDates() async {
   for (int d = datingSessions.length - 1; d >= 0; d--) {
     DatingSession date = datingSessions[d];
-    Creature p = date.lcsMember!;
+    Creature? p = date.lcsMember;
+    if (p == null) {
+      datingSessions.remove(date);
+      continue;
+    }
     // Stand up dates if 1) dater does not exist, or
     // 2) dater was not able to return to a safehouse today (and is not in the hospital)
     if (date.timeLeft > 0 ||
