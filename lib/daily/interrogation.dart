@@ -1155,12 +1155,8 @@ Future<void> tendHostage(InterrogationSession intr) async {
   }
 
   if (cr.align == Alignment.liberal || !cr.alive) {
-    for (Creature p in pool) {
-      if (!p.alive) continue;
-      if (p.activity.type == ActivityType.interrogation &&
-          p.activity.idInt == cr.id) {
-        p.activity = Activity.none();
-      }
+    for (Creature p in tenders) {
+      p.activity = Activity.none();
     }
   }
 

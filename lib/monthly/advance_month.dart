@@ -432,6 +432,7 @@ Future<void> advanceMonth() async {
       // End treatment
       if (p.clinicMonthsLeft == 0) {
         p.blood = p.maxBlood;
+        p.activity = Activity.none();
         await showMessage("${p.name} has left the ${p.site!.name}.");
 
         Site? hs =
