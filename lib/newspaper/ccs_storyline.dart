@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:lcs_new_age/creature/creature.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/justice/crimes.dart';
+import 'package:lcs_new_age/location/location_type.dart';
 import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/newspaper/news_story.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
@@ -77,7 +78,7 @@ Future<NewsStory> ccsFbiRaidStory() async {
   // hide ccs safehouses
   for (Site l in sites.where((l) => l.controller == SiteController.ccs)) {
     l.controller = SiteController.unaligned;
-    l.hidden = true;
+    if (l.discreet) l.hidden = true;
   }
   // the government will protect you, you don't need the lcs
   changePublicOpinion(View.policeBehavior, -20);
