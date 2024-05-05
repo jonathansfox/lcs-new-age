@@ -693,7 +693,7 @@ Future<void> _dailyHealing() async {
         // Non-bleeding wounds
         else {
           // Erase wound if almost fully healed, but preserve loss of limbs.
-          if (p.blood >= 95) {
+          if (p.blood >= p.maxBlood - 5) {
             w.bruised = false;
             w.bleeding = false;
             w.shot = false;
