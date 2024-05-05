@@ -369,6 +369,7 @@ void applyBugFixes(String version) {
       uniqueCreatures.ceo.site?.type == SiteType.homelessEncampment) {
     uniqueCreatures.ceo.location =
         sites.firstWhere((s) => s.type == SiteType.ceoHouse);
+    uniqueCreatures.ceo.workLocation = uniqueCreatures.ceo.location;
   }
   if (!uniqueCreatures.president.kidnapped &&
       !uniqueCreatures.president.missing &&
@@ -376,5 +377,6 @@ void applyBugFixes(String version) {
       uniqueCreatures.president.site?.type == SiteType.homelessEncampment) {
     uniqueCreatures.president.location =
         sites.firstWhere((s) => s.type == SiteType.whiteHouse);
+    uniqueCreatures.president.workLocation = uniqueCreatures.president.location;
   }
 }

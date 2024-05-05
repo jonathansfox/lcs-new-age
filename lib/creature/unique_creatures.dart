@@ -22,7 +22,8 @@ class UniqueCreatures {
   @JsonKey(includeFromJson: false, includeToJson: false)
   Creature get ceo {
     _ceo ??= Creature.fromId(CreatureTypeIds.corporateCEO)
-      ..location = sites.firstWhere((s) => s.type == SiteType.ceoHouse);
+      ..location = sites.firstWhere((s) => s.type == SiteType.ceoHouse)
+      ..workLocation = sites.firstWhere((s) => s.type == SiteType.ceoHouse);
     return _ceo!;
   }
 
@@ -36,7 +37,8 @@ class UniqueCreatures {
       ..align = politics.exec[Exec.president]!.shallow
       ..alreadyNamed = true
       ..infiltration = 1
-      ..location = sites.firstWhere((s) => s.type == SiteType.whiteHouse);
+      ..location = sites.firstWhere((s) => s.type == SiteType.whiteHouse)
+      ..workLocation = sites.firstWhere((s) => s.type == SiteType.whiteHouse);
     return _president!;
   }
 
