@@ -131,17 +131,13 @@ Future<void> trial(Creature g) async {
   mvaddstr(y++, 1, "A - Use a court-appointed attorney.");
   mvaddstr(y++, 1, "B - Defend self!");
   mvaddstr(y++, 1, "C - Plead guilty.");
-  if (ledger.funds < 5000) {
-    mvaddstrc(y++, 1, darkGray,
-        "D - Pay \$5000 to hire ace Liberal attorney ${uniqueCreatures.aceLiberalAttorney.name}.");
-  }
+  mvaddstrc(y++, 1, ledger.funds < 5000 ? darkGray : lightGray,
+      "D - Pay \$5000 to hire Elite Liberal Attorney ${uniqueCreatures.aceLiberalAttorney.name}.");
   if (sleeperlawyer != null) {
     mvaddstrc(y++, 1, lightGray,
         "E - Accept sleeper ${sleeperlawyer.name}'s offer to assist pro bono.");
   }
-  if (ledger.funds < 5000) {
-    mvaddstrc(++y, 5, lightGray, "Your attributes if you defend yourself: ");
-  }
+  mvaddstrc(++y, 5, lightGray, "Your attributes if you defend yourself: ");
   mvaddstr(++y, 5, "Heart: ${g.attribute(Attribute.heart)}");
   mvaddstr(y, 25, "Persuasion: ${g.skill(Skill.persuasion)}");
   mvaddstr(++y, 5, "Charisma: ${g.attribute(Attribute.charisma)}");
