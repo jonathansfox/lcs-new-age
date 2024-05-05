@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:lcs_new_age/basemode/activities.dart';
 import 'package:lcs_new_age/common_display/common_display.dart';
 import 'package:lcs_new_age/common_display/print_party.dart';
@@ -31,7 +32,7 @@ Future<void> planSiteVisit() async {
     if (area is City) {
       destinationList = [...area.districts];
     } else if (area is District) {
-      destinationList = <Site>[...area.sites]
+      destinationList = <Site>[...area.sites.whereNot((s) => s.hidden)]
         ..sort((a, b) => a.controller.index.compareTo(b.controller.index));
     } else {
       destinationList = [...cities];
