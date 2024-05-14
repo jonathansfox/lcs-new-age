@@ -685,6 +685,8 @@ void printWantedFor(Creature cr) {
     addstr("BANK ROBBERY");
   } else if (wanted[Crime.arson] == true) {
     addstr("ARSON");
+  } else if (wanted[Crime.escapingPrison] == true) {
+    addstr("ESCAPING PRISON");
   } else if (wanted[Crime.flagBurning] == true) {
     addstr(laws[Law.freeSpeech] == DeepAlignment.archConservative
         ? "FLAG MURDER"
@@ -693,8 +695,6 @@ void printWantedFor(Creature cr) {
     addstr("HARMFUL SPEECH");
   } else if (wanted[Crime.drugDistribution] == true) {
     addstr("DRUG DEALING");
-  } else if (wanted[Crime.escapingPrison] == true) {
-    addstr("ESCAPING PRISON");
   } else if (wanted[Crime.aidingEscape] == true) {
     addstr("RELEASING PRISONERS");
   } else if (wanted[Crime.juryTampering] == true) {
