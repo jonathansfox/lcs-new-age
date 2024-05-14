@@ -1841,7 +1841,7 @@ Elements marked as hardcoded may have their values overridden by the game.
     <creaturetype idname="CREATURE_MILITARYPOLICE">
         <type_name>Military Police</type_name>
         <weapon>WEAPON_CARBINE_M4</weapon>
-        <weapon>WEAPON_SOTGUN_PUMP</weapon>
+        <weapon>WEAPON_SHOTGUN_PUMP</weapon>
         <weapon>WEAPON_SEMIPISTOL_9MM</weapon>
         <armor>ARMOR_ARMYARMOR</armor>
         <age>YOUNGADULT</age>
