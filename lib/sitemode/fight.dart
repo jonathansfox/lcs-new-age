@@ -844,13 +844,13 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
             if (attackUsed.cuts || attackUsed.tears || attackUsed.shoots) {
               pokedam = true;
             }
-            if (attackUsed.bruises) {
-              breakdam = true;
-            }
           }
 
-          if (damamount >= 20) {
-            if (attackUsed.cuts || attackUsed.shoots || attackUsed.tears) {
+          if (damamount >= 50) {
+            if (attackUsed.cuts ||
+                attackUsed.shoots ||
+                attackUsed.tears ||
+                attackUsed.bruises) {
               breakdam = true;
             }
           }
