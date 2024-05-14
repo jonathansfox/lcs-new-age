@@ -439,7 +439,7 @@
         <can_take_hostages>true</can_take_hostages>
         <threatening>true</threatening>
         <legality>-3</legality>
-        <fencevalue>0</fencevalue>
+        <fencevalue>1000</fencevalue>
         <bashstrengthmod>125</bashstrengthmod>
         <size>15</size>
         <attack>
@@ -609,7 +609,7 @@
         <shortname>Molotov</shortname>
         <shortname_future>Molotov</shortname_future>
         <threatening>true</threatening>
-        <fencevalue>0</fencevalue>
+        <fencevalue>1</fencevalue>
         <size>15</size>
         <attack>
             <priority>1</priority>
@@ -716,7 +716,7 @@
         <shortname_future>Laser Axe</shortname_future>
         <can_take_hostages>true</can_take_hostages>
         <threatening>true</threatening>
-        <fencevalue>0</fencevalue>
+        <fencevalue>15</fencevalue>
         <bashstrengthmod>200</bashstrengthmod>
         <size>15</size>
         <attack>
@@ -1199,6 +1199,7 @@
         <name>Flaming Breath</name>
         <shortname>Fire</shortname>
         <threatening>true</threatening>
+        <suspicious>false</suspicious>
         <size>1</size>
         <attack>
             <priority>1</priority>
@@ -1217,6 +1218,7 @@
         <name>Proboscis</name>
         <shortname>Sucker</shortname>
         <threatening>true</threatening>
+        <suspicious>false</suspicious>
         <size>15</size>
         <attack>
             <priority>1</priority>
@@ -1232,6 +1234,8 @@
     <weapontype idname="WEAPON_BITE">
         <name>Teeth</name>
         <shortname>Teeth</shortname>
+        <threatening>true</threatening>
+        <suspicious>false</suspicious>
         <size>15</size>
         <attack>
             <priority>1</priority>
