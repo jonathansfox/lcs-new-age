@@ -560,6 +560,7 @@ Future<void> reviewMode(ReviewMode mode) async {
                 addstr("to testify against ");
                 addstr(boss.name);
                 addstr(" in court.");
+                await getKey();
 
                 criminalize(boss, Crime.racketeering);
                 boss.confessions++;
