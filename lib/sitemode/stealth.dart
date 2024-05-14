@@ -90,7 +90,7 @@ Future<bool> alienationCheck(bool evenIfNoWitnesses) async {
       n.nonCombatant = true;
     }
 
-    if (evenIfNoWitnesses) alienatebig = true;
+    if (evenIfNoWitnesses) alienatebig = false;
 
     if (alienatebig) siteAlienated = SiteAlienation.alienatedEveryone;
     if (alienate && siteAlienated != SiteAlienation.alienatedEveryone) {
