@@ -318,7 +318,7 @@ Future<bool> heyIWantToCancelMyRoom(Creature a, Creature tk) async {
   clearSceneAreas();
   mvaddstrc(9, 1, white, a.name);
   addstr(" says, ");
-  mvaddstrc(10, 1, lightGreen, "\"I'd like cancel my room.\"");
+  mvaddstrc(10, 1, lightGreen, "\"I'd like to cancel my room.\"");
 
   await getKey();
 
@@ -563,7 +563,7 @@ Future<bool> talkToBankTeller(Creature a, Creature tk) async {
       clearSceneAreas();
       setColor(white);
       if (roll < difficulty) {
-        mvaddstrc(9, 1, white, "The bank teller and dives for cover as ");
+        mvaddstrc(9, 1, white, "The bank teller dives for cover as ");
         mvaddstr(10, 1, "guards move in on the squad!");
 
         await getKey();
