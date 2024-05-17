@@ -289,7 +289,7 @@ String _lawDescription(Law law, DeepAlignment alignment, AgendaVibe vibe) {
   if (vibe == AgendaVibe.conservativeVictory) {
     index = 0;
   } else if (vibe == AgendaVibe.liberalVictory) {
-    index = 5;
+    index = 6;
   } else {
     index = alignment.index + 1;
   }
