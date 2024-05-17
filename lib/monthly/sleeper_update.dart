@@ -293,8 +293,13 @@ Future<void> sleeperSpy(Creature cr, Map<View, int> libpower) async {
     case CreatureTypeIds.secretService:
     case CreatureTypeIds.agent:
     case CreatureTypeIds.president:
-      // Agents can leak intelligence files to you
-      await leak("LOOT_SECRETDOCUMENTS", "secret intelligence files");
+      if (ccsExposure.index >= CCSExposure.lcsGotData.index || !ccsActive) {
+        await leak("LOOT_SECRETDOCUMENTS", "secret intelligence files");
+      } else {
+        await leak(
+            "LOOT_CCS_BACKERLIST", "a list of the CCS's government backers");
+        ccsExposure = CCSExposure.lcsGotData;
+      }
     case CreatureTypeIds.deathSquad:
     case CreatureTypeIds.swat:
     case CreatureTypeIds.cop:
@@ -321,6 +326,7 @@ Future<void> sleeperSpy(Creature cr, Map<View, int> libpower) async {
       if (ccsExposure.index >= CCSExposure.lcsGotData.index) break;
       await leak(
           "LOOT_CCS_BACKERLIST", "a list of the CCS's government backers");
+      ccsExposure = CCSExposure.lcsGotData;
   }
 }
 
