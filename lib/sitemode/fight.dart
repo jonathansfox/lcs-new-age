@@ -1416,6 +1416,15 @@ Future<bool> socialAttack(Creature a, Creature t, Attack attackUsed) async {
         mvaddstr(17, 1, "${t.name}'s Heart swells!");
         t.adjustAttribute(Attribute.heart, 1);
       } else {
+        if (t.align == Alignment.conservative) {
+          if (activeSite?.controller == SiteController.ccs) {
+            if (t.type.id == CreatureTypeIds.ccsArchConservative) {
+              ccsBossConverts++;
+            }
+            ccsSiegeConverts++;
+          }
+        }
+
         mvaddstr(17, 1, "${t.name} has turned Liberal!");
         t.stunned = 0;
 
@@ -1434,7 +1443,10 @@ Future<bool> socialAttack(Creature a, Creature t, Attack attackUsed) async {
 
   await getKey();
 
-  return true;
+  siteCrime += 3;
+  addjuice(a, 1, 200);
+
+  return false;
 }
 
 /* destroys armor, masks, drops weapons based on severe damage */
