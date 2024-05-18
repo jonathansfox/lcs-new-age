@@ -1357,8 +1357,11 @@ Future<bool> socialAttack(Creature a, Creature t, Attack attackUsed) async {
   resist += t.skill(Skill.psychology);
   a.train(attackUsed.skill, max(1, resist));
 
-  if ((t.type.tank || (t.type.animal && !animalsArePeopleToo)) ||
-      (a.isEnemy && t.brainwashed)) {
+  if (t.type.animal && !animalsArePeopleToo) {
+    resist += 10;
+  }
+
+  if (t.type.tank || (a.isEnemy && t.brainwashed)) {
     mvaddstr(17, 1, "${t.name} is immune to the attack!");
   } else if (a.align == t.align) {
     mvaddstr(17, 1, "${t.name} already agrees with ${a.name}.");

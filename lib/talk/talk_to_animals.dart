@@ -4,6 +4,7 @@ import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
 import 'package:lcs_new_age/sitemode/site_display.dart';
+import 'package:lcs_new_age/talk/talk_outside_combat.dart';
 import 'package:lcs_new_age/utils/colors.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 
@@ -36,8 +37,12 @@ Future<bool> heyMisterAnimal(List<(String, String)> goodTalk,
   await getKey();
 
   if (success) {
-    for (Creature animal in encounter.where((e) => e.type == target.type)) {
-      animal.align = Alignment.liberal;
+    if (target.align != Alignment.liberal) {
+      for (Creature animal in encounter.where((e) => e.type == target.type)) {
+        animal.align = Alignment.liberal;
+      }
+    } else {
+      return await talkOutsideCombat(liberal, target);
     }
   }
 
