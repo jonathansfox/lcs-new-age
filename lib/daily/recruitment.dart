@@ -410,7 +410,7 @@ Future<void> sleeperizePrompt(
       }
       break;
     } else if ((isBackKey(c)) && !selection) {
-      converted.location = recruiter.location;
+      converted.location = recruiter.base;
       converted.base = recruiter.base;
       liberalize(converted);
       if (converted == uniqueCreatures.ceo) uniqueCreatures.newCEO();
