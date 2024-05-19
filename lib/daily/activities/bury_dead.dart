@@ -15,6 +15,7 @@ Future<void> doActivityBury(List<Creature> bury) async {
   for (Creature body in bodies) {
     if (body.site == null) {
       pool.remove(body);
+      continue;
     }
     Creature? burier =
         bury.firstWhereOrNull((p) => p.site?.city == body.site!.city);

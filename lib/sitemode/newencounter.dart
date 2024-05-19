@@ -97,7 +97,7 @@ void prepareEncounter(SiteType type, bool sec,
         weights.add(CreatureTypeIds.journalist, 2);
         if (ccsState.index < CCSStrength.defeated.index &&
             ccsState.index > CCSStrength.inHiding.index) {
-          weights.add(CreatureTypeIds.ccsVigilante, 5);
+          weights.add(CreatureTypeIds.ccsVigilante, 50);
         }
       case SiteType.juiceBar:
         weights.add(CreatureTypeIds.teenager, 10);
@@ -179,7 +179,9 @@ void prepareEncounter(SiteType type, bool sec,
         weights.add(CreatureTypeIds.athlete, 1);
         weights.add(CreatureTypeIds.firefighter, 1);
         weights.add(CreatureTypeIds.locksmith, 1);
-        if (ccsActive) weights.add(CreatureTypeIds.ccsVigilante, 5);
+        if (ccsActive && activeSite?.controller != SiteController.lcs) {
+          weights.add(CreatureTypeIds.ccsVigilante, 50);
+        }
       case SiteType.whiteHouse:
         weights.add(CreatureTypeIds.eminentScientist, 1);
         weights.add(CreatureTypeIds.janitor, 2);
@@ -224,7 +226,7 @@ void prepareEncounter(SiteType type, bool sec,
         weights.add(CreatureTypeIds.liberalJudge, 1);
         weights.add(CreatureTypeIds.conservativeJudge, 1);
         weights.add(CreatureTypeIds.agent, 1);
-        if (ccsActive) weights[CreatureTypeIds.ccsVigilante] = 4;
+        if (ccsActive) weights[CreatureTypeIds.ccsVigilante] = 40;
         weights.add(CreatureTypeIds.radioPersonality, 1);
         weights.add(CreatureTypeIds.newsAnchor, 1);
         weights.add(CreatureTypeIds.lawyer, 5);

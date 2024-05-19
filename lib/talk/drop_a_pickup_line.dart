@@ -193,7 +193,7 @@ Future<bool> doYouComeHereOften(Creature a, Creature tk) async {
   } else if (poolAndProspects.contains(tk)) {
     succeeded = false;
   }
-  if ((tk.type.animal && animalsArePeopleToo && !a.type.animal) ||
+  if ((tk.type.animal && !animalsArePeopleToo && !a.type.animal) ||
       tk.type.tank) {
     mvaddstrc(y++, 1, white, tk.name);
 

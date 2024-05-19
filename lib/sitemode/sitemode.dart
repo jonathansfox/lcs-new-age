@@ -617,7 +617,7 @@ Future<void> _siteModeAux() async {
                 mvaddstr(y, 50,
                     "${p.attribute(Attribute.charisma) ~/ 2 + p.skill(Skill.persuasion)}");
                 mvaddstr(y, 60,
-                    "${p.attribute(Attribute.charisma) ~/ 2 + p.skill(Skill.seduction)}");
+                    "${p.attribute(Attribute.heart) ~/ 2 + p.skill(Skill.seduction)}");
                 mvaddstr(y++, 70,
                     "${p.attribute(Attribute.charisma) ~/ 2 + p.skill(Skill.disguise)}");
               }

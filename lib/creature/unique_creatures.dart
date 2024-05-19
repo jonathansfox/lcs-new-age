@@ -4,6 +4,7 @@ import 'package:lcs_new_age/creature/creature_type.dart';
 import 'package:lcs_new_age/creature/gender.dart';
 import 'package:lcs_new_age/creature/name.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
+import 'package:lcs_new_age/location/location_type.dart';
 import 'package:lcs_new_age/politics/politics.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 
@@ -20,7 +21,9 @@ class UniqueCreatures {
   Creature? _ceo;
   @JsonKey(includeFromJson: false, includeToJson: false)
   Creature get ceo {
-    _ceo ??= Creature.fromId(CreatureTypeIds.corporateCEO);
+    _ceo ??= Creature.fromId(CreatureTypeIds.corporateCEO)
+      ..location = sites.firstWhere((s) => s.type == SiteType.ceoHouse)
+      ..workLocation = sites.firstWhere((s) => s.type == SiteType.ceoHouse);
     return _ceo!;
   }
 
@@ -33,7 +36,9 @@ class UniqueCreatures {
       ..name = "President ${politics.execName[Exec.president]!.last}"
       ..align = politics.exec[Exec.president]!.shallow
       ..alreadyNamed = true
-      ..infiltration = 1;
+      ..infiltration = 1
+      ..location = sites.firstWhere((s) => s.type == SiteType.whiteHouse)
+      ..workLocation = sites.firstWhere((s) => s.type == SiteType.whiteHouse);
     return _president!;
   }
 

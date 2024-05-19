@@ -1,5 +1,6 @@
 /* active squad visits the hospital */
 import 'package:collection/collection.dart';
+import 'package:lcs_new_age/basemode/activities.dart';
 import 'package:lcs_new_age/basemode/base_mode.dart';
 import 'package:lcs_new_age/common_actions/common_actions.dart';
 import 'package:lcs_new_age/common_display/common_display.dart';
@@ -81,6 +82,7 @@ Future<void> hospitalize(Site loc, Creature patient) async {
     patient.clinicMonthsLeft = time;
     patient.squad = null;
     patient.location = loc;
+    patient.activity = Activity.none();
 
     makeDelimiter();
     mvaddstrc(8, 1, white, "${patient.name} will be at ${loc.name} for $time ");

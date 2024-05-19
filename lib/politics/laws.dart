@@ -9,6 +9,7 @@ enum Law {
     "Abortion is legal in some states.",
     "Abortion is legal in most states.",
     "Abortion is legal.",
+    "Free abortions are easily available at any time during pregnancy.",
   ]),
   animalRights("Animal Rights", [
     "All manner of human experimentation on the poor is encouraged.",
@@ -17,6 +18,7 @@ enum Law {
     "Use of animals in farming and research is governed by animal welfare laws.",
     "A bill of animal rights is in place governing their treatment.",
     "Animals may own property, speak, marry, and become US citizens.",
+    "All species of life have equal rights, even bacteria.",
   ]),
   policeReform("Police Regulation", [
     "Policing is administered by corporations and has a draft.",
@@ -25,6 +27,7 @@ enum Law {
     "Law enforcement is regulated to prevent extreme misconduct.",
     "Law enforcement has heavy oversight and freedom-of-information requirements.",
     "The police are demilitarized and funding has been shifted to community aid.",
+    "With no police, criminals follow the honor system and turn themselves in.",
   ]),
   privacy("Privacy Rights", [
     "Extensive files on each citizen are provided to corporations.",
@@ -33,6 +36,7 @@ enum Law {
     "Basic safeguards for medical and financial privacy are in place.",
     "All areas of privacy are protected with strong safeguards.",
     "Individual privacy is sacred.",
+    "All large organizations are prohibited from keeping any data about anyone.",
   ]),
   deathPenalty("Death Penalty", [
     "Poor criminals receive mandatory death sentences.",
@@ -41,6 +45,7 @@ enum Law {
     "The death penalty is permitted but only rarely applied.",
     "The death penalty has been abolished in most states.",
     "The death penalty has been abolished in all fifty states.",
+    "The death penalty, like all other punishments, has been abolished.",
   ]),
   nuclearPower("Nuclear Power", [
     "Slums are used as nuclear waste dumping sites.",
@@ -49,6 +54,7 @@ enum Law {
     "Nuclear power is allowed, but other options are preferred.",
     "Nuclear power is intensely regulated and seldom used.",
     "Nuclear power is illegal.",
+    "A global ban on nuclear power is and nuclear weapons is enforced by UN inspectors.",
   ]),
   pollution("Pollution", [
     "Deformed children are the norm in industrial zones.",
@@ -56,7 +62,8 @@ enum Law {
     "Industry is subject to minimal pollution regulations.",
     "Industry is subject to moderate pollution regulations.",
     "Industry is subject to strict pollution regulations.",
-    "Industry is subject to zero-tolerance pollution regulations."
+    "Industry is subject to zero-tolerance pollution regulations.",
+    "Pollution is unheard of, and nature has reclaimed much of the land.",
   ]),
   labor("Labor Rights", [
     "People are bred in pens to be farmed out to corporations like beasts.",
@@ -64,7 +71,8 @@ enum Law {
     "Working conditions are miserable and the minimum wage is low.",
     "Workers still require some benefits.",
     "Workers are fairly compensated and have benefits.",
-    "There are universal workers' rights and high wages."
+    "There are universal workers' rights and high wages.",
+    "All work is voluntary and unpaid, and people are free to pursue their passions.",
   ]),
   lgbtRights("LGBT Rights", [
     "Sexual minorities are lined up and shot.",
@@ -73,6 +81,7 @@ enum Law {
     "Same sex marriages are not legally recognized.",
     "Same sex marriage is legal, but trans rights vary widely from state to state.",
     "Transgender and nonbinary identities are legally recognized nationwide.",
+    "All sexual minorities are embraced, and most people are polyamorous.",
   ]),
   corporate("Corporate Law", [
     "Corporations under the King run the country in a feudal system.",
@@ -80,7 +89,8 @@ enum Law {
     "Corporate culture is corrupt and there is a great disparity in wages.",
     "Corporations are moderately regulated, although wages are still unfair.",
     "Corporations are stiffly regulated, and executives are fairly compensated.",
-    "Corporations are subject to intense regulation, and there is a maximum wage law."
+    "Corporations are subject to intense regulation, and there is a maximum wage law.",
+    "Corporations are illegal, and all businesses are worker-owned cooperatives.",
   ]),
   freeSpeech("Free Speech", [
     "Opening your mouth is a capital crime.",
@@ -89,14 +99,16 @@ enum Law {
     "The government censors some offensive content in the media.",
     "Government censorship is kept to a minimum.",
     "The government does not censor speech.",
+    "Free speech is sacrosanct and diverse points of view are celebrated.",
   ]),
   flagBurning("Flag Burning", [
     "Images or words describing flag burning are punished by death.",
     "Burning the flag is a crime on par with murder.",
     "Burning the flag is a felony.",
-    "Flag-burning is a misdemeanor.",
-    "Flag-burning is legal when done as political speech.",
-    "Flag-burning is legal."
+    "Flag burning is a misdemeanor.",
+    "Flag burning is legal when done as political speech.",
+    "Flag burning is legal.",
+    "Flag burning is traditionally done on July 4th to celebrate freedom.",
   ]),
   gunControl("Gun Control", [
     "Gangs of young children carrying AK-47s roam the streets.",
@@ -105,6 +117,7 @@ enum Law {
     "A comprehensive ban on military-style weapons is in effect.",
     "Handguns cannot be sold to anyone outside of law enforcement.",
     "It is illegal to buy, sell, or carry a gun in public.",
+    "All gun manufacturers have been shut down and all existing guns destroyed.",
   ]),
   taxes("Tax Structure", [
     "The only tax is a poverty tax, and nobody has any money to pay it.",
@@ -112,7 +125,8 @@ enum Law {
     "A flat tax is in effect, and there is no capital gains or inheritance tax.",
     "Taxes are moderate, but the code is full of loopholes.",
     "The wealthy are heavily taxed under a progressive taxation system.",
-    "Rich people are virtually unheard of, due to taxation."
+    "Rich people are virtually unheard of, due to taxation.",
+    "Money no longer exists, everything is free, and everyone enjoys lives of luxury.",
   ]),
   genderEquality("Gender Equality", [
     "Women are treated as property and rape has been legalized.",
@@ -121,6 +135,7 @@ enum Law {
     "Though nominally equal, women are paid significantly less than men.",
     "Women have substantial recourse against discrimination.",
     "Gender equality is universally respected.",
+    "Binary gender identities no longer exist, and gender segregation has ended.",
   ]),
   civilRights("Civil Rights", [
     "Slavery has been reintroduced and is practiced on a large scale.",
@@ -128,7 +143,8 @@ enum Law {
     "Civil rights laws are inconsistently enforced.",
     "Pervasive racial inequality exists.",
     "Affirmative action is in place to counteract discrimination.",
-    "Racial equality is guaranteed and vigorously enforced."
+    "Racial equality is guaranteed and vigorously enforced.",
+    "The very idea of \"race\" has been universally discarded as pseudoscience.",
   ]),
   drugs("Drug Laws", [
     "Thinking about recreational drugs is punishable by death.",
@@ -137,6 +153,7 @@ enum Law {
     "Marijuana is decriminalized in some states.",
     "Marijuana is regulated and taxed.",
     "Recreational drugs are regulated and taxed.",
+    "The government distributes free recreational drugs to anyone who wants them.",
   ]),
   immigration("Immigration", [
     "Border guards shoot suspected foreigners on sight.",
@@ -144,7 +161,8 @@ enum Law {
     "The military has been deployed to the borders to slow immigration.",
     "Great expense is taken to slow immigration, without success.",
     "The government works to accommodate potential immigrants.",
-    "Immigration is unregulated."
+    "Immigration is unregulated.",
+    "Borders are open and anyone can come and go as they please.",
   ]),
   elections("Election Reform", [
     "Anyone who challenges the ruling oligarchy is sentenced to death.",
@@ -153,6 +171,7 @@ enum Law {
     "Election rules make it harder for poor people to vote in the name of security.",
     "Elections are run fairly, though they remain heavily influenced by big money.",
     "Election expenses are publicly funded, and voting is by ranked list.",
+    "There is proportional representation, and over a dozen major political parties.",
   ]),
   military("Military Spending", [
     "The purpose of the massive military is domestic political oppression.",
@@ -161,6 +180,7 @@ enum Law {
     "Military spending is growing each year.",
     "Military spending has stabilized.",
     "Military spending has been cut in favor of domestic programs.",
+    "The military has been abolished, and the entire world is at peace.",
   ]),
   prisons("Prison Reform", [
     "Prisoners are not considered people by the law.",
@@ -168,7 +188,8 @@ enum Law {
     "Prisoners suffer from horrible conditions and lack many basic rights.",
     "Prisoners receive basic rights and services.",
     "The prisons are regulated to protect prisoners' rights.",
-    "The prisons are targeted at rehabilitation, rather than punishment."
+    "The prisons are targeted at rehabilitation, rather than punishment.",
+    "Instead of prison, criminals voluntarily attend free support groups.",
   ]),
   torture("Torture", [
     "Police torture innocents to death if they don't give false confessions.",
@@ -177,6 +198,7 @@ enum Law {
     "\"Enhanced interrogation practices\" are sometimes used on noncitizens.",
     "The government insists that it does not torture anyone.",
     "The government consistently enforces a ban on torture.",
+    "Terrorism ended after the government formally apologized to terrorist leaders.",
   ]);
 
   const Law(this.label, this.description);

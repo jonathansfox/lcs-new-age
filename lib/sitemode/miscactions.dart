@@ -33,22 +33,18 @@ enum HackTypes { supercomputer, vault }
 /* unlock attempt */
 Future<UnlockResult> unlock(UnlockTypes type) async {
   int difficulty = switch (type) {
-    UnlockTypes.door => Difficulty.easy,
     UnlockTypes.cage => Difficulty.veryEasy,
+    UnlockTypes.door => switch (securityable(activeSite!.type)) {
+        0 => Difficulty.easy,
+        1 => Difficulty.average,
+        _ => Difficulty.hard,
+      },
     UnlockTypes.cageHard => Difficulty.average,
+    UnlockTypes.safe => Difficulty.formidable,
     UnlockTypes.cell => Difficulty.formidable,
     UnlockTypes.armory => Difficulty.heroic,
-    UnlockTypes.safe => Difficulty.heroic,
     UnlockTypes.vault => Difficulty.heroic,
   };
-
-  if (type == UnlockTypes.door) {
-    if (securityable(activeSite!.type) == 1) {
-      difficulty = Difficulty.challenging;
-    } else if (securityable(activeSite!.type) > 1) {
-      difficulty = Difficulty.hard;
-    }
-  }
 
   int maxattack = activeSquad!.livingMembers
       .fold(1, (best, p) => max(best, p.skill(Skill.security)));
@@ -414,7 +410,7 @@ Future<bool> _mediaBroadcast(String takeover, View mediaView, String medium,
 
   View viewhit = View.issues.random;
   await encounterMessage("The Squad takes control of the $takeover and ",
-      line2: "talks about ${_mediaIssueDescription(View.issues.random)}.");
+      line2: "talks about ${_mediaIssueDescription(viewhit)}.");
 
   int segmentpower = _mediaSegmentPower();
 
@@ -498,7 +494,7 @@ Future<void> partyrescue(TileSpecial special) async {
           !(special == TileSpecial.prisonControlHigh && !p.deathPenalty))
       .toList();
 
-  for (Creature rescue in waitingForRescue) {
+  for (Creature rescue in waitingForRescue.toList()) {
     if (freeslots > 0 && (hostslots == 0 || oneIn(2))) {
       rescue.squad = activeSquad;
       rescue.location = null;
@@ -511,6 +507,7 @@ Future<void> partyrescue(TileSpecial special) async {
       printParty();
       await encounterMessage(
           "You've rescued ${rescue.name} from the Conservatives.");
+      waitingForRescue.remove(rescue);
     } else if (hostslots > 0) {
       for (Creature p in activeSquad!.livingMembers) {
         if (p.prisoner == null) {
@@ -531,6 +528,8 @@ Future<void> partyrescue(TileSpecial special) async {
                 "was on a hunger strike"
               ].random}",
               line2: "so ${p.name} will have to haul a Liberal.");
+          waitingForRescue.remove(rescue);
+          break;
         }
       }
     }

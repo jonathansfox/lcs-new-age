@@ -119,6 +119,10 @@ class GameState {
   @JsonKey(includeFromJson: false, includeToJson: false)
   int ccsBossKills = 0;
   @JsonKey(includeFromJson: false, includeToJson: false)
+  int ccsSiegeConverts = 0;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  int ccsBossConverts = 0;
+  @JsonKey(includeFromJson: false, includeToJson: false)
   List<Creature> encounter = [];
   @JsonKey(includeFromJson: false, includeToJson: false)
   NewsStory? siteStory;
@@ -321,6 +325,10 @@ int get ccsSiegeKills => gameState.ccsSiegeKills;
 set ccsSiegeKills(int value) => gameState.ccsSiegeKills = value;
 int get ccsBossKills => gameState.ccsBossKills;
 set ccsBossKills(int value) => gameState.ccsBossKills = value;
+int get ccsSiegeConverts => gameState.ccsSiegeConverts;
+set ccsSiegeConverts(int value) => gameState.ccsSiegeConverts = value;
+int get ccsBossConverts => gameState.ccsBossConverts;
+set ccsBossConverts(int value) => gameState.ccsBossConverts = value;
 List<NewsStory> newsStories = [];
 int locx = 0;
 int locy = 0;

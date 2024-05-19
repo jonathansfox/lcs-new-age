@@ -999,7 +999,7 @@ Future<void> crashfriendlycar(Vehicle v) async {
         switch (roll) {
           case 0:
             addstr(" grips the ");
-            if (p.equippedWeapon == null) {
+            if (p.equippedWeapon != null) {
               addstr(p.weapon.getName(sidearm: true));
             } else {
               addstr("car frame");
@@ -1024,8 +1024,8 @@ Future<void> crashfriendlycar(Vehicle v) async {
   }
 
   //GET RID OF CARS
-  vehiclePool.removeWhere((v) => chaseSequence!.friendcar.contains(v));
-  chaseSequence!.friendcar.clear();
+  vehiclePool.removeWhere((v) => chaseSequence?.friendcar.contains(v) ?? false);
+  chaseSequence?.friendcar.clear();
   for (Creature p in squad) {
     p.carId = null;
   }
@@ -1059,7 +1059,7 @@ Future<void> crashenemycar(Vehicle v) async {
     case 2:
       addstr(" hits a parked car and flips over.");
   }
-  chaseSequence!.enemycar.remove(v);
+  chaseSequence?.enemycar.remove(v);
   printChaseEncounter();
   await getKey();
 }

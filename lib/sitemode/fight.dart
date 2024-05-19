@@ -664,21 +664,19 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
       if (strength > strengthmax) strength = strengthmax;
       mod += strength - strengthmin;
       armorpiercing += (strength - strengthmin) ~/ 2;
-      debugPrint("Strength bonus: $mod");
     }
 
-    //SKILL BONUS FOR GOOD ROLL
-    mod += aroll - droll;
-    //debugPrint("Bonus after good roll: $mod");
-
-    //Health and poor accuracy will only avoid critical hits, not stop low-damage attacks
-    if (mod < 0) mod = 0;
+    // DAMAGE BONUS FROM HIGH SKILL
+    mod += a.skill(wsk);
 
     int predamamount = damamount;
     bool bruiseOnly = false;
     damamount =
         damagemod(t, attackUsed, damamount, hitPart, armorpiercing, mod);
-    if (damamount < predamamount / 4 && damamount < 20 && damamount > 0) {
+    if (damamount < predamamount / 4 &&
+        damamount < 20 &&
+        damamount > 0 &&
+        damamount < t.blood / 4) {
       bruiseOnly = true;
       str += " to little effect";
     }
@@ -789,11 +787,11 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
             if (t.type.majorEnemy) {
               siteCrime += 90;
             }
-            if (mode == GameMode.site && !activeSiteUnderSiege) {
-              alienate = true;
-            }
-            addDramaToSiteStory(Drama.killedSomebody);
             if (a.squad == activeSquad) {
+              if (mode == GameMode.site && !activeSiteUnderSiege) {
+                alienate = true;
+              }
+              addDramaToSiteStory(Drama.killedSomebody);
               criminalizeparty(Crime.murder);
             }
           }
@@ -846,13 +844,13 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
             if (attackUsed.cuts || attackUsed.tears || attackUsed.shoots) {
               pokedam = true;
             }
-            if (attackUsed.bruises) {
-              breakdam = true;
-            }
           }
 
-          if (damamount >= 20) {
-            if (attackUsed.cuts || attackUsed.shoots || attackUsed.tears) {
+          if (damamount >= 50) {
+            if (attackUsed.cuts ||
+                attackUsed.shoots ||
+                attackUsed.tears ||
+                attackUsed.bruises) {
               breakdam = true;
             }
           }
@@ -1317,7 +1315,7 @@ int damagemod(Creature t, Attack attackUsed, int damamount,
       "Armor: $armor, $armorpenetration penetration, pre-armor mod: $mod");
 
   armor = armor - armorpenetration;
-  if (armor > 0) mod = -armor;
+  if (armor > 0) mod = mod - armor * max(2, armor);
 
   debugPrint(
       "Damage mod: $mod, damage before application: $damamount, final armor $armor");
@@ -1359,8 +1357,11 @@ Future<bool> socialAttack(Creature a, Creature t, Attack attackUsed) async {
   resist += t.skill(Skill.psychology);
   a.train(attackUsed.skill, max(1, resist));
 
-  if ((t.type.tank || (t.type.animal && !animalsArePeopleToo)) ||
-      (a.isEnemy && t.brainwashed)) {
+  if (t.type.animal && !animalsArePeopleToo) {
+    resist += 10;
+  }
+
+  if (t.type.tank || (a.isEnemy && t.brainwashed)) {
     mvaddstr(10, 1, "${t.name} is immune to the attack!");
   } else if (a.align == t.align) {
     mvaddstr(10, 1, "${t.name} already agrees with ${a.name}.");
@@ -1418,6 +1419,15 @@ Future<bool> socialAttack(Creature a, Creature t, Attack attackUsed) async {
         mvaddstr(10, 1, "${t.name}'s Heart swells!");
         t.adjustAttribute(Attribute.heart, 1);
       } else {
+        if (t.align == Alignment.conservative) {
+          if (activeSite?.controller == SiteController.ccs) {
+            if (t.type.id == CreatureTypeIds.ccsArchConservative) {
+              ccsBossConverts++;
+            }
+            ccsSiegeConverts++;
+          }
+        }
+
         mvaddstr(10, 1, "${t.name} has turned Liberal!");
         t.stunned = 0;
 
@@ -1436,7 +1446,10 @@ Future<bool> socialAttack(Creature a, Creature t, Attack attackUsed) async {
 
   await getKey();
 
-  return true;
+  siteCrime += 3;
+  addjuice(a, 1, 200);
+
+  return false;
 }
 
 /* destroys armor, masks, drops weapons based on severe damage */

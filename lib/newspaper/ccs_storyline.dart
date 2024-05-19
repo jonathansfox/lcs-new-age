@@ -77,7 +77,7 @@ Future<NewsStory> ccsFbiRaidStory() async {
   // hide ccs safehouses
   for (Site l in sites.where((l) => l.controller == SiteController.ccs)) {
     l.controller = SiteController.unaligned;
-    l.hidden = true;
+    if (l.discreet) l.hidden = true;
   }
   // the government will protect you, you don't need the lcs
   changePublicOpinion(View.policeBehavior, -20);

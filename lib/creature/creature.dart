@@ -509,7 +509,9 @@ class Creature {
   @JsonKey(includeFromJson: false, includeToJson: false)
   bool get isEnemy {
     if (align == Alignment.conservative) return true;
-    if (type.enemyEvenWhenNotConservative && !pool.contains(this)) {
+    if (type.enemyEvenWhenNotConservative &&
+        !justConverted &&
+        !pool.contains(this)) {
       return true;
     }
     return false;
@@ -737,7 +739,7 @@ class Creature {
     if (equippedWeapon != null) courage += 100;
     if (type.tank) courage += 2000;
     if (type.animal) courage += 200;
-    if (type.freeable) courage += 1000;
+    if (type.freeable && !isEnemy) courage += 1000;
     if (type.majorEnemy) courage += 2000;
     if (justConverted) courage += 2000;
 

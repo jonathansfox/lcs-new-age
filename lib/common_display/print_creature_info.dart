@@ -513,10 +513,10 @@ void printFullCreatureStats(Creature cr,
   // Add seduction stats
   move(19, 0);
   int lovers = cr.relationships.length;
-  if (lovers > 0) {
-    addstr("$lovers Romantic Interest");
-    if (lovers > 1) addstr("s");
-  }
+  int maxLovers = cr.maxRelationships;
+  addstr("$lovers Lover");
+  if (lovers != 1) addstr("s");
+  addstr(" / $maxLovers Max");
   // Any dates with potential love interests scheduled?
   if (cr.scheduldeDates > 0) {
     move(19, 55);
@@ -685,6 +685,8 @@ void printWantedFor(Creature cr) {
     addstr("BANK ROBBERY");
   } else if (wanted[Crime.arson] == true) {
     addstr("ARSON");
+  } else if (wanted[Crime.escapingPrison] == true) {
+    addstr("ESCAPING PRISON");
   } else if (wanted[Crime.flagBurning] == true) {
     addstr(laws[Law.freeSpeech] == DeepAlignment.archConservative
         ? "FLAG MURDER"
@@ -693,8 +695,6 @@ void printWantedFor(Creature cr) {
     addstr("HARMFUL SPEECH");
   } else if (wanted[Crime.drugDistribution] == true) {
     addstr("DRUG DEALING");
-  } else if (wanted[Crime.escapingPrison] == true) {
-    addstr("ESCAPING PRISON");
   } else if (wanted[Crime.aidingEscape] == true) {
     addstr("RELEASING PRISONERS");
   } else if (wanted[Crime.juryTampering] == true) {
@@ -737,5 +737,7 @@ void printWantedFor(Creature cr) {
     addstr("PUBLIC NUDITY");
   } else if (wanted[Crime.loitering] == true) {
     addstr("LOITERING");
+  } else if (wanted[Crime.illegalEntry] == true) {
+    addstr("DEPORTATION");
   }
 }

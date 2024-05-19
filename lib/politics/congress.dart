@@ -136,7 +136,9 @@ Future<void> congress() async {
     if (laws[l] == DeepAlignment.eliteLiberal) lawdir[l] = -1;
 
     //CALC PRIORITY
-    lawpriority[l] = (pup - pdown).abs();
+    lawpriority[l] = ((pup - pdown).abs() *
+            ((politics.publicInterestForLaw(l) + lcsRandom(25)) / 100))
+        .round();
   }
 
   for (int c = 0; c < cnum; c++) {

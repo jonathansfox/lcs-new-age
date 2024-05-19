@@ -382,7 +382,7 @@ Future<void> printNews(LootType li, Iterable<Creature> publishers) async {
       mvaddstr(9, 1,
           "The information is posted to the internet with little fanfare.");
       mvaddstr(10, 1,
-          "Some conspiracy theorists mention it, but most people know or don't believe.");
+          "Some conspiracy theorists mention it, but most people don't believe it.");
       return basePotency ~/ 5;
     } else if (power < 10) {
       mvaddstr(9, 1, "$leadersArticle about this doesn't have much impact.");

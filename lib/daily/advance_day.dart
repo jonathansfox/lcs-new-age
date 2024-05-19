@@ -636,7 +636,7 @@ Future<void> _dailyHealing() async {
   //HEAL NON-CLINIC PEOPLE AND TRAIN
   for (Creature p in pool) {
     if (!p.alive) continue;
-    if (clinictime(p) == 0 && p.clinicMonthsLeft == 0) {
+    if (clinictime(p) > 0 && p.clinicMonthsLeft == 0) {
       // For people in LCS home treatment
       int damage = 0; // Amount health degrades
       //int release=1;
@@ -693,7 +693,7 @@ Future<void> _dailyHealing() async {
         // Non-bleeding wounds
         else {
           // Erase wound if almost fully healed, but preserve loss of limbs.
-          if (p.blood >= 95) {
+          if (p.blood >= p.maxBlood - 5) {
             w.bruised = false;
             w.bleeding = false;
             w.shot = false;

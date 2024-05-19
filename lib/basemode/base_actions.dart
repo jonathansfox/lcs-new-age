@@ -134,7 +134,7 @@ Future<void> orderparty() async {
     setColor(white);
     String str = "Choose squad member to replace ";
     str += squad[oldPos - Key.num1].name;
-    str += " in Spot $oldPos";
+    str += " in Spot ${oldPos - Key.num1 + 1}";
     int x = 39 - ((str.length - 1) >> 1);
     if (x < 0) x = 0;
     mvaddstr(8, x, str);
@@ -144,6 +144,6 @@ Future<void> orderparty() async {
     if (newPos < Key.num1 || newPos > partysize + Key.num1 - 1) {
       return; // User chose index out of range, exit
     }
-    squad.swap(oldPos - Key.num1, oldPos - Key.num1);
+    squad.swap(oldPos - Key.num1, newPos - Key.num1);
   }
 }

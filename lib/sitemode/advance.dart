@@ -314,8 +314,10 @@ Future<void> creatureDie(Creature cr, bool blameParty) async {
 
   if (cr.squadId == null) {
     siteCrime += 10;
-    addDramaToSiteStory(Drama.killedSomebody);
-    if (blameParty) criminalizeAll(squad, Crime.murder);
+    if (blameParty) {
+      addDramaToSiteStory(Drama.killedSomebody);
+      criminalizeAll(squad, Crime.murder);
+    }
   }
   addDeathMessage(cr);
 

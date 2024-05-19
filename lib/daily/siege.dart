@@ -1438,7 +1438,13 @@ Future<void> conquerTextCCS() async {
   if (ccsBaseKills < 3) {
     setColor(lightGray);
     move(3, 16);
-    if (ccsSiegeKills > 10) {
+    if (ccsSiegeConverts > 10) {
+      addstr("Music still ringing in their ears, the squad revels in ");
+      mvaddstr(4, 11, "their victory.  ");
+    } else if (ccsBossConverts > 0) {
+      addstr("The CCS Lieutenant lost in self-realization, the squad ");
+      mvaddstr(4, 11, "slips away.  ");
+    } else if (ccsSiegeKills > 10) {
       addstr("Gunfire still ringing in their ears, the squad revels in ");
       mvaddstr(4, 11, "their victory.  ");
     } else {
@@ -1452,7 +1458,24 @@ Future<void> conquerTextCCS() async {
         6, 11, "this will make a fine base for future Liberal operations.");
   } else {
     move(3, 16);
-    if (ccsSiegeKills > 10) {
+    bool pacifist = false;
+    if (ccsSiegeConverts > 10) {
+      addstr("Music still ringing in their ears, the squad revels in ");
+      mvaddstr(4, 11, "their final victory.  ");
+
+      mvaddstr(6, 16,
+          "As your Liberals speak to the former CCS members, it is increasingly ");
+      mvaddstr(7, 11, "clear that this was the CCS's last safehouse.");
+      pacifist = true;
+    } else if (ccsBossConverts > 0) {
+      addstr("The CCS Founder lost in self-realization, the squad ");
+      mvaddstr(4, 11, "slips away.");
+
+      mvaddstr(6, 16,
+          "With even its Founder swearing off Conservatism forever, the last ");
+      mvaddstr(4, 11, "of the CCS's morale and confidence is shattered.");
+      pacifist = true;
+    } else if (ccsSiegeKills > 10) {
       addstr("Gunfire still ringing in their ears, the squad revels in ");
       mvaddstr(4, 11, "their final victory.");
 
@@ -1470,12 +1493,12 @@ Future<void> conquerTextCCS() async {
           7, 11, "the last of the enemy's morale and confidence is shattered.");
     }
 
-    mvaddstr(
-        9, 16, "The CCS has been completely destroyed.  Now wasn't there a ");
+    mvaddstr(9, 16,
+        "The CCS has been completely ${pacifist ? "neutralized" : "destroyed"}.  Now wasn't there a ");
     mvaddstr(10, 16, "revolution to attend to?");
 
     mvaddstr(12, 5,
-        "+200 JUICE TO EVERYONE FOR ERADICATING THE CONSERVATIVE CRIME SQUAD");
+        "+200 JUICE TO EVERYONE FOR ${pacifist ? "CONVERTING" : "ERADICATING"} THE CONSERVATIVE CRIME SQUAD");
 
     for (Creature p in pool) {
       addjuice(p, 200, 1000);

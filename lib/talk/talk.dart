@@ -6,9 +6,7 @@ import 'package:lcs_new_age/talk/talk_outside_combat.dart';
 import 'package:lcs_new_age/talk/talk_to_animals.dart';
 
 Future<bool> talk(Creature liberal, Creature target) async {
-  if (target.type.dog &&
-      !liberal.type.animal &&
-      target.align != Alignment.liberal) {
+  if (target.type.dog && !liberal.type.animal) {
     return heyMisterAnimal(randomDogTalkGood, randomDogTalkBad, target);
   }
 

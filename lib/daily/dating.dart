@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:collection/collection.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:lcs_new_age/basemode/activities.dart';
@@ -48,13 +50,17 @@ class DatingSession {
 Future<void> doDates() async {
   for (int d = datingSessions.length - 1; d >= 0; d--) {
     DatingSession date = datingSessions[d];
-    Creature p = date.lcsMember!;
+    Creature? p = date.lcsMember;
+    if (p == null) {
+      datingSessions.remove(date);
+      continue;
+    }
     // Stand up dates if 1) dater does not exist, or
     // 2) dater was not able to return to a safehouse today (and is not in the hospital)
     if (date.timeLeft > 0 ||
         (p.site?.controller == SiteController.lcs ||
             p.site?.type == SiteType.universityHospital ||
-            p.site?.type == SiteType.clinic && p.site?.city == date.city)) {
+            p.site?.type == SiteType.clinic)) {
       //VACATION
       if (date.timeLeft > 0) {
         p.vacationDaysLeft = --date.timeLeft;
@@ -105,36 +111,42 @@ const List<Skill> talkingSkills = [
 ];
 
 Future<bool> completeDate(DatingSession d, Creature p) async {
+  City? city = p.location?.city;
+  if (d.dates.any((d) => d.location?.city != city)) {
+    city = null;
+  }
+
   erase();
   setColor(white);
   move(0, 0);
-  addstr(p.name);
-  addstr(" has ");
+  String message = "${p.name} has ";
   if (d.dates.length == 1) {
-    if (p.clinicMonthsLeft > 0) {
-      addstr("a \"hot\" date with ");
+    if (p.clinicMonthsLeft > 0 || city == null) {
+      message += "a \"hot\" date with ";
     } else {
-      addstr("a hot date with ");
+      message += "a hot date with ";
     }
   } else {
-    addstr("dates to manage with ");
+    message += "dates to manage with ";
   }
   for (int ei = 0; ei < d.dates.length; ei++) {
     Creature e = d.dates[ei];
-    addstr(e.name);
+    message += e.name;
 
     if (ei <= d.dates.length - 3) {
-      addstr(", ");
+      message += ", ";
     } else if (ei == d.dates.length - 2) {
-      addstr(" and ");
+      message += " and ";
     } else {
       if (p.clinicMonthsLeft > 0) {
-        addstr(" at ");
-        addstr(p.location!.name);
+        message += " at ${p.location?.name}";
+      } else if (city == null) {
+        message += " over video chat";
       }
-      addstr(".");
+      message += ".";
     }
   }
+  addparagraph(1, 1, console.height - 2, console.width - 2, message);
 
   await getKey();
 
@@ -172,8 +184,13 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
         move(2, 0);
         addstr(p.name);
         if (d.dates.length > 2) {
-          addstr(
-              " realizes ${p.gender.heShe} has committed to eating ${d.dates.length} meals at once.");
+          if (city != null) {
+            addstr(
+                " realizes ${p.gender.heShe} has committed to eating ${d.dates.length} meals at once.");
+          } else {
+            addstr(
+                " realizes ${p.gender.heShe} has committed to ${d.dates.length} calls at once.");
+          }
         } else {
           addstr(" mixes up the names of ");
           addstr(d.dates[0].name);
@@ -199,9 +216,20 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
       " is rescued by a passing Elite Liberal.",
       " makes like a tree and leaves."
     ];
+    const List<String> dateFailOnline = [
+      " feels completely humiliated.",
+      " is quickly blocked.",
+      " is promptly told off.",
+      " spends the night getting drunk alone.",
+      " unplugs the power in shame.",
+      " sits in the dark feeling dumb.",
+      " spends the evening watching online videos.",
+      " gets lit up on social media."
+    ];
+    List<String> dateFailList = city == null ? dateFailOnline : dateFail;
     move(5, 0);
     addstr(p.name);
-    addstr(dateFail.random);
+    addstr(dateFailList.random);
 
     await getKey();
 
@@ -211,6 +239,7 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
   for (int ei = d.dates.length - 1; ei >= 0; ei--) {
     Creature e = d.dates[ei];
     bool eIsSexworker = e.type.id == CreatureTypeIds.sexWorker;
+    bool sameCity = e.location?.city == p.location?.city;
     int vacationPrice = eIsSexworker ? 2000 : 1000;
     erase();
     setColor(white);
@@ -221,7 +250,6 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
     addstr(e.type.name);
     addstr(", ");
     addstr(e.workLocation.getName(short: false, includeCity: true));
-
     setColor(lightGray);
     printFunds();
 
@@ -249,20 +277,40 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
     addstr(p.name);
     addstr(" approach the situation?");
 
-    if (ledger.funds >= 100 && p.clinicMonthsLeft == 0) {
+    if (ledger.funds >= 100 &&
+        p.clinicMonthsLeft == 0 &&
+        (sameCity || eIsSexworker)) {
       setColor(lightGray);
     } else {
       setColor(darkGray);
     }
     move(11, 0);
-    addstr("A - Spend a hundred bucks tonight to get the ball rolling.");
+    if (sameCity) {
+      if (eIsSexworker) {
+        addstr("A - Pay \$100 for a night together.");
+      } else {
+        addstr(
+            "A - Spend a hundred bucks to take ${e.name.split(' ').first} out on the town.");
+      }
+    } else {
+      if (eIsSexworker) {
+        addstr("A - Pay \$100 for a one-on-one video call.");
+      } else {
+        addstr("A - There is no expectation to spend money on this date.");
+      }
+    }
     move(12, 0);
     if (eIsSexworker) {
       addstrc(darkGray,
           "B - ${e.name} expects to be paid for ${e.gender.hisHer} time.");
     } else {
-      addstrc(lightGray,
-          "B - Try to get through the evening without spending a penny.");
+      if (sameCity) {
+        addstrc(lightGray,
+            "B - Try to get through the evening without spending a penny.");
+      } else {
+        addstrc(lightGray,
+            "B - Try to charm ${e.gender.himHer} with online dating.");
+      }
     }
     if (p.clinicMonthsLeft == 0 &&
         p.blood == p.maxBlood &&
@@ -273,8 +321,13 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
     }
     move(13, 0);
     if (p.blood == p.maxBlood) {
-      addstr(
-          "C - Spend a week and \$$vacationPrice on a cheap vacation (stands up other dates).");
+      if (sameCity) {
+        addstr(
+            "C - Spend a week and \$$vacationPrice on a cheap vacation (stands up other dates).");
+      } else {
+        addstr(
+            "C - Spend \$$vacationPrice to visit ${e.name.split(' ').first} for a week (stands up other dates).");
+      }
     } else {
       addstr(
           "C - Spend a week and \$$vacationPrice on a cheap vacation (must be uninjured).");
@@ -282,7 +335,9 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
     setColor(lightGray);
     move(14, 0);
     addstr("D - Break it off.");
-    if (e.align == Alignment.conservative && p.clinicMonthsLeft == 0) {
+    if (e.align == Alignment.conservative &&
+        p.clinicMonthsLeft == 0 &&
+        sameCity) {
       setColor(lightGray);
       move(15, 0);
       addstr("E - Just kidnap the Conservative bitch.");
@@ -306,8 +361,10 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
       }
 
       if (shouldDoDate) {
-        p.train(Skill.seduction, lcsRandom(4) + 5);
-        if (eIsSexworker) p.train(Skill.seduction, 10);
+        int experience = lcsRandom(4) + 5;
+        if (eIsSexworker) experience += 10;
+        if (!sameCity) experience = max(1, experience ~/ 4);
+        p.train(Skill.seduction, experience);
         for (Skill s in talkingSkills) {
           if (e.skill(s) >= 0) {
             if (e.skill(s) >= p.skill(s)) {
@@ -351,22 +408,29 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
       }
       if (c == Key.e &&
           e.align == Alignment.conservative &&
-          p.clinicMonthsLeft == 0) {
+          p.clinicMonthsLeft == 0 &&
+          sameCity) {
         setColor(yellow);
         int bonus = 0;
         move(17, 0);
         addstr(p.name);
+        bool ranged = false;
+        String weapon = "";
+        bool unseriousWeapon = false;
 
         if (p.weapon.type.rangedAttack != null) {
+          weapon = p.weapon.getName(sidearm: true);
           addstr(" comes back from the bathroom toting the ");
-          addstr(p.weapon.getName(sidearm: true));
+          addstr(weapon);
           move(18, 0);
           addstr("and threatens to blow the Conservative's brains out!");
 
           bonus = 5;
+          ranged = true;
         } else if (p.equippedWeapon != null) {
+          weapon = p.weapon.getName(sidearm: true);
           addstr(" grabs the Conservative from behind, holding the ");
-          addstr(p.weapon.getName(sidearm: true));
+          addstr(weapon);
           move(18, 0);
           addstr("to the corporate slave's throat!");
 
@@ -376,6 +440,7 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
             // Conservative emboldened by the fact that you're trying
             // to kidnap them with a gavel or some shit like that
             bonus = -1;
+            unseriousWeapon = true;
           }
         } else {
           addstr(" seizes the Conservative swine from behind and warns it");
@@ -396,7 +461,7 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
         if ((!e.type.kidnapResistant && lcsRandom(15) > 0) ||
             lcsRandom(2 + bonus) > 0) {
           setColor(lightGreen);
-          move(20, 0);
+          move(19, 0);
           addstr(e.name);
           if (bonus > 0) {
             addstr(" doesn't resist.");
@@ -406,7 +471,7 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
 
           await getKey();
 
-          move(22, 0);
+          move(20, 0);
           addstr(p.name);
           addstr(" kidnaps the Conservative!");
 
@@ -423,19 +488,31 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
           d.dates.remove(e);
           break;
         } else {
-          int y = 20;
-          if (lcsRandom(2) > 0) {
-            setColor(purple);
-            move(y++, 0);
-            addstr(e.name);
-            addstr(" manages to get away on the way back to the safehouse!");
-
+          int y = 19;
+          setColor(red);
+          move(y++, 0);
+          if (ranged) {
+            addstr("${e.name} brazenly tackles ${p.name}!");
+          } else {
+            addstr("${e.name} struggles and they both tumble to the ground!");
+          }
+          if (weapon != "") {
             await getKey();
+            if (unseriousWeapon) {
+              move(y++, 0);
+              addstrc(yellow, "The $weapon is knocked away uselessly.");
+            } else {
+              move(y++, 0);
+              addstrc(yellow, "The two struggle for control of the $weapon!");
+            }
+          }
+          await getKey();
 
-            y++;
+          if (lcsRandom(p.skill(Skill.martialArts) + 1) > 0) {
+            setColor(yellow);
             move(y++, 0);
-            addstr(p.name);
-            addstr(" has failed to kidnap the Conservative.");
+            addstr("${p.name} breaks free after a wild struggle.");
+            mvaddstr(y++, 0, "Unfortunately, the Conservative escapes...");
 
             // Charge with kidnapping
             p.wantedForCrimes[Crime.kidnapping] =
@@ -446,16 +523,26 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
             d.dates.remove(e);
             break;
           } else {
-            setColor(red);
             move(y++, 0);
-            addstr(e.name);
-            addstr("'s fist is the last thing ");
-            addstr(p.name);
-            addstr(" remembers seeing!");
-
-            await getKey();
-
-            y++;
+            if (weapon != "" && !unseriousWeapon) {
+              addstrc(
+                  red, "The Conservative manages to wrest the $weapon away!");
+              move(y++, 0);
+              await getKey();
+              if (p.weapon.type.attacks.any((a) => a.bruises)) {
+                addstr(
+                    "${e.name} swings the $weapon and knocks ${p.name} out!");
+              } else {
+                addstr(
+                    "${e.name} switches grips and clubs ${p.name} in the head!");
+              }
+            } else {
+              addstrc(red, e.name);
+              addstr("'s fist is the last thing ");
+              addstr(p.name);
+              addstr(" remembers seeing!");
+              await getKey();
+            }
             move(y++, 0);
             addstr("The Liberal wakes up in the police station...");
 
@@ -504,6 +591,8 @@ Future<DateResult> dateResult(int aroll, int troll, DatingSession d, Creature e,
   bool eIsSexworker = e.type.id == CreatureTypeIds.sexWorker;
   if (eIsSexworker) {
     troll -= 10 + e.daysSinceJoined; // It's a commercial transaction
+  } else if (e.location?.city != p.location?.city) {
+    troll += 10; // It's a long-distance relationship
   }
 
   if (aroll > troll) {
@@ -610,6 +699,7 @@ Future<DateResult> dateResult(int aroll, int troll, DatingSession d, Creature e,
 
       if (!eIsSexworker) e.seduced = true;
       e.hireId = p.id;
+      e.base = p.base;
 
       erase();
 

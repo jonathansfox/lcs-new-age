@@ -37,6 +37,10 @@ void addjuice(Creature cr, int juice, int cap) {
   // Apply juice gain
   cr.juice += juice;
 
+  // Ensure cap isn't overshot
+  if (juice > 0 && cr.juice >= cap) cr.juice = cap;
+  if (juice < 0 && cr.juice <= cap) cr.juice = cap;
+
   // Pyramid scheme of juice trickling up the chain
   Creature? recruiter = pool.firstWhereOrNull((p) => p.id == cr.hireId);
   if (recruiter != null) {

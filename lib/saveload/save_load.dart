@@ -362,4 +362,21 @@ void applyBugFixes(String version) {
       }
     }
   }
+  // Fix ceo and president locations
+  if (!uniqueCreatures.ceo.kidnapped &&
+      !uniqueCreatures.ceo.missing &&
+      uniqueCreatures.ceo.align == Alignment.conservative &&
+      uniqueCreatures.ceo.site?.type != SiteType.ceoHouse) {
+    uniqueCreatures.ceo.location =
+        sites.firstWhere((s) => s.type == SiteType.ceoHouse);
+    uniqueCreatures.ceo.workLocation = uniqueCreatures.ceo.location;
+  }
+  if (!uniqueCreatures.president.kidnapped &&
+      !uniqueCreatures.president.missing &&
+      uniqueCreatures.president.align == Alignment.conservative &&
+      uniqueCreatures.president.site?.type != SiteType.whiteHouse) {
+    uniqueCreatures.president.location =
+        sites.firstWhere((s) => s.type == SiteType.whiteHouse);
+    uniqueCreatures.president.workLocation = uniqueCreatures.president.location;
+  }
 }

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:collection/collection.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:lcs_new_age/creature/creature.dart';
@@ -151,7 +153,7 @@ class Site extends Location {
       .where((e) => e.alive && e.align == Alignment.liberal)
       .length;
 
-  int get foodDaysLeft => (compound.rations / numberEating).round();
+  int get foodDaysLeft => (compound.rations / max(numberEating, 1)).round();
 
   int get heatProtection {
     int protection = 15;

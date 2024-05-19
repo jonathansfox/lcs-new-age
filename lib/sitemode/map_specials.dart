@@ -156,7 +156,7 @@ Future<void> specialBouncerAssessSquad() async {
 
   printEncounter();
   Creature? sleeper = pool.firstWhereOrNull(
-      (p) => p.base == activeSite && p.type.id == CreatureTypeIds.bouncer);
+      (p) => p.base == activeSite && p.type.id == encounter[0].type.id);
   if (sleeper != null) {
     autoadmit = true;
     encounter[0] = sleeper;

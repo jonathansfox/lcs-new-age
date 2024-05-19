@@ -90,7 +90,7 @@ Future<bool> alienationCheck(bool evenIfNoWitnesses) async {
       n.nonCombatant = true;
     }
 
-    if (evenIfNoWitnesses) alienatebig = true;
+    if (evenIfNoWitnesses) alienatebig = false;
 
     if (alienatebig) siteAlienated = SiteAlienation.alienatedEveryone;
     if (alienate && siteAlienated != SiteAlienation.alienatedEveryone) {
@@ -206,7 +206,7 @@ Future<void> disguisecheck(int timer) async {
       }
 
       // Increase difficulty if Conservatives suspicious...
-      if (siteAlarmTimer == 1) {
+      if (siteAlarmTimer == 0) {
         stealthDifficulty += 6;
         disguiseDifficulty += 6;
       }

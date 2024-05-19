@@ -394,7 +394,7 @@ const List<String> hickNames = [
 /* gives a CCS member a cover name */
 void nameCCSMember(Creature cr) {
   if (cr.armor.type.idName == "ARMOR_CIVILLIANARMOR") {
-    cr.name = "Elite Security";
+    cr.name = "Mercenary";
   } else if (cr.armor.type.idName == "ARMOR_ARMYARMOR") {
     cr.name = "Soldier";
   } else if (cr.armor.type.idName == "ARMOR_HEAVYARMOR") {
