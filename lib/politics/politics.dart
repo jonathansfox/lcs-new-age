@@ -178,9 +178,13 @@ class Politics {
     } else if (view == View.ccsHated) {
       power = power.clamp(-10, 25);
     }
-    power = (power * (1 + existingInterest / 50)).round();
-    publicInterest[view] = (existingInterest + power.abs()).round();
+    power = (power * min(2, 1 + existingInterest / 50)).round();
     power = power.clamp(-75, 75);
+    for (int i = 0; i < power; i++) {
+      if (i % (publicInterest[view]! ~/ power) == 0) {
+        publicInterest[view] = publicInterest[view]! + 1;
+      }
+    }
     if (power > 0) {
       publicOpinion[view] = existingView + ((100 - existingView) * power / 100);
     } else {
