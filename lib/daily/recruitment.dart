@@ -104,9 +104,7 @@ Future<void> meetWithPotentialRecruits() async {
       // Stand up recruits if 1) recruiter does not exist,
       // 2) recruiter was not able to return to a safehouse today,
       // or 3) recruiter is dead.
-      if (p.site?.controller == SiteController.lcs &&
-          p.alive &&
-          p.location?.city == recruitmentSessions[r].recruit.location?.city) {
+      if (p.site?.controller == SiteController.lcs && p.alive) {
         //MEET WITH RECRUIT
         //TERMINATE NULL RECRUIT MEETINGS
         if (p.site?.siege.underSiege == true) {
@@ -149,12 +147,22 @@ Future<bool> completeRecruitMeeting(RecruitmentSession r, Creature p) async {
 
     return true;
   }
+  bool inPerson = false;
+  if (p.location?.city == r.recruit.location?.city) {
+    inPerson = true;
+  } else {
+    inPerson = false;
+  }
   addstr("Meeting with ");
   addstr(r.recruit.name);
   addstr(", ");
   addstr(r.recruit.type.name);
   addstr(", ");
-  addstr(r.recruit.location!.name);
+  if (inPerson) {
+    addstr(r.recruit.location!.name);
+  } else {
+    addstr("via video chat.");
+  }
 
   setColor(lightGray);
   printFunds();
@@ -185,7 +193,8 @@ Future<bool> completeRecruitMeeting(RecruitmentSession r, Creature p) async {
 
   move(13, 0);
   if (ledger.funds < 50) setColor(darkGray);
-  addstr("A - Spend \$50 on props and a book for them to keep afterward.");
+  addstr(
+      "A - Spend \$50 on props and a ${inPerson ? "" : "e-"}book for them to keep afterward.");
   setColor(lightGray);
   move(14, 0);
   addstr("B - Just casually chat with them and discuss politics.");

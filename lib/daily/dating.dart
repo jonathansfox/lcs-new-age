@@ -643,6 +643,8 @@ Future<DateResult> dateResult(int aroll, int troll, DatingSession d, Creature e,
 
       if (!eIsSexworker) e.seduced = true;
       e.hireId = p.id;
+      e.base = p.base;
+      e.location = p.base;
 
       erase();
 
