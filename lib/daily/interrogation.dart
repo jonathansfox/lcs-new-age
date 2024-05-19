@@ -1020,7 +1020,7 @@ Future<void> tendHostage(InterrogationSession intr) async {
     //Target is not sold on the LCS arguments and holds firm
     //This is the worst possible outcome if you use props
     else if (!cr.skillCheck(
-            Skill.persuasion, lead.attribute(Attribute.heart)) ||
+            Skill.persuasion, lead.attribute(Attribute.heart) + 10) ||
         techniques[Technique.props] == true) {
       //Not completely unproductive; builds rapport
       addRapport(lead, 0.2);
