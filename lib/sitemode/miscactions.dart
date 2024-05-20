@@ -61,7 +61,7 @@ Future<UnlockResult> unlock(UnlockTypes type) async {
       if (maxattack <= difficulty) {
         p.train(Skill.security, 6 * difficulty);
       }
-      clearMessageArea(false);
+      clearMessageArea();
       mvaddstrc(9, 1, white, "${p.name} ");
       switch (type) {
         case UnlockTypes.door:
@@ -90,7 +90,7 @@ Future<UnlockResult> unlock(UnlockTypes type) async {
 
       return UnlockResult.unlocked;
     } else {
-      clearMessageArea(false);
+      clearMessageArea();
       setColor(white);
       move(9, 1);
 
@@ -186,7 +186,7 @@ Future<UnlockResult> bash(BashTypes type) async {
   difficulty = (difficulty / maxp!.weapon.type.bashStrengthModifier).floor();
 
   if (crowable || maxp.attributeCheck(Attribute.strength, difficulty)) {
-    clearMessageArea(false);
+    clearMessageArea();
     mvaddstrc(9, 1, white, maxp.name);
     addstr(" ");
     switch (type) {
@@ -228,7 +228,7 @@ Future<UnlockResult> bash(BashTypes type) async {
 
     return UnlockResult.unlocked;
   } else {
-    clearMessageArea(false);
+    clearMessageArea();
     mvaddstrc(9, 1, white, maxp.name);
     switch (type) {
       case BashTypes.door:

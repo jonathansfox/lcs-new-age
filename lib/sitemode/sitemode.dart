@@ -1739,7 +1739,7 @@ Future<void> _openDoor(bool restricted) async {
 
   if (vaultDoor) {
     // Vault door, not usable by bumping
-    clearMessageArea(false);
+    clearMessageArea();
 
     mvaddstrc(9, 1, white, "The vault door is impenetrable.");
 
@@ -1758,7 +1758,7 @@ Future<void> _openDoor(bool restricted) async {
 
   if (alarmed) {
     // Unlocked but alarmed door, clearly marked as such
-    clearMessageArea(false);
+    clearMessageArea();
 
     setColor(white);
     move(9, 1);
@@ -1787,7 +1787,7 @@ Future<void> _openDoor(bool restricted) async {
     currentTile.flag |= SITEBLOCK_KLOCK;
 
     while (true) {
-      clearMessageArea(false);
+      clearMessageArea();
 
       mvaddstrc(9, 1, white, "You try the door, but it is locked.");
 
@@ -1800,7 +1800,7 @@ Future<void> _openDoor(bool restricted) async {
 
       int c = await getKey();
 
-      clearMessageArea(false);
+      clearMessageArea();
 
       if (c == Key.y) {
         UnlockResult result = await unlock(UnlockTypes.door);
@@ -1835,7 +1835,7 @@ Future<void> _openDoor(bool restricted) async {
     }
   } else if (locked || (!restricted && alarmed)) {
     while (true) {
-      clearMessageArea(false);
+      clearMessageArea();
 
       setColor(white);
       move(9, 1);
@@ -1861,7 +1861,7 @@ Future<void> _openDoor(bool restricted) async {
             siteAlarmTimer = time;
           }
           if (currentTile.flag & SITEBLOCK_ALARMED > 0) {
-            clearMessageArea(false);
+            clearMessageArea();
             mvaddstrc(9, 1, white, "The alarm goes off!");
 
             siteAlarm = true;
@@ -1886,7 +1886,7 @@ Future<void> _openDoor(bool restricted) async {
     currentTile.flag &= ~SITEBLOCK_DOOR;
     if (alarmed) {
       // Opened an unlocked but clearly marked emergency exit door
-      clearMessageArea(false);
+      clearMessageArea();
       mvaddstrc(9, 1, white, "It opens easily. The alarm goes off!");
 
       siteAlarm = true;

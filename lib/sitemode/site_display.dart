@@ -208,22 +208,26 @@ void drawTileContent(SiteTile tile) {
             tile.inLOS;
     setColor(lightGray);
     if (tile.wall) {
-      if (tile.neighbors().any((t) => t.graffitiLCS)) {
-        setColor(green, background: lightGray);
+      Color bg = darkGray;
+      if (canSeeFoes) {
+        bg = lightGray;
+      }
+      if (tile.neighbors().any((t) => t.megaBloody)) {
+        bg = darkRed;
+        setColor(bg, background: bg);
+        addchar(" ");
+      } else if (tile.neighbors().any((t) => t.graffitiLCS)) {
+        setColor(green, background: bg);
         addchar("℄");
       } else if (tile.neighbors().any((t) => t.graffitiCCS)) {
-        setColor(darkRed, background: lightGray);
+        setColor(darkRed, background: bg);
         addchar("ℭ");
       } else if (tile.neighbors().any((t) => t.graffitiOther)) {
-        setColor(black, background: lightGray);
+        setColor(black, background: bg);
         // Gang graffiti
         addchar("g");
       } else {
-        if (canSeeFoes) {
-          setColor(lightGray, background: lightGray);
-        } else {
-          setColor(darkGray, background: darkGray);
-        }
+        setColor(bg, background: bg);
         addchar(' ');
       }
     } else if (tile.door) {
@@ -338,8 +342,12 @@ void drawTileContent(SiteTile tile) {
     } else if (tile.loot) {
       setColor(purple);
       addchar('\$');
+    } else if (tile.megaBloody) {
+      setColor(canSeeFoes ? red : darkRed);
+      addchar(';');
     } else if (tile.grass) {
       setColor(canSeeFoes ? lightGreen : green);
+      if (tile.bloody) setColor(canSeeFoes ? red : darkRed);
       addchar(',');
     } else {
       if (tile.restricted) {
@@ -347,6 +355,7 @@ void drawTileContent(SiteTile tile) {
       } else {
         setColor(canSeeFoes ? lightGray : darkGray);
       }
+      if (tile.bloody) setColor(canSeeFoes ? red : darkRed);
       addchar('.');
     }
   }
@@ -1014,6 +1023,7 @@ void printBlock(int x, int y, int z, int px, int py) {
 void clearSceneAreas() {
   clearCommandArea();
   clearMessageArea();
+  clearEncounterArea();
   clearMapArea();
 }
 
@@ -1025,25 +1035,13 @@ void clearCommandArea() {
   }
 }
 
-void clearMessageArea([bool? redrawMapArea]) {
-  redrawMapArea ??= true;
-  bool siteMode = mode == GameMode.site;
-  if (siteMode) {
-    eraseArea(startY: 9, endY: 11, startX: 0, endX: 80);
-  } else {
-    int endX = 80;
-    if (!redrawMapArea || siteMode) endX = 53;
-    eraseArea(startY: 16, endY: 18, startX: 0, endX: endX);
-    if (redrawMapArea && siteMode) printSiteMap(locx, locy, locz);
-  }
+void clearMessageArea() {
+  eraseArea(startY: 9, endY: 11, startX: 0, endX: 80);
 }
 
 void clearEncounterArea() {
-  if (mode == GameMode.site) {
-    eraseArea(startY: 11, endY: 23, startX: 0, endX: 55);
-  } else {
-    eraseArea(startY: 19, endY: 25, startX: 0, endX: 53);
-  }
+  eraseArea(
+      startY: 11, endY: 23, startX: 0, endX: mode == GameMode.site ? 55 : 80);
 }
 
 void clearMapArea({bool lower = true, bool upper = true}) {
@@ -1093,20 +1091,18 @@ void printBasicEncounter() {
 
 /* prints the names of creatures you see in car chases */
 void printChaseEncounter() {
-  clearMapArea(upper: false);
-  clearEncounterArea();
-
   if (chaseSequence?.enemycar.isNotEmpty == true) {
-    List<int> carsy = [20, 20, 20, 20];
+    clearEncounterArea();
+    List<int> carsy = [13, 13, 13, 13];
 
     for (int v = 0; v < chaseSequence!.enemycar.length; v++) {
-      mvaddstrc(19, v * 20 + 1, white, chaseSequence!.enemycar[v].fullName());
+      mvaddstrc(12, v * 20 + 1, white, chaseSequence!.enemycar[v].fullName());
     }
 
     for (Creature e in encounter) {
       for (int v = 0; v < chaseSequence!.enemycar.length; v++) {
         if (chaseSequence!.enemycar[v].id == e.carId) {
-          mvaddstrc(carsy[v], v * 20 + 1, red, e.name);
+          mvaddstrc(carsy[v], v * 20 + 1, e.align.color, e.name);
           if (e.isDriver) addstr("-D");
           carsy[v]++;
         }

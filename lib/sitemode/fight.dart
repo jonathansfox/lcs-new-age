@@ -1530,7 +1530,7 @@ void bloodblast(Armor armor) {
   }
 
   //REFRESH THE SCREEN
-  printSiteMap(locx, locy, locz);
+  printSiteMapSmall(locx, locy, locz);
   refresh();
 }
 

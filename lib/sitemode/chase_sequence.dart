@@ -61,14 +61,19 @@ enum CarChaseObstacles {
 int get partysize => squad.length;
 int get partyalive => squad.where((s) => s.alive).length;
 
-void printChaseSquadOptions() {
-  setColorConditional(partysize > 1);
-  mvaddstr(9, 40, "O - Change the squad's Liberal order");
-  setColorConditional(
-      partysize > 0 && (activeSquadMemberIndex == -1 || partysize > 1));
-  mvaddstr(10, 40, "# - Check the status of a squad Liberal");
-  setColorConditional(activeSquadMemberIndex != -1);
-  mvaddstr(11, 40, "0 - Show the squad's Liberal status");
+void printChaseOptions() {
+  mvaddstrc(23, 1, blue, "D");
+  addstrc(lightGray, "-Try to lose them, ");
+  addstrc(blue, "F");
+  addstrc(lightGray, "ight, ");
+  addstrc(blue, "E");
+  addstrc(lightGray, "quip, ");
+  addstrc(partysize > 1 ? blue : darkGray, "O");
+  addstrc(partysize > 1 ? lightGray : darkGray, "rder, ");
+  bool surrenderIsAnOption = chaseSequence?.canpullover ?? false;
+  addstrc(surrenderIsAnOption ? blue : darkGray, "G");
+  addstrc(surrenderIsAnOption ? lightGray : darkGray, "-Give up, ");
+  addstrc(blue, "?");
 }
 
 Future<void> handleChaseSquadOptions(int c) async {
@@ -132,7 +137,7 @@ Future<ChaseOutcome> carChaseSequence() async {
       }
     }
 
-    printChaseSquadOptions();
+    printChaseOptions();
 
     int y = 12;
     bool canDeliberatelyHit = false;
@@ -316,14 +321,7 @@ Future<ChaseOutcome> footChaseSequence({
       mvaddstrc(
           9, 1, lightGray, "C - Reflect on your Conservative ineptitude.");
     } else {
-      printChaseSquadOptions();
-
-      mvaddstrc(9, 1, lightGray, "D - Try to lose them!");
-      mvaddstr(10, 1, "E - Equip");
-      mvaddstr(11, 1, "F - Fight!");
-      if (chaseSequence!.canpullover) {
-        mvaddstr(12, 1, "G - Give Up");
-      }
+      printChaseOptions();
     }
 
     //PRINT ENEMIES
@@ -437,10 +435,8 @@ Future<void> evasivedrive() async {
       await backOffEnemyCar(theirRollsCar[i]);
     } else {
       clearMessageArea();
-      setColor(yellow);
-      move(9, 1);
-      addstr(theirRollsDriver[i].name);
-      addstr(" is still on your tail!");
+      mvaddstrc(
+          9, 1, yellow, "${theirRollsDriver[i].name} is still on your tail!");
       await getKey();
     }
   }

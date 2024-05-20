@@ -1502,7 +1502,7 @@ Future<void> specialOvalOffice() async {
       }
     }
   }
-  printSiteMap(locx, locy, locz);
+  printSiteMapSmall(locx, locy, locz);
 
   encounter.clear();
 

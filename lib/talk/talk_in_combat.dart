@@ -22,9 +22,7 @@ import 'package:lcs_new_age/utils/colors.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 
 Future<bool> talkInCombat(Creature liberal, Creature target) async {
-  clearCommandArea();
-  clearMessageArea();
-  clearMapArea();
+  clearSceneAreas();
 
   mvaddstrc(9, 1, white, "${liberal.name} talks to ");
   addstrc(target.align.color, target.name);
@@ -171,9 +169,7 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
         }
         await getKey();
       } else {
-        clearCommandArea();
-        clearMessageArea();
-        clearMapArea();
+        clearSceneAreas();
         mvaddstrc(9, 1, lightGray, "How should ${liberal.name} respond?");
         move(11, 1);
         if (hostages > 1) {
@@ -478,7 +474,7 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
     }
   } else {
     clearMessageArea();
-    mvaddstrc(14, 1, white, "The Squad surrenders and is arrested.");
+    mvaddstrc(9, 1, white, "The Squad surrenders and is arrested.");
     await getKey();
 
     int stolen = 0;

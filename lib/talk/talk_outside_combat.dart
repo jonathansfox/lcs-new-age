@@ -27,9 +27,7 @@ import 'package:lcs_new_age/utils/lcsrandom.dart';
 Future<bool> talkOutsideCombat(Creature a, Creature tk) async {
   bool nude = a.indecent;
   String whileNaked = nude ? " while naked" : "";
-  clearCommandArea();
-  clearMessageArea();
-  clearMapArea();
+  clearSceneAreas();
   mvaddstrc(9, 1, white, "${a.name} talks to ");
   addstrc(tk.align.color, tk.name);
   setColor(white);
@@ -84,10 +82,7 @@ Future<bool> talkOutsideCombat(Creature a, Creature tk) async {
 }
 
 Future<bool> wannaHearSomethingDisturbing(Creature a, Creature tk) async {
-  clearCommandArea();
-  clearMessageArea();
-  clearMapArea();
-
+  clearSceneAreas();
   mvaddstrc(9, 1, white, "${a.name} says, ");
   mvaddstrc(10, 1, lightGreen, "\"Do you want to hear something disturbing?\"");
 
