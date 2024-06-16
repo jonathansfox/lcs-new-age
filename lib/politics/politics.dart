@@ -181,7 +181,8 @@ class Politics {
     power = (power * min(2, 1 + existingInterest / 50)).round();
     power = power.clamp(-75, 75);
     for (int i = 0; i < power; i++) {
-      if (i % (publicInterest[view]! ~/ power) == 0) {
+      int interestDiv5 = publicInterest[view]! ~/ power;
+      if (interestDiv5 == 0 || i % interestDiv5 == 0) {
         publicInterest[view] = publicInterest[view]! + 1;
       }
     }

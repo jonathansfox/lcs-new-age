@@ -72,7 +72,6 @@ class _ConsoleWidgetState extends State<ConsoleWidget> {
     TextSpan fg = consoleDataToTextSpan(false);
     TextPainter textPainter = TextPainter(
       strutStyle: const StrutStyle(
-        forceStrutHeight: true,
         height: 1,
         leading: 0,
         fontSize: 20,
