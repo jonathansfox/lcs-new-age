@@ -424,12 +424,12 @@ String majorEventStoryText(View? view, bool positive) {
               "in a fire ant nest",
               "in a sewage digester vat",
               "in the guillotine",
-            ].random;
-          DeepAlignment.Conservative => [
+            ].random,
+          DeepAlignment.conservative => [
               "in the gallows",
               "in the electric chair",
-            ].random;
-           _ => "by lethal injection",
+            ].random,
+          _ => "by lethal injection",
         };
         String exculpatoryEvidence = [
           "a confession from another convict",
