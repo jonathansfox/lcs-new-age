@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<armorupgrades>
+  <!-- Clarification
+    <armorupgrade idname="(string)"> idname is used internally by the game to identify the armor type.
+                                  No two item types should have the same idname.
+        <name> (string) The name of the armor upgrade.
+            Default: UNDEFINED
+        <make_difficulty> (integer) Difficulty to add to armor. 0 means no added difficulty.
+            Default: 0
+        <make_price> (integer) Cost to add to armor.
+            Default: 0
+        <dodgepenalty> (integer) Penalty to dodge when wearing armor.
+            Default: 0
+        <restricted> (boolean) If armor cannot be added manually to clothing. It will only be usable if explicitly whitelisted or set as the default.
+            Default: false
+        <visible> (boolean) If armor is worn outside of clothing. If true, only clothes that allow visible armor can have it added.
+            Default: false
+        <armor>
+            <body> (integer) Protection offered to the body.
+                Default: 0
+            <head> (integer) Protection offered to the head.
+                Default: 0
+            <limbs> (integer) Protection offered to arms and legs.
+                Default: 0
+            <fireprotection> (boolean) If armor reduces damage from fire.
+                Default: false
+        </armor>
+    </armorupgrade>
+    -->
+  <armorupgrade idname="ARMOR_NONE">
+    <name>No Armor</name>
+    <description>For everyday use.</description>
+    <make_difficulty>0</make_difficulty>
+    <make_price>0</make_price>
+  </armorupgrade>
+  <armorupgrade idname="ARMOR_HIDDEN">
+    <name>Hidden Soft Armor Vest</name>
+    <description>Commercial body armor worn under your clothing.</description>
+    <make_difficulty>0</make_difficulty>
+    <make_price>500</make_price>
+    <armor>
+      <body>80</body>
+    </armor>
+  </armorupgrade>
+  <armorupgrade idname="ARMOR_SOFTSYSTEM">
+    <name>Integrated Soft Armor</name>
+    <description>Clothing with ballistic materials sewn in.</description>
+    <make_difficulty>6</make_difficulty>
+    <make_price>1500</make_price>
+    <dodgepenalty>2</dodgepenalty>
+    <armor>
+      <body>100</body>
+      <limbs>80</limbs>
+    </armor>
+  </armorupgrade>
+  <armorupgrade idname="ARMOR_EXTERNALPLATE">
+    <name>Hard Armor Vest</name>
+    <description>A vest worn on the outside, carrying a hard armor plate.</description>
+    <visible>true</visible>
+    <make_difficulty>0</make_difficulty>
+    <make_price>1800</make_price>
+    <dodgepenalty>2</dodgepenalty>
+    <armor>
+      <body>160</body>
+    </armor>
+  </armorupgrade>
+  <armorupgrade idname="ARMOR_MILITARY">
+    <name>Hard Armor Vest, Helmet</name>
+    <description>Combat armor kit for soldiers.</description>
+    <visible>true</visible>
+    <make_difficulty>0</make_difficulty>
+    <make_price>3000</make_price>
+    <dodgepenalty>2</dodgepenalty>
+    <armor>
+      <body>160</body>
+      <head>80</head>
+    </armor>
+  </armorupgrade>
+  <armorupgrade idname="ARMOR_SWAT">
+    <name>Hard Armor Vest, Helmet, Extras</name>
+    <description>Heavy loadout with coverage of non-critical areas.</description>
+    <visible>true</visible>
+    <make_difficulty>0</make_difficulty>
+    <make_price>3000</make_price>
+    <dodgepenalty>4</dodgepenalty>
+    <armor>
+      <body>160</body>
+      <limbs>80</limbs>
+      <head>80</head>
+    </armor>
+  </armorupgrade>
+  <armorupgrade idname="ARMOR_TANKSUIT">
+    <name>Human Tank Suit</name>
+    <description>This is a bad idea. You can barely move in this.</description>
+    <restricted>true</restricted>
+    <visible>true</visible>
+    <dodgepenalty>20</dodgepenalty>
+    <accuracypenalty>6</accuracypenalty>
+    <armor>
+      <body>200</body>
+      <limbs>160</limbs>
+      <head>140</head>
+    </armor>
+  </armorupgrade>
+  <armorupgrade idname="ARMOR_TURNOUTGEAR">
+    <name>Turnout Gear</name>
+    <description>Heavy full body heat insulation worn by firefighters.</description>
+    <restricted>true</restricted>
+    <visible>true</visible>
+    <dodgepenalty>4</dodgepenalty>
+    <armor>
+      <body>50</body>
+      <limbs>50</limbs>
+      <head>50</head>
+      <fireprotection>true</fireprotection>
+    </armor>
+  </armorupgrade>
+  <armorupgrade idname="ARMOR_HARDHAT">
+    <name>Hardhat</name>
+    <description>Protects your head from falling debris.</description>
+    <restricted>true</restricted>
+    <visible>true</visible>
+    <armor>
+      <head>30</head>
+    </armor>
+  </armorupgrade>
+  <armorupgrade idname="ARMOR_LEATHER">
+    <name>Leather Armor</name>
+    <description>Padded leathers commonly worn by motorcyclists.</description>
+    <make_price>200</make_price>
+    <restricted>true</restricted>
+    <armor>
+      <body>30</body>
+      <limbs>30</limbs>
+    </armor>
+  </armorupgrade>
+</armorupgrades>

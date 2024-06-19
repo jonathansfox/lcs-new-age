@@ -77,24 +77,7 @@ Body madCowBody() {
 }
 
 Body sixLeggedPigBody() {
-  return HumanoidBody()
-    ..type = BodyType.sixLeggedPig
-    ..typeName = "Six-Legged Pig"
-    ..naturalWeapon = Weapon("WEAPON_BITE")
-    ..maxTeeth = 44
-    ..teeth = 44
-    ..leftLeg.name = "Left Rear Leg"
-    ..leftLeg.size = 1
-    ..rightLeg.name = "Right Rear Leg"
-    ..rightLeg.size = 1
-    ..leftArm.name = "Left Front Leg"
-    ..leftArm.size = 1
-    ..rightArm.name = "Right Front Leg"
-    ..rightArm.size = 1
-    ..parts.addAll([
-      BodyPart("Left Middle Leg", size: 1),
-      BodyPart("Right Middle Leg", size: 1),
-    ]);
+  return SixLeggedPigBody();
 }
 
 Body flamingRabbitBody() {
@@ -129,6 +112,32 @@ Body giantMosquitoBody() {
     ..leftArm.size = 1
     ..rightArm.name = "Right Front Leg"
     ..rightArm.size = 1;
+}
+
+@JsonSerializable()
+class SixLeggedPigBody extends HumanoidBody {
+  SixLeggedPigBody() : super() {
+    type = BodyType.sixLeggedPig;
+    typeName = "Six-Legged Pig";
+    naturalWeapon = Weapon("WEAPON_BITE");
+    maxTeeth = 44;
+    teeth = 44;
+    leftLeg.name = "Left Rear Leg";
+    rightLeg.name = "Right Rear Leg";
+    leftArm.name = "Left Front Leg";
+    rightArm.name = "Right Front Leg";
+  }
+
+  factory SixLeggedPigBody.fromJson(Map<String, dynamic> json) =>
+      _$SixLeggedPigBodyFromJson(json);
+  @override
+  Map<String, dynamic> toJson() => _$SixLeggedPigBodyToJson(this);
+
+  BodyPart rightMiddleLeg = BodyPart("Right Middle Leg", size: 1);
+  BodyPart leftMiddleLeg = BodyPart("Left Middle Leg", size: 1);
+
+  @override
+  List<BodyPart> get parts => super.parts + [leftMiddleLeg, rightMiddleLeg];
 }
 
 @JsonSerializable()
@@ -175,6 +184,18 @@ class TankBody extends Body {
   @override
   int get teeth => 0;
 
+  BodyPart turretRear = BodyPart("Turret Rear",
+      size: 5, critical: true, weakSpot: true, naturalArmor: 10);
+  BodyPart turretFront =
+      BodyPart("Turret Front", size: 5, critical: true, naturalArmor: 20);
+  BodyPart frontArmor =
+      BodyPart("Front Armor", size: 5, critical: true, naturalArmor: 20);
+  BodyPart rearArmor = BodyPart("Rear Armor",
+      size: 3, critical: true, weakSpot: true, naturalArmor: 10);
+  BodyPart leftSide =
+      BodyPart("Left Side", size: 7, critical: true, naturalArmor: 15);
+  BodyPart rightSide =
+      BodyPart("Right Side", size: 7, critical: true, naturalArmor: 15);
   BodyPart leftTrack =
       BodyPart("Left Track", size: 4, weakSpot: true, naturalArmor: 10);
   BodyPart rightTrack =
@@ -182,14 +203,12 @@ class TankBody extends Body {
 
   @override
   List<BodyPart> get parts => [
-        BodyPart("Turret Rear",
-            size: 5, critical: true, weakSpot: true, naturalArmor: 10),
-        BodyPart("Turret Front", size: 5, critical: true, naturalArmor: 20),
-        BodyPart("Front Armor", size: 5, critical: true, naturalArmor: 20),
-        BodyPart("Rear Armor",
-            size: 3, critical: true, weakSpot: true, naturalArmor: 10),
-        BodyPart("Left Side", size: 7, critical: true, naturalArmor: 15),
-        BodyPart("Right Side", size: 7, critical: true, naturalArmor: 15),
+        turretRear,
+        turretFront,
+        frontArmor,
+        rearArmor,
+        leftSide,
+        rightSide,
         leftTrack,
         rightTrack,
       ];
@@ -434,6 +453,8 @@ abstract class Body {
     switch (json['type']) {
       case "tank":
         return TankBody.fromJson(json);
+      case "sixLeggedPig":
+        return SixLeggedPigBody.fromJson(json);
       default:
         return HumanoidBody.fromJson(json);
     }
@@ -441,6 +462,8 @@ abstract class Body {
   Map<String, dynamic> toJson() {
     if (this is TankBody) {
       return (this as TankBody).toJson();
+    } else if (this is SixLeggedPigBody) {
+      return (this as SixLeggedPigBody).toJson();
     } else {
       return (this as HumanoidBody).toJson();
     }

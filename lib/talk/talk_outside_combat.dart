@@ -95,6 +95,7 @@ Future<bool> wannaHearSomethingDisturbing(Creature a, Creature tk) async {
   }
 
   if ((tk.type.animal &&
+          !a.type.animal &&
           tk.align != Alignment.liberal &&
           !animalsArePeopleToo) ||
       tk.type.tank) {
