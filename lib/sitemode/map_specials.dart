@@ -1170,6 +1170,11 @@ Future<void> specialSecurity(bool metaldetect) async {
 
   spawnSecurity();
 
+  if (encounter.isEmpty) {
+    await encounterMessage("The security checkpoint is abandoned.");
+    levelMap[locx][locy][locz].special = TileSpecial.none;
+    return;
+  }
   for (Creature p in pool) {
     if (p.base == activeSite) {
       autoAdmit = true;
@@ -1183,12 +1188,7 @@ Future<void> specialSecurity(bool metaldetect) async {
   }
   setColor(white);
   move(16, 1);
-  if (siteAlarm) {
-    addstr("The security checkpoint is abandoned.");
-
-    levelMap[locx][locy][locz].special = TileSpecial.none;
-    return;
-  } else if (autoAdmit) {
+  if (autoAdmit) {
     addstr("The squad flashes ID badges.");
     metaldetect = false;
 
