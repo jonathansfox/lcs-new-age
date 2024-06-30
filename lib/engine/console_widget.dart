@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:lcs_new_age/engine/console.dart';
 import 'package:lcs_new_age/engine/console_char.dart';
 import 'package:lcs_new_age/engine/engine.dart';
+import 'package:lcs_new_age/engine/fullscreen/fullscreen.dart';
 import 'package:lcs_new_age/utils/colors.dart';
 import 'package:pixel_snap/material.dart';
 
@@ -19,6 +20,7 @@ class _ConsoleWidgetState extends State<ConsoleWidget> {
   late final FocusNode focusNode;
   late final FocusAttachment focusAttachment;
   bool hasFocus = false;
+  bool fullscreen = false;
 
   @override
   void initState() {
@@ -33,6 +35,18 @@ class _ConsoleWidgetState extends State<ConsoleWidget> {
   }
 
   KeyEventResult _onKeyEvent(FocusNode node, KeyEvent value) {
+    if (value is KeyDownEvent && value.logicalKey == LogicalKeyboardKey.f11) {
+      setState(() {
+        if (!fullscreen) {
+          enterFullscreen();
+          fullscreen = true;
+        } else {
+          exitFullscreen();
+          fullscreen = false;
+        }
+      });
+      return KeyEventResult.handled;
+    }
     if ((value is KeyDownEvent || value is KeyRepeatEvent) &&
         ![
           LogicalKeyboardKey.altLeft,
@@ -190,48 +204,64 @@ class _ConsoleWidgetState extends State<ConsoleWidget> {
     TextSpan fg = consoleDataToTextSpan(false);
     return Material(
       color: Color.lerp(darkGray, black, 0.8),
-      child: Center(
-        child: FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Material(
-            color: black,
-            child: SizedBox(
-              width: textSpanWidth,
-              height: textSpanHeight,
-              child: GestureDetector(
-                onTap: () {
-                  debugPrint("Requesting focus");
-                  focusNode.requestFocus();
-                  debugPrint("Widget has focus: ${focusNode.hasFocus}");
-                  SystemChannels.textInput
-                      // ignore: discarded_futures
-                      .invokeMethod("TextInput.show")
-                      .ignore();
-                },
-                child: Stack(
-                  children: [
-                    background(),
-                    Positioned.fill(
-                      child: CustomPaint(painter: BlockPainter(console)),
+      child: scalingFrame(
+        child: Material(
+          color: black,
+          child: SizedBox(
+            width: textSpanWidth,
+            height: textSpanHeight,
+            child: GestureDetector(
+              onTap: () {
+                debugPrint("Requesting focus");
+                focusNode.requestFocus();
+                debugPrint("Widget has focus: ${focusNode.hasFocus}");
+                SystemChannels.textInput
+                    // ignore: discarded_futures
+                    .invokeMethod("TextInput.show")
+                    .ignore();
+              },
+              child: Stack(
+                children: [
+                  background(),
+                  Positioned.fill(
+                    child: CustomPaint(painter: BlockPainter(console)),
+                  ),
+                  RichText(
+                    text: fg,
+                    softWrap: false,
+                    textHeightBehavior: const TextHeightBehavior(
+                      applyHeightToFirstAscent: false,
+                      applyHeightToLastDescent: false,
+                      leadingDistribution: TextLeadingDistribution.even,
                     ),
-                    RichText(
-                      text: fg,
-                      softWrap: false,
-                      textHeightBehavior: const TextHeightBehavior(
-                        applyHeightToFirstAscent: false,
-                        applyHeightToLastDescent: false,
-                        leadingDistribution: TextLeadingDistribution.even,
-                      ),
-                    ),
-                    ...graphics(),
-                  ],
-                ),
+                  ),
+                  ...graphics(),
+                ],
               ),
             ),
           ),
         ),
       ),
     );
+  }
+
+  Widget scalingFrame({required Widget child}) {
+    if (fullscreen) {
+      return SizedBox.expand(
+        child: FittedBox(
+          fit: BoxFit.contain,
+          alignment: Alignment.center,
+          child: child,
+        ),
+      );
+    } else {
+      return Center(
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: child,
+        ),
+      );
+    }
   }
 }
 
