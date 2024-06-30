@@ -126,6 +126,7 @@ Future<void> doActivityTrouble(List<Creature> trouble) async {
       if (oneIn(30) &&
           !trouble[t].skillCheck(Skill.streetSmarts, Difficulty.average)) {
         if (oneIn(4)) {
+          criminalize(trouble[t], crime);
           sitestory = NewsStory.prepare(NewsStories.arrestGoneWrong);
           await attemptArrest(trouble[t], "causing trouble");
         } else {
@@ -133,9 +134,9 @@ Future<void> doActivityTrouble(List<Creature> trouble) async {
         }
       }
     }
+  }
 
-    for (int h = 0; h < trouble.length; h++) {
-      addjuice(trouble[h], juiceval, 50);
-    }
+  for (int h = 0; h < trouble.length; h++) {
+    addjuice(trouble[h], juiceval, 50);
   }
 }
