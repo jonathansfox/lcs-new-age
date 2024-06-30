@@ -1402,6 +1402,14 @@ Future<bool> socialAttack(Creature a, Creature t, Attack attackUsed) async {
           conservatize(t);
           t.isWillingToTalk = false;
         } else if (a.align == Alignment.liberal) {
+          if (t.align == Alignment.conservative) {
+            if (activeSite?.controller == SiteController.ccs) {
+              if (t.type.id == CreatureTypeIds.ccsArchConservative) {
+                ccsBossConverts++;
+              }
+              ccsSiegeConverts++;
+            }
+          }
           liberalize(t);
           t.isWillingToTalk = true;
         } else {

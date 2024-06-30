@@ -1328,7 +1328,7 @@ Future<void> _siteModeAux() async {
         }
 
         //BAIL UPON VICTORY (version 2 -- defeated CCS safehouse)
-        if (ccsBossKills >= 1 &&
+        if ((ccsBossKills >= 1 || ccsBossConverts >= 1) &&
             !activeSiteUnderSiege &&
             activeSite!.controller == SiteController.ccs) {
           await squadCleanup();
