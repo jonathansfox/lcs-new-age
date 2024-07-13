@@ -327,7 +327,6 @@ Future<void> characterCreationQuestions(Creature founder, bool choose) async {
           "I started wearing a security uniform to explore major buildings downtown.",
           "+1 Disguise, Security Uniform, Downtown Maps", () {
         founder.adjustSkill(Skill.disguise, 1);
-        founder.adjustAttribute(Attribute.agility, 1);
         founder.giveArmorType("ARMOR_SECURITYUNIFORM",
             lootPile: founder.base?.loot);
         for (Site site in founder.base?.city.districts.first.sites ?? []) {
