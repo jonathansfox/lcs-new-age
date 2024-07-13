@@ -89,12 +89,10 @@ Future<void> doActivityTeach(List<Creature> teachers) async {
     //Walk through and train people
     for (Creature p in students) {
       for (Skill skill in skills) {
-        //Otherwise, if the student has less skill than the teacher, train the student
-        //proportional to the difference in skill between teacher and student times the
-        //teacher's ability at teaching
+        // Teach skills where the student is below the teacher's skill
         if (p.skill(skill) < teacher.skill(skill) &&
             p.skill(skill) < p.skillCap(skill)) {
-          workload++;
+          //workload++;
         } else {
           continue;
         }
