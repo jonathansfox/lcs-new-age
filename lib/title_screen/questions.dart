@@ -101,7 +101,7 @@ Future<void> characterCreationQuestions(Creature founder, bool choose) async {
       _Option(
           "I was grounded from electronics.  I spent a lot of time drawing.",
           "+1 Art, +1 Heart", () {
-        founder.adjustSkill(Skill.psychology, 1);
+        founder.adjustSkill(Skill.art, 1);
         founder.adjustAttribute(Attribute.heart, 1);
       }),
     ]),
