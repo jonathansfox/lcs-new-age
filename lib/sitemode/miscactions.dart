@@ -409,6 +409,7 @@ Future<bool> _mediaBroadcast(String takeover, View mediaView, String medium,
   criminalizeparty(Crime.disturbingThePeace);
 
   View viewhit = View.issues.random;
+  View hostageviewhit = View.issues.random;
   await encounterMessage("The Squad takes control of the $takeover and ",
       line2: "talks about ${_mediaIssueDescription(viewhit)}.");
 
