@@ -420,10 +420,10 @@ Future<bool> _mediaBroadcast(String takeover, View mediaView, String medium,
       if (p.prisoner?.alive == true &&
           p.prisoner?.type.id == celebrityType &&
           p.prisoner?.align == Alignment.conservative) {
-        viewhit = View.issues.random;
+        hostageviewhit = View.issues.random;
         await encounterMessage(
             "The hostage ${p.prisoner!.name} is forced on air to ",
-            line2: "discuss ${_mediaIssueDescription(viewhit)}.");
+            line2: "discuss ${_mediaIssueDescription(hostageviewhit)}.");
 
         int usegmentpower = 10; //FAME BONUS
         usegmentpower += p.prisoner!.attribute(Attribute.intelligence);
@@ -431,7 +431,7 @@ Future<bool> _mediaBroadcast(String takeover, View mediaView, String medium,
         usegmentpower += p.prisoner!.attribute(Attribute.charisma);
         usegmentpower += p.prisoner!.skill(Skill.persuasion);
 
-        changePublicOpinion(viewhit, (usegmentpower / 2).round());
+        changePublicOpinion(hostageviewhit, (usegmentpower / 2).round());
 
         segmentpower += usegmentpower;
       } else {
@@ -447,9 +447,9 @@ Future<bool> _mediaBroadcast(String takeover, View mediaView, String medium,
   //CHECK PUBLIC OPINION
   changePublicOpinion(View.lcsKnown, 10);
   changePublicOpinion(View.lcsLiked,
-      ((segmentpower - 50) * (publicOpinion[View.amRadio]! / 200)).round());
+      ((segmentpower - 50) * (publicOpinion[mediaView]! / 200)).round());
   changePublicOpinion(viewhit,
-      ((segmentpower - 50) * (publicOpinion[View.amRadio]! / 100)).round(),
+      ((segmentpower - 50) * (publicOpinion[mediaView]! / 100)).round(),
       coloredByLcsOpinions: true);
 
   if (siteAlienated.index >= SiteAlienation.alienatedModerates.index &&
