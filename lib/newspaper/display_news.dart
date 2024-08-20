@@ -200,6 +200,7 @@ Future<void> displayStory(
                     Drama.carChase,
                     Drama.carCrash,
                     Drama.footChase,
+                    Drama.hijackedBroadcast,
                   ].contains(entry.key))
               .length;
 
@@ -342,6 +343,17 @@ Future<void> displayStory(
             } else {
               story +=
                   "  The Liberal Crime Squad was attempting to uncover the company's Conservative corruption."
+                  "&r";
+            }
+          }
+          if (did(Drama.hijackedBroadcast)) {
+            if (!liberalguardian) {
+              story += "  The Liberal Crime Squad hijacked a news broadcast, "
+                  "interrupting regular programming."
+                  "&r";
+            } else {
+              story +=
+                  "  The Liberal Crime Squad delivered its message to the masses today."
                   "&r";
             }
           }
