@@ -382,6 +382,8 @@ void setpriority(NewsStory ns) {
       if (drama[Drama.freeRabbits]! > 10) drama[Drama.freeRabbits] = 10;
       if (drama[Drama.freeMonsters]! > 10) drama[Drama.freeMonsters] = 10;
       if (drama[Drama.tagging]! > 10) drama[Drama.tagging] = 10;
+      if (drama[Drama.carChase]! > 10) drama[Drama.carChase] = 10;
+      if (drama[Drama.footChase]! > 10) drama[Drama.footChase] = 10;
 
       // Increase news story priority based on the number of instances of
       // various crimes, scaled by a factor dependant on the crime
@@ -403,11 +405,14 @@ void setpriority(NewsStory ns) {
 
       // Common site crimes
       ns.priority += drama[Drama.killedSomebody]! * 30;
+      ns.priority += drama[Drama.carCrash]! * 30;
       ns.priority += drama[Drama.freeMonsters]! * 12;
       ns.priority += drama[Drama.freeRabbits]! * 8;
       ns.priority += drama[Drama.vandalism]! * 8;
       ns.priority += drama[Drama.tagging]! * 2;
       ns.priority += drama[Drama.attacked]! * 2;
+      ns.priority += drama[Drama.carChase]! * 2;
+      ns.priority += drama[Drama.footChase]! * 2;
 
       // Add additional priority based on the type of news story
       // and how high profile the LCS is
