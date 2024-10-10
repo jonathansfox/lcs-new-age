@@ -4,8 +4,8 @@ import 'package:lcs_new_age/creature/gender.dart';
 import 'package:lcs_new_age/creature/hardcoded_creature_type_stuff.dart';
 import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
-import 'package:lcs_new_age/items/armor_type.dart';
 import 'package:lcs_new_age/items/attack.dart';
+import 'package:lcs_new_age/items/clothing_type.dart';
 import 'package:lcs_new_age/items/weapon_type.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
 import 'package:lcs_new_age/politics/laws.dart';
@@ -53,8 +53,8 @@ class CreatureType {
   Gender gender = Gender.nonbinary;
 
   List<String> armorTypeIds = [];
-  ArmorType? get randomArmor =>
-      armorTypeIds.map((s) => armorTypes[s]).nonNulls.toList().randomOrNull;
+  ClothingType? get randomArmor =>
+      armorTypeIds.map((s) => clothingTypes[s]).nonNulls.toList().randomOrNull;
 
   List<String> weaponTypeIds = [];
   WeaponType? randomWeaponFor(Creature cr) {

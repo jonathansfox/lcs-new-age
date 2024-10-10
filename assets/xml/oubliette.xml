@@ -36,79 +36,78 @@
     <fullscreen>false</fullscreen>
     <allow_selling>false</allow_selling>
     <exit>Leave</exit>
-    
+
     <department>
         <entry>Purchase Halloween Costumes</entry>
         <letter>c</letter>
         <fullscreen>false</fullscreen>
-        <sell_masks>true</sell_masks>
         <exit>Done</exit>
         <item>
             <class>ARMOR</class>
-            <type>ARMOR_TRENCHCOAT</type>
+            <type>CLOTHING_TRENCHCOAT</type>
             <letter>t</letter>
             <description>Buy a Trench Coat</description>
             <price>70</price>
         </item>
         <item>
             <class>ARMOR</class>
-            <type>ARMOR_WORKCLOTHES</type>
+            <type>CLOTHING_WORKCLOTHES</type>
             <letter>w</letter>
             <description>Buy Work Clothes</description>
             <price>50</price>
         </item>
         <item>
             <class>ARMOR</class>
-            <type>ARMOR_LABCOAT</type>
+            <type>CLOTHING_LABCOAT</type>
             <letter>l</letter>
             <description>Buy a Lab Coat</description>
             <price>200</price>
         </item>
         <item>
             <class>ARMOR</class>
-            <type>ARMOR_BLACKROBE</type>
+            <type>CLOTHING_BLACKROBE</type>
             <letter>r</letter>
             <description>Buy a Black Judge's Robe</description>
             <price>200</price>
         </item>
         <item>
             <class>ARMOR</class>
-            <type>ARMOR_CLOWNSUIT</type>
+            <type>CLOTHING_CLOWNSUIT</type>
             <letter>c</letter>
             <description>Buy a Clown Suit</description>
             <price>200</price>
         </item>
         <item>
             <class>ARMOR</class>
-            <type>ARMOR_BONDAGEGEAR</type>
+            <type>CLOTHING_BONDAGEGEAR</type>
             <letter>g</letter>
             <description>Buy Bondage Gear</description>
             <price>350</price>
         </item>
         <item>
             <class>ARMOR</class>
-            <type>ARMOR_TOGA</type>
+            <type>CLOTHING_TOGA</type>
             <letter>o</letter>
             <description>Buy a Toga</description>
             <price>90</price>
         </item>
         <item>
             <class>ARMOR</class>
-            <type>ARMOR_ELEPHANTSUIT</type>
+            <type>CLOTHING_ELEPHANTSUIT</type>
             <letter>p</letter>
             <description>Buy an Elephant Suit</description>
             <price>1000</price>
         </item>
         <item>
             <class>ARMOR</class>
-            <type>ARMOR_DONKEYSUIT</type>
+            <type>CLOTHING_DONKEYSUIT</type>
             <letter>d</letter>
             <description>Buy a Donkey Suit</description>
             <price>1000</price>
         </item>
         <!-- +Masks! -->
     </department>
-    
+
     <department>
         <entry>Purchase Medieval Gear</entry>
         <letter>m</letter>
@@ -165,15 +164,15 @@
         </item>
         <item>
             <class>ARMOR</class>
-            <type>ARMOR_LEATHER</type>
+            <type>CLOTHING_LEATHER</type>
             <letter>L</letter>
             <description>Buy Leather Armor</description>
             <price>800</price>
         </item>
         <item>
             <class>ARMOR</class>
-            <type>ARMOR_MITHRIL</type>
-            <letter>!</letter> <!-- Not a letter! -->
+            <type>CLOTHING_MITHRIL</type>
+            <letter>!</letter>            <!-- Not a letter! -->
             <description>Buy Mithril Mail</description>
             <price>1000</price>
         </item>

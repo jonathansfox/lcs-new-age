@@ -6,7 +6,7 @@ import 'package:lcs_new_age/creature/creature.dart';
 import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/daily/activities/recruiting.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
-import 'package:lcs_new_age/items/armor_type.dart';
+import 'package:lcs_new_age/items/clothing_type.dart';
 import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/politics/views.dart';
 import 'package:lcs_new_age/utils/colors.dart';
@@ -34,7 +34,7 @@ class Activity {
   RecruitData? get recruitData =>
       recruitableCreatures.firstWhere((e) => e.type.id == idString);
   Creature? get creature => pool.firstWhereOrNull((e) => e.id == idInt);
-  ArmorType? get armorType => armorTypes[idString];
+  ClothingType? get armorType => clothingTypes[idString];
   Site? get location =>
       gameState.sites.firstWhereOrNull((e) => e.idString == idString);
 

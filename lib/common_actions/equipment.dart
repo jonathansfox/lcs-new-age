@@ -8,7 +8,7 @@ import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/gamestate/squad.dart';
 import 'package:lcs_new_age/items/ammo.dart';
-import 'package:lcs_new_age/items/armor.dart';
+import 'package:lcs_new_age/items/clothing.dart';
 import 'package:lcs_new_age/items/item.dart';
 import 'package:lcs_new_age/items/weapon.dart';
 import 'package:lcs_new_age/items/weapon_type.dart';
@@ -98,7 +98,7 @@ Future<void> equip(List<Item>? loot) async {
         if (slot < 0 || slot >= loot.length) continue; // Out of range.
 
         bool isWeapon = loot[slot] is Weapon;
-        bool isArmor = loot[slot] is Armor;
+        bool isArmor = loot[slot] is Clothing;
         bool isAmmo =
             squad.any((m) => m.weapon.acceptableAmmo.contains(loot[slot].type));
         if (!isWeapon && !isArmor && !isAmmo) {
@@ -176,10 +176,10 @@ Future<void> equip(List<Item>? loot) async {
             squaddie.giveWeapon(w, loot);
 
             if (page * 18 >= loot.length && page != 0) page--;
-          } else if (loot[slot] is Armor) {
+          } else if (loot[slot] is Clothing) {
             debugPrint(
                 "Giving armor ${loot[slot].type.name} to ${squaddie.name}");
-            Armor a = loot[slot] as Armor;
+            Clothing a = loot[slot] as Clothing;
             squaddie.giveArmor(a, loot);
 
             if (loot[slot].stackSize == 0) loot.removeAt(slot);

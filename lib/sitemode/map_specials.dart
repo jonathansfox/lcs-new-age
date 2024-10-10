@@ -15,7 +15,7 @@ import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/items/ammo.dart';
 import 'package:lcs_new_age/items/ammo_type.dart';
-import 'package:lcs_new_age/items/armor.dart';
+import 'package:lcs_new_age/items/clothing.dart';
 import 'package:lcs_new_age/items/item.dart';
 import 'package:lcs_new_age/items/loot.dart';
 import 'package:lcs_new_age/items/money.dart';
@@ -187,9 +187,9 @@ Future<void> specialBouncerAssessSquad() async {
         reject(REJECTED_DRESSCODE);
       }
       // Busted, cheap, bloody clothes? Gone
-      if (s.armor.bloody) reject(REJECTED_BLOODYCLOTHES);
-      if (s.armor.damaged) reject(REJECTED_DAMAGEDCLOTHES);
-      if (s.armor.quality != 1) reject(REJECTED_SECONDRATECLOTHES);
+      if (s.clothing.bloody) reject(REJECTED_BLOODYCLOTHES);
+      if (s.clothing.damaged) reject(REJECTED_DAMAGEDCLOTHES);
+      if (s.clothing.quality != 1) reject(REJECTED_SECONDRATECLOTHES);
       if (s.gender == Gender.female &&
           laws[Law.genderEquality] == DeepAlignment.archConservative) {
         reject(REJECTED_FEMALE);
@@ -202,7 +202,7 @@ Future<void> specialBouncerAssessSquad() async {
       if (s.age < 21) reject(REJECTED_UNDERAGE);
       // Must pass disguise check unless you're dressed as cops;
       // harder if you're trans at the Desert Eagle Bar & Grill
-      if (!s.armor.type.police) {
+      if (!s.clothing.type.police) {
         if (siteType == SiteType.barAndGrill &&
             s.genderAssignedAtBirth != s.gender &&
             laws[Law.lgbtRights] != DeepAlignment.eliteLiberal) {
@@ -897,7 +897,7 @@ void _loot(Item item) => activeSquad!.loot.add(item);
 
 void _lootWeapon(String tag, int extraMags) {
   WeaponType weaponType = weaponTypes[tag]!;
-  AmmoType? ammoType = weaponType.ammoType;
+  AmmoType? ammoType = weaponType.acceptableAmmo.firstOrNull;
   _loot(Weapon.fromType(weaponType, fullammo: true));
   if (ammoType != null && extraMags > 0) {
     _loot(Ammo(ammoType.idName, stackSize: extraMags));
@@ -1014,9 +1014,9 @@ Future<void> specialArmory() async {
     int num = 0;
     do {
       if (activeSite!.type == SiteType.armyBase) {
-        _loot(Armor("ARMOR_ARMYARMOR"));
+        _loot(Clothing("CLOTHING_ARMYARMOR"));
       } else {
-        _loot(Armor("ARMOR_CIVILLIANARMOR"));
+        _loot(Clothing("CLOTHING_CIVILLIANARMOR"));
       }
       num++;
     } while (num < 2 || (oneIn(2) && num < 5));
@@ -1213,16 +1213,16 @@ Future<void> specialSecurity(bool metaldetect) async {
   // Size up the squad for entry
   for (Creature s in squad) {
     // Nudity gets blocked always
-    if (s.equippedArmor == null && s.type.animal) reject(REJECTED_NUDE);
+    if (s.equippedClothing == null && s.type.animal) reject(REJECTED_NUDE);
     if (!autoAdmit) {
       // Having an employee badge will bypass most checks even
       // if the security guard doesn't work for you
       if (disguiseQuality(s) == DisguiseQuality.trespassing) {
         reject(REJECTED_DRESSCODE);
       }
-      if (s.armor.bloody) reject(REJECTED_BLOODYCLOTHES);
-      if (s.armor.damaged) reject(REJECTED_DAMAGEDCLOTHES);
-      if (s.armor.quality != 1) reject(REJECTED_SECONDRATECLOTHES);
+      if (s.clothing.bloody) reject(REJECTED_BLOODYCLOTHES);
+      if (s.clothing.damaged) reject(REJECTED_DAMAGEDCLOTHES);
+      if (s.clothing.quality != 1) reject(REJECTED_SECONDRATECLOTHES);
       if (s.age < 16) reject(REJECTED_UNDERAGE);
     }
     if (sleeper == null) {
@@ -1618,13 +1618,13 @@ Item? lootItemForSite(SiteType site) {
         newWeaponType = rndWeps.random;
       } else if (oneIn(20)) {
         List<String> rndArmors = [
-          "ARMOR_CHEAPDRESS",
-          "ARMOR_CHEAPSUIT",
-          "ARMOR_CLOTHES",
-          "ARMOR_TRENCHCOAT",
-          "ARMOR_WORKCLOTHES",
-          "ARMOR_TOGA",
-          "ARMOR_PRISONER"
+          "CLOTHING_CHEAPDRESS",
+          "CLOTHING_CHEAPSUIT",
+          "CLOTHING_CLOTHES",
+          "CLOTHING_TRENCHCOAT",
+          "CLOTHING_WORKCLOTHES",
+          "CLOTHING_TOGA",
+          "CLOTHING_PRISONER"
         ];
         newArmorType = rndArmors.random;
       } else if (oneIn(3)) {
@@ -1648,7 +1648,7 @@ Item? lootItemForSite(SiteType site) {
       if (oneIn(25)) {
         List<String> rndWeps = [
           "WEAPON_BASEBALLBAT",
-          "WEAPON_REVOLVER_38",
+          "WEAPON_REVOLVER_22",
           "WEAPON_REVOLVER_44",
           "WEAPON_NIGHTSTICK",
           "WEAPON_GUITAR"
@@ -1656,14 +1656,14 @@ Item? lootItemForSite(SiteType site) {
         newWeaponType = rndWeps.random;
       } else if (oneIn(20)) {
         List<String> rndArmors = [
-          "ARMOR_CHEAPDRESS",
-          "ARMOR_CHEAPSUIT",
-          "ARMOR_CLOTHES",
-          "ARMOR_TRENCHCOAT",
-          "ARMOR_WORKCLOTHES",
-          "ARMOR_CLOWNSUIT",
-          "ARMOR_ELEPHANTSUIT",
-          "ARMOR_DONKEYSUIT"
+          "CLOTHING_CHEAPDRESS",
+          "CLOTHING_CHEAPSUIT",
+          "CLOTHING_CLOTHES",
+          "CLOTHING_TRENCHCOAT",
+          "CLOTHING_WORKCLOTHES",
+          "CLOTHING_CLOWNSUIT",
+          "CLOTHING_ELEPHANTSUIT",
+          "CLOTHING_DONKEYSUIT"
         ];
         newArmorType = rndArmors.random;
       } else if (oneIn(5)) {
@@ -1693,14 +1693,14 @@ Item? lootItemForSite(SiteType site) {
         newWeaponType = rndWeps[lcsRandom(8 - laws[Law.gunControl]!.index)];
       } else if (oneIn(20)) {
         List<String> rndArmors = [
-          "ARMOR_EXPENSIVEDRESS",
-          "ARMOR_BLACKDRESS",
-          "ARMOR_EXPENSIVESUIT",
-          "ARMOR_BLACKSUIT",
-          "ARMOR_BONDAGEGEAR",
-          "ARMOR_CIVILLIANARMOR",
-          "ARMOR_BLACKROBE",
-          "ARMOR_LABCOAT"
+          "CLOTHING_EXPENSIVEDRESS",
+          "CLOTHING_BLACKDRESS",
+          "CLOTHING_EXPENSIVESUIT",
+          "CLOTHING_BLACKSUIT",
+          "CLOTHING_BONDAGEGEAR",
+          "CLOTHING_CIVILLIANARMOR",
+          "CLOTHING_BLACKROBE",
+          "CLOTHING_LABCOAT"
         ];
         newArmorType = rndArmors.random;
       } else if (oneIn(10)) {
@@ -1748,15 +1748,15 @@ Item? lootItemForSite(SiteType site) {
         newWeaponType = rndWeps[lcsRandom(4) + 4 - laws[Law.gunControl]!.index];
       } else if (oneIn(25)) {
         List<String> rndArmors = [
-          "ARMOR_POLICEUNIFORM",
-          "ARMOR_POLICEUNIFORM",
-          "ARMOR_POLICEARMOR",
-          "ARMOR_POLICEUNIFORM",
-          "ARMOR_SWATARMOR",
-          "ARMOR_POLICEUNIFORM",
-          "ARMOR_POLICEARMOR",
-          "ARMOR_DEATHSQUADUNIFORM",
-          "ARMOR_DEATHSQUADBODYARMOR"
+          "CLOTHING_POLICEUNIFORM",
+          "CLOTHING_POLICEUNIFORM",
+          "CLOTHING_POLICEARMOR",
+          "CLOTHING_POLICEUNIFORM",
+          "CLOTHING_SWATARMOR",
+          "CLOTHING_POLICEUNIFORM",
+          "CLOTHING_POLICEARMOR",
+          "CLOTHING_DEATHSQUADUNIFORM",
+          "CLOTHING_DEATHSQUADBODYARMOR"
         ];
         //make sure the number of types matches the random range...
         newArmorType =
@@ -1782,7 +1782,7 @@ Item? lootItemForSite(SiteType site) {
       }
     case SiteType.prison:
       if (oneIn(5)) {
-        newArmorType = "ARMOR_PRISONER";
+        newArmorType = "CLOTHING_PRISONER";
       } else {
         newWeaponType = "WEAPON_SHANK";
       }
@@ -1805,7 +1805,7 @@ Item? lootItemForSite(SiteType site) {
         ];
         newWeaponType = rndWeps.random;
       } else if (oneIn(2)) {
-        List<String> rndArmors = ["ARMOR_ARMYARMOR"];
+        List<String> rndArmors = ["CLOTHING_ARMYARMOR"];
         newArmorType = rndArmors.random;
       } else if (oneIn(20)) {
         newLootType = "LOOT_SECRETDOCUMENTS";
@@ -1827,7 +1827,7 @@ Item? lootItemForSite(SiteType site) {
         ];
         newWeaponType = rndWeps.random;
       } else if (oneIn(30)) {
-        List<String> rndArmors = ["ARMOR_HEAVYARMOR"];
+        List<String> rndArmors = ["CLOTHING_HEAVYARMOR"];
         newArmorType = rndArmors.random;
       } else if (oneIn(20)) {
         newLootType = "LOOT_SECRETDOCUMENTS";
@@ -1840,7 +1840,7 @@ Item? lootItemForSite(SiteType site) {
       }
     case SiteType.fireStation:
       if (oneIn(25)) {
-        newArmorType = "ARMOR_BUNKERGEAR";
+        newArmorType = "CLOTHING_BUNKERGEAR";
       } else if (oneIn(2)) {
         newLootType = "LOOT_TRINKET";
       } else {
@@ -1863,11 +1863,11 @@ Item? lootItemForSite(SiteType site) {
     case SiteType.ceoHouse:
       if (oneIn(50)) {
         List<String> rndArmors = [
-          "ARMOR_EXPENSIVEDRESS",
-          "ARMOR_EXPENSIVESUIT",
-          "ARMOR_EXPENSIVESUIT",
-          "ARMOR_EXPENSIVESUIT",
-          "ARMOR_BONDAGEGEAR"
+          "CLOTHING_EXPENSIVEDRESS",
+          "CLOTHING_EXPENSIVESUIT",
+          "CLOTHING_EXPENSIVESUIT",
+          "CLOTHING_EXPENSIVESUIT",
+          "CLOTHING_BONDAGEGEAR"
         ];
         newArmorType = rndArmors.random;
       }
@@ -1919,21 +1919,21 @@ Item? lootItemForSite(SiteType site) {
       List<String> rndWeps = [
         "WEAPON_SEMIPISTOL_9MM",
         "WEAPON_SEMIPISTOL_45",
-        "WEAPON_REVOLVER_38",
+        "WEAPON_REVOLVER_22",
         "WEAPON_REVOLVER_44",
         "WEAPON_SMG_MP5",
         "WEAPON_CARBINE_M4",
         "WEAPON_AUTORIFLE_M16"
       ];
       List<String> rndArmors = [
-        "ARMOR_CHEAPSUIT",
-        "ARMOR_CLOTHES",
-        "ARMOR_TRENCHCOAT",
-        "ARMOR_WORKCLOTHES",
-        "ARMOR_SECURITYUNIFORM",
-        "ARMOR_CIVILLIANARMOR",
-        "ARMOR_ARMYARMOR",
-        "ARMOR_HEAVYARMOR"
+        "CLOTHING_CHEAPSUIT",
+        "CLOTHING_CLOTHES",
+        "CLOTHING_TRENCHCOAT",
+        "CLOTHING_WORKCLOTHES",
+        "CLOTHING_SECURITYUNIFORM",
+        "CLOTHING_CIVILLIANARMOR",
+        "CLOTHING_ARMYARMOR",
+        "CLOTHING_HEAVYARMOR"
       ];
       switch (lcsRandom(3)) {
         case 0:
@@ -1961,7 +1961,7 @@ Item? lootItemForSite(SiteType site) {
     item = Loot(newLootType);
   }
   if (newArmorType.isNotEmpty) {
-    Armor a = Armor(newArmorType);
+    Clothing a = Clothing(newArmorType);
     if (oneIn(3)) a.damaged = true;
     item = a;
   }
@@ -1975,7 +1975,7 @@ Item? lootItemForSite(SiteType site) {
           w.type.idName == "WEAPON_FLAMETHROWER") //Make weapon property? -XML
       {
         w.ammo = w.type.ammoCapacity;
-        w.loadedAmmoType = w.type.ammoType;
+        w.loadedAmmoType = w.type.acceptableAmmo.firstOrNull;
       }
     }
     item = w;

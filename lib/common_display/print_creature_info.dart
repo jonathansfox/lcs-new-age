@@ -41,7 +41,7 @@ void printCreatureInfo(
 
   setColorForArmor(cr);
   mvaddstr(7, 0, "Clothes: ");
-  addstr(cr.armor.shortName);
+  addstr(cr.clothing.shortName);
 
   printTopSkills(2, 31, cr, 5, knowledge: knowledge);
 
@@ -462,7 +462,7 @@ void printFullCreatureStats(Creature cr,
   // Add clothing
   move(14, 0);
   addstr("Clothes: ");
-  addstr(cr.armor.equipTitle(full: true));
+  addstr(cr.clothing.equipTitle(full: true));
 
   // Add vehicle
   move(15, 0);

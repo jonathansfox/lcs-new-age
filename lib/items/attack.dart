@@ -1,28 +1,25 @@
 import 'package:lcs_new_age/creature/skills.dart';
-import 'package:lcs_new_age/items/ammo_type.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
 
 class Attack {
   int priority = 0;
   bool ranged = false;
   bool thrown = false;
-  String? ammoTypeId;
-  AmmoType? get ammoType => ammoTypes[ammoTypeId ?? ""];
-  bool get usesAmmo => ammoTypeId != null;
+  bool get usesAmmo => cartridge != null;
   List<String> attackDescription = [];
   String hitDescription = "hitting";
   bool alwaysDescribeHit = false;
   bool canBackstab = false;
   String hitPunctuation = "";
   Skill skill = Skill.firearms;
+  String? cartridge;
+  int initiative = 0;
   int accuracyBonus = 0;
   int numberOfAttacks = 1;
   int successiveAttacksDifficulty = 0;
   int strengthMin = 0;
   int strengthMax = 0;
-  int randomDamage = 0;
-  int fixedDamage = 0;
-  int get averageDamage => fixedDamage + (randomDamage / 2).round();
+  int damage = 0;
   bool socialDamage = false;
   bool bruises = false;
   bool cuts = false;

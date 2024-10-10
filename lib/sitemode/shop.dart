@@ -10,8 +10,8 @@ import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/gamestate/ledger.dart';
 import 'package:lcs_new_age/gamestate/squad.dart';
 import 'package:lcs_new_age/items/ammo.dart';
-import 'package:lcs_new_age/items/armor.dart';
-import 'package:lcs_new_age/items/armor_type.dart';
+import 'package:lcs_new_age/items/clothing.dart';
+import 'package:lcs_new_age/items/clothing_type.dart';
 import 'package:lcs_new_age/items/item.dart';
 import 'package:lcs_new_age/items/item_type.dart';
 import 'package:lcs_new_age/items/loot.dart';
@@ -48,7 +48,9 @@ class ShopItem extends ShopOption {
     int scale = 1;
     if (parentShop.increasePricesWithIllegality && itemClass == "WEAPON") {
       WeaponType weaponType = weaponTypes[itemId]!;
-      scale = laws[Law.gunControl]!.index - (weaponType.legality + 1);
+      scale = laws[Law.gunControl]!.index -
+          (weaponType.bannedAtGunControl?.index ?? 3) +
+          2;
       if (scale < 1) scale = 1;
     }
     if (sleeper) {
@@ -72,7 +74,8 @@ class ShopItem extends ShopOption {
   bool isAvailable() {
     if (parentShop.onlySellLegalItems) {
       if (itemClass == "WEAPON") {
-        if (weaponTypes[itemId]!.legality + 2 < laws[Law.gunControl]!.index) {
+        if ((weaponTypes[itemId]!.bannedAtGunControl?.index ?? 99) <
+            laws[Law.gunControl]!.index) {
           return false;
         }
       }
@@ -95,7 +98,7 @@ class ShopItem extends ShopOption {
           buyer.takeAmmo(i, buyer.base?.loot, 1);
           if (i.stackSize > 0) buyer.base?.loot.add(i);
         case "ARMOR":
-          Armor i = Armor(itemId);
+          Clothing i = Clothing(itemId);
           buyer.giveArmor(i, buyer.base?.loot);
         case "LOOT":
           Loot i = Loot(itemId);
@@ -403,17 +406,17 @@ class Shop extends ShopOption {
         } else {
           for (Item loot in base.loot.where((i) => i.isForSale).toList()) {
             if (c == Key.w && loot.isWeapon) {
-              fenceamount += loot.stackFenceValue;
+              fenceamount += loot.stackFenceValue.round();
               base.loot.remove(loot);
-            } else if (c == Key.c && loot.isArmor) {
-              fenceamount += loot.stackFenceValue;
+            } else if (c == Key.c && loot.isClothing) {
+              fenceamount += loot.stackFenceValue.round();
               base.loot.remove(loot);
             } else if (c == Key.a && loot.isAmmo) {
-              fenceamount += loot.stackFenceValue;
+              fenceamount += loot.stackFenceValue.round();
               base.loot.remove(loot);
             } else if (c == Key.l && loot.isLoot) {
               if (!(loot as Loot).type.noQuickFencing) {
-                fenceamount += loot.stackFenceValue;
+                fenceamount += loot.stackFenceValue.round();
                 base.loot.remove(loot);
               }
             }
@@ -503,7 +506,7 @@ class Shop extends ShopOption {
 
         if (slot >= 0 && slot < base.loot.length) {
           if (selected[slot] > 0) {
-            ret -= base.loot[slot].fenceValue * selected[slot];
+            ret -= (base.loot[slot].fenceValue * selected[slot]).round();
             selected[slot] = 0;
           } else {
             if (base.loot[slot].isForSale) {
@@ -513,7 +516,7 @@ class Shop extends ShopOption {
               } else {
                 selected[slot] = 1;
               }
-              ret += base.loot[slot].fenceValue * selected[slot];
+              ret += (base.loot[slot].fenceValue * selected[slot]).round();
             }
           }
         }
@@ -543,10 +546,10 @@ class Shop extends ShopOption {
   }
 
   Future<void> maskselect(Creature buyer) async {
-    ArmorType? mask;
+    ClothingType? mask;
 
-    List<ArmorType> masktype =
-        armorTypes.values.where((a) => a.mask && !a.surpriseMask).toList();
+    List<ClothingType> masktype =
+        clothingTypes.values.where((a) => a.mask && !a.surpriseMask).toList();
 
     int page = 0;
 
@@ -591,7 +594,8 @@ class Shop extends ShopOption {
         }
       }
       if (c == Key.z) {
-        mask = armorTypes.values.where((a) => a.mask && a.surpriseMask).random;
+        mask =
+            clothingTypes.values.where((a) => a.mask && a.surpriseMask).random;
         break;
       }
 
@@ -599,7 +603,7 @@ class Shop extends ShopOption {
     }
 
     if (mask != null && ledger.funds >= 15) {
-      Armor a = Armor(mask.idName);
+      Clothing a = Clothing(mask.idName);
       buyer.giveArmor(a, buyer.base?.loot);
       ledger.subtractFunds(15, Expense.shopping);
     }

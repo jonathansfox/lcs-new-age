@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:lcs_new_age/creature/aging.dart';
 import 'package:lcs_new_age/creature/attributes.dart';
-import 'package:lcs_new_age/items/armor.dart';
+import 'package:lcs_new_age/items/clothing.dart';
 import 'package:lcs_new_age/items/weapon.dart';
 
 part 'body.g.dart';
@@ -145,7 +145,7 @@ class TankBody extends Body {
   TankBody()
       : super(
           Weapon("WEAPON_120MM_CANNON"),
-          Armor("ARMOR_NONE"),
+          Clothing("CLOTHING_NONE"),
         );
   factory TankBody.fromJson(Map<String, dynamic> json) =>
       _$TankBodyFromJson(json);
@@ -234,7 +234,7 @@ class HumanoidBody extends Body {
   HumanoidBody()
       : super(
           Weapon("WEAPON_NONE"),
-          Armor("ARMOR_NONE"),
+          Clothing("CLOTHING_NONE"),
         );
   factory HumanoidBody.fromJson(Map<String, dynamic> json) =>
       _$HumanoidBodyFromJson(json);
@@ -470,7 +470,7 @@ abstract class Body {
   }
 
   Weapon naturalWeapon;
-  Armor naturalArmor;
+  Clothing naturalArmor;
 
   BodyType get type;
   String get typeName;

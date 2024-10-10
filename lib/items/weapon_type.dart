@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:lcs_new_age/items/ammo_type.dart';
 import 'package:lcs_new_age/items/attack.dart';
 import 'package:lcs_new_age/items/item_type.dart';
+import 'package:lcs_new_age/politics/alignment.dart';
 
 Map<String, WeaponType> weaponTypes = {};
 
@@ -17,6 +18,7 @@ class WeaponType extends ItemType {
   String? smallSubtypeName;
   String? largeSubtypeShortName;
   String? smallSubtypeShortName;
+  String? description;
 
   String? futureShortName;
   String? futureLargeSubtypeName;
@@ -31,13 +33,14 @@ class WeaponType extends ItemType {
   bool carriedByCivilians = false;
   bool musicalAttack = false;
   bool instrument = false;
-  int legality = 2;
-  double bashStrengthModifier = 1;
+  DeepAlignment? bannedAtGunControl;
   bool suspicious = true;
-  int size = 15;
+  int size = 3;
+  double get bashStrengthModifier => 0.6 + 0.2 * size;
   bool canGraffiti = false;
   bool autoBreakLock = false;
   List<Attack> attacks = [];
+  int price = 0;
 
   Attack? get attack => attacks.firstOrNull;
   Attack? get rangedAttack => attacks.where((a) => a.ranged).firstOrNull;
@@ -45,8 +48,11 @@ class WeaponType extends ItemType {
 
   bool get thrown => attacks.any((a) => a.thrown);
   bool get usesAmmo => attacks.any((a) => a.usesAmmo);
-  AmmoType? get ammoType =>
-      attacks.firstWhereOrNull((a) => a.ammoTypeId != null)?.ammoType;
-  int? _ammoCapacity;
-  int get ammoCapacity => _ammoCapacity ?? ammoType?.ammo ?? 0;
+
+  Iterable<String> get acceptableCartridge =>
+      attacks.map((attack) => attack.cartridge).whereNotNull();
+  Iterable<AmmoType> get acceptableAmmo => ammoTypes.values
+      .where((at) => acceptableCartridge.contains(at.cartridge));
+  int ammoCapacity = 1;
+  bool canKeepOneInTheChamber = false;
 }

@@ -8,5 +8,10 @@ class AmmoType extends ItemType {
   }
   // Number of rounds in the magazine; used for the old "clip" ammo model,
   // and should be changed once we switch to the new system
-  int ammo = 0;
+  String cartridge = "";
+  int damage = 0;
+  int multihit = 1;
+  int recoil = 1;
+  int boxSize = 1;
+  int boxPrice = 0;
 }

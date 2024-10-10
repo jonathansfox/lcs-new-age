@@ -42,7 +42,7 @@ void printParty({
       setWeaponColor(party[p]);
       printWeapon(party[p]);
       setColorForArmor(party[p]);
-      mvaddstr(p + 2, 46, party[p].armor.shortName);
+      mvaddstr(p + 2, 46, party[p].clothing.shortName);
       printHealthStat(p + 2, 61, party[p], small: true);
       setColor(lightGray);
       move(p + 2, 70);

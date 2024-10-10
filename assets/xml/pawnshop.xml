@@ -19,128 +19,114 @@
         <item>
             <class>WEAPON</class>
             <description>Buy a Shotgun</description>
-            <type>WEAPON_SHOTGUN_PUMP</type>
+            <type>WEAPON_PUMP_SHOTGUN</type>
             <letter>g</letter>
             <price>400</price>
         </item>
         <item>
             <class>WEAPON</class>
             <description>Buy a .38 Revolver</description>
-            <type>WEAPON_REVOLVER_38</type>
+            <type>WEAPON_22_REVOLVER</type>
             <letter>t</letter>
             <price>150</price>
         </item>
         <item>
             <class>WEAPON</class>
             <description>Buy a 9mm Semi-automatic</description>
-            <type>WEAPON_SEMIPISTOL_9MM</type>
+            <type>WEAPON_9MM_HANDGUN</type>
             <letter>n</letter>
             <price>300</price>
         </item>
         <item>
             <class>WEAPON</class>
             <description>Buy a .45 Semi-automatic</description>
-            <type>WEAPON_SEMIPISTOL_45</type>
+            <type>WEAPON_45_HANDGUN</type>
             <letter>f</letter>
             <price>300</price>
         </item>
         <item>
             <class>WEAPON</class>
             <description>Buy a .44 Magnum</description>
-            <type>WEAPON_REVOLVER_44</type>
+            <type>WEAPON_44_MAGNUM</type>
             <letter>m</letter>
             <price>300</price>
         </item>
         <item>
             <class>WEAPON</class>
             <description>Buy a Civilian AR-15</description>
-            <type>WEAPON_SEMIRIFLE_AR15</type>
+            <type>WEAPON_AR15</type>
             <letter>r</letter>
             <price>350</price>
         </item>
         <item>
             <class>WEAPON</class>
             <description>Buy a 9mm MP5 SMG</description>
-            <type>WEAPON_SMG_MP5</type>
+            <type>WEAPON_MP5</type>
             <letter>s</letter>
             <price>1200</price>
         </item>
         <item>
             <class>WEAPON</class>
             <description>Buy an M4 Carbine</description>
-            <type>WEAPON_CARBINE_M4</type>
+            <type>WEAPON_M4</type>
             <letter>c</letter>
             <price>1400</price>
         </item>
         <item>
             <class>WEAPON</class>
-            <description>Buy an M16</description>
-            <type>WEAPON_AUTORIFLE_M16</type>
+            <description>Buy an M7 Rifle</description>
+            <type>WEAPON_M7</type>
             <letter>a</letter>
-            <price>1500</price>
+            <price>1400</price>
         </item>
         <item>
             <class>WEAPON</class>
-            <description>Buy an AK47</description>
-            <type>WEAPON_AUTORIFLE_AK47</type>
+            <description>Buy an AK102</description>
+            <type>WEAPON_AK102</type>
             <letter>k</letter>
             <price>1500</price>
         </item>
     </department>
 
     <department>
-        <entry>Buy Liberal Clips</entry>
+        <entry>Buy Liberal Ammo</entry>
         <letter>c</letter>
         <fullscreen>false</fullscreen>
-        <exit>Done buying Liberal clips</exit>
+        <exit>Done buying Liberal ammo</exit>
         <item>
-            <class>CLIP</class>
-            <description>Buy Shotgun Shells</description>
-            <type>CLIP_BUCKSHOT</type>
+            <class>AMMO</class>
+            <type>AMMO_BUCKSHOT</type>
             <letter>p</letter>
-            <price>20</price>
         </item>
         <item>
-            <class>CLIP</class>
-            <description>Buy a .38 Speedloader</description>
-            <type>CLIP_38</type>
+            <class>AMMO</class>
+            <type>AMMO_38</type>
             <letter>t</letter>
-            <price>15</price>
         </item>
         <item>
-            <class>CLIP</class>
-            <description>Buy a 9mm Pistol Magazine</description>
-            <type>CLIP_9</type>
+            <class>AMMO</class>
+            <type>AMMO_9MM</type>
             <letter>n</letter>
-            <price>30</price>
         </item>
         <item>
-            <class>CLIP</class>
-            <description>Buy a .45 Pistol Magazine</description>
-            <type>CLIP_45</type>
+            <class>AMMO</class>
+            <type>AMMO_45</type>
             <letter>f</letter>
-            <price>30</price>
         </item>
         <item>
-            <class>CLIP</class>
-            <description>Buy a .44 Speedloader</description>
-            <type>CLIP_44</type>
+            <class>AMMO</class>
+            <type>AMMO_44</type>
             <letter>m</letter>
-            <price>20</price>
         </item>
         <item>
-            <class>CLIP</class>
-            <description>Buy a Rifle/Aslt.Rifle Mag</description>
-            <type>CLIP_ASSAULT</type>
+            <class>AMMO</class>
+            <type>AMMO_558</type>
             <letter>r</letter>
-            <price>35</price>
         </item>
         <item>
-            <class>CLIP</class>
-            <description>Buy a 9mm SMG Magazine</description>
-            <type>CLIP_SMG</type>
+            <class>AMMO</class>
+            <type>AMMO_68</type>
             <letter>s</letter>
-            <price>35</price>
         </item>
     </department>
 

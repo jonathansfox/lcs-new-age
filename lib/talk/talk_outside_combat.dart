@@ -371,7 +371,7 @@ Future<bool> heyINeedAGun(Creature a, Creature tk) async {
     await getKey();
     return true;
   }
-  if (a.armor.type.police) {
+  if (a.clothing.type.police) {
     mvaddstrc(12, 1, white, tk.name);
     addstr(" responds, ");
     mvaddstrc(13, 1, lightBlue, "\"I don't sell guns, officer.\"");

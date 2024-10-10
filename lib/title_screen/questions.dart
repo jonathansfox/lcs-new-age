@@ -165,7 +165,8 @@ Future<void> characterCreationQuestions(Creature founder, bool choose) async {
         founder.adjustSkill(Skill.security, 1);
         founder.adjustSkill(Skill.music, 1);
         founder.adjustAttribute(Attribute.agility, 1);
-        founder.giveArmorType("ARMOR_LEATHER", lootPile: founder.base?.loot);
+        founder.giveClothingType("CLOTHING_LEATHER",
+            lootPile: founder.base?.loot);
       }),
       _Option(
           "I was obsessed with Japanese swords and started lifting weights.",
@@ -222,12 +223,12 @@ Future<void> characterCreationQuestions(Creature founder, bool choose) async {
           "+2 Tailoring, +1 Disguise, Black Formalwear", () {
         founder.adjustSkill(Skill.tailoring, 2);
         founder.adjustSkill(Skill.disguise, 1);
-        if (founder.armor.type.idName == "ARMOR_CLOTHES") {
+        if (founder.clothing.type.idName == "CLOTHING_CLOTHES") {
           if (founder.gender != Gender.male) {
-            founder.giveArmorType("ARMOR_BLACKDRESS",
+            founder.giveClothingType("CLOTHING_BLACKDRESS",
                 lootPile: founder.base?.loot);
           } else {
-            founder.giveArmorType("ARMOR_BLACKSUIT",
+            founder.giveClothingType("CLOTHING_BLACKSUIT",
                 lootPile: founder.base?.loot);
           }
         }
@@ -312,10 +313,10 @@ Future<void> characterCreationQuestions(Creature founder, bool choose) async {
         vehiclePool.add(v);
         founder.preferredCarId = v.id;
       }),
-      _Option("I bought myself an assault rifle.  An AK-47.  Fully automatic.",
-          "+1 Firearms, AK-47", () {
+      _Option("I bought myself an assault rifle.  An AK-102.  Fully automatic.",
+          "+1 Firearms, AK-102", () {
         founder.adjustSkill(Skill.firearms, 1);
-        founder.giveWeaponAndAmmo("WEAPON_AUTORIFLE_AK47", 9);
+        founder.giveWeaponAndAmmo("WEAPON_AK102", 9);
       }),
       _Option(
           "I celebrated.  I'd saved a thousand bucks!", "+1 Business, \$1000",
@@ -328,7 +329,7 @@ Future<void> characterCreationQuestions(Creature founder, bool choose) async {
           "+1 Disguise, Security Uniform, Downtown Maps", () {
         founder.adjustSkill(Skill.disguise, 1);
         founder.adjustAttribute(Attribute.agility, 1);
-        founder.giveArmorType("ARMOR_SECURITYUNIFORM",
+        founder.giveClothingType("CLOTHING_SECURITYUNIFORM",
             lootPile: founder.base?.loot);
         for (Site site in founder.base?.city.districts.first.sites ?? []) {
           site.mapped = true;
@@ -463,10 +464,10 @@ Future<void> characterCreationQuestions(Creature founder, bool choose) async {
       for (int i = 0; i < 4; i++) {
         Creature recruit = Creature.fromId(CreatureTypeIds.gangMember,
             align: Alignment.liberal);
-        if (recruit.weapon.type.idName == "WEAPON_AUTORIFLE_AK47" ||
-            recruit.weapon.type.idName == "WEAPON_SMG_MP5" ||
+        if (recruit.weapon.type.idName == "WEAPON_AK102" ||
+            recruit.weapon.type.idName == "WEAPON_MP5" ||
             recruit.equippedWeapon == null) {
-          recruit.giveWeaponAndAmmo("WEAPON_SEMIPISTOL_9MM", 4);
+          recruit.giveWeaponAndAmmo("WEAPON_9MM_HANDGUN", 4);
         }
         recruit.nameCreature();
         recruit.location = founder.base;

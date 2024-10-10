@@ -12,7 +12,7 @@ import 'package:lcs_new_age/daily/activities/recruiting.dart';
 import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/gamestate/squad.dart';
-import 'package:lcs_new_age/items/armor_type.dart';
+import 'package:lcs_new_age/items/clothing_type.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
 import 'package:lcs_new_age/utils/colors.dart';
 import 'package:lcs_new_age/utils/interface_options.dart';
@@ -462,8 +462,8 @@ Future<void> _selectRecruitTarget(Creature cr) async {
 }
 
 Future<void> _selectArmorToMake(Creature cr) async {
-  List<ArmorType> craftable = [];
-  for (ArmorType a in armorTypes.values) {
+  List<ClothingType> craftable = [];
+  for (ClothingType a in clothingTypes.values) {
     if (a.makeDifficulty == 0) continue;
     if (a.deathsquadLegality && !deathSquadsActive) continue;
     craftable.add(a);

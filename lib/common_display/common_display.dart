@@ -7,7 +7,7 @@ import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_mode.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/gamestate/squad.dart';
-import 'package:lcs_new_age/items/armor.dart';
+import 'package:lcs_new_age/items/clothing.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
 import 'package:lcs_new_age/politics/states.dart';
 import 'package:lcs_new_age/sitemode/stealth.dart';
@@ -72,7 +72,7 @@ void addHeader(Map<int, String> items) {
 }
 
 void setColorForArmor(Creature creature) {
-  Armor armor = creature.armor;
+  Clothing armor = creature.clothing;
   Color fg = lightGray;
   Color bg = black;
   if (armor.bloody) {

@@ -143,7 +143,7 @@ Future<void> makeCharacter() async {
     Gender.female,
     Gender.nonbinary
   ];
-  founder.giveArmorType("ARMOR_CLOTHES");
+  founder.giveClothingType("CLOTHING_CLOTHES");
   String sexDesc() {
     return switch (sex) {
       Gender.male => "Male",

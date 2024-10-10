@@ -253,15 +253,15 @@ Future<void> advancecreature(Creature cr) async {
     clearMessageArea();
 
     // Firefighter's bunker gear reduces burn damage
-    if (cr.armor.type.fireResistant) {
+    if (cr.clothing.fireResistant) {
       // Base effect is 3/4 damage reduction, the denominator
       // increases with low quality or damaged gear
       int denom = 4;
 
       // Damaged gear
-      if (cr.armor.damaged) denom += 2;
+      if (cr.clothing.damaged) denom += 2;
       // Shoddy quality gear
-      denom += cr.armor.quality - 1;
+      denom += cr.clothing.quality - 1;
 
       // Apply damage reduction
       burndamage = (burndamage * (1 - (3.0 / denom))).floor();
@@ -289,7 +289,7 @@ Future<void> advancecreature(Creature cr) async {
 
     levelMap[locx][locy][locz].bloody = true;
 
-    cr.armor.bloody = true;
+    cr.clothing.bloody = true;
 
     if (cr.blood <= 0) {
       // Blame LCS for bleeding deaths unless they're liberal or moderate

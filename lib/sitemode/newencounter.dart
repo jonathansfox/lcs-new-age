@@ -1055,23 +1055,23 @@ void ensureIsArmed(Creature enemy) {
     randomint = lcsRandom(lightgun + mediumgun + heavygun);
     if (randomint < lightgun) {
       enemy.giveWeaponAndAmmo(
-          ["WEAPON_SEMIPISTOL_9MM", "WEAPON_REVOLVER_38"].random, 4);
+          ["WEAPON_9MM_HANDGUN", "WEAPON_22_REVOLVER"].random, 4);
     } else if (randomint < (lightgun + mediumgun)) {
       enemy.giveWeaponAndAmmo(
           [
-            "WEAPON_REVOLVER_44",
-            "WEAPON_SEMIPISTOL_45",
-            "WEAPON_SEMIRIFLE_AR15",
-            "WEAPON_SHOTGUN_PUMP",
+            "WEAPON_44_REVOLVER",
+            "WEAPON_45_HANDGUN",
+            "WEAPON_AR15",
+            "WEAPON_PUMP_SHOTGUN",
           ].random,
           4);
     } else {
       enemy.giveWeaponAndAmmo(
           [
-            "WEAPON_AUTORIFLE_AK47",
-            "WEAPON_CARBINE_M4",
-            "WEAPON_AUTORIFLE_M16",
-            "WEAPON_SMG_MP5",
+            "WEAPON_AK102",
+            "WEAPON_M4",
+            "WEAPON_M7",
+            "WEAPON_MP5",
           ].random,
           4);
     }

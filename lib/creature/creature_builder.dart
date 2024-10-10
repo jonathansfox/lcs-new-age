@@ -11,8 +11,8 @@ import 'package:lcs_new_age/creature/hardcoded_creature_type_stuff.dart';
 import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/gamestate/game_mode.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
-import 'package:lcs_new_age/items/armor.dart';
-import 'package:lcs_new_age/items/armor_type.dart';
+import 'package:lcs_new_age/items/clothing.dart';
+import 'package:lcs_new_age/items/clothing_type.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
 import 'package:lcs_new_age/politics/laws.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
@@ -95,9 +95,9 @@ void _giveAttributes(Creature creature, CreatureType type) {
 }
 
 void _giveEquipment(Creature creature, CreatureType type) {
-  ArmorType? armorType = type.randomArmor;
-  if (armorType != null && armorType.idName != "ARMOR_NONE") {
-    creature.equippedArmor = Armor(armorType.idName);
+  ClothingType? armorType = type.randomArmor;
+  if (armorType != null && armorType.idName != "CLOTHING_NONE") {
+    creature.equippedClothing = Clothing(armorType.idName);
   }
   type.randomWeaponFor(creature);
   creature.money = type.money.roll();

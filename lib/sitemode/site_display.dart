@@ -1076,7 +1076,7 @@ void printBasicEncounter() {
       }
     }
     mvaddstr(y, 2, name);
-    mvaddstrc(y, 20, lightGray, e.armor.shortName);
+    mvaddstrc(y, 20, lightGray, e.clothing.shortName);
     mvaddstrc(y, 36, lightGray, e.weapon.type.shortName);
     if (e.body.parts.any((p) => p.bleeding)) {
       setColor(red);

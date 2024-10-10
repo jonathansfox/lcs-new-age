@@ -24,12 +24,14 @@ Alignment nonConservativeAlignment() {
 void giveCivilianWeapon(Creature cr) {
   if (cr.align == Alignment.liberal) return;
   if (laws[Law.gunControl] == DeepAlignment.conservative && oneIn(30)) {
-    cr.giveWeaponAndAmmo("WEAPON_REVOLVER_38", 4);
+    cr.giveWeaponAndAmmo("WEAPON_22_HANDGUN", 2);
   } else if (laws[Law.gunControl] == DeepAlignment.archConservative) {
     if (oneIn(10)) {
-      cr.giveWeaponAndAmmo("WEAPON_SEMIPISTOL_9MM", 4);
+      cr.giveWeaponAndAmmo("WEAPON_9MM_HANDGUN", 2);
     } else if (oneIn(9)) {
-      cr.giveWeaponAndAmmo("WEAPON_SEMIPISTOL_45", 4);
+      cr.giveWeaponAndAmmo("WEAPON_45_HANDGUN", 2);
+    } else if (oneIn(8)) {
+      cr.giveWeaponAndAmmo("WEAPON_22_HANDGUN", 2);
     }
   }
 }
@@ -42,11 +44,11 @@ void applyHardcodedCreatureTypeStuff(Creature cr, CreatureType type) {
         cr.rawSkill[Skill.martialArts] = lcsRandom(3) + 3;
       }
       if (laws[Law.gunControl] == DeepAlignment.archConservative) {
-        cr.giveWeaponAndAmmo("WEAPON_SMG_MP5", 4);
+        cr.giveWeaponAndAmmo("WEAPON_MP5", 4);
       } else if (laws[Law.gunControl] == DeepAlignment.conservative) {
-        cr.giveWeaponAndAmmo("WEAPON_REVOLVER_44", 4);
+        cr.giveWeaponAndAmmo("WEAPON_9MM_HANDGUN", 4);
       } else if (laws[Law.gunControl] == DeepAlignment.moderate) {
-        cr.giveWeaponAndAmmo("WEAPON_REVOLVER_38", 4);
+        cr.giveWeaponAndAmmo("WEAPON_22_HANDGUN", 4);
       } else {
         cr.giveWeaponAndAmmo("WEAPON_NIGHTSTICK", 0);
       }
@@ -58,9 +60,9 @@ void applyHardcodedCreatureTypeStuff(Creature cr, CreatureType type) {
       }
     case CreatureTypeIds.securityGuard:
       if (laws[Law.gunControl] == DeepAlignment.archConservative) {
-        cr.giveWeaponAndAmmo("WEAPON_SMG_MP5", 4);
+        cr.giveWeaponAndAmmo("WEAPON_MP5", 4);
       } else if (laws[Law.gunControl] != DeepAlignment.archConservative) {
-        cr.giveWeaponAndAmmo("WEAPON_REVOLVER_38", 4);
+        cr.giveWeaponAndAmmo("WEAPON_22_HANDGUN", 4);
       } else {
         cr.giveWeaponAndAmmo("WEAPON_NIGHTSTICK", 0);
       }
@@ -72,7 +74,7 @@ void applyHardcodedCreatureTypeStuff(Creature cr, CreatureType type) {
       }
     case CreatureTypeIds.conservativeJudge:
       if (laws[Law.gunControl] == DeepAlignment.archConservative && oneIn(3)) {
-        cr.giveWeaponAndAmmo("WEAPON_REVOLVER_44", 4);
+        cr.giveWeaponAndAmmo("WEAPON_44_REVOLVER", 4);
       } else if (oneIn(2)) {
         cr.giveWeaponAndAmmo("WEAPON_GAVEL", 0);
       }
@@ -96,40 +98,40 @@ void applyHardcodedCreatureTypeStuff(Creature cr, CreatureType type) {
       criminalize(cr, Crime.illegalEntry);
     case CreatureTypeIds.lawyer:
       if (laws[Law.gunControl] == DeepAlignment.archConservative && oneIn(3)) {
-        cr.giveWeaponAndAmmo("WEAPON_REVOLVER_38", 1);
+        cr.giveWeaponAndAmmo("WEAPON_22_HANDGUN", 1);
       }
     case CreatureTypeIds.doctor:
       if (laws[Law.gunControl] == DeepAlignment.archConservative && oneIn(3)) {
-        cr.giveWeaponAndAmmo("WEAPON_REVOLVER_38", 1);
+        cr.giveWeaponAndAmmo("WEAPON_22_HANDGUN", 1);
       }
     case CreatureTypeIds.psychologist:
       if (laws[Law.gunControl] == DeepAlignment.archConservative && oneIn(3)) {
-        cr.giveWeaponAndAmmo("WEAPON_REVOLVER_38", 1);
+        cr.giveWeaponAndAmmo("WEAPON_22_HANDGUN", 1);
         cr.reload(false);
       }
       if (cr.gender == Gender.male || oneIn(2)) {
-        cr.giveArmorType("ARMOR_CHEAPSUIT");
+        cr.giveClothingType("CLOTHING_CHEAPSUIT");
       } else {
-        cr.giveArmorType("ARMOR_CHEAPDRESS");
+        cr.giveClothingType("CLOTHING_CHEAPDRESS");
       }
     case CreatureTypeIds.nurse:
       if (laws[Law.gunControl] == DeepAlignment.archConservative && oneIn(3)) {
-        cr.giveWeaponAndAmmo("WEAPON_REVOLVER_38", 1);
+        cr.giveWeaponAndAmmo("WEAPON_22_HANDGUN", 1);
       }
     case CreatureTypeIds.tank:
       cr.body = TankBody();
     case CreatureTypeIds.merc:
       if (laws[Law.gunControl]! < DeepAlignment.conservative) {
-        cr.giveWeaponAndAmmo("WEAPON_AUTORIFLE_M16", 7);
+        cr.giveWeaponAndAmmo("WEAPON_M4", 7);
       } else {
-        cr.giveWeaponAndAmmo("WEAPON_SEMIRIFLE_AR15", 7);
+        cr.giveWeaponAndAmmo("WEAPON_AR15", 7);
       }
     case CreatureTypeIds.hick:
       cr.name = hickNames.random;
       if ((laws[Law.gunControl] == DeepAlignment.archConservative &&
               oneIn(2)) ||
           oneIn(10)) {
-        cr.giveWeaponAndAmmo("WEAPON_SHOTGUN_PUMP", 4);
+        cr.giveWeaponAndAmmo("WEAPON_PUMP_SHOTGUN", 4);
       } else if (oneIn(2)) {
         cr.giveWeaponAndAmmo("WEAPON_TORCH", 0);
       } else {
@@ -147,9 +149,13 @@ void applyHardcodedCreatureTypeStuff(Creature cr, CreatureType type) {
       } else {
         if (laws[Law.gunControl] == DeepAlignment.archConservative &&
             oneIn(3)) {
-          cr.giveWeaponAndAmmo("WEAPON_SMG_MP5", 4);
+          cr.giveWeaponAndAmmo("WEAPON_MP5", 4);
         } else {
-          cr.giveWeaponAndAmmo("WEAPON_SEMIPISTOL_9MM", 4);
+          if (oneIn(10)) {
+            cr.giveWeaponAndAmmo("WEAPON_PUMP_SHOTGUN", 4);
+          } else {
+            cr.giveWeaponAndAmmo("WEAPON_9MM_HANDGUN", 4);
+          }
         }
         cr.reload(false);
         cr.align = Alignment.conservative;
@@ -170,7 +176,7 @@ void applyHardcodedCreatureTypeStuff(Creature cr, CreatureType type) {
       }
       if (siteAlarm) {
         // Respond to emergencies in bunker gear
-        cr.giveArmorType("ARMOR_BUNKERGEAR");
+        cr.giveClothingType("CLOTHING_BUNKERGEAR");
       }
     case CreatureTypeIds.ccsMolotov:
       if (mode == GameMode.site) {
@@ -181,25 +187,25 @@ void applyHardcodedCreatureTypeStuff(Creature cr, CreatureType type) {
         nameCCSMember(cr);
       }
     case CreatureTypeIds.ccsVigilante:
-      cr.giveArmorType("ARMOR_CLOTHES");
+      cr.giveClothingType("CLOTHING_CLOTHES");
       switch (lcsRandom(5) + ccsState.index) {
         case 0:
         case 1:
         case 2:
-          cr.giveWeaponAndAmmo("WEAPON_SEMIPISTOL_9MM", 7);
+          cr.giveWeaponAndAmmo("WEAPON_9MM_HANDGUN", 7);
         case 3:
-          cr.giveWeaponAndAmmo("WEAPON_REVOLVER_44", 7);
+          cr.giveWeaponAndAmmo("WEAPON_44_REVOLVER", 7);
         case 4:
-          cr.giveWeaponAndAmmo("WEAPON_SHOTGUN_PUMP", 7);
+          cr.giveWeaponAndAmmo("WEAPON_PUMP_SHOTGUN", 7);
         case 5:
-          cr.giveWeaponAndAmmo("WEAPON_SEMIRIFLE_AR15", 7);
-          cr.giveArmorType("ARMOR_CIVILLIANARMOR");
+          cr.giveWeaponAndAmmo("WEAPON_AR15", 7);
+          cr.giveClothingType("CLOTHING_CIVILLIANARMOR");
         case 6:
-          cr.giveWeaponAndAmmo("WEAPON_SEMIRIFLE_AR15", 7);
-          cr.giveArmorType("ARMOR_ARMYARMOR");
+          cr.giveWeaponAndAmmo("WEAPON_AR15", 7);
+          cr.giveClothingType("CLOTHING_ARMYARMOR");
         default:
-          cr.giveWeaponAndAmmo("WEAPON_AUTORIFLE_M16", 7);
-          cr.giveArmorType("ARMOR_ARMYARMOR");
+          cr.giveWeaponAndAmmo("WEAPON_M4", 7);
+          cr.giveClothingType("CLOTHING_ARMYARMOR");
       }
       if (mode == GameMode.site /* && sitealarm>0*/) {
         nameCCSMember(cr);
@@ -214,17 +220,17 @@ void applyHardcodedCreatureTypeStuff(Creature cr, CreatureType type) {
       }
     case CreatureTypeIds.prisonGuard:
       if (laws[Law.gunControl] == DeepAlignment.archConservative && oneIn(3)) {
-        cr.giveWeaponAndAmmo("WEAPON_SMG_MP5", 4);
+        cr.giveWeaponAndAmmo("WEAPON_MP5", 4);
       } else if (oneIn(3)) {
-        cr.giveWeaponAndAmmo("WEAPON_SHOTGUN_PUMP", 4);
+        cr.giveWeaponAndAmmo("WEAPON_PUMP_SHOTGUN", 4);
       } else {
         cr.giveWeaponAndAmmo("WEAPON_NIGHTSTICK", 0);
       }
     case CreatureTypeIds.educator:
       if (laws[Law.gunControl] == DeepAlignment.archConservative && oneIn(3)) {
-        cr.giveWeaponAndAmmo("WEAPON_SMG_MP5", 4);
+        cr.giveWeaponAndAmmo("WEAPON_MP5", 4);
       } else if (oneIn(3)) {
-        cr.giveWeaponAndAmmo("WEAPON_SEMIPISTOL_9MM", 4);
+        cr.giveWeaponAndAmmo("WEAPON_9MM_HANDGUN", 4);
       } else {
         cr.giveWeaponAndAmmo("WEAPON_SYRINGE", 0);
       }
@@ -294,7 +300,7 @@ void applyHardcodedCreatureTypeStuff(Creature cr, CreatureType type) {
 
       CreatureType crtype = creatureTypes[CreatureTypeIds.prisoner]!;
       crtype.randomWeaponFor(cr);
-      cr.giveArmorType(crtype.randomArmor?.idName ?? "");
+      cr.giveClothingType(crtype.randomArmor?.idName ?? "");
       cr.money = crtype.money.roll();
       cr.juice = crtype.juice.roll();
       cr.name = crtype.randomEncounterName;
@@ -318,19 +324,19 @@ void applyHardcodedCreatureTypeStuff(Creature cr, CreatureType type) {
       if (oneIn(20) ||
           (laws[Law.gunControl] == DeepAlignment.archConservative &&
               oneIn(5))) {
-        cr.giveWeaponAndAmmo("WEAPON_AUTORIFLE_AK47", 3);
+        cr.giveWeaponAndAmmo("WEAPON_AK102", 3);
       } else if (oneIn(16) ||
           (laws[Law.gunControl] == DeepAlignment.archConservative &&
               oneIn(5))) {
-        cr.giveWeaponAndAmmo("WEAPON_SMG_MP5", 4);
+        cr.giveWeaponAndAmmo("WEAPON_MP5", 4);
       } else if (oneIn(15)) {
-        cr.giveWeaponAndAmmo("WEAPON_SEMIPISTOL_45", 4);
+        cr.giveWeaponAndAmmo("WEAPON_45_HANDGUN", 4);
       } else if (oneIn(10)) {
-        cr.giveWeaponAndAmmo("WEAPON_SHOTGUN_PUMP", 4);
+        cr.giveWeaponAndAmmo("WEAPON_PUMP_SHOTGUN", 4);
       } else if (oneIn(4)) {
-        cr.giveWeaponAndAmmo("WEAPON_SEMIPISTOL_9MM", 4);
+        cr.giveWeaponAndAmmo("WEAPON_9MM_HANDGUN", 4);
       } else if (oneIn(2)) {
-        cr.giveWeaponAndAmmo("WEAPON_REVOLVER_38", 4);
+        cr.giveWeaponAndAmmo("WEAPON_22_REVOLVER", 4);
       } else {
         cr.giveWeaponAndAmmo("WEAPON_COMBATKNIFE", 0);
       }
@@ -360,9 +366,9 @@ void applyHardcodedCreatureTypeStuff(Creature cr, CreatureType type) {
       if (oneIn(10)) criminalize(cr, Crime.drugDistribution);
     case CreatureTypeIds.socialite:
       if (cr.gender == Gender.female) {
-        cr.giveArmorType("ARMOR_EXPENSIVEDRESS");
+        cr.giveClothingType("CLOTHING_EXPENSIVEDRESS");
       } else {
-        cr.giveArmorType("ARMOR_EXPENSIVESUIT");
+        cr.giveClothingType("CLOTHING_EXPENSIVESUIT");
       }
     case CreatureTypeIds.thief:
       cr.name = creatureTypes[[
@@ -393,13 +399,13 @@ const List<String> hickNames = [
 
 /* gives a CCS member a cover name */
 void nameCCSMember(Creature cr) {
-  if (cr.armor.type.idName == "ARMOR_CIVILLIANARMOR") {
+  if (cr.clothing.type.idName == "CLOTHING_CIVILLIANARMOR") {
     cr.name = "Mercenary";
-  } else if (cr.armor.type.idName == "ARMOR_ARMYARMOR") {
+  } else if (cr.clothing.type.idName == "CLOTHING_ARMYARMOR") {
     cr.name = "Soldier";
-  } else if (cr.armor.type.idName == "ARMOR_HEAVYARMOR") {
+  } else if (cr.clothing.type.idName == "CLOTHING_HEAVYARMOR") {
     cr.name = "CCS Heavy";
-  } else if (cr.weapon.type.idName == "WEAPON_SHOTGUN_PUMP" || oneIn(2)) {
+  } else if (cr.weapon.type.idName == "WEAPON_PUMP_SHOTGUN" || oneIn(2)) {
     cr.name = hickNames.random;
   } else {
     cr.name = [

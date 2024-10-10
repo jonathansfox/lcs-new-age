@@ -100,13 +100,11 @@ class CarTheftScene {
       }
       //BREAK WINDOW
       if (c == Key.b) {
-        int difficulty =
-            (Difficulty.easy ~/ cr.weapon.type.bashStrengthModifier) -
-                windowDamage;
+        int difficulty = Difficulty.easy - windowDamage;
 
         if (cr.attributeCheck(Attribute.strength, difficulty)) {
           mvaddstrc(16, 0, white, "${cr.name} smashes the window");
-          if (cr.weapon.type.bashStrengthModifier > 1) {
+          if ((cr.weapon.type.meleeAttack?.damage ?? 0) > 10) {
             addstr(" with a ");
             addstr(cr.weapon.getName(sidearm: true));
           }
@@ -117,7 +115,7 @@ class CarTheftScene {
         } else {
           mvaddstrc(16, 0, white, cr.name);
           addstr(" cracks the window");
-          if (cr.weapon.type.bashStrengthModifier > 1) {
+          if ((cr.weapon.type.meleeAttack?.damage ?? 0) > 10) {
             addstr(" with a ${cr.weapon.getName(sidearm: true)}");
           }
           addstr(" but it is still somewhat intact.");

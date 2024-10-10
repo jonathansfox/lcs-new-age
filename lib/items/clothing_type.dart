@@ -1,29 +1,14 @@
 import 'package:lcs_new_age/creature/creature.dart';
 import 'package:lcs_new_age/creature/skills.dart';
+import 'package:lcs_new_age/items/armor_upgrade.dart';
 import 'package:lcs_new_age/items/item_type.dart';
 import 'package:lcs_new_age/items/weapon_type.dart';
 
-Map<String, ArmorType> armorTypes = {};
-String maskPrototypeId = "ARMOR_MASK";
+Map<String, ClothingType> clothingTypes = {};
 
-class ArmorType extends ItemType {
-  ArmorType(String id) : super(id) {
-    armorTypes[id] = this;
-  }
-  factory ArmorType.mask(String id) {
-    ArmorType? maskPrototype = armorTypes[maskPrototypeId];
-    ArmorType mask = ArmorType(id);
-    mask.mask = true;
-    mask.concealsFace = maskPrototype?.concealsFace ?? true;
-    mask.coversHead = maskPrototype?.coversHead ?? true;
-    mask.interrogationAssaultBonus =
-        maskPrototype?.interrogationAssaultBonus ?? 4;
-    mask.interrogationBasePower = maskPrototype?.interrogationBasePower ?? 4;
-    mask.interrogationDrugBonus = maskPrototype?.interrogationDrugBonus ?? 4;
-    mask.professionalism = maskPrototype?.professionalism ?? 1;
-    mask.stealthValue = maskPrototype?.stealthValue ?? 1;
-    mask.qualityLevels = maskPrototype?.qualityLevels ?? 1;
-    return mask;
+class ClothingType extends ItemType {
+  ClothingType(String id) : super(id) {
+    clothingTypes[id] = this;
   }
 
   int makeDifficulty = 0;
@@ -32,10 +17,6 @@ class ArmorType extends ItemType {
   bool canGetBloody = true;
   bool canGetDamaged = true;
   int stealthValue = 0;
-  int bodyArmor = 0;
-  int headArmor = 0;
-  int limbArmor = 0;
-  bool fireResistant = false;
   bool coversHead = false;
   bool coversBody = true;
   bool coversArms = true;
@@ -60,6 +41,13 @@ class ArmorType extends ItemType {
   Iterable<WeaponType> get weaponsPermitted =>
       weaponsPermittedIds.map((id) => weaponTypes[id]).nonNulls;
   List<String> weaponsPermittedIds = [];
+  bool upgradable = true;
+  ArmorUpgrade? get intrinsicArmor => armorUpgrades[intrinsicArmorId];
+  String? intrinsicArmorId;
+  bool allowVisibleArmor = false;
+  Iterable<ArmorUpgrade> get allowedArmor =>
+      allowedArmorIds.map((id) => armorUpgrades[id]).nonNulls;
+  List<String> allowedArmorIds = [];
 
   int makeDifficultyFor(Creature cr) =>
       makeDifficulty - cr.rawSkill[Skill.tailoring]! + 3;

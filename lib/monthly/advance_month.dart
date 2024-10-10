@@ -9,7 +9,7 @@ import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/daily/advance_day.dart';
 import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
-import 'package:lcs_new_age/items/armor.dart';
+import 'package:lcs_new_age/items/clothing.dart';
 import 'package:lcs_new_age/items/loot_type.dart';
 import 'package:lcs_new_age/justice/crimes.dart';
 import 'package:lcs_new_age/justice/prison.dart';
@@ -326,7 +326,7 @@ Future<void> advanceMonth() async {
         await showMessage("${p.name} is moved to the courthouse for trial.");
 
         p.location = findSiteInSameCity(p.site!.city, SiteType.courthouse);
-        Armor prisoner = Armor("ARMOR_PRISONER");
+        Clothing prisoner = Clothing("CLOTHING_PRISONER");
         p.giveArmor(prisoner, null);
       }
     } else if (p.site?.type == SiteType.courthouse) {

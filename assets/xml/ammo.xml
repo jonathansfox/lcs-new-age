@@ -20,7 +20,6 @@
     <ammotype idname="AMMO_22">
         <name>.22 LR Ammo</name>
         <name_future>.22 LR Ammo</name_future>
-        <stopped_by_armor_level>1</stopped_by_armor_level>
         <cartridge>CARTRIDGE_22</cartridge>
         <damage>45</damage>
         <recoil>1</recoil>
@@ -32,7 +31,6 @@
     <ammotype idname="AMMO_44">
         <name>.44 Magnum Ammo</name>
         <name_future>.44 Slug</name_future>
-        <stopped_by_armor_level>2</stopped_by_armor_level>
         <cartridge>CARTRIDGE_44</cartridge>
         <damage>90</damage>
         <recoil>4</recoil>
@@ -44,7 +42,6 @@
     <ammotype idname="AMMO_45">
         <name>.45 ACP Ammo</name>
         <name_future>.45 Powerpack</name_future>
-        <stopped_by_armor_level>1</stopped_by_armor_level>
         <cartridge>CARTRIDGE_45</cartridge>
         <damage>70</damage>
         <recoil>3</recoil>
@@ -56,7 +53,6 @@
     <ammotype idname="AMMO_50AE">
         <name>.50 AE Ammo</name>
         <name_future>.50 AE Ammo</name_future>
-        <stopped_by_armor_level>2</stopped_by_armor_level>
         <cartridge>CARTRIDGE_50AE</cartridge>
         <damage>180</damage>
         <recoil>5</recoil>
@@ -68,7 +64,6 @@
     <ammotype idname="AMMO_9MM">
         <name>9mm Ammo</name>
         <name_future>9mm Powerpack</name_future>
-        <stopped_by_armor_level>1</stopped_by_armor_level>
         <cartridge>CARTRIDGE_9MM</cartridge>
         <damage>60</damage>
         <recoil>2</recoil>
@@ -80,7 +75,6 @@
     <ammotype idname="AMMO_558">
         <name>5.56 NATO Ammo</name>
         <name_future>5.56 Powerpack</name_future>
-        <stopped_by_armor_level>2</stopped_by_armor_level>
         <cartridge>CARTRIDGE_556</cartridge>
         <damage>160</damage>
         <recoil>3</recoil>
@@ -92,7 +86,6 @@
     <ammotype idname="AMMO_68">
         <name>6.8mm Army Ammo</name>
         <name_future>6.8mm Powerpack</name_future>
-        <stopped_by_armor_level>3</stopped_by_armor_level>
         <cartridge>CARTRIDGE_68</cartridge>
         <damage>200</damage>
         <recoil>4</recoil>
@@ -104,7 +97,6 @@
     <ammotype idname="AMMO_BUCKSHOT">
         <name>12ga 00 Buckshot</name>
         <name_future>12ga Plasma</name_future>
-        <stopped_by_armor_level>1</stopped_by_armor_level>
         <cartridge>CARTRIDGE_12GA</cartridge>
         <damage>25</damage>
         <multihit>8</multihit>
@@ -116,6 +108,7 @@
 
     <ammotype idname="AMMO_GASOLINE">
         <name>Gasoline</name>
+        <cartridge>CARTRIDGE_GASOLINE</cartridge>
         <fencevalue>10</fencevalue>
         <boxsize>4</boxsize>
         <boxprice>100</boxprice>

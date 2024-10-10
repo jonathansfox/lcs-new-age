@@ -2,8 +2,8 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/items/ammo.dart';
 import 'package:lcs_new_age/items/ammo_type.dart';
-import 'package:lcs_new_age/items/armor.dart';
-import 'package:lcs_new_age/items/armor_type.dart';
+import 'package:lcs_new_age/items/clothing.dart';
+import 'package:lcs_new_age/items/clothing_type.dart';
 import 'package:lcs_new_age/items/item_type.dart';
 import 'package:lcs_new_age/items/loot.dart';
 import 'package:lcs_new_age/items/loot_type.dart';
@@ -19,8 +19,8 @@ class Item implements Comparable<Item> {
     ItemType type = itemTypes[idName] ?? itemTypes.values.first;
     if (type is WeaponType) {
       return Weapon(type.idName);
-    } else if (type is ArmorType) {
-      return Armor(type.idName);
+    } else if (type is ClothingType) {
+      return Clothing(type.idName);
     } else if (type is AmmoType) {
       return Ammo(type.idName);
     } else if (type is LootType) {
@@ -37,8 +37,8 @@ class Item implements Comparable<Item> {
     ItemType? type = itemTypes[json['typeName']];
     if (type is WeaponType) {
       return Weapon.fromJson(json);
-    } else if (type is ArmorType) {
-      return Armor.fromJson(json);
+    } else if (type is ClothingType) {
+      return Clothing.fromJson(json);
     } else if (type is AmmoType) {
       return Ammo.fromJson(json);
     } else if (type is LootType) {
@@ -59,13 +59,13 @@ class Item implements Comparable<Item> {
   ItemType get type => itemTypes[typeName]!;
 
   bool get isWeapon => false;
-  bool get isArmor => false;
+  bool get isClothing => false;
   bool get isAmmo => false;
   bool get isLoot => false;
   bool get isForSale => type.fenceValue > 0;
 
-  int get fenceValue => type.fenceValue;
-  int get stackFenceValue => fenceValue * stackSize;
+  double get fenceValue => type.fenceValue;
+  double get stackFenceValue => fenceValue * stackSize;
 
   String equipTitle({bool full = false}) => type.name;
 
@@ -88,8 +88,8 @@ class Item implements Comparable<Item> {
   int compareTo(Item other) {
     if (isWeapon && !other.isWeapon) return -1;
     if (!isWeapon && other.isWeapon) return 1;
-    if (isArmor && !other.isArmor) return -1;
-    if (!isArmor && other.isArmor) return 1;
+    if (isClothing && !other.isClothing) return -1;
+    if (!isClothing && other.isClothing) return 1;
     if (isAmmo && !other.isAmmo) return -1;
     if (!isAmmo && other.isAmmo) return 1;
     if (isLoot && !other.isLoot) return -1;

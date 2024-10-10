@@ -29,7 +29,7 @@
     -->
   <armorupgrade idname="ARMOR_NONE">
     <name>No Armor</name>
-    <description>For everyday use.</description>
+    <description>No protective value. Any visible armor is cosmetic.</description>
     <make_difficulty>0</make_difficulty>
     <make_price>0</make_price>
   </armorupgrade>
@@ -58,7 +58,7 @@
     <description>A vest worn on the outside, carrying a hard armor plate.</description>
     <visible>true</visible>
     <make_difficulty>0</make_difficulty>
-    <make_price>1800</make_price>
+    <make_price>700</make_price>
     <dodgepenalty>2</dodgepenalty>
     <armor>
       <body>160</body>
@@ -69,7 +69,7 @@
     <description>Combat armor kit for soldiers.</description>
     <visible>true</visible>
     <make_difficulty>0</make_difficulty>
-    <make_price>3000</make_price>
+    <make_price>1000</make_price>
     <dodgepenalty>2</dodgepenalty>
     <armor>
       <body>160</body>
@@ -81,7 +81,7 @@
     <description>Heavy loadout with coverage of non-critical areas.</description>
     <visible>true</visible>
     <make_difficulty>0</make_difficulty>
-    <make_price>3000</make_price>
+    <make_price>2000</make_price>
     <dodgepenalty>4</dodgepenalty>
     <armor>
       <body>160</body>
@@ -132,6 +132,31 @@
     <armor>
       <body>30</body>
       <limbs>30</limbs>
+    </armor>
+  </armorupgrade>
+  <armorupgrade idname="ARMOR_STEELHAUBERK">
+    <name>Steel Hauberk</name>
+    <description>Functional chainmail armor.</description>
+    <make_price>1000</make_price>
+    <restricted>true</restricted>
+    <make_difficulty>0</make_difficulty>
+    <armor>
+      <body>80</body>
+      <limbs>60</limbs>
+      <head>40</head>
+    </armor>
+    <dodgepenalty>2</dodgepenalty>
+  </armorupgrade>
+  <armorupgrade idname="ARMOR_MITHRILHAUBERK">
+    <name>True Mithril Hauberk</name>
+    <description>A secret passed down by ancient dwarves.</description>
+    <make_price>50000</make_price>
+    <restricted>true</restricted>
+    <make_difficulty>10</make_difficulty>
+    <armor>
+      <body>180</body>
+      <limbs>120</limbs>
+      <head>80</head>
     </armor>
   </armorupgrade>
 </armorupgrades>

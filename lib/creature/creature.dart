@@ -16,8 +16,8 @@ import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/gamestate/squad.dart';
 import 'package:lcs_new_age/items/ammo.dart';
 import 'package:lcs_new_age/items/ammo_type.dart';
-import 'package:lcs_new_age/items/armor.dart';
 import 'package:lcs_new_age/items/attack.dart';
+import 'package:lcs_new_age/items/clothing.dart';
 import 'package:lcs_new_age/items/item.dart';
 import 'package:lcs_new_age/items/weapon.dart';
 import 'package:lcs_new_age/items/weapon_type.dart';
@@ -107,7 +107,7 @@ class Creature {
 
   Body body = HumanoidBody();
   Weapon? equippedWeapon;
-  Armor? equippedArmor;
+  Clothing? equippedClothing;
   Item? spareAmmo;
 
   // Not saved
@@ -136,9 +136,9 @@ class Creature {
   @JsonKey(includeFromJson: false, includeToJson: false)
   Weapon get weapon => equippedWeapon ?? body.naturalWeapon;
   @JsonKey(includeFromJson: false, includeToJson: false)
-  Armor get armor => equippedArmor ?? body.naturalArmor;
+  Clothing get clothing => equippedClothing ?? body.naturalArmor;
   @JsonKey(includeFromJson: false, includeToJson: false)
-  bool get indecent => equippedArmor == null && !type.animal;
+  bool get indecent => equippedClothing == null && !type.animal;
   @JsonKey(includeFromJson: false, includeToJson: false)
   Creature? prisoner;
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -255,11 +255,11 @@ class Creature {
   int skillCap(Skill s) => attribute(s.attribute);
   @JsonKey(includeFromJson: false, includeToJson: false)
   bool get weaponIsConcealed =>
-      armor.type.concealWeaponSize >= weapon.type.size;
+      clothing.type.concealWeaponSize >= weapon.type.size;
   @JsonKey(includeFromJson: false, includeToJson: false)
   bool get weaponIsInCharacter =>
       equippedWeapon == null ||
-      armor.type.weaponsPermitted.contains(weapon.type);
+      clothing.type.weaponsPermitted.contains(weapon.type);
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   int get weaponSkill => rawSkill[weapon.skill] ?? 0;
@@ -440,17 +440,17 @@ class Creature {
   }
 
   int stealthMod(int value) {
-    double stealth = armor.type.stealthValue.toDouble();
-    for (int i = 1; i < armor.quality; i++) {
+    double stealth = clothing.type.stealthValue.toDouble();
+    for (int i = 1; i < clothing.quality; i++) {
       stealth *= 0.8;
     }
-    if (armor.damaged) {
+    if (clothing.damaged) {
       stealth *= 0.5;
     }
 
     value = ((value * stealth) / 2).round();
     // Shredded clothes get you no stealth.
-    if (armor.quality > armor.type.qualityLevels) {
+    if (clothing.quality > clothing.type.qualityLevels) {
       value = 0;
     }
     return value;
@@ -499,10 +499,10 @@ class Creature {
   }
 
   void strip({List<Item>? lootPile}) {
-    Armor? armor = equippedArmor;
-    if (armor != null && armor.type.idName != "ARMOR_NONE") {
+    Clothing? armor = equippedClothing;
+    if (armor != null && armor.type.idName != "CLOTHING_NONE") {
       if (lootPile != null) lootPile.add(armor);
-      equippedArmor = null;
+      equippedClothing = null;
     }
   }
 
@@ -628,10 +628,12 @@ class Creature {
     heat += crimeHeat(crime);
   }
 
-  void giveArmorType(String armorTypeString, {List<Item>? lootPile}) {
+  void giveClothingType(String clothingTypeString, {List<Item>? lootPile}) {
     strip(lootPile: lootPile);
-    if (armorTypeString == "ARMOR_NONE" || armorTypeString.isEmpty) return;
-    giveArmor(Armor(armorTypeString));
+    if (clothingTypeString == "CLOTHING_NONE" || clothingTypeString.isEmpty) {
+      return;
+    }
+    giveArmor(Clothing(clothingTypeString));
   }
 
   void giveWeaponAndAmmo(String weaponTypeString, int ammo,
@@ -646,7 +648,7 @@ class Creature {
     }
     giveWeapon(Weapon.fromType(weaponType, fullammo: true));
     if (ammo > 1 && (weapon.type.usesAmmo || weapon.type.thrown)) {
-      AmmoType? ammoType = weaponType.ammoType;
+      AmmoType? ammoType = weaponType.acceptableAmmo.firstOrNull;
       if (ammoType != null) {
         spareAmmo = Ammo(ammoType.idName, stackSize: ammo - 1);
       } else if (weaponType.thrown) {
@@ -688,9 +690,9 @@ class Creature {
     }
   }
 
-  void giveArmor(Armor armor, [List<Item>? lootPile]) {
-    if (equippedArmor != null) strip(lootPile: lootPile);
-    equippedArmor = armor.split(1) as Armor;
+  void giveArmor(Clothing armor, [List<Item>? lootPile]) {
+    if (equippedClothing != null) strip(lootPile: lootPile);
+    equippedClothing = armor.split(1) as Clothing;
   }
 
   void takeAmmo(Ammo ammo, List<Item>? lootPile, int count) {
@@ -724,7 +726,7 @@ class Creature {
     int fear = maxBlood - blood;
     if (isEnemy && armed) fear += 100;
     if (blood < maxBlood * 0.45) fear += 100;
-    if (!armor.type.fireResistant) fear += fire * 100;
+    if (!clothing.fireResistant) fear += fire * 100;
     if (nonCombatant) fear += 1000;
     int courage = juice + lcsRandom(50);
     if (!isEnemy) {

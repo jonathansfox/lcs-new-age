@@ -15,7 +15,7 @@ import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/gamestate/ledger.dart';
 import 'package:lcs_new_age/items/ammo.dart';
-import 'package:lcs_new_age/items/armor.dart';
+import 'package:lcs_new_age/items/clothing.dart';
 import 'package:lcs_new_age/items/item.dart';
 import 'package:lcs_new_age/items/weapon.dart';
 import 'package:lcs_new_age/justice/crimes.dart';
@@ -255,7 +255,7 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
 
     List<Item> temp = [];
     e.dropWeaponAndAmmo(lootPile: temp);
-    e.giveArmor(Armor("ARMOR_CLOTHES"), temp);
+    e.giveArmor(Clothing("CLOTHING_CLOTHES"), temp);
 
     printCreatureInfo(e, showCarPrefs: ShowCarPrefs.onFoot);
     makeDelimiter();
@@ -264,8 +264,8 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
       if (temp.last is Weapon) {
         e.giveWeapon(temp.last as Weapon, null);
       } //casts -XML
-      else if (temp.last is Armor) {
-        e.giveArmor(temp.last as Armor, null);
+      else if (temp.last is Clothing) {
+        e.giveArmor(temp.last as Clothing, null);
       } else if (e.weapon.acceptableAmmo.contains(temp.last.type)) {
         e.takeAmmo(temp.last as Ammo, null, temp.last.stackSize);
       }
@@ -479,7 +479,7 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
 
           //Kidnapped wearing normal clothes and no weapon
           e.dropWeaponAndAmmo();
-          Armor clothes = Armor("ARMOR_CLOTHES");
+          Clothing clothes = Clothing("CLOTHING_CLOTHES");
           e.giveArmor(clothes, null);
 
           await kidnaptransfer(e);

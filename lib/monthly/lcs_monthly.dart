@@ -10,7 +10,7 @@ import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/gamestate/ledger.dart';
 import 'package:lcs_new_age/items/ammo_type.dart';
-import 'package:lcs_new_age/items/armor_type.dart';
+import 'package:lcs_new_age/items/clothing_type.dart';
 import 'package:lcs_new_age/items/item.dart';
 import 'package:lcs_new_age/items/loot.dart';
 import 'package:lcs_new_age/items/loot_type.dart';
@@ -210,13 +210,13 @@ Future<void> fundReport(bool disbanding) async {
       numpages++;
     }
     // tally up liquid assets
-    int weaponValue = 0, armorValue = 0, clipValue = 0, lootValue = 0;
+    double weaponValue = 0, armorValue = 0, clipValue = 0, lootValue = 0;
     for (Site j in sites.where((s) => s.isSafehouse)) {
       for (Item item in j.loot) {
         if (item.type is WeaponType) {
           weaponValue += item.type.fenceValue * item.stackSize;
         }
-        if (item.type is ArmorType) {
+        if (item.type is ClothingType) {
           armorValue += item.type.fenceValue * item.stackSize;
         }
         if (item.type is AmmoType) {
@@ -241,16 +241,18 @@ Future<void> fundReport(bool disbanding) async {
     }
 
     liquidAssetLine("Cash", ledger.funds);
-    liquidAssetLine("Tools and Weapons", weaponValue);
-    liquidAssetLine("Clothing and Armor", armorValue);
-    liquidAssetLine("Ammunition", clipValue);
-    liquidAssetLine("Miscellaneous Loot", lootValue);
+    liquidAssetLine("Tools and Weapons", weaponValue.round());
+    liquidAssetLine("Clothing and Armor", armorValue.round());
+    liquidAssetLine("Ammunition", clipValue.round());
+    liquidAssetLine("Miscellaneous Loot", lootValue.round());
 
     if (page == numpages - 1) makeDelimiter(y: y);
     nextY();
 
-    liquidAssetLine("Total Liquid Assets",
-        ledger.funds + weaponValue + armorValue + clipValue + lootValue);
+    liquidAssetLine(
+        "Total Liquid Assets",
+        (ledger.funds + weaponValue + armorValue + clipValue + lootValue)
+            .round());
 
     setColor(lightGray);
     if (numpages > 1) {

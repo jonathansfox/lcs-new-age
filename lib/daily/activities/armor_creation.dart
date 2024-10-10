@@ -5,14 +5,14 @@ import 'package:lcs_new_age/creature/creature.dart';
 import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/gamestate/ledger.dart';
-import 'package:lcs_new_age/items/armor.dart';
-import 'package:lcs_new_age/items/armor_type.dart';
+import 'package:lcs_new_age/items/clothing.dart';
+import 'package:lcs_new_age/items/clothing_type.dart';
 import 'package:lcs_new_age/items/item.dart';
 import 'package:lcs_new_age/items/loot.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 
 Future<void> doActivityMakeArmor(Creature cr) async {
-  ArmorType at = cr.activity.armorType ?? armorTypes.values.first;
+  ClothingType at = cr.activity.armorType ?? clothingTypes.values.first;
   int cost = at.makePrice;
   int dif = at.makeDifficultyFor(cr);
   Iterable<Item>? cloths =
@@ -45,7 +45,7 @@ Future<void> doActivityMakeArmor(Creature cr) async {
     cr.train(Skill.tailoring, dif);
   }
   if (quality <= at.qualityLevels) {
-    Item it = Armor.fromType(at, quality: quality);
+    Item it = Clothing.fromType(at, quality: quality);
     String rate;
     switch (quality) {
       case 1:

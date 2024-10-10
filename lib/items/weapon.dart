@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/items/ammo.dart';
@@ -17,7 +16,8 @@ class Weapon extends Item {
     Weapon w = Weapon(type.idName);
     if (fullammo) {
       w.ammo = type.ammoCapacity;
-      w.loadedAmmoType = type.ammoType;
+      w.loadedAmmoType = ammoTypes.values.firstWhere(
+          (a) => type.attacks.any((attack) => attack.cartridge == a.cartridge));
     }
     return w;
   }
@@ -43,8 +43,8 @@ class Weapon extends Item {
   AmmoType? get loadedAmmoType => ammoTypes[loadedAmmoId];
   set loadedAmmoType(AmmoType? value) => loadedAmmoId = value?.idName;
   bool get empty => stackSize <= 0;
-  Iterable<AmmoType> get acceptableAmmo =>
-      type.attacks.map((attack) => attack.ammoType).whereNotNull();
+  Iterable<String> get acceptableCartridge => type.acceptableCartridge;
+  Iterable<AmmoType> get acceptableAmmo => type.acceptableAmmo;
 
   @override
   Item clone() {
@@ -65,7 +65,8 @@ class Weapon extends Item {
   }
 
   bool reload(Ammo magazine) {
-    if (acceptableAmmo.contains(magazine.type) && (ammo < type.ammoCapacity)) {
+    if (acceptableCartridge.contains(magazine.type.cartridge) &&
+        (ammo < type.ammoCapacity)) {
       loadedAmmoType = magazine.type;
       //for loose ammo: min(type.ammoCapacity - ammo, magazine.stackSize);
       int load = type.ammoCapacity - ammo;
@@ -91,8 +92,8 @@ class Weapon extends Item {
       if (forceMelee && attack.ranged) continue;
       if (forceNoReload && attack.usesAmmo && ammo == 0) continue;
       if (attack.usesAmmo &&
-          loadedAmmoType?.idName != attack.ammoTypeId &&
-          ammo != 0) {
+          loadedAmmoType?.cartridge != attack.cartridge &&
+          ammo > 0) {
         continue;
       }
       return attack;

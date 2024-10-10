@@ -14,8 +14,8 @@
         <can_get_damaged> (boolean) Whether or not the clothing can get damaged.
             Default: true
         <default_armor> (string) The idname of the default armor level of the clothing.
-            Default: ARMOR_NONE
-        <armor_allowed> (string) Idname of an armor upgrade that is allowed.
+            Default: CLOTHING_NONE
+        <CLOTHING_allowed> (string) Idname of an armor upgrade that is allowed.
             Default: (not set)
         <body_covering> What parts of the body is the clothing is worn on.
             <head> (boolean) If worn on head.
@@ -96,10 +96,11 @@
     </interrogation>
     <professionalism>2</professionalism>
     <stealth_value>1</stealth_value>
-    <appropriate_weapon>WEAPON_SMG_MP5</appropriate_weapon>
-    <appropriate_weapon>WEAPON_CARBINE_M4</appropriate_weapon>
-    <appropriate_weapon>WEAPON_AUTORIFLE_M16</appropriate_weapon>
-    <appropriate_weapon>WEAPON_SEMIRIFLE_AR15</appropriate_weapon>
+    <appropriate_weapon>WEAPON_MP5</appropriate_weapon>
+    <appropriate_weapon>WEAPON_M4</appropriate_weapon>
+    <appropriate_weapon>WEAPON_M7</appropriate_weapon>
+    <appropriate_weapon>WEAPON_AR15</appropriate_weapon>
+    <appropriate_weapon>WEAPON_M250_MACHINEGUN</appropriate_weapon>
   </clothingtype>
   <clothingtype idname="CLOTHING_MILITARY">
     <make_difficulty>8</make_difficulty>
@@ -117,10 +118,11 @@
     </interrogation>
     <professionalism>2</professionalism>
     <stealth_value>1</stealth_value>
-    <appropriate_weapon>WEAPON_SMG_MP5</appropriate_weapon>
-    <appropriate_weapon>WEAPON_CARBINE_M4</appropriate_weapon>
-    <appropriate_weapon>WEAPON_AUTORIFLE_M16</appropriate_weapon>
-    <appropriate_weapon>WEAPON_SEMIRIFLE_AR15</appropriate_weapon>
+    <appropriate_weapon>WEAPON_MP5</appropriate_weapon>
+    <appropriate_weapon>WEAPON_M4</appropriate_weapon>
+    <appropriate_weapon>WEAPON_M7</appropriate_weapon>
+    <appropriate_weapon>WEAPON_AR15</appropriate_weapon>
+    <appropriate_weapon>WEAPON_M250_MACHINEGUN</appropriate_weapon>
   </clothingtype>
   <clothingtype idname="CLOTHING_CATSUIT">
     <make_difficulty>7</make_difficulty>
@@ -152,10 +154,7 @@
   <clothingtype idname="CLOTHING_LEATHER">
     <make_difficulty>7</make_difficulty>
     <make_price>300</make_price>
-    <armor>
-      <body>3</body>
-      <limbs>2</limbs>
-    </armor>
+    <intrinsic_armor>ARMOR_LEATHER</intrinsic_armor>
     <body_covering>
       <arms>false</arms>
       <legs>false</legs>
@@ -168,29 +167,6 @@
     <durability>20</durability>
   </clothingtype>
   <clothingtype idname="CLOTHING_BLACKBLOC">
-    <make_difficulty>7</make_difficulty>
-    <make_price>350</make_price>
-    <armor>
-      <body>3</body>
-      <limbs>2</limbs>
-      <head>1</head>
-    </armor>
-    <body_covering>
-      <head>true</head>
-      <body>true</body>
-      <arms>true</arms>
-      <legs>true</legs>
-      <conceals_face>true</conceals_face>
-    </body_covering>
-    <name>Armored Black Bloc Outfit</name>
-    <shortname>Blck B. Armor</shortname>
-    <fencevalue>100</fencevalue>
-    <professionalism>2</professionalism>
-    <stealth_value>3</stealth_value>
-    <conceal_weapon_size>5</conceal_weapon_size>
-    <durability>20</durability>
-  </clothingtype>
-  <clothingtype idname="OUTFIT_BLACKBLOC">
     <make_difficulty>1</make_difficulty>
     <make_price>30</make_price>
     <body_covering>
@@ -242,25 +218,6 @@
     <professionalism>1</professionalism>
     <stealth_value>2</stealth_value>
   </clothingtype>
-  <clothingtype idname="CLOTHING_CIVILLIANARMOR">
-    <make_difficulty>8</make_difficulty>
-    <make_price>500</make_price>
-    <armor>
-      <body>5</body>
-    </armor>
-    <body_covering>
-      <arms>false</arms>
-      <legs>false</legs>
-    </body_covering>
-    <name>Body Armor</name>
-    <shortname>Body Armor</shortname>
-    <fencevalue>75</fencevalue>
-    <interrogation>
-      <basepower>2</basepower>
-    </interrogation>
-    <professionalism>2</professionalism>
-    <stealth_value>1</stealth_value>
-  </clothingtype>
   <clothingtype idname="CLOTHING_BONDAGEGEAR">
     <make_difficulty>7</make_difficulty>
     <make_price>30</make_price>
@@ -270,6 +227,7 @@
     <name>Bondage Gear</name>
     <shortname>Bondage Gear</shortname>
     <fencevalue>60</fencevalue>
+    <upgradable>false</upgradable>
     <interrogation>
       <basepower>6</basepower>
       <assaultbonus>4</assaultbonus>
@@ -281,12 +239,7 @@
   <clothingtype idname="CLOTHING_BUNKERGEAR">
     <make_difficulty>13</make_difficulty>
     <make_price>500</make_price>
-    <armor>
-      <body>2</body>
-      <head>2</head>
-      <limbs>2</limbs>
-      <fireprotection>true</fireprotection>
-    </armor>
+    <intrinsic_armor>ARMOR_TURNOUTGEAR</intrinsic_armor>
     <body_covering>
       <head>true</head>
     </body_covering>
@@ -351,10 +304,11 @@
     </interrogation>
     <professionalism>1</professionalism>
     <stealth_value>1</stealth_value>
-    <appropriate_weapon>WEAPON_SMG_MP5</appropriate_weapon>
-    <appropriate_weapon>WEAPON_CARBINE_M4</appropriate_weapon>
-    <appropriate_weapon>WEAPON_AUTORIFLE_M16</appropriate_weapon>
-    <appropriate_weapon>WEAPON_SEMIRIFLE_AR15</appropriate_weapon>
+    <appropriate_weapon>WEAPON_MP5</appropriate_weapon>
+    <appropriate_weapon>WEAPON_M4</appropriate_weapon>
+    <appropriate_weapon>WEAPON_M7</appropriate_weapon>
+    <appropriate_weapon>WEAPON_AR15</appropriate_weapon>
+    <appropriate_weapon>WEAPON_M250_MACHINEGUN</appropriate_weapon>
     <lawenforcement>true</lawenforcement>
   </clothingtype>
   <clothingtype idname="CLOTHING_DONKEYSUIT">
@@ -425,23 +379,19 @@
     </interrogation>
     <professionalism>2</professionalism>
     <stealth_value>1</stealth_value>
-    <appropriate_weapon>WEAPON_SMG_MP5</appropriate_weapon>
-    <appropriate_weapon>WEAPON_SHOTGUN_PUMP</appropriate_weapon>
+    <appropriate_weapon>WEAPON_MP5</appropriate_weapon>
+    <appropriate_weapon>WEAPON_PUMP_SHOTGUN</appropriate_weapon>
     <appropriate_weapon>WEAPON_NIGHTSTICK</appropriate_weapon>
   </clothingtype>
   <clothingtype idname="CLOTHING_HEAVYARMOR">
     <make_difficulty>17</make_difficulty>
     <make_price>5000</make_price>
-    <armor>
-      <body>10</body>
-      <head>8</head>
-      <limbs>4</limbs>
-    </armor>
+    <intrinsic_armor>ARMOR_TANKSUIT</intrinsic_armor>
     <body_covering>
       <head>true</head>
     </body_covering>
-    <name>Heavy Ceramic Armor</name>
-    <shortname>HeavyBodyArmor</shortname>
+    <name>Human Tank Suit</name>
+    <shortname>Tank Suit</shortname>
     <fencevalue>400</fencevalue>
     <interrogation>
       <basepower>2</basepower>
@@ -462,34 +412,13 @@
     <stealth_value>1</stealth_value>
     <appropriate_weapon>WEAPON_SYRINGE</appropriate_weapon>
   </clothingtype>
-  <clothingtype idname="CLOTHING_MASK">
-    <body_covering>
-      <head>true</head>
-      <body>false</body>
-      <arms>false</arms>
-      <legs>false</legs>
-      <conceals_face>true</conceals_face>
-    </body_covering>
-    <name>mask</name>
-    <shortname />
-    <fencevalue />
-    <interrogation>
-      <basepower>4</basepower>
-      <assaultbonus>4</assaultbonus>
-      <drugbonus>4</drugbonus>
-    </interrogation>
-    <professionalism>1</professionalism>
-    <stealth_value>1</stealth_value>
-  </clothingtype>
   <clothingtype idname="CLOTHING_MITHRIL">
     <body_covering>
-      <arms>false</arms>
+      <arms>true</arms>
       <legs>false</legs>
     </body_covering>
-    <armor>
-      <body>1</body>
-      <head>1</head>
-    </armor>
+    <armor_allowed>ARMOR_STEELHAUBERK</armor_allowed>
+    <armor_allowed>ARMOR_MITHRILHAUBERK</armor_allowed>
     <name>Mithril Mail</name>
     <shortname>Mithril Mail</shortname>
     <fencevalue>50</fencevalue>
@@ -534,14 +463,12 @@
     <stealth_value>1</stealth_value>
     <appropriate_weapon>WEAPON_TORCH</appropriate_weapon>
     <appropriate_weapon>WEAPON_PITCHFORK</appropriate_weapon>
-    <appropriate_weapon>WEAPON_SHOTGUN_PUMP</appropriate_weapon>
+    <appropriate_weapon>WEAPON_PUMP_SHOTGUN</appropriate_weapon>
   </clothingtype>
   <clothingtype idname="CLOTHING_POLICEARMOR">
     <make_difficulty>11</make_difficulty>
     <make_price>1000</make_price>
-    <armor>
-      <body>7</body>
-    </armor>
+    <intrinsic_armor>ARMOR_EXTERNALPLATE</intrinsic_armor>
     <body_covering>
       <arms>false</arms>
       <legs>false</legs>
@@ -555,17 +482,17 @@
     </interrogation>
     <professionalism>2</professionalism>
     <stealth_value>1</stealth_value>
-    <appropriate_weapon>WEAPON_REVOLVER_38</appropriate_weapon>
-    <appropriate_weapon>WEAPON_REVOLVER_44</appropriate_weapon>
+    <appropriate_weapon>WEAPON_22_REVOLVER</appropriate_weapon>
+    <appropriate_weapon>WEAPON_44_REVOLVER</appropriate_weapon>
     <appropriate_weapon>WEAPON_DESERT_EAGLE</appropriate_weapon>
-    <appropriate_weapon>WEAPON_PISTOL_9MM</appropriate_weapon>
-    <appropriate_weapon>WEAPON_PISTOL_45</appropriate_weapon>
+    <appropriate_weapon>WEAPON_9MM_HANDGUN</appropriate_weapon>
+    <appropriate_weapon>WEAPON_45_HANDGUN</appropriate_weapon>
     <appropriate_weapon>WEAPON_NIGHTSTICK</appropriate_weapon>
-    <appropriate_weapon>WEAPON_SHOTGUN_PUMP</appropriate_weapon>
-    <appropriate_weapon>WEAPON_SMG_MP5</appropriate_weapon>
-    <appropriate_weapon>WEAPON_CARBINE_M4</appropriate_weapon>
-    <appropriate_weapon>WEAPON_AUTORIFLE_M16</appropriate_weapon>
-    <appropriate_weapon>WEAPON_SEMIRIFLE_AR15</appropriate_weapon>
+    <appropriate_weapon>WEAPON_PUMP_SHOTGUN</appropriate_weapon>
+    <appropriate_weapon>WEAPON_MP5</appropriate_weapon>
+    <appropriate_weapon>WEAPON_M4</appropriate_weapon>
+    <appropriate_weapon>WEAPON_M7</appropriate_weapon>
+    <appropriate_weapon>WEAPON_AR15</appropriate_weapon>
     <lawenforcement>true</lawenforcement>
   </clothingtype>
   <clothingtype idname="CLOTHING_POLICEUNIFORM">
@@ -576,6 +503,7 @@
     </body_covering>
     <name>Police Uniform</name>
     <shortname>Police Uniform</shortname>
+    <allow_visible_armor>true</allow_visible_armor>
     <fencevalue>80</fencevalue>
     <interrogation>
       <basepower>6</basepower>
@@ -583,26 +511,23 @@
     </interrogation>
     <professionalism>2</professionalism>
     <stealth_value>1</stealth_value>
-    <appropriate_weapon>WEAPON_REVOLVER_38</appropriate_weapon>
-    <appropriate_weapon>WEAPON_REVOVLER_44</appropriate_weapon>
+    <appropriate_weapon>WEAPON_22_REVOLVER</appropriate_weapon>
+    <appropriate_weapon>WEAPON_44_REVOLVER</appropriate_weapon>
     <appropriate_weapon>WEAPON_DESERT_EAGLE</appropriate_weapon>
-    <appropriate_weapon>WEAPON_PISTOL_9MM</appropriate_weapon>
-    <appropriate_weapon>WEAPON_PISTOL_45</appropriate_weapon>
+    <appropriate_weapon>WEAPON_9MM_HANDGUN</appropriate_weapon>
+    <appropriate_weapon>WEAPON_45_HANDGUN</appropriate_weapon>
     <appropriate_weapon>WEAPON_NIGHTSTICK</appropriate_weapon>
-    <appropriate_weapon>WEAPON_SHOTGUN_PUMP</appropriate_weapon>
-    <appropriate_weapon>WEAPON_SMG_MP5</appropriate_weapon>
-    <appropriate_weapon>WEAPON_CARBINE_M4</appropriate_weapon>
-    <appropriate_weapon>WEAPON_AUTORIFLE_M16</appropriate_weapon>
-    <appropriate_weapon>WEAPON_SEMIRIFLE_AR15</appropriate_weapon>
+    <appropriate_weapon>WEAPON_PUMP_SHOTGUN</appropriate_weapon>
+    <appropriate_weapon>WEAPON_MP5</appropriate_weapon>
+    <appropriate_weapon>WEAPON_M4</appropriate_weapon>
+    <appropriate_weapon>WEAPON_M7</appropriate_weapon>
+    <appropriate_weapon>WEAPON_AR15</appropriate_weapon>
     <lawenforcement>true</lawenforcement>
   </clothingtype>
   <clothingtype idname="CLOTHING_SEALSUIT">
     <make_difficulty>16</make_difficulty>
     <make_price>3000</make_price>
-    <armor>
-      <body>8</body>
-      <head>6</head>
-    </armor>
+    <intrinsic_armor>ARMOR_SWAT</intrinsic_armor>
     <name>SEAL Stealth Armor</name>
     <shortname>SEAL Suit</shortname>
     <fencevalue>300</fencevalue>
@@ -618,10 +543,10 @@
     </interrogation>
     <professionalism>1</professionalism>
     <stealth_value>3</stealth_value>
-    <appropriate_weapon>WEAPON_SMG_MP5</appropriate_weapon>
-    <appropriate_weapon>WEAPON_AUTORIFLE_M16</appropriate_weapon>
-    <appropriate_weapon>WEAPON_SEMIRIFLE_AR15</appropriate_weapon>
-    <appropriate_weapon>WEAPON_CARBINE_M4</appropriate_weapon>
+    <appropriate_weapon>WEAPON_MP5</appropriate_weapon>
+    <appropriate_weapon>WEAPON_M4</appropriate_weapon>
+    <appropriate_weapon>WEAPON_AR15</appropriate_weapon>
+    <appropriate_weapon>WEAPON_M7</appropriate_weapon>
   </clothingtype>
   <clothingtype idname="CLOTHING_SECURITYUNIFORM">
     <make_difficulty>8</make_difficulty>
@@ -637,14 +562,15 @@
     </interrogation>
     <professionalism>2</professionalism>
     <stealth_value>1</stealth_value>
-    <appropriate_weapon>WEAPON_REVOLVER_38</appropriate_weapon>
-    <appropriate_weapon>WEAPON_REVOVLER_44</appropriate_weapon>
+    <appropriate_weapon>WEAPON_22_REVOLVER</appropriate_weapon>
+    <appropriate_weapon>WEAPON_44_REVOLVER</appropriate_weapon>
     <appropriate_weapon>WEAPON_DESERT_EAGLE</appropriate_weapon>
-    <appropriate_weapon>WEAPON_PISTOL_9MM</appropriate_weapon>
-    <appropriate_weapon>WEAPON_PISTOL_45</appropriate_weapon>
+    <appropriate_weapon>WEAPON_9MM_HANDGUN</appropriate_weapon>
+    <appropriate_weapon>WEAPON_45_HANDGUN</appropriate_weapon>
     <appropriate_weapon>WEAPON_NIGHTSTICK</appropriate_weapon>
-    <appropriate_weapon>WEAPON_SMG_MP5</appropriate_weapon>
-    <appropriate_weapon>WEAPON_CARBINE_M4</appropriate_weapon>
+    <appropriate_weapon>WEAPON_MP5</appropriate_weapon>
+    <appropriate_weapon>WEAPON_M4</appropriate_weapon>
+    <appropriate_weapon>WEAPON_M7</appropriate_weapon>
   </clothingtype>
   <clothingtype idname="CLOTHING_SERVANTUNIFORM">
     <make_difficulty>7</make_difficulty>
@@ -658,11 +584,7 @@
   <clothingtype idname="CLOTHING_SWATARMOR">
     <make_difficulty>14</make_difficulty>
     <make_price>2000</make_price>
-    <armor>
-      <body>7</body>
-      <head>5</head>
-      <limbs>2</limbs>
-    </armor>
+    <intrinsic_armor>ARMOR_SWAT</intrinsic_armor>
     <body_covering>
       <head>true</head>
     </body_covering>
@@ -674,13 +596,17 @@
     </interrogation>
     <professionalism>1</professionalism>
     <stealth_value>1</stealth_value>
-    <appropriate_weapon>WEAPON_SMG_MP5</appropriate_weapon>
-    <appropriate_weapon>WEAPON_CARBINE_M4</appropriate_weapon>
-    <lawenforcement>true</lawenforcement>
+    <appropriate_weapon>WEAPON_MP5</appropriate_weapon>
+    <appropriate_weapon>WEAPON_M4</appropriate_weapon>
+    <appropriate_weapon>WEAPON_AR15</appropriate_weapon>
+    <appropriate_weapon>WEAPON_M7</appropriate_weapon>
+    <appropriate_weapon>WEAPON_PUMP_SHOTGUN</appropriate_weapon>
+ x    <lawenforcement>true</lawenforcement>
   </clothingtype>
   <clothingtype idname="CLOTHING_TOGA">
     <make_difficulty>2</make_difficulty>
     <make_price>5</make_price>
+    <upgradable>false</upgradable>
     <body_covering>
       <arms>false</arms>
       <legs>false</legs>
@@ -706,9 +632,7 @@
   <clothingtype idname="CLOTHING_HARDHAT">
     <make_difficulty>6</make_difficulty>
     <make_price>100</make_price>
-    <armor>
-      <head>2</head>
-    </armor>
+    <intrinsic_armor>ARMOR_HARDHAT</intrinsic_armor>
     <body_covering>
       <head>true</head>
     </body_covering>
@@ -727,6 +651,7 @@
       <arms>false</arms>
       <legs>false</legs>
     </body_covering>
+    <upgradable>false</upgradable>
     <name>Wife Beater</name>
     <shortname>Wife Beater</shortname>
     <fencevalue>4</fencevalue>
@@ -734,7 +659,7 @@
     <durability>30</durability>
     <appropriate_weapon>WEAPON_TORCH</appropriate_weapon>
     <appropriate_weapon>WEAPON_PITCHFORK</appropriate_weapon>
-    <appropriate_weapon>WEAPON_SHOTGUN_PUMP</appropriate_weapon>
+    <appropriate_weapon>WEAPON_PUMP_SHOTGUN</appropriate_weapon>
   </clothingtype>
   <clothingtype idname="CLOTHING_WORKCLOTHES">
     <make_difficulty>4</make_difficulty>

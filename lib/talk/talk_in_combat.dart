@@ -394,21 +394,21 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
     } else {
       //Special bluff messages for various uniforms
       setColor(lightGreen);
-      if (target.armor.typeName == "ARMOR_POLICEUNIFORM" ||
-          target.armor.typeName == "ARMOR_POLICEARMOR" ||
-          target.armor.typeName == "ARMOR_SWATARMOR") {
+      if (target.clothing.typeName == "CLOTHING_POLICEUNIFORM" ||
+          target.clothing.typeName == "CLOTHING_POLICEARMOR" ||
+          target.clothing.typeName == "CLOTHING_SWATARMOR") {
         addstr("\"The situation is under control.\"");
-      } else if (target.armor.typeName == "ARMOR_BUNKERGEAR") {
+      } else if (target.clothing.typeName == "CLOTHING_BUNKERGEAR") {
         if (siteOnFire) {
           addstr("\"Fire! Evacuate immediately!\"");
         } else {
           addstr("\"Everything's in check.\"");
         }
-      } else if (target.armor.typeName == "ARMOR_LABCOAT") {
+      } else if (target.clothing.typeName == "CLOTHING_LABCOAT") {
         addstr("\"Make way, I'm a doctor!\"");
-      } else if (target.armor.typeName == "ARMOR_DEATHSQUADBODYARMOR") {
+      } else if (target.clothing.typeName == "CLOTHING_DEATHSQUADBODYARMOR") {
         addstr("\"Non-targets please leave the site.\"");
-      } else if (target.armor.typeName == "ARMOR_MITHRIL") {
+      } else if (target.clothing.typeName == "CLOTHING_MITHRIL") {
         addstr("${liberal.name} engraves ");
         addstrc(RainbowFlag.red, "E");
         addstrc(RainbowFlag.orange, "l");

@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:lcs_new_age/creature/creature_type_xml.dart';
+import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/items/attack.dart';
 import 'package:lcs_new_age/items/weapon_type.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
@@ -14,10 +15,31 @@ void parseWeaponType(WeaponType weapon, XmlElement xml) {
         weapon.name = element.innerText;
       case "name_future":
         weapon.nameFuture = element.innerText;
+      case "name_large_subtype":
+        weapon.largeSubtypeName = element.innerText;
+      case "name_small_subtype":
+        weapon.smallSubtypeName = element.innerText;
+      case "name_large_subtype_future":
+        weapon.futureLargeSubtypeName = element.innerText;
+      case "name_small_subtype_future":
+        weapon.futureSmallSubtypeName = element.innerText;
       case "shortname":
         weapon.shortName = element.innerText;
       case "shortname_future":
         weapon.futureShortName = element.innerText;
+      case "description":
+        weapon.description = element.innerText;
+      case "looks_dangerous":
+        bool? looksDangerous = parseBool(element.innerText);
+        if (looksDangerous != null) {
+          weapon.threatening = looksDangerous;
+          weapon.canThreatenHostages = looksDangerous;
+          weapon.canTakeHostages = looksDangerous;
+          weapon.protectsAgainstKidnapping = looksDangerous;
+          weapon.suspicious = looksDangerous;
+        }
+      case "suspicious":
+        weapon.suspicious = parseBool(element.innerText) ?? weapon.suspicious;
       case "can_take_hostages":
         weapon.canTakeHostages =
             parseBool(element.innerText) ?? weapon.canTakeHostages;
@@ -29,28 +51,36 @@ void parseWeaponType(WeaponType weapon, XmlElement xml) {
       case "protects_against_kidnapping":
         weapon.protectsAgainstKidnapping =
             parseBool(element.innerText) ?? weapon.protectsAgainstKidnapping;
+      case "musical_attack":
+        weapon.musicalAttack =
+            parseBool(element.innerText) ?? weapon.musicalAttack;
       case "instrument":
         weapon.instrument = parseBool(element.innerText) ?? weapon.instrument;
       case "graffiti":
         weapon.canGraffiti = parseBool(element.innerText) ?? weapon.canGraffiti;
-      case "legality":
-        weapon.legality = int.tryParse(element.innerText) ?? weapon.legality;
+      case "banned_at_gun_control":
+        weapon.bannedAtGunControl =
+            parseAlignment(element.innerText) ?? weapon.bannedAtGunControl;
+      case "price":
+        weapon.price = int.tryParse(element.innerText) ?? weapon.price;
       case "fencevalue":
         weapon.fenceValue =
-            int.tryParse(element.innerText) ?? weapon.fenceValue;
-      case "bashstrengthmod":
-        weapon.bashStrengthModifier = (int.tryParse(element.innerText) ??
-                weapon.bashStrengthModifier * 100) /
-            100;
+            double.tryParse(element.innerText) ?? weapon.fenceValue;
       case "auto_break_locks":
         weapon.autoBreakLock =
             parseBool(element.innerText) ?? weapon.autoBreakLock;
-      case "suspicious":
-        weapon.suspicious = parseBool(element.innerText) ?? weapon.suspicious;
       case "size":
         weapon.size = int.tryParse(element.innerText) ?? weapon.size;
       case "attack":
         weapon.attacks.add(parseAttack(element));
+      case "magazine_size":
+        weapon.ammoCapacity =
+            int.tryParse(element.innerText) ?? weapon.ammoCapacity;
+      case "ammo_plus_one":
+        weapon.canKeepOneInTheChamber =
+            parseBool(element.innerText) ?? weapon.canKeepOneInTheChamber;
+      default:
+        debugPrint("Unknown key $key in weapon type ${weapon.name}");
     }
   }
 }
@@ -65,8 +95,10 @@ Attack parseAttack(XmlElement element) {
         attack.ranged = parseBool(e.innerText) ?? attack.ranged;
       case "thrown":
         attack.thrown = parseBool(e.innerText) ?? attack.thrown;
-      case "ammotype":
-        attack.ammoTypeId = e.innerText;
+      case "cartridge":
+        attack.cartridge = e.innerText;
+      case "initiative":
+        attack.initiative = int.tryParse(e.innerText) ?? attack.initiative;
       case "attack_description":
         attack.attackDescription.add(e.innerText);
       case "hit_description":
@@ -94,10 +126,8 @@ Attack parseAttack(XmlElement element) {
         attack.strengthMin = int.tryParse(e.innerText) ?? attack.strengthMin;
       case "strength_max":
         attack.strengthMax = int.tryParse(e.innerText) ?? attack.strengthMax;
-      case "random_damage":
-        attack.randomDamage = int.tryParse(e.innerText) ?? attack.randomDamage;
-      case "fixed_damage":
-        attack.fixedDamage = int.tryParse(e.innerText) ?? attack.fixedDamage;
+      case "damage":
+        attack.damage = int.tryParse(e.innerText) ?? attack.damage;
       case "bruises":
         attack.bruises = parseBool(e.innerText) ?? attack.bruises;
       case "tears":
@@ -164,6 +194,8 @@ Attack parseAttack(XmlElement element) {
           }
         }
         attack.fire = fire;
+      default:
+        debugPrint("Unknown key ${e.name.local} in attack");
     }
   }
   return attack;

@@ -23,7 +23,7 @@ Future<void> doActivitySolicitDonations(List<Creature> solicit) async {
         Income.donations,
         (_roll(solicitor, [Skill.persuasion, Skill.streetSmarts]) *
                 _multiplierFromPublicMood(highImpact: true) *
-                (solicitor.armor.type.professionalism + 1) *
+                (solicitor.clothing.type.professionalism + 1) *
                 0.5)
             .round());
   }

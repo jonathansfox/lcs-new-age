@@ -34,8 +34,6 @@ void parseShop(Shop shop, XmlElement xml) {
         if (item != null) {
           shop.items.add(item);
         }
-      case "sell_masks":
-        shop.sellMasks = parseBool(element.innerText) ?? shop.sellMasks;
     }
   }
 }

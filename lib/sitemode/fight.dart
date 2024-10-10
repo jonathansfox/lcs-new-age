@@ -14,8 +14,8 @@ import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_mode.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
-import 'package:lcs_new_age/items/armor.dart';
 import 'package:lcs_new_age/items/attack.dart';
+import 'package:lcs_new_age/items/clothing.dart';
 import 'package:lcs_new_age/items/item.dart';
 import 'package:lcs_new_age/items/money.dart';
 import 'package:lcs_new_age/justice/crimes.dart';
@@ -47,7 +47,7 @@ Future<void> youattack() async {
         if (e.isEnemy && !e.nonCombatant) {
           if (e.type.tank && e.stunned == 0) {
             superEnemies.add(e);
-          } else if ((e.attack.socialDamage || e.attack.averageDamage > 20) &&
+          } else if ((e.attack.socialDamage || e.attack.damage > 20) &&
               e.blood >= e.maxBlood * 0.4 &&
               e.stunned == 0) {
             dangerousEnemies.add(e);
@@ -535,7 +535,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
   }
 
   if (aroll + bonus > droll &&
-      attackUsed.averageDamage > t.blood &&
+      attackUsed.damage > t.blood &&
       targetIsLeader &&
       mode != GameMode.carChase) {
     // If the attack has a high chance of killing the target, and the target
@@ -598,12 +598,12 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
       str += " hits the ";
     }
 
-    if (t.armor.covers(hitPart)) {
-      if (hitPart.weakSpot && t.armor.type.headArmor > 4) {
+    if (t.clothing.covers(hitPart)) {
+      if (hitPart.weakSpot && t.clothing.headArmor > 4) {
         str += "helmet";
-      } else if (hitPart.critical && t.armor.type.bodyArmor > 4) {
+      } else if (hitPart.critical && t.clothing.bodyArmor > 4) {
         str += "body armor";
-      } else if (t.armor.type.limbArmor > 4) {
+      } else if (t.clothing.getLimbArmor(hitPart) > 4) {
         str += "${hitPart.name.toLowerCase()} armor";
       } else {
         str += hitPart.name.toLowerCase();
@@ -636,8 +636,8 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
 
     severtype = attackUsed.severType;
     if (addNastyOff) severtype = SeverType.nasty;
-    int random = attackUsed.randomDamage + a.skill(wsk);
-    int fixed = attackUsed.fixedDamage + a.skill(wsk);
+    int random = (attackUsed.damage * 0.8).round() + a.skill(wsk);
+    int fixed = (attackUsed.damage * 0.2).round() + a.skill(wsk);
     if (sneakAttack) fixed += 100;
     if (bursthits >= (attackUsed.critical?.hitsRequired ?? 999) &&
         lcsRandom(100) < (attackUsed.critical?.chance ?? 0)) {
@@ -727,8 +727,8 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
         }
       }
 
-      if (damagearmor && target.equippedArmor != null) {
-        armordamage(target.armor, hitPart, damamount);
+      if (damagearmor && target.equippedClothing != null) {
+        armordamage(target.clothing, hitPart, damamount);
       }
 
       //debugPrint("Target blood before hit: ${target.blood}/${target.maxBlood}");
@@ -799,7 +799,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
 
         await getKey();
 
-        if (severtype == SeverType.nasty) bloodblast(t.armor);
+        if (severtype == SeverType.nasty) bloodblast(t.clothing);
 
         if (!alreadydead) {
           await severloot(t, groundLoot);
@@ -823,7 +823,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
 
         await getKey();
 
-        if (severtype == SeverType.nasty) bloodblast(t.armor);
+        if (severtype == SeverType.nasty) bloodblast(t.clothing);
 
         //SPECIAL WOUNDS
         if (!hitPart.missing && target.body is HumanoidBody) {
@@ -1284,22 +1284,12 @@ int healthmodroll(int aroll, Creature a) {
 /* adjusts attack damage based on armor, other factors */
 int damagemod(Creature t, Attack attackUsed, int damamount,
     BodyPart hitlocation, int armorpenetration, int mod) {
-  int armor = 0;
-  if (hitlocation.weakSpot) {
-    armor = t.armor.type.headArmor;
-  } else if (hitlocation.critical) {
-    armor = t.armor.type.bodyArmor;
-  } else {
-    armor = t.armor.type.limbArmor;
-  }
-  if (!t.armor.covers(hitlocation)) {
-    armor = 0;
-  }
+  int armor = t.clothing.getArmorForLocation(hitlocation);
   int naturalArmor = hitlocation.naturalArmor;
   if (attackUsed.burns) {
     naturalArmor = (naturalArmor / 2).round();
-    if (t.armor.type.fireResistant) {
-      if (t.armor.damaged) {
+    if (t.clothing.fireResistant) {
+      if (t.clothing.damaged) {
         armorpenetration = (armorpenetration / 2).round();
       } else {
         armorpenetration = 0;
@@ -1309,8 +1299,8 @@ int damagemod(Creature t, Attack attackUsed, int damamount,
   }
   armor += naturalArmor;
 
-  armor -= t.armor.quality - 1;
-  if (t.armor.damaged) armor -= 1;
+  armor -= t.clothing.quality - 1;
+  if (t.clothing.damaged) armor -= 1;
   debugPrint(
       "Armor: $armor, $armorpenetration penetration, pre-armor mod: $mod");
 
@@ -1479,12 +1469,12 @@ Future<void> severloot(Creature cr, List<Item> loot) async {
   }
 
   if (body?.torso.missing == true &&
-          cr.equippedArmor?.covers(body!.torso) == true ||
-      (body?.head.missing == true && cr.equippedArmor?.type.mask == true)) {
+          cr.equippedClothing?.covers(body!.torso) == true ||
+      (body?.head.missing == true && cr.equippedClothing?.type.mask == true)) {
     clearMessageArea();
     mvaddstrc(9, 1, yellow, cr.name);
     addstr("'s ");
-    addstr(cr.armor.shortName);
+    addstr(cr.clothing.shortName);
     addstr(" has been destroyed.");
 
     await getKey();
@@ -1494,7 +1484,7 @@ Future<void> severloot(Creature cr, List<Item> loot) async {
 }
 
 /* damages the selected armor if it covers the body part specified */
-void armordamage(Armor armor, BodyPart bp, int damamount) {
+void armordamage(Clothing armor, BodyPart bp, int damamount) {
   int d2 = armor.type.durability ~/ 2;
   if (armor.covers(bp) && lcsRandom(d2) + d2 < damamount) {
     if (armor.damaged) {
@@ -1508,7 +1498,7 @@ void armordamage(Armor armor, BodyPart bp, int damamount) {
 }
 
 /* blood explosions */
-void bloodblast(Armor armor) {
+void bloodblast(Clothing armor) {
   //GENERAL
   armor.bloody = true;
 
@@ -1519,13 +1509,13 @@ void bloodblast(Armor armor) {
   //HIT EVERYTHING
   for (Creature p in squad) {
     if (oneIn(2)) {
-      p.equippedArmor?.bloody = true;
+      p.equippedClothing?.bloody = true;
     }
   }
 
   for (Creature e in encounter) {
     if (oneIn(2)) {
-      e.equippedArmor?.bloody = true;
+      e.equippedClothing?.bloody = true;
     }
   }
 
@@ -1816,16 +1806,16 @@ Future<bool> incapacitated(Creature a, bool noncombat) async {
 Future<void> captureCreature(Creature t) async {
   t.activity = Activity.none();
   t.dropWeaponAndAmmo();
-  Armor clothes = Armor("ARMOR_CLOTHES");
-  t.equippedArmor = clothes;
+  Clothing clothes = Clothing("CLOTHING_CLOTHES");
+  t.equippedClothing = clothes;
   t.sleeperAgent = false;
 
   await freehostage(t, FreeHostageMessage.none);
   if (t.justEscaped) {
     t.location = activeSite;
     if (activeSite!.isPartOfTheJusticeSystem) {
-      Armor prisoner = Armor("ARMOR_PRISONER");
-      t.equippedArmor = prisoner;
+      Clothing prisoner = Clothing("CLOTHING_PRISONER");
+      t.equippedClothing = prisoner;
     }
     if (activeSite!.type == SiteType.prison) {
       t.heat = 0;

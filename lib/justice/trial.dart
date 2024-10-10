@@ -9,7 +9,7 @@ import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/gamestate/ledger.dart';
-import 'package:lcs_new_age/items/armor.dart';
+import 'package:lcs_new_age/items/clothing.dart';
 import 'package:lcs_new_age/justice/crimes.dart';
 import 'package:lcs_new_age/justice/prison.dart';
 import 'package:lcs_new_age/location/location_type.dart';
@@ -460,7 +460,7 @@ Future<void> trial(Creature g) async {
   if (g.sentence != 0) {
     imprison(g);
   } else {
-    Armor clothes = Armor("ARMOR_CLOTHES");
+    Clothing clothes = Clothing("CLOTHING_CLOTHES");
     g.giveArmor(clothes, null);
   }
 }
