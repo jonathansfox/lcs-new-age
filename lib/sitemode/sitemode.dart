@@ -125,9 +125,11 @@ Future<void> siteMode(Site loc) async {
 
     SiteTile tile;
     for (int l = 0; l < lootnum; l++) {
-      do {
-        tile = levelMap[lcsRandom(MAPX)][lcsRandom(MAPY)][0];
-      } while (tile.wall || tile.door || tile.exit || tile.outdoor);
+      Iterable<SiteTile> options = levelMap
+          .allOnFloor(0)
+          .where((t) => !t.wall && !t.door && !t.exit && !t.loot);
+      if (options.isEmpty) break;
+      tile = options.where((t) => !t.outdoor).randomOrNull ?? options.random;
       tile.loot = true;
     }
 
