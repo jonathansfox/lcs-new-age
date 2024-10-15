@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:json_annotation/json_annotation.dart';
 import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/items/ammo.dart';
@@ -14,7 +16,7 @@ class Weapon extends Item {
   Weapon(super.typeName, {super.stackSize = 1}) : super.superConstructor();
   factory Weapon.fromType(WeaponType type, {bool fullammo = false}) {
     Weapon w = Weapon(type.idName);
-    if (fullammo) {
+    if (fullammo && type.ammoCapacity > 0) {
       w.ammo = type.ammoCapacity;
       w.loadedAmmoType = ammoTypes.values.firstWhere(
           (a) => type.attacks.any((attack) => attack.cartridge == a.cartridge));
@@ -68,11 +70,11 @@ class Weapon extends Item {
     if (acceptableCartridge.contains(magazine.type.cartridge) &&
         (ammo < type.ammoCapacity)) {
       loadedAmmoType = magazine.type;
-      //for loose ammo: min(type.ammoCapacity - ammo, magazine.stackSize);
-      int load = type.ammoCapacity - ammo;
-      ammo += load;
-      //for loose ammo: magazine.stackSize -= load;
-      magazine.stackSize -= 1;
+      int capacity = type.ammoCapacity;
+      // +1 capacity if there's an extra bullet chambered outside the magazine
+      if (type.canKeepOneInTheChamber && ammo > 0) capacity++;
+      int load = min(capacity - ammo, magazine.stackSize);
+      magazine.stackSize -= load;
       return true;
     } else {
       return false;

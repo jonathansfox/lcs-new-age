@@ -14,77 +14,66 @@
             <description>Buy a Combat Knife</description>
             <type>WEAPON_COMBATKNIFE</type>
             <letter>o</letter>
-            <price>30</price>
         </item>
         <item>
             <class>WEAPON</class>
             <description>Buy a Shotgun</description>
             <type>WEAPON_PUMP_SHOTGUN</type>
             <letter>g</letter>
-            <price>400</price>
         </item>
         <item>
             <class>WEAPON</class>
-            <description>Buy a .38 Revolver</description>
+            <description>Buy a .22 Revolver</description>
             <type>WEAPON_22_REVOLVER</type>
             <letter>t</letter>
-            <price>150</price>
         </item>
         <item>
             <class>WEAPON</class>
             <description>Buy a 9mm Semi-automatic</description>
             <type>WEAPON_9MM_HANDGUN</type>
             <letter>n</letter>
-            <price>300</price>
         </item>
         <item>
             <class>WEAPON</class>
             <description>Buy a .45 Semi-automatic</description>
             <type>WEAPON_45_HANDGUN</type>
             <letter>f</letter>
-            <price>300</price>
         </item>
         <item>
             <class>WEAPON</class>
             <description>Buy a .44 Magnum</description>
-            <type>WEAPON_44_MAGNUM</type>
+            <type>WEAPON_44_REVOLVER</type>
             <letter>m</letter>
-            <price>300</price>
         </item>
         <item>
             <class>WEAPON</class>
             <description>Buy a Civilian AR-15</description>
             <type>WEAPON_AR15</type>
             <letter>r</letter>
-            <price>350</price>
         </item>
         <item>
             <class>WEAPON</class>
             <description>Buy a 9mm MP5 SMG</description>
             <type>WEAPON_MP5</type>
             <letter>s</letter>
-            <price>1200</price>
         </item>
         <item>
             <class>WEAPON</class>
             <description>Buy an M4 Carbine</description>
             <type>WEAPON_M4</type>
             <letter>c</letter>
-            <price>1400</price>
         </item>
         <item>
             <class>WEAPON</class>
             <description>Buy an M7 Rifle</description>
             <type>WEAPON_M7</type>
             <letter>a</letter>
-            <price>1400</price>
         </item>
         <item>
             <class>WEAPON</class>
             <description>Buy an AK102</description>
             <type>WEAPON_AK102</type>
             <letter>k</letter>
-            <price>1500</price>
         </item>
     </department>
 
@@ -120,7 +109,7 @@
         </item>
         <item>
             <class>AMMO</class>
-            <type>AMMO_558</type>
+            <type>AMMO_556</type>
             <letter>r</letter>
         </item>
         <item>
@@ -140,28 +129,24 @@
             <description>Buy a Crowbar</description>
             <type>WEAPON_CROWBAR</type>
             <letter>c</letter>
-            <price>20</price>
         </item>
         <item>
             <class>WEAPON</class>
             <description>Buy Spray Paint</description>
             <type>WEAPON_SPRAYCAN</type>
             <letter>s</letter>
-            <price>20</price>
         </item>
         <item>
             <class>WEAPON</class>
             <description>Buy a Guitar</description>
             <type>WEAPON_GUITAR</type>
             <letter>g</letter>
-            <price>200</price>
         </item>
         <item>
             <class>WEAPON</class>
             <description>Buy Bottle, Rag &amp; Gasoline</description>
             <type>WEAPON_MOLOTOV</type>
             <letter>m</letter>
-            <price>40</price>
         </item>
     </department>
 

@@ -10,6 +10,7 @@ import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/gamestate/ledger.dart';
 import 'package:lcs_new_age/gamestate/squad.dart';
 import 'package:lcs_new_age/items/ammo.dart';
+import 'package:lcs_new_age/items/ammo_type.dart';
 import 'package:lcs_new_age/items/clothing.dart';
 import 'package:lcs_new_age/items/clothing_type.dart';
 import 'package:lcs_new_age/items/item.dart';
@@ -46,6 +47,13 @@ class ShopItem extends ShopOption {
   final int _price;
   int price(bool sleeper) {
     int scale = 1;
+    int basePrice = sleeper ? sleeperprice : _price;
+    if (basePrice == 0 && itemClass == "WEAPON") {
+      basePrice = weaponTypes[itemId]!.price;
+    }
+    if (basePrice == 0 && itemClass == "AMMO") {
+      basePrice = ammoTypes[itemId]!.boxPrice;
+    }
     if (parentShop.increasePricesWithIllegality && itemClass == "WEAPON") {
       WeaponType weaponType = weaponTypes[itemId]!;
       scale = laws[Law.gunControl]!.index -
@@ -53,10 +61,7 @@ class ShopItem extends ShopOption {
           2;
       if (scale < 1) scale = 1;
     }
-    if (sleeper) {
-      return sleeperprice * scale;
-    }
-    return _price * scale;
+    return basePrice * scale;
   }
 
   final Shop parentShop;
@@ -95,6 +100,7 @@ class ShopItem extends ShopOption {
         case "AMMO":
         case "CLIP":
           Ammo i = Ammo(itemId);
+          i.stackSize = i.type.boxSize;
           buyer.takeAmmo(i, buyer.base?.loot, 1);
           if (i.stackSize > 0) buyer.base?.loot.add(i);
         case "ARMOR":

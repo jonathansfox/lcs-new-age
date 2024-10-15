@@ -74,19 +74,16 @@
 			<class>WEAPON</class>
 			<description>Buy some Chain</description>
 			<type>WEAPON_CHAIN</type>
-			<price>15</price>
 		</item>
 		<item>
 			<class>WEAPON</class>
 			<description>Buy a Prybar</description>
 			<type>WEAPON_CROWBAR</type>
-			<price>15</price>
 		</item>
 		<item>
 			<class>WEAPON</class>
 			<description>Buy an Axe</description>
 			<type>WEAPON_AXE</type>
-			<price>30</price>
 		</item>
 	</department>
 
@@ -100,42 +97,36 @@
 			<description>Buy a Baseball Bat</description>
 			<type>WEAPON_BASEBALLBAT</type>
 			<letter>L</letter>
-			<price>25</price>
 		</item>
 		<item>
 			<class>WEAPON</class>
 			<description>Buy a MP5 SMG</description>
-			<type>WEAPON_MP5_SMG</type>
+			<type>WEAPON_MP5</type>
 			<letter>P</letter>
-			<price>1100</price>
 		</item>
 		<item>
 			<class>WEAPON</class>
 			<description>Buy a .44 Magnum</description>
-			<type>WEAPON_44_MAGNUM</type>
+			<type>WEAPON_44_REVOLVER</type>
 			<letter>F</letter>
-			<price>500</price>
 		</item>
 		<item>
 			<class>WEAPON</class>
 			<description>Buy a Civilian AR-15</description>
 			<type>WEAPON_AR15</type>
 			<letter>R</letter>
-			<price>450</price>
 		</item>
 		<item>
 			<class>WEAPON</class>
 			<description>Buy a .50AE Desert Eagle</description>
 			<type>WEAPON_DESERT_EAGLE</type>
 			<letter>D</letter>
-			<price>1200</price>
 		</item>
 		<item>
 			<class>WEAPON</class>
 			<description>Buy an M4 Carbine</description>
 			<type>WEAPON_M4</type>
 			<letter>M</letter>
-			<price>1500</price>
 		</item>
 	</department>
 	<department>
@@ -147,31 +138,26 @@
 			<class>AMMO</class>
 			<type>AMMO_44</type>
 			<letter>m</letter>
-			<price>40</price>
 		</item>
 		<item>
 			<class>AMMO</class>
 			<type>AMMO_9MM</type>
 			<letter>s</letter>
-			<price>50</price>
 		</item>
 		<item>
 			<class>AMMO</class>
-			<type>AMMO_558</type>
+			<type>AMMO_556</type>
 			<letter>r</letter>
-			<price>50</price>
 		</item>
 		<item>
 			<class>AMMO</class>
 			<type>AMMO_50AE</type>
 			<letter>f</letter>
-			<price>100</price>
 		</item>
 		<item>
 			<class>AMMO</class>
 			<type>AMMO_68</type>
 			<letter>d</letter>
-			<price>500</price>
 		</item>
 	</department>
 </shop>

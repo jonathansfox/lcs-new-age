@@ -118,49 +118,42 @@
             <type>WEAPON_DAGGER</type>
             <letter>k</letter>
             <description>Buy a Dagger</description>
-            <price>20</price>
         </item>
         <item>
             <class>WEAPON</class>
             <type>WEAPON_SWORD</type>
             <letter>s</letter>
             <description>Buy the Sword of Morfiegor</description>
-            <price>250</price>
         </item>
         <item>
             <class>WEAPON</class>
             <type>WEAPON_DAISHO</type>
             <letter>a</letter>
             <description>Buy a Katana and Wakizashi</description>
-            <price>250</price>
         </item>
         <item>
             <class>WEAPON</class>
             <type>WEAPON_HAMMER</type>
             <letter>h</letter>
             <description>Buy a Dwarven Hammer</description>
-            <price>250</price>
         </item>
         <item>
             <class>WEAPON</class>
             <type>WEAPON_MAUL</type>
             <letter>m</letter>
             <description>Buy the Maul of Anrin</description>
-            <price>250</price>
         </item>
         <item>
             <class>WEAPON</class>
             <type>WEAPON_CROSS</type>
             <letter>c</letter>
             <description>Buy a Silver Cross</description>
-            <price>250</price>
         </item>
         <item>
             <class>WEAPON</class>
             <type>WEAPON_STAFF</type>
             <letter>w</letter>
             <description>Buy a Wizard's Staff</description>
-            <price>250</price>
         </item>
         <item>
             <class>ARMOR</class>

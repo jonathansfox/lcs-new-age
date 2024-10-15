@@ -72,7 +72,7 @@
         <boxprice>30</boxprice>
     </ammotype>
 
-    <ammotype idname="AMMO_558">
+    <ammotype idname="AMMO_556">
         <name>5.56 NATO Ammo</name>
         <name_future>5.56 Powerpack</name_future>
         <cartridge>CARTRIDGE_556</cartridge>

@@ -59,6 +59,10 @@ ShopItem? parseShopItem(XmlElement xml, Shop shop) {
         letter = element.innerText;
     }
   }
+  // Item types that can set their own price
+  if (itemClass == "WEAPON" || itemClass == "AMMO") {
+    price ??= 0;
+  }
   if (itemClass != null && itemId != null && price != null) {
     return ShopItem(itemClass, itemId, price, shop)
       ..description = description

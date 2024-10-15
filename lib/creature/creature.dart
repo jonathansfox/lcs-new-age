@@ -316,7 +316,9 @@ class Creature {
 
   bool reload(bool wasteful) {
     Item? ammo = spareAmmo;
-    if (canReload() && (wasteful || weapon.ammo == 0) && ammo is Ammo) {
+    if (canReload() &&
+        (weapon.ammo < weapon.type.ammoCapacity) &&
+        ammo is Ammo) {
       bool r = weapon.reload(ammo);
       if (ammo.stackSize == 0) spareAmmo = null;
       return r;
@@ -636,7 +638,7 @@ class Creature {
     giveArmor(Clothing(clothingTypeString));
   }
 
-  void giveWeaponAndAmmo(String weaponTypeString, int ammo,
+  void giveWeaponAndAmmo(String weaponTypeString, int magsOfAmmo,
       {List<Item>? lootPile}) {
     dropWeaponAndAmmo(lootPile: lootPile);
     if (weaponTypeString == "WEAPON_NONE" || weaponTypeString.isEmpty) return;
@@ -647,12 +649,14 @@ class Creature {
       return;
     }
     giveWeapon(Weapon.fromType(weaponType, fullammo: true));
-    if (ammo > 1 && (weapon.type.usesAmmo || weapon.type.thrown)) {
+    if (magsOfAmmo > 1 && (weapon.type.usesAmmo || weapon.type.thrown)) {
       AmmoType? ammoType = weaponType.acceptableAmmo.firstOrNull;
       if (ammoType != null) {
-        spareAmmo = Ammo(ammoType.idName, stackSize: ammo - 1);
+        spareAmmo = Ammo(ammoType.idName,
+            stackSize: magsOfAmmo * weaponType.ammoCapacity - 1);
       } else if (weaponType.thrown) {
-        spareAmmo = Weapon(weaponType.idName, stackSize: ammo - 1);
+        spareAmmo = Weapon(weaponType.idName,
+            stackSize: magsOfAmmo * weaponType.ammoCapacity - 1);
       }
     }
   }
@@ -699,7 +703,8 @@ class Creature {
     if (weapon.acceptableAmmo.contains(ammo.type)) {
       Item? spare = spareAmmo;
       if (spare != null && spare.type == ammo.type) {
-        int numToTake = min(count, 9 - spare.stackSize);
+        int numToTake =
+            min(count, 9 * weapon.type.ammoCapacity - spare.stackSize);
         if (numToTake > 0) {
           spare.stackSize += numToTake;
           ammo.stackSize -= numToTake;
