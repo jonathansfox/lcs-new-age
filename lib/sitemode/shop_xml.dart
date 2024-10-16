@@ -10,8 +10,20 @@ void parseShop(Shop shop, XmlElement xml) {
       case "only_sell_legal_items":
         shop.onlySellLegalItems =
             parseBool(element.innerText) ?? shop.onlySellLegalItems;
-      case "fullscreen":
-        shop.fullscreen = parseBool(element.innerText) ?? shop.fullscreen;
+      case "ui":
+        switch (element.innerText.toLowerCase()) {
+          case "standard":
+            shop.ui = ShopUI.standard;
+          case "fullscreen":
+            shop.ui = ShopUI.fullscreen;
+          case "weapons":
+            shop.ui = ShopUI.weapons;
+          case "ammo":
+            shop.ui = ShopUI.ammo;
+          case "clothing":
+          case "clothes":
+            shop.ui = ShopUI.clothes;
+        }
       case "allow_selling":
         shop.allowSelling = parseBool(element.innerText) ?? shop.allowSelling;
       case "increase_prices_with_illegality":

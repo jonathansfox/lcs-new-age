@@ -32,7 +32,7 @@ class ClothingType extends ItemType {
   int interrogationAssaultBonus = 0;
   int interrogationDrugBonus = 0;
   int professionalism = 0;
-  int concealWeaponSize = 5;
+  int concealWeaponSize = 1;
   bool mask = false;
   bool surpriseMask = false;
   int durability = 1;

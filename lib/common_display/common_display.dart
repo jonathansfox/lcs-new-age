@@ -64,10 +64,10 @@ void makeDelimiter({int y = 8}) {
   mvaddstrc(y, 0, lightGray, "".padRight(console.width, emDash));
 }
 
-void addHeader(Map<int, String> items) {
-  makeDelimiter(y: 1);
+void addHeader(Map<int, String> items, {int y = 1}) {
+  makeDelimiter(y: y);
   for (MapEntry entry in items.entries) {
-    mvaddstr(1, entry.key, entry.value);
+    mvaddstr(y, entry.key, entry.value);
   }
 }
 
@@ -652,28 +652,34 @@ Future<void> pagedInterface({
   String headerPrompt = "",
   Map<int, String> headerKey = const {},
   String footerPrompt = "",
+  int pageSize = 19,
+  int topY = 0,
   required int count,
   required void Function(int y, String key, int index) lineBuilder,
   required void Function(int index) onChoice,
   bool Function(int key)? onOtherKey,
 }) async {
   int page = 0;
-  erase();
-  mvaddstrc(0, 0, white, headerPrompt);
-  addHeader(headerKey);
-  mvaddstrc(22, 0, lightGray, footerPrompt);
-  if (count > 19) mvaddstr(23, 0, pageStr);
+  if (topY == 0) {
+    erase();
+  } else {
+    eraseArea(startY: topY, startX: 0, endY: pageSize + 4 + topY, endX: 80);
+  }
+  mvaddstrc(topY, 0, white, headerPrompt);
+  addHeader(headerKey, y: topY + 1);
+  mvaddstrc(pageSize + 3 + topY, 0, lightGray, footerPrompt);
+  if (count > pageSize) mvaddstr(pageSize + 4 + topY, 0, pageStr);
   while (true) {
-    eraseArea(startY: 2, startX: 0, endY: 21, endX: 80);
-    for (int i = 0; i + page * 19 < count && i < 19; i++) {
-      lineBuilder(i + 2, letterAPlus(i), i + page * 19);
+    eraseArea(startY: 2 + topY, startX: 0, endY: pageSize + 2, endX: 80);
+    for (int i = 0; i + page * pageSize < count && i < pageSize; i++) {
+      lineBuilder(i + 2 + topY, letterAPlus(i), i + page * pageSize);
     }
 
     int c = await getKey();
     if (isPageUp(c) && page > 0) page--;
-    if (isPageDown(c) && (page + 1) * 19 < count) page++;
-    if (c >= Key.a && c < Key.a + 19) {
-      int index = page * 19 + c - Key.a;
+    if (isPageDown(c) && (page + 1) * pageSize < count) page++;
+    if (c >= Key.a && c < Key.a + pageSize) {
+      int index = page * pageSize + c - Key.a;
       if (index < count) {
         onChoice(index);
         return;

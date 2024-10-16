@@ -67,14 +67,15 @@ class Weapon extends Item {
   }
 
   bool reload(Ammo magazine) {
+    int capacity = type.ammoCapacity;
+    if (type.canKeepOneInTheChamber && ammo > 0) capacity++;
     if (acceptableCartridge.contains(magazine.type.cartridge) &&
-        (ammo < type.ammoCapacity)) {
+        ammo < capacity) {
       loadedAmmoType = magazine.type;
-      int capacity = type.ammoCapacity;
       // +1 capacity if there's an extra bullet chambered outside the magazine
-      if (type.canKeepOneInTheChamber && ammo > 0) capacity++;
       int load = min(capacity - ammo, magazine.stackSize);
       magazine.stackSize -= load;
+      ammo += load;
       return true;
     } else {
       return false;

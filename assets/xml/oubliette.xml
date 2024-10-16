@@ -33,141 +33,117 @@
     
     -->
     <only_sell_legal_items>true</only_sell_legal_items>
-    <fullscreen>false</fullscreen>
     <allow_selling>false</allow_selling>
     <exit>Leave</exit>
 
     <department>
         <entry>Purchase Halloween Costumes</entry>
         <letter>c</letter>
-        <fullscreen>false</fullscreen>
+        <ui>clothes</ui>
         <exit>Done</exit>
         <item>
             <class>ARMOR</class>
             <type>CLOTHING_TRENCHCOAT</type>
-            <letter>t</letter>
-            <description>Buy a Trench Coat</description>
             <price>70</price>
         </item>
         <item>
             <class>ARMOR</class>
             <type>CLOTHING_WORKCLOTHES</type>
-            <letter>w</letter>
-            <description>Buy Work Clothes</description>
             <price>50</price>
         </item>
         <item>
             <class>ARMOR</class>
             <type>CLOTHING_LABCOAT</type>
-            <letter>l</letter>
-            <description>Buy a Lab Coat</description>
             <price>200</price>
         </item>
         <item>
             <class>ARMOR</class>
             <type>CLOTHING_BLACKROBE</type>
-            <letter>r</letter>
-            <description>Buy a Black Judge's Robe</description>
             <price>200</price>
         </item>
         <item>
             <class>ARMOR</class>
             <type>CLOTHING_CLOWNSUIT</type>
-            <letter>c</letter>
-            <description>Buy a Clown Suit</description>
             <price>200</price>
         </item>
         <item>
             <class>ARMOR</class>
             <type>CLOTHING_BONDAGEGEAR</type>
-            <letter>g</letter>
-            <description>Buy Bondage Gear</description>
             <price>350</price>
         </item>
         <item>
             <class>ARMOR</class>
             <type>CLOTHING_TOGA</type>
-            <letter>o</letter>
-            <description>Buy a Toga</description>
             <price>90</price>
         </item>
         <item>
             <class>ARMOR</class>
             <type>CLOTHING_ELEPHANTSUIT</type>
-            <letter>p</letter>
-            <description>Buy an Elephant Suit</description>
             <price>1000</price>
         </item>
         <item>
             <class>ARMOR</class>
             <type>CLOTHING_DONKEYSUIT</type>
-            <letter>d</letter>
-            <description>Buy a Donkey Suit</description>
             <price>1000</price>
         </item>
         <!-- +Masks! -->
     </department>
 
     <department>
-        <entry>Purchase Medieval Gear</entry>
-        <letter>m</letter>
-        <fullscreen>false</fullscreen>
+        <entry>Purchase Medieval Armor</entry>
+        <letter>a</letter>
+        <ui>clothes</ui>
         <exit>Done</exit>
-        <item>
-            <class>WEAPON</class>
-            <type>WEAPON_DAGGER</type>
-            <letter>k</letter>
-            <description>Buy a Dagger</description>
-        </item>
-        <item>
-            <class>WEAPON</class>
-            <type>WEAPON_SWORD</type>
-            <letter>s</letter>
-            <description>Buy the Sword of Morfiegor</description>
-        </item>
-        <item>
-            <class>WEAPON</class>
-            <type>WEAPON_DAISHO</type>
-            <letter>a</letter>
-            <description>Buy a Katana and Wakizashi</description>
-        </item>
-        <item>
-            <class>WEAPON</class>
-            <type>WEAPON_HAMMER</type>
-            <letter>h</letter>
-            <description>Buy a Dwarven Hammer</description>
-        </item>
-        <item>
-            <class>WEAPON</class>
-            <type>WEAPON_MAUL</type>
-            <letter>m</letter>
-            <description>Buy the Maul of Anrin</description>
-        </item>
-        <item>
-            <class>WEAPON</class>
-            <type>WEAPON_CROSS</type>
-            <letter>c</letter>
-            <description>Buy a Silver Cross</description>
-        </item>
-        <item>
-            <class>WEAPON</class>
-            <type>WEAPON_STAFF</type>
-            <letter>w</letter>
-            <description>Buy a Wizard's Staff</description>
-        </item>
         <item>
             <class>ARMOR</class>
             <type>CLOTHING_LEATHER</type>
-            <letter>L</letter>
-            <description>Buy Leather Armor</description>
             <price>800</price>
+        </item>
+        <item>
+            <class>ARMOR</class>
+            <type>CLOTHING_STEELHAUBERK</type>
+            <price>1000</price>
         </item>
         <item>
             <class>ARMOR</class>
             <type>CLOTHING_MITHRIL</type>
             <letter>!</letter>            <!-- Not a letter! -->
-            <description>Buy Mithril Mail</description>
-            <price>1000</price>
+            <price>150000</price>
+        </item>
+    </department>
+
+    <department>
+        <entry>Purchase Medieval Weapons</entry>
+        <letter>m</letter>
+        <ui>weapons</ui>
+        <exit>Done</exit>
+        <item>
+            <class>WEAPON</class>
+            <type>WEAPON_DAGGER</type>
+        </item>
+        <item>
+            <class>WEAPON</class>
+            <type>WEAPON_SWORD</type>
+        </item>
+        <item>
+            <class>WEAPON</class>
+            <type>WEAPON_DAISHO</type>
+        </item>
+        <item>
+            <class>WEAPON</class>
+            <type>WEAPON_HAMMER</type>
+        </item>
+        <item>
+            <class>WEAPON</class>
+            <type>WEAPON_MAUL</type>
+        </item>
+        <item>
+            <class>WEAPON</class>
+            <type>WEAPON_CROSS</type>
+        </item>
+        <item>
+            <class>WEAPON</class>
+            <type>WEAPON_STAFF</type>
         </item>
     </department>
 </shop>

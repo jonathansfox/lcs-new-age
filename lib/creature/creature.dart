@@ -316,9 +316,9 @@ class Creature {
 
   bool reload(bool wasteful) {
     Item? ammo = spareAmmo;
-    if (canReload() &&
-        (weapon.ammo < weapon.type.ammoCapacity) &&
-        ammo is Ammo) {
+    int capacity = weapon.type.ammoCapacity;
+    if (weapon.type.canKeepOneInTheChamber && weapon.ammo > 0) capacity++;
+    if (canReload() && (weapon.ammo < capacity) && ammo is Ammo) {
       bool r = weapon.reload(ammo);
       if (ammo.stackSize == 0) spareAmmo = null;
       return r;
@@ -711,7 +711,11 @@ class Creature {
         }
       } else {
         dropAmmo(lootPile: lootPile);
-        spareAmmo = ammo.split([9, ammo.stackSize, count].reduce(min)) as Ammo;
+        spareAmmo = ammo.split([
+          9 * weapon.type.ammoCapacity,
+          ammo.stackSize,
+          count
+        ].reduce(min)) as Ammo;
       }
     }
   }

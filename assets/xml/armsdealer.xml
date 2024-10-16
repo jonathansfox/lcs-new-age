@@ -33,7 +33,6 @@
     
     -->
     <only_sell_legal_items>false</only_sell_legal_items>
-    <fullscreen>false</fullscreen>
     <allow_selling>false</allow_selling>
     <increase_prices_with_illegality>true</increase_prices_with_illegality>
     <exit>Leave</exit>
@@ -41,7 +40,7 @@
     <department>
         <entry>Buy a Liberal Gun</entry>
         <letter>g</letter>
-        <fullscreen>true</fullscreen>
+        <ui>weapons</ui>
         <exit>needs no weapon.</exit>
         <item>
             <class>WEAPON</class>
@@ -72,47 +71,39 @@
     <department>
         <entry>Buy Liberal Ammo</entry>
         <letter>c</letter>
-        <fullscreen>false</fullscreen>
+        <ui>ammo</ui>
         <exit>Done buying Liberal ammo</exit>
         <item>
             <class>AMMO</class>
             <type>AMMO_BUCKSHOT</type>
-            <letter>p</letter>
         </item>
         <item>
             <class>AMMO</class>
             <type>AMMO_22</type>
-            <letter>t</letter>
         </item>
         <item>
             <class>AMMO</class>
             <type>AMMO_9MM</type>
-            <letter>n</letter>
         </item>
         <item>
             <class>AMMO</class>
             <type>AMMO_45</type>
-            <letter>f</letter>
         </item>
         <item>
             <class>AMMO</class>
             <type>AMMO_44</type>
-            <letter>m</letter>
         </item>
         <item>
             <class>AMMO</class>
             <type>AMMO_SMG</type>
-            <letter>s</letter>
         </item>
         <item>
             <class>AMMO</class>
             <type>AMMO_556</type>
-            <letter>r</letter>
         </item>
         <item>
             <class>AMMO</class>
             <type>AMMO_68</type>
-            <letter>r</letter>
         </item>
     </department>
 

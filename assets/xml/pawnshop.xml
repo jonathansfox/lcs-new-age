@@ -1,152 +1,147 @@
 <shop name="PAWNSHOP">
     <only_sell_legal_items>true</only_sell_legal_items>
-    <fullscreen>false</fullscreen>
     <allow_selling>true</allow_selling>
     <exit>Leave</exit>
 
     <department>
-        <entry>Buy a Liberal Weapon</entry>
+        <entry>Conservative Guns</entry>
         <letter>g</letter>
-        <fullscreen>false</fullscreen>
-        <exit>Done buying Liberal weapons</exit>
+        <ui>weapons</ui>
         <item>
             <class>WEAPON</class>
-            <description>Buy a Combat Knife</description>
-            <type>WEAPON_COMBATKNIFE</type>
-            <letter>o</letter>
-        </item>
-        <item>
-            <class>WEAPON</class>
-            <description>Buy a Shotgun</description>
-            <type>WEAPON_PUMP_SHOTGUN</type>
-            <letter>g</letter>
-        </item>
-        <item>
-            <class>WEAPON</class>
-            <description>Buy a .22 Revolver</description>
             <type>WEAPON_22_REVOLVER</type>
-            <letter>t</letter>
         </item>
         <item>
             <class>WEAPON</class>
-            <description>Buy a 9mm Semi-automatic</description>
+            <type>WEAPON_22_HANDGUN</type>
+        </item>
+        <item>
+            <class>WEAPON</class>
+            <type>WEAPON_22_SMG</type>
+        </item>
+        <item>
+            <class>WEAPON</class>
             <type>WEAPON_9MM_HANDGUN</type>
-            <letter>n</letter>
         </item>
         <item>
             <class>WEAPON</class>
-            <description>Buy a .45 Semi-automatic</description>
-            <type>WEAPON_45_HANDGUN</type>
-            <letter>f</letter>
-        </item>
-        <item>
-            <class>WEAPON</class>
-            <description>Buy a .44 Magnum</description>
-            <type>WEAPON_44_REVOLVER</type>
-            <letter>m</letter>
-        </item>
-        <item>
-            <class>WEAPON</class>
-            <description>Buy a Civilian AR-15</description>
-            <type>WEAPON_AR15</type>
-            <letter>r</letter>
-        </item>
-        <item>
-            <class>WEAPON</class>
-            <description>Buy a 9mm MP5 SMG</description>
             <type>WEAPON_MP5</type>
-            <letter>s</letter>
         </item>
         <item>
             <class>WEAPON</class>
-            <description>Buy an M4 Carbine</description>
+            <type>WEAPON_45_HANDGUN</type>
+        </item>
+        <item>
+            <class>WEAPON</class>
+            <type>WEAPON_TOMMYGUN</type>
+        </item>
+        <item>
+            <class>WEAPON</class>
+            <type>WEAPON_44_REVOLVER</type>
+        </item>
+        <item>
+            <class>WEAPON</class>
+            <type>WEAPON_DESERT_EAGLE</type>
+        </item>
+        <item>
+            <class>WEAPON</class>
+            <type>WEAPON_PUMP_SHOTGUN</type>
+        </item>
+        <item>
+            <class>WEAPON</class>
+            <type>WEAPON_AR15</type>
+        </item>
+        <item>
+            <class>WEAPON</class>
             <type>WEAPON_M4</type>
-            <letter>c</letter>
         </item>
         <item>
             <class>WEAPON</class>
-            <description>Buy an M7 Rifle</description>
-            <type>WEAPON_M7</type>
-            <letter>a</letter>
-        </item>
-        <item>
-            <class>WEAPON</class>
-            <description>Buy an AK102</description>
             <type>WEAPON_AK102</type>
-            <letter>k</letter>
+        </item>
+        <item>
+            <class>WEAPON</class>
+            <type>WEAPON_M7</type>
+        </item>
+        <item>
+            <class>WEAPON</class>
+            <type>WEAPON_M250_MACHINEGUN</type>
         </item>
     </department>
 
     <department>
-        <entry>Buy Liberal Ammo</entry>
-        <letter>c</letter>
-        <fullscreen>false</fullscreen>
-        <exit>Done buying Liberal ammo</exit>
+        <entry>Ammo Boxes</entry>
+        <letter>a</letter>
+        <ui>ammo</ui>
         <item>
             <class>AMMO</class>
             <type>AMMO_BUCKSHOT</type>
-            <letter>p</letter>
         </item>
         <item>
             <class>AMMO</class>
-            <type>AMMO_38</type>
-            <letter>t</letter>
+            <type>AMMO_22</type>
         </item>
         <item>
             <class>AMMO</class>
             <type>AMMO_9MM</type>
-            <letter>n</letter>
         </item>
         <item>
             <class>AMMO</class>
             <type>AMMO_45</type>
-            <letter>f</letter>
         </item>
         <item>
             <class>AMMO</class>
             <type>AMMO_44</type>
-            <letter>m</letter>
+        </item>
+        <item>
+            <class>AMMO</class>
+            <type>AMMO_50AE</type>
         </item>
         <item>
             <class>AMMO</class>
             <type>AMMO_556</type>
-            <letter>r</letter>
         </item>
         <item>
             <class>AMMO</class>
             <type>AMMO_68</type>
-            <letter>s</letter>
         </item>
     </department>
 
     <department>
-        <entry>Buy Liberal Tools</entry>
+        <entry>Liberal Tools</entry>
         <letter>t</letter>
-        <fullscreen>false</fullscreen>
-        <exit>Done buying Liberal tools</exit>
+        <ui>weapons</ui>
         <item>
             <class>WEAPON</class>
-            <description>Buy a Crowbar</description>
+            <type>WEAPON_COMBATKNIFE</type>
+        </item>
+        <item>
+            <class>WEAPON</class>
+            <type>WEAPON_BASEBALLBAT</type>
+        </item>
+        <item>
+            <class>WEAPON</class>
+            <type>WEAPON_CHAIN</type>
+        </item>
+        <item>
+            <class>WEAPON</class>
+            <type>WEAPON_AXE</type>
+        </item>
+        <item>
+            <class>WEAPON</class>
             <type>WEAPON_CROWBAR</type>
-            <letter>c</letter>
         </item>
         <item>
             <class>WEAPON</class>
-            <description>Buy Spray Paint</description>
             <type>WEAPON_SPRAYCAN</type>
-            <letter>s</letter>
         </item>
         <item>
             <class>WEAPON</class>
-            <description>Buy a Guitar</description>
             <type>WEAPON_GUITAR</type>
-            <letter>g</letter>
         </item>
         <item>
             <class>WEAPON</class>
-            <description>Buy Bottle, Rag &amp; Gasoline</description>
             <type>WEAPON_MOLOTOV</type>
-            <letter>m</letter>
         </item>
     </department>
 

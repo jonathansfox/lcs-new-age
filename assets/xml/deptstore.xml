@@ -1,163 +1,69 @@
 <shop name="DEPARTMENT_STORE">
 	<only_sell_legal_items>true</only_sell_legal_items>
-	<fullscreen>false</fullscreen>
 	<allow_selling>false</allow_selling>
 	<exit>Leave</exit>
 
 	<department>
-		<entry>Clothing</entry>
-		<letter>C</letter>
-		<fullscreen>false</fullscreen>
-		<exit>Done buying Liberal clothing</exit>
+		<entry>Men's Clothing</entry>
+		<letter>m</letter>
+		<ui>clothes</ui>
+		<item>
+			<class>ARMOR</class>
+			<type>CLOTHING_CLOTHES</type>
+			<price>50</price>
+		</item>
 		<item>
 			<class>ARMOR</class>
 			<type>CLOTHING_BLACKCLOTHES</type>
-			<letter>t</letter>
-			<description>Buy a Black Turtleneck</description>
 			<price>50</price>
 		</item>
 		<item>
 			<class>ARMOR</class>
 			<type>CLOTHING_CHEAPSUIT</type>
-			<letter>c</letter>
-			<description>Buy a Cheap Suit</description>
 			<price>400</price>
 		</item>
-
 		<item>
 			<class>ARMOR</class>
 			<type>CLOTHING_EXPENSIVESUIT</type>
-			<letter>v</letter>
-			<description>Buy an Expensive Suit</description>
 			<price>5000</price>
 		</item>
-
 		<item>
 			<class>ARMOR</class>
 			<type>CLOTHING_BLACKSUIT</type>
-			<letter>s</letter>
-			<description>Buy a Black Suit</description>
 			<price>500</price>
 		</item>
-
+	</department>
+	<department>
+		<entry>Women's Clothing</entry>
+		<letter>w</letter>
+		<ui>clothes</ui>
+		<item>
+			<class>ARMOR</class>
+			<type>CLOTHING_CLOTHES</type>
+			<price>50</price>
+		</item>
+		<item>
+			<class>ARMOR</class>
+			<type>CLOTHING_BLACKCLOTHES</type>
+			<price>50</price>
+		</item>
 		<item>
 			<class>ARMOR</class>
 			<type>CLOTHING_CHEAPDRESS</type>
-			<letter>h</letter>
 			<description>Buy a Cheap Dress</description>
 			<price>400</price>
 		</item>
-
 		<item>
 			<class>ARMOR</class>
 			<type>CLOTHING_EXPENSIVEDRESS</type>
-			<letter>d</letter>
 			<description>Buy an Expensive Dress</description>
 			<price>5000</price>
 		</item>
-
 		<item>
 			<class>ARMOR</class>
 			<type>CLOTHING_BLACKDRESS</type>
-			<letter>r</letter>
 			<description>Buy a Black Dress</description>
 			<price>500</price>
-		</item>
-	</department>
-
-	<department>
-		<entry>Hardware</entry>
-		<letter>H</letter>
-		<fullscreen>false</fullscreen>
-		<exit>Done buying Liberal hardware</exit>
-		<item>
-			<class>WEAPON</class>
-			<description>Buy some Chain</description>
-			<type>WEAPON_CHAIN</type>
-		</item>
-		<item>
-			<class>WEAPON</class>
-			<description>Buy a Prybar</description>
-			<type>WEAPON_CROWBAR</type>
-		</item>
-		<item>
-			<class>WEAPON</class>
-			<description>Buy an Axe</description>
-			<type>WEAPON_AXE</type>
-		</item>
-	</department>
-
-	<department>
-		<entry>Sporting Goods</entry>
-		<letter>G</letter>
-		<fullscreen>false</fullscreen>
-		<exit>Done buying Sporting Goods</exit>
-		<item>
-			<class>WEAPON</class>
-			<description>Buy a Baseball Bat</description>
-			<type>WEAPON_BASEBALLBAT</type>
-			<letter>L</letter>
-		</item>
-		<item>
-			<class>WEAPON</class>
-			<description>Buy a MP5 SMG</description>
-			<type>WEAPON_MP5</type>
-			<letter>P</letter>
-		</item>
-		<item>
-			<class>WEAPON</class>
-			<description>Buy a .44 Magnum</description>
-			<type>WEAPON_44_REVOLVER</type>
-			<letter>F</letter>
-		</item>
-		<item>
-			<class>WEAPON</class>
-			<description>Buy a Civilian AR-15</description>
-			<type>WEAPON_AR15</type>
-			<letter>R</letter>
-		</item>
-		<item>
-			<class>WEAPON</class>
-			<description>Buy a .50AE Desert Eagle</description>
-			<type>WEAPON_DESERT_EAGLE</type>
-			<letter>D</letter>
-		</item>
-		<item>
-			<class>WEAPON</class>
-			<description>Buy an M4 Carbine</description>
-			<type>WEAPON_M4</type>
-			<letter>M</letter>
-		</item>
-	</department>
-	<department>
-		<entry>Sporting-Ammo Counter</entry>		<!--Renamed from "Ammunition" at Shade's suggestion. -->
-		<letter>A</letter>
-		<fullscreen>false</fullscreen>
-		<exit>Done buying Liberal ammo</exit>
-		<item>
-			<class>AMMO</class>
-			<type>AMMO_44</type>
-			<letter>m</letter>
-		</item>
-		<item>
-			<class>AMMO</class>
-			<type>AMMO_9MM</type>
-			<letter>s</letter>
-		</item>
-		<item>
-			<class>AMMO</class>
-			<type>AMMO_556</type>
-			<letter>r</letter>
-		</item>
-		<item>
-			<class>AMMO</class>
-			<type>AMMO_50AE</type>
-			<letter>f</letter>
-		</item>
-		<item>
-			<class>AMMO</class>
-			<type>AMMO_68</type>
-			<letter>d</letter>
 		</item>
 	</department>
 </shop>

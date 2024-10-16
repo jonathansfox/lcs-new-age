@@ -159,8 +159,8 @@
       <arms>false</arms>
       <legs>false</legs>
     </body_covering>
-    <name>Black Leather Outfit</name>
-    <shortname>Black Leather</shortname>
+    <name>Black Leather</name>
+    <shortname>Leather</shortname>
     <fencevalue>100</fencevalue>
     <professionalism>1</professionalism>
     <stealth_value>3</stealth_value>
@@ -181,7 +181,6 @@
     <fencevalue>5</fencevalue>
     <professionalism>2</professionalism>
     <stealth_value>3</stealth_value>
-    <conceal_weapon_size>5</conceal_weapon_size>
   </clothingtype>
   <clothingtype idname="CLOTHING_BLACKROBE">
     <make_difficulty>5</make_difficulty>
@@ -228,6 +227,7 @@
     <shortname>Bondage Gear</shortname>
     <fencevalue>60</fencevalue>
     <upgradable>false</upgradable>
+    <conceal_weapon_size>0</conceal_weapon_size>
     <interrogation>
       <basepower>6</basepower>
       <assaultbonus>4</assaultbonus>
@@ -417,10 +417,21 @@
       <arms>true</arms>
       <legs>false</legs>
     </body_covering>
-    <armor_allowed>ARMOR_STEELHAUBERK</armor_allowed>
-    <armor_allowed>ARMOR_MITHRILHAUBERK</armor_allowed>
+    <intrinsic_armor>ARMOR_MITHRILHAUBERK</intrinsic_armor>
     <name>Mithril Mail</name>
     <shortname>Mithril Mail</shortname>
+    <fencevalue>50</fencevalue>
+    <professionalism>1</professionalism>
+    <durability>30</durability>
+  </clothingtype>
+  <clothingtype idname="CLOTHING_STEELHAUBERK">
+    <body_covering>
+      <arms>true</arms>
+      <legs>false</legs>
+    </body_covering>
+    <intrinsic_armor>ARMOR_STEELHAUBERK</intrinsic_armor>
+    <name>Chain Hauberk</name>
+    <shortname>Chainmail</shortname>
     <fencevalue>50</fencevalue>
     <professionalism>1</professionalism>
     <durability>30</durability>
@@ -627,7 +638,7 @@
       <basepower>2</basepower>
     </interrogation>
     <professionalism>2</professionalism>
-    <conceal_weapon_size>10</conceal_weapon_size>
+    <conceal_weapon_size>2</conceal_weapon_size>
   </clothingtype>
   <clothingtype idname="CLOTHING_HARDHAT">
     <make_difficulty>6</make_difficulty>

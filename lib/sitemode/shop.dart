@@ -11,6 +11,7 @@ import 'package:lcs_new_age/gamestate/ledger.dart';
 import 'package:lcs_new_age/gamestate/squad.dart';
 import 'package:lcs_new_age/items/ammo.dart';
 import 'package:lcs_new_age/items/ammo_type.dart';
+import 'package:lcs_new_age/items/attack.dart';
 import 'package:lcs_new_age/items/clothing.dart';
 import 'package:lcs_new_age/items/clothing_type.dart';
 import 'package:lcs_new_age/items/item.dart';
@@ -79,8 +80,18 @@ class ShopItem extends ShopOption {
   bool isAvailable() {
     if (parentShop.onlySellLegalItems) {
       if (itemClass == "WEAPON") {
-        if ((weaponTypes[itemId]!.bannedAtGunControl?.index ?? 99) <
+        if ((weaponTypes[itemId]!.bannedAtGunControl?.index ?? 99) <=
             laws[Law.gunControl]!.index) {
+          return false;
+        }
+      }
+      if (itemClass == "AMMO") {
+        bool legal = weaponTypes.values
+            .where((w) => w.acceptableAmmo.contains(ammoTypes[itemId]!))
+            .any((w) =>
+                (w.bannedAtGunControl?.index ?? 99) >
+                laws[Law.gunControl]!.index);
+        if (!legal) {
           return false;
         }
       }
@@ -101,7 +112,7 @@ class ShopItem extends ShopOption {
         case "CLIP":
           Ammo i = Ammo(itemId);
           i.stackSize = i.type.boxSize;
-          buyer.takeAmmo(i, buyer.base?.loot, 1);
+          buyer.takeAmmo(i, buyer.base?.loot, i.stackSize);
           if (i.stackSize > 0) buyer.base?.loot.add(i);
         case "ARMOR":
           Clothing i = Clothing(itemId);
@@ -114,6 +125,8 @@ class ShopItem extends ShopOption {
   }
 }
 
+enum ShopUI { standard, fullscreen, weapons, ammo, clothes }
+
 class Shop extends ShopOption {
   factory Shop(String id) {
     Shop shop = Shop._()..id = id;
@@ -123,7 +136,7 @@ class Shop extends ShopOption {
   factory Shop.departmentOf(Shop parent) {
     Shop department = Shop._()
       ..onlySellLegalItems = parent.onlySellLegalItems
-      ..fullscreen = parent.fullscreen
+      ..ui = parent.ui
       ..increasePricesWithIllegality = parent.increasePricesWithIllegality;
     return department;
   }
@@ -131,7 +144,8 @@ class Shop extends ShopOption {
 
   String id = "";
   bool onlySellLegalItems = true;
-  bool fullscreen = false;
+
+  ShopUI ui = ShopUI.standard;
   bool increasePricesWithIllegality = false;
   bool allowSelling = false;
   bool sellMasks = false;
@@ -148,10 +162,17 @@ class Shop extends ShopOption {
   }
 
   Future<void> enter(Squad customers, {Creature? buyer}) async {
-    if (fullscreen) {
-      await browseFullscreen(customers, buyer);
-    } else {
-      await browseHalfscreen(customers, buyer);
+    switch (ui) {
+      case ShopUI.standard:
+        await browseHalfscreen(customers, buyer);
+      case ShopUI.fullscreen:
+        await browseFullscreen(customers, buyer);
+      case ShopUI.weapons:
+        await browseWeapons(customers, buyer);
+      case ShopUI.ammo:
+        await browseAmmo(customers, buyer);
+      case ShopUI.clothes:
+        await browseClothes(customers, buyer);
     }
   }
 
@@ -298,56 +319,199 @@ class Shop extends ShopOption {
 
   Future<void> browseFullscreen(Squad customers, Creature? buyer) async {
     buyer ??= customers.members[0];
-    int page = 0;
-
     List<ShopOption> availableOptions =
         options.where((o) => o.display()).toList();
-
-    while (true) {
-      erase();
-      mvaddstrc(0, 0, lightGray, "What will ");
-      addstr(buyer.name);
-      addstr(" buy?");
-      addHeader({4: "PRODUCT NAME", 39: "PRICE"});
-
-      //Write wares and prices
-      for (int p = page * 19, y = 2;
-          p < availableOptions.length && p < page * 19 + 19;
-          p++, y++) {
-        setColorConditional(availableOptions[p].isAvailable());
+    ShopOption? chosenOption;
+    await pagedInterface(
+      headerPrompt: "What will ${buyer.name} buy?",
+      headerKey: {4: "PRODUCT NAME", 39: "PRICE"},
+      footerPrompt: "Press a Letter to select an Option",
+      count: availableOptions.length,
+      lineBuilder: (y, key, index) {
+        setColorConditional(availableOptions[index].isAvailable());
         move(y, 0);
         addchar(letterAPlus(y - 2));
         addstr(" - ");
-        addstr(availableOptions[p].fullscreenDescription());
-        if (availableOptions[p] is ShopItem) {
-          addstr(" (\$${(availableOptions[p] as ShopItem).price(false)})");
+        addstr(availableOptions[index].fullscreenDescription());
+        if (availableOptions[index] is ShopItem) {
+          move(y, 39);
+          addstr("\$${(availableOptions[index] as ShopItem).price(false)}");
         }
-      }
-
-      mvaddstrc(22, 0, lightGray,
-          "Press a Letter to select an option"); //allow customize "option"? -XML
-      mvaddstr(23, 0, pageStr);
-      mvaddstr(24, 0, "Enter - ${buyer.name} $exitText");
-
-      int c = await getKey();
-
-      //PAGE UP
-      if ((isPageUp(c) || c == Key.upArrow || c == Key.leftArrow) && page > 0) {
-        page--;
-      }
-      //PAGE DOWN
-      if ((isPageDown(c) || c == Key.downArrow || c == Key.rightArrow) &&
-          (page + 1) * 19 < availableOptions.length) page++;
-
-      if (c >= Key.a && c <= Key.s) {
-        int p = page * 19 + c - Key.a;
-        if (p < availableOptions.length && availableOptions[p].isAvailable()) {
-          await availableOptions[p].choose(customers, buyer, false);
+      },
+      onChoice: (index) async {
+        if (index < availableOptions.length &&
+            availableOptions[index].isAvailable()) {
+          chosenOption = availableOptions[index];
         }
-        break;
-      }
+      },
+    );
+    if (chosenOption != null) {
+      await chosenOption!.choose(customers, buyer, false);
+    }
+  }
 
-      if (isBackKey(c)) break;
+  Future<void> browseWeapons(Squad customers, Creature? buyer) async {
+    buyer ??= customers.members[0];
+    List<ShopOption> availableOptions =
+        options.where((o) => o.display()).toList();
+    ShopOption? chosenOption;
+    bool fullscreen = false;
+    if (availableOptions.length > 5) fullscreen = true;
+    await pagedInterface(
+      headerPrompt: "What will ${buyer.name} buy?",
+      headerKey: {4: "NAME", 20: "AMMO TYPE", 47: "DAMAGE", 59: "PRICE"},
+      footerPrompt: "Press a Letter to buy a Sufficiently Liberal Weapon",
+      count: availableOptions.length * 2,
+      topY: fullscreen ? 0 : 9,
+      pageSize: fullscreen ? 20 : 10,
+      lineBuilder: (y, key, index) {
+        int i = index ~/ 2;
+        bool descriptionLine = index % 2 == 1;
+        WeaponType weapon =
+            weaponTypes[(availableOptions[i] as ShopItem).itemId]!;
+        if (descriptionLine) {
+          setColor(darkGray);
+          move(y, 4);
+          addstr(weapon.description ?? "");
+        } else {
+          setColorConditional(availableOptions[i].isAvailable());
+          move(y, 0);
+          addchar(letterAPlus((y - 2) ~/ 2));
+          addstr(" - ");
+          addstr(weapon.name);
+          move(y, 20);
+          AmmoType? ammo = weapon.acceptableAmmo.firstOrNull;
+          if (ammo != null && weapon.ammoCapacity > 0) {
+            addstr("(${weapon.ammoCapacity}) ");
+          }
+          addstr(ammo?.name ?? "N/A");
+          move(y, 47);
+          Attack attack = weapon.attacks.first;
+          if (attack.usesAmmo) {
+            addstr(ammo?.damage.toString() ?? attack.damage.toString());
+          } else {
+            addstr(attack.damage.toString());
+          }
+          int hits = attack.numberOfAttacks * (ammo?.multihit ?? 1);
+          if (hits > 1) {
+            addstr("x$hits");
+          }
+          move(y, 59);
+          addstr("\$${(availableOptions[i] as ShopItem).price(false)}");
+        }
+      },
+      onChoice: (index) async {
+        if (index < availableOptions.length &&
+            availableOptions[index].isAvailable()) {
+          chosenOption = availableOptions[index];
+        }
+      },
+    );
+    if (chosenOption != null) {
+      await chosenOption!.choose(customers, buyer, false);
+    }
+  }
+
+  Future<void> browseAmmo(Squad customers, Creature? buyer) async {
+    buyer ??= customers.members[0];
+    List<ShopOption> availableOptions =
+        options.where((o) => o.display()).toList();
+    ShopOption? chosenOption;
+    await pagedInterface(
+      headerPrompt: "What will ${buyer.name} buy?",
+      headerKey: {4: "NAME", 24: "DAMAGE", 39: "BOX SIZE", 59: "BOX PRICE"},
+      footerPrompt: "Press a Letter to buy Ammo",
+      topY: 9,
+      pageSize: 10,
+      count: availableOptions.length,
+      lineBuilder: (y, key, index) {
+        AmmoType ammo =
+            ammoTypes[(availableOptions[index] as ShopItem).itemId]!;
+        setColorConditional(availableOptions[index].isAvailable());
+        move(y, 0);
+        addchar(key);
+        addstr(" - ");
+        addstr(ammo.name);
+        move(y, 24);
+        addstr(ammo.damage.toString());
+        if (ammo.multihit > 1) {
+          addstr("x${ammo.multihit}");
+        }
+        move(y, 39);
+        addstr(ammo.boxSize.toString());
+        move(y, 59);
+        addstr("\$${(availableOptions[index] as ShopItem).price(false)}");
+      },
+      onChoice: (index) async {
+        if (index < availableOptions.length &&
+            availableOptions[index].isAvailable()) {
+          chosenOption = availableOptions[index];
+        }
+      },
+    );
+    if (chosenOption != null) {
+      await chosenOption!.choose(customers, buyer, false);
+    }
+  }
+
+  Future<void> browseClothes(Squad customers, Creature? buyer) async {
+    buyer ??= customers.members[0];
+    List<ShopOption> availableOptions =
+        options.where((o) => o.display()).toList();
+    ShopOption? chosenOption;
+    await pagedInterface(
+      headerPrompt: "What will ${buyer.name} buy?",
+      headerKey: {4: "NAME", 24: "SPECIAL TRAITS (IF ANY)", 59: "PRICE"},
+      footerPrompt: "Press a Letter to buy Clothes",
+      count: availableOptions.length,
+      topY: 9,
+      pageSize: 10,
+      lineBuilder: (y, key, index) {
+        ClothingType clothing =
+            clothingTypes[(availableOptions[index] as ShopItem).itemId]!;
+        setColorConditional(availableOptions[index].isAvailable());
+        move(y, 0);
+        addchar(key);
+        addstr(" - ");
+        addstr(clothing.name);
+        move(y, 24);
+        List<String> traits = [];
+        if (clothing.concealsFace) {
+          traits.add("Hides Face");
+        }
+        if (clothing.stealthValue > 1) {
+          if (clothing.stealthValue == 2) {
+            traits.add("Sneaky");
+          } else {
+            traits.add("Very Sneaky");
+          }
+        }
+        if ((clothing.intrinsicArmor?.bodyArmor ?? 0) > 0) {
+          traits.add("Armor [${clothing.intrinsicArmor!.bodyArmor}]");
+        }
+        if (clothing.intrinsicArmor?.fireResistant ?? false) {
+          traits.add("Fire Resistant");
+        }
+        if (clothing.concealWeaponSize >= 3) {
+          traits.add("Hammerspace");
+        } else if (clothing.concealWeaponSize == 2) {
+          traits.add("Spacious");
+        } else if (clothing.concealWeaponSize == 0) {
+          traits.add("No Pockets");
+        }
+        addstr(traits.join(", "));
+        move(y, 59);
+        addstr("\$${(availableOptions[index] as ShopItem).price(false)}");
+      },
+      onChoice: (index) async {
+        if (index < availableOptions.length &&
+            availableOptions[index].isAvailable()) {
+          chosenOption = availableOptions[index];
+        }
+      },
+    );
+    if (chosenOption != null) {
+      await chosenOption!.choose(customers, buyer, false);
     }
   }
 

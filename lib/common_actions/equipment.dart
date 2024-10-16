@@ -187,7 +187,8 @@ Future<void> equip(List<Item>? loot) async {
             if (page * 18 >= loot.length && page != 0) page--;
           } else if (squaddie.weapon.acceptableAmmo.contains(loot[slot].type) &&
               armok > 0) {
-            int space = 9 - (squaddie.spareAmmo?.stackSize ?? 0);
+            int space = 9 * squaddie.weapon.type.ammoCapacity -
+                (squaddie.spareAmmo?.stackSize ?? 0);
 
             if (!squaddie.weapon.type.usesAmmo) {
               errmsg = "Can't carry ammo without a gun.";

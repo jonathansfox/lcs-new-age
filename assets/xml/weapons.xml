@@ -114,7 +114,7 @@
         <threatening>true</threatening>
         <magazine_size>6</magazine_size>
         <banned_at_gun_control>L+</banned_at_gun_control>
-        <description>Old west stylings. Small inexpensive bullets.</description>
+        <description>Old west stylings.  But did cowboys have bullets this small?</description>
         <price>160</price>
         <size>1</size>
         <attack preset="FIRE_GUN">
@@ -125,14 +125,14 @@
     </weapontype>
 
     <weapontype idname="WEAPON_22_HANDGUN">
-        <name>.22 Semiauto</name>
-        <shortname>.22 Semi.</shortname>
+        <name>.22 Pistol</name>
+        <shortname>.22 Pist</shortname>
         <can_take_hostages>true</can_take_hostages>
         <threatening>true</threatening>
         <magazine_size>15</magazine_size>
         <ammo_plus_one>true</ammo_plus_one>
         <banned_at_gun_control>L+</banned_at_gun_control>
-        <description>Marketed for self defense. Very inexpensive ammo.</description>
+        <description>Marketed for self defense.  Inexpensive ammo.  Easy to use.</description>
         <price>350</price>
         <size>1</size>
         <attack preset="FIRE_GUN">
@@ -148,11 +148,10 @@
         <can_take_hostages>true</can_take_hostages>
         <threatening>true</threatening>
         <magazine_size>220</magazine_size>
-        <ammo_plus_one>true</ammo_plus_one>
         <banned_at_gun_control>C</banned_at_gun_control>
         <description>220 round pan magazine, because reloading is for chumps.</description>
         <price>1000</price>
-        <size>1</size>
+        <size>2</size>
         <attack preset="FIRE_GUN">
             <cartridge>CARTRIDGE_22</cartridge>
             <number_attacks>5</number_attacks>
@@ -168,7 +167,7 @@
         <threatening>true</threatening>
         <magazine_size>15</magazine_size>
         <ammo_plus_one>true</ammo_plus_one>
-        <description>Lever action. Fine for shooting bottles and tin cans.</description>
+        <description>Lever action.  Fine for shooting bottles and tin cans.</description>
         <price>350</price>
         <size>2</size>
         <attack preset="FIRE_GUN">
@@ -186,7 +185,7 @@
         <banned_at_gun_control>L</banned_at_gun_control>
         <magazine_size>6</magazine_size>
         <price>850</price>
-        <description>Dirty Harry's preferred gun. Do you feel lucky, punk?</description>
+        <description>Dirty Harry's preferred gun.  Do you feel lucky, punk?</description>
         <size>1</size>
         <attack preset="FIRE_GUN">
             <cartridge>CARTRIDGE_44</cartridge>
@@ -196,15 +195,15 @@
     </weapontype>
 
     <weapontype idname="WEAPON_45_HANDGUN">
-        <name>.45 Semiauto</name>
-        <shortname>.45 Semi.</shortname>
+        <name>.45 Pistol</name>
+        <shortname>.45 Pist</shortname>
         <can_take_hostages>true</can_take_hostages>
         <threatening>true</threatening>
         <banned_at_gun_control>L</banned_at_gun_control>
         <magazine_size>10</magazine_size>
         <ammo_plus_one>true</ammo_plus_one>
         <price>450</price>
-        <description>M1911. US Military sidearm for 74 years.</description>
+        <description>M1911.  US Military sidearm for 74 years.</description>
         <size>1</size>
         <attack preset="FIRE_GUN">
             <cartridge>CARTRIDGE_45</cartridge>
@@ -219,12 +218,9 @@
         <can_take_hostages>true</can_take_hostages>
         <threatening>true</threatening>
         <banned_at_gun_control>C</banned_at_gun_control>
-        <magazine_size>40</magazine_size>
-        <ammo_plus_one>true</ammo_plus_one>
         <price>1500</price>
         <description>Used by Prohibition era gangsters and US troops in WWII.</description>
         <magazine_size>30</magazine_size>
-        <ammo_plus_one>true</ammo_plus_one>
         <size>2</size>
         <attack preset="FIRE_GUN">
             <cartridge>CARTRIDGE_45</cartridge>
@@ -235,15 +231,15 @@
     </weapontype>
 
     <weapontype idname="WEAPON_9MM_HANDGUN">
-        <name>9mm Semiauto</name>
-        <shortname>9mm Semi.</shortname>
+        <name>9mm Pistol</name>
+        <shortname>9mm Pist</shortname>
         <can_take_hostages>true</can_take_hostages>
         <threatening>true</threatening>
         <banned_at_gun_control>L</banned_at_gun_control>
         <magazine_size>15</magazine_size>
         <ammo_plus_one>true</ammo_plus_one>
         <price>500</price>
-        <description>Standard police issue sidearm.</description>
+        <description>One of the many kinds of 9mm pistols carried by police.</description>
         <size>1</size>
         <attack preset="FIRE_GUN">
             <cartridge>CARTRIDGE_9MM</cartridge>
@@ -261,7 +257,7 @@
         <magazine_size>7</magazine_size>
         <ammo_plus_one>true</ammo_plus_one>
         <price>2200</price>
-        <description>More of a hand cannon. Maybe size is everything?</description>
+        <description>More of a hand cannon.  Maybe size is everything?</description>
         <size>1</size>
         <attack preset="FIRE_GUN">
             <cartridge>CARTRIDGE_50AE</cartridge>
@@ -277,8 +273,9 @@
         <threatening>true</threatening>
         <banned_at_gun_control>C</banned_at_gun_control>
         <price>1500</price>
-        <description>A 9mm submachine gun from Germany. Popular with police.</description>
+        <description>A 9mm submachine gun from Germany.  Popular with police.</description>
         <magazine_size>30</magazine_size>
+        <ammo_plus_one>true</ammo_plus_one>
         <size>2</size>
         <attack preset="FIRE_GUN">
             <cartridge>CARTRIDGE_9MM</cartridge>
@@ -294,8 +291,9 @@
         <can_take_hostages>true</can_take_hostages>
         <threatening>true</threatening>
         <price>700</price>
-        <description>Pump action shotgun. Used for hunting and home defense.</description>
-        <magazine_size>7</magazine_size>
+        <description>Pump action shotgun.  Used for hunting and home defense.</description>
+        <magazine_size>6</magazine_size>
+        <ammo_plus_one>true</ammo_plus_one>
         <size>3</size>
         <attack preset="FIRE_GUN">
             <cartridge>CARTRIDGE_12GA</cartridge>
@@ -311,7 +309,6 @@
         <threatening>true</threatening>
         <banned_at_gun_control>C</banned_at_gun_control>
         <magazine_size>32</magazine_size>
-        <ammo_plus_one>true</ammo_plus_one>
         <price>3250</price>
         <size>3</size>
         <attack preset="FIRE_GUN">
@@ -331,7 +328,7 @@
         <magazine_size>30</magazine_size>
         <ammo_plus_one>true</ammo_plus_one>
         <price>1800</price>
-        <description>Modern Russian export chambered for NATO rounds. Full auto.</description>
+        <description>Modern Russian export chambered for NATO rounds.  Full auto.</description>
         <size>2</size>
         <attack preset="FIRE_GUN">
             <cartridge>CARTRIDGE_556</cartridge>
@@ -350,7 +347,7 @@
         <magazine_size>30</magazine_size>
         <ammo_plus_one>true</ammo_plus_one>
         <price>1500</price>
-        <description>America's favorite rifle, featured in many school shootings.</description>
+        <description>America's favorite rifle, featured in countless school shootings.</description>
         <size>3</size>
         <attack preset="FIRE_GUN">
             <cartridge>CARTRIDGE_556</cartridge>
@@ -368,8 +365,8 @@
         <magazine_size>30</magazine_size>
         <ammo_plus_one>true</ammo_plus_one>
         <price>2200</price>
-        <description>US Military standard issue. Full auto.</description>
-        <size>15</size>
+        <description>US Military standard issue.  Full auto.</description>
+        <size>3</size>
         <attack preset="FIRE_GUN">
             <cartridge>CARTRIDGE_556</cartridge>
             <number_attacks>3</number_attacks>
@@ -423,6 +420,7 @@
         <banned_at_gun_control>C+</banned_at_gun_control>
         <magazine_size>2</magazine_size>
         <price>5000</price>
+        <description>Where the hell did they get one of these?</description>
         <size>4</size>
         <attack>
             <priority>1</priority>
@@ -445,7 +443,8 @@
         <shortname>Molotov</shortname>
         <threatening>true</threatening>
         <price>20</price>
-        <size>15</size>
+        <description>Nobody sells them, but here's everything you need to make one...</description>
+        <size>4</size>
         <attack>
             <priority>1</priority>
             <ranged>true</ranged>
@@ -468,6 +467,7 @@
         <can_take_hostages>true</can_take_hostages>
         <threatening>true</threatening>
         <price>50</price>
+        <description>A solid fireaxe.</description>
         <size>3</size>
         <attack>
             <priority>1</priority>
@@ -485,6 +485,7 @@
         <shortname>Bat</shortname>
         <threatening>true</threatening>
         <price>40</price>
+        <description>For breaking legs.  Not as unsuspicious as you'd hope.</description>
         <size>3</size>
         <attack>
             <priority>1</priority>
@@ -500,6 +501,7 @@
         <shortname>Chain</shortname>
         <can_take_hostages>true</can_take_hostages>
         <price>50</price>
+        <description>A length of chain.  Could be used as a weapon.</description>
         <suspicious>false</suspicious>
         <size>2</size>
         <attack>
@@ -516,6 +518,7 @@
         <can_take_hostages>true</can_take_hostages>
         <threatening>true</threatening>
         <price>60</price>
+        <description>For stealthy takedowns and flurried slashes.</description>
         <size>1</size>
         <attack>
             <attack_description>lunges at</attack_description>
@@ -533,6 +536,7 @@
         <name>Silver Cross</name>
         <shortname>Cross</shortname>
         <price>150</price>
+        <description>Holy symbol of Christianity.  Not an effective weapon, but unsuspicious.</description>
         <suspicious>false</suspicious>
         <size>1</size>
         <attack>
@@ -546,6 +550,7 @@
     <weapontype idname="WEAPON_CROWBAR">
         <name>Crowbar</name>
         <price>15</price>
+        <description>Can be used to pry doors off their hinges.</description>
         <auto_break_locks>true</auto_break_locks>
         <size>3</size>
         <attack>
@@ -562,6 +567,7 @@
         <can_take_hostages>true</can_take_hostages>
         <threatening>true</threatening>
         <price>60</price>
+        <description>For stealthy takedowns and flurried stabs.</description>
         <size>1</size>
         <attack>
             <attack_description>lunges at</attack_description>
@@ -581,7 +587,7 @@
         <price>20</price>
         <suspicious>false</suspicious>
         <protects_against_kidnapping>false</protects_against_kidnapping>
-        <size>5</size>
+        <size>1</size>
         <attack>
             <priority>1</priority>
             <attack_description>swings at</attack_description>
@@ -595,6 +601,7 @@
         <musical_attack>true</musical_attack>
         <instrument>true</instrument>
         <price>150</price>
+        <description>Play in combat to stun enemies and maybe even convert them.</description>
         <suspicious>false</suspicious>
         <can_threaten_hostages>false</can_threaten_hostages>
         <size>3</size>
@@ -611,7 +618,8 @@
         <shortname>Hammer</shortname>
         <threatening>true</threatening>
         <price>120</price>
-        <size>3</size>
+        <description>An engraved hammer with a short shaft, inspired by Mjölnir.</description>
+        <size>1</size>
         <attack>
             <priority>1</priority>
             <attack_description>swings at</attack_description>
@@ -626,6 +634,7 @@
         <shortname>Maul</shortname>
         <threatening>true</threatening>
         <price>200</price>
+        <description>A mighty hammer at the end of a six foot rod.</description>
         <size>3</size>
         <attack>
             <priority>1</priority>
@@ -685,7 +694,7 @@
         <shortname>Spray Can</shortname>
         <graffiti>true</graffiti>
         <price>10</price>
-        <description>Graffiti artist's loadout of choice.</description>
+        <description>Can be used to tag walls in site actions.</description>
         <suspicious>false</suspicious>
         <size>1</size>
         <attack>
@@ -701,6 +710,7 @@
         <shortname>Staff</shortname>
         <threatening>true</threatening>
         <price>100</price>
+        <description>Morfiegor!  Vas Flam!  Wizard training not included.</description>
         <size>4</size>
         <attack>
             <priority>1</priority>
@@ -722,6 +732,7 @@
         <can_take_hostages>true</can_take_hostages>
         <threatening>true</threatening>
         <price>300</price>
+        <description>Katana and Wakizashi.  Masame hada.</description>
         <size>3</size>
         <attack>
             <priority>1</priority>
@@ -734,12 +745,13 @@
     </weapontype>
 
     <weapontype idname="WEAPON_SWORD">
-        <name>Sword of Morfiegor</name>
+        <name>German Sword</name>
         <shortname>Sword</shortname>
         <can_take_hostages>true</can_take_hostages>
         <threatening>true</threatening>
         <price>300</price>
-        <size>3</size>
+        <description>Large and well balanced, with a long two-handed hilt.</description>
+        <size>4</size>
         <attack>
             <priority>1</priority>
             <attack_description>slashes at</attack_description>
@@ -768,7 +780,7 @@
         <name>Torch</name>
         <threatening>true</threatening>
         <price>10</price>
-        <size>3</size>        <!-- You can't conceal a burning torch under your clothes. -->
+        <size>4</size>        <!-- You can't conceal a burning torch under your clothes. -->
         <attack>
             <priority>1</priority>
             <attack_description>swings at</attack_description>
