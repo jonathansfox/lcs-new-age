@@ -11,7 +11,7 @@ class ClothingType extends ItemType {
     clothingTypes[id] = this;
   }
 
-  int makeDifficulty = 0;
+  int makeDifficulty = -1;
   int makePrice = 0;
   bool deathsquadLegality = false;
   bool canGetBloody = true;
@@ -45,10 +45,59 @@ class ClothingType extends ItemType {
   ArmorUpgrade? get intrinsicArmor => armorUpgrades[intrinsicArmorId];
   String? intrinsicArmorId;
   bool allowVisibleArmor = false;
-  Iterable<ArmorUpgrade> get allowedArmor =>
-      allowedArmorIds.map((id) => armorUpgrades[id]).nonNulls;
+  Iterable<ArmorUpgrade> get allowedArmor {
+    List<ArmorUpgrade> armors = [];
+    if (intrinsicArmorId != null) {
+      armors.add(armorUpgrades[intrinsicArmorId]!);
+    } else {
+      armors.add(armorUpgrades.values.first);
+    }
+    armors.addAll(allowedArmorIds
+        .map((id) => armorUpgrades[id]!)
+        .where((a) => !armors.contains(a)));
+    if (upgradable && intrinsicArmorId == null) {
+      if (allowVisibleArmor) {
+        armors.addAll(armorUpgrades.values
+            .where((a) => a.visible && !a.restricted && !armors.contains(a)));
+      }
+      armors.addAll(armorUpgrades.values
+          .where((a) => !a.visible && !a.restricted && !armors.contains(a)));
+    }
+    return armors;
+  }
+
   List<String> allowedArmorIds = [];
 
-  int makeDifficultyFor(Creature cr) =>
-      makeDifficulty - cr.rawSkill[Skill.tailoring]! + 3;
+  List<String> traitsList(bool includeArmor,
+      {ArmorUpgrade? specifiedArmorUpgrade}) {
+    List<String> traits = [];
+    specifiedArmorUpgrade ??= intrinsicArmor;
+    if (concealsFace) {
+      traits.add("Hides Face");
+    }
+    if (stealthValue > 1) {
+      if (stealthValue == 2) {
+        traits.add("Sneaky");
+      } else {
+        traits.add("Very Sneaky");
+      }
+    }
+    if (includeArmor && (specifiedArmorUpgrade?.bodyArmor ?? 0) > 0) {
+      traits.add("Armor [${specifiedArmorUpgrade!.bodyArmor}]");
+    }
+    if (specifiedArmorUpgrade?.fireResistant ?? false) {
+      traits.add("Fire Resistant");
+    }
+    if (concealWeaponSize >= 3) {
+      traits.add("Hammerspace");
+    } else if (concealWeaponSize == 2) {
+      traits.add("Spacious");
+    } else if (concealWeaponSize == 0) {
+      traits.add("No Pockets");
+    }
+    return traits;
+  }
+
+  int makeDifficultyFor(Creature cr, ArmorUpgrade armor) =>
+      makeDifficulty + armor.makeDifficulty - cr.skill(Skill.tailoring) + 4;
 }

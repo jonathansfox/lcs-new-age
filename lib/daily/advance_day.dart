@@ -45,8 +45,8 @@ Future<void> advanceDay() async {
     _moveSquadlessToBases();
     await _tendHostages();
     await _advanceSquads();
-    await soloActivities();
   }
+  await soloActivities(disbanding);
   if (!disbanding) await _dailyHealing();
   await dispersalCheck();
   await _doRent();
@@ -679,26 +679,23 @@ Future<void> _dailyHealing() async {
               transfer = true; // Impossible to stabilize
             }
           }
-        } else if (w.bleeding) {
+        } else if (w.bleeding > 0) {
           // Bleeding wounds
           // Chance to stabilize wound
           // Difficulty 8 (1 in 10 of happening naturally)
           if (p.site != null && medical[p.site]! + lcsRandom(10) > 8) {
-            w.bleeding = false;
+            w.bleeding = 0;
           } else {
             // Else take bleed damage (1)
             damage += 1;
+            w.bleeding = max(0, w.bleeding - 1);
           }
         }
         // Non-bleeding wounds
         else {
           // Erase wound if almost fully healed, but preserve loss of limbs.
           if (p.blood >= p.maxBlood - 5) {
-            w.bruised = false;
-            w.bleeding = false;
-            w.shot = false;
-            w.cut = false;
-            w.torn = false;
+            w.heal();
           }
         }
       }

@@ -518,10 +518,12 @@ class BodyPart {
   bool cut = false;
   bool bruised = false;
   bool burned = false;
-  bool bleeding = false;
+  @JsonKey(defaultValue: 0, name: "bleedingStacks")
+  int bleeding = 0;
   bool torn = false;
   bool nastyOff = false;
   bool cleanOff = false;
+  double relativeHealth = 1;
 
   bool get missing => nastyOff || cleanOff;
   bool get wounded =>
@@ -529,21 +531,25 @@ class BodyPart {
       cut ||
       bruised ||
       burned ||
-      bleeding ||
+      bleeding > 0 ||
       torn ||
       nastyOff ||
-      cleanOff;
+      cleanOff ||
+      relativeHealth < 1;
 
   void heal() {
     shot = false;
     cut = false;
     bruised = false;
     burned = false;
-    bleeding = false;
+    bleeding = 0;
     torn = false;
     if (nastyOff) {
       nastyOff = false;
       cleanOff = true;
+    }
+    if (!cleanOff) {
+      relativeHealth = 1;
     }
   }
 }

@@ -1589,10 +1589,10 @@ Future<void> lootGroundSite() async {
   Item? item = lootItemForSite(siteType);
   if (item != null) {
     addLootToSquad(item);
-    String s = item.equipTitle();
     clearMessageArea();
     mvaddstrc(9, 1, lightGray, "You find: ");
-    mvaddstr(10, 1, s);
+    move(10, 1);
+    item.printEquipTitle();
 
     await getKey(); //wait for key press before clearing.
   }

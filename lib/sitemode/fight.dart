@@ -98,6 +98,11 @@ Future<void> youattack() async {
         addjuice(p, 1, 200);
       }
       addDramaToSiteStory(Drama.attacked);
+      if (p.weapon.isCurrentlyLegal && p.weapon.isAGun) {
+        addDramaToSiteStory(Drama.legalGunUsed);
+      } else if (p.weapon.isAGun) {
+        addDramaToSiteStory(Drama.illegalGunUsed);
+      }
       // Charge with assault if first strike
       if (siteAlarm &&
           (!wasalarm ||
@@ -688,7 +693,9 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
       if (bruiseOnly) {
         hitPart.bruised = true;
       } else {
-        hitPart.bleeding = attackUsed.bleeds;
+        if (attackUsed.bleeds) {
+          hitPart.bleeding += 1;
+        }
         hitPart.cut = attackUsed.cuts;
         hitPart.torn = attackUsed.tears;
         hitPart.shot = attackUsed.shoots;
@@ -696,11 +703,10 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
         hitPart.bruised = attackUsed.bruises;
       }
 
-      int severamount = 200;
-      if (hitPart.weakSpot) {
-        severamount = (severamount / 2).round();
-      } else if (hitPart.critical) {
-        severamount *= 4;
+      int severamount =
+          (hitPart.relativeHealth * t.maxBlood + t.maxBlood).round();
+      if (hitPart.critical) {
+        severamount += t.maxBlood * 2;
       }
 
       if (severtype != SeverType.none &&

@@ -352,7 +352,10 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
 
       bool shouldDoDate = false;
       aroll += thingsincommon * 3;
-      if (c == Key.a && ledger.funds >= 100 && p.clinicMonthsLeft == 0) {
+      if (c == Key.a &&
+          ledger.funds >= 100 &&
+          p.clinicMonthsLeft == 0 &&
+          (sameCity || eIsSexworker)) {
         ledger.subtractFunds(100, Expense.dating);
         aroll += lcsRandom(10);
         shouldDoDate = true;

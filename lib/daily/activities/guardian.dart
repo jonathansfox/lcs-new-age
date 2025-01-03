@@ -6,16 +6,16 @@ import 'package:lcs_new_age/utils/lcsrandom.dart';
 
 void doActivityWriteGuardian(List<Creature> people) {
   for (Creature p in people) {
-    politics.backgroundInfluence.update(
-        View.issues.random, (value) => value + p.skillRoll(Skill.writing));
+    politics.addBackgroundInfluence(
+        View.issues.random, p.skillRoll(Skill.writing));
     p.train(Skill.writing, 5);
   }
 }
 
 void doActivityStreamGuardian(List<Creature> people) {
   for (Creature p in people) {
-    politics.backgroundInfluence.update(View.issues.random,
-        (value) => value + 4 * p.skillRoll(Skill.persuasion));
+    politics.addBackgroundInfluence(
+        View.issues.random, 4 * p.skillRoll(Skill.persuasion));
     p.train(Skill.persuasion, 5);
   }
 }

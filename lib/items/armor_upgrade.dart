@@ -1,7 +1,7 @@
 Map<String, ArmorUpgrade> armorUpgrades = {};
 
 class ArmorUpgrade {
-  ArmorUpgrade(String id) {
+  ArmorUpgrade(String id) : idName = id {
     armorUpgrades[id] = this;
   }
 

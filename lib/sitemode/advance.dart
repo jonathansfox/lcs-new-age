@@ -219,12 +219,12 @@ Future<void> advancecreature(Creature cr) async {
   }
 
   for (BodyPart w in cr.body.parts) {
-    if (w.bleeding) {
-      if (lcsRandom(500) < cr.attribute(Attribute.heart)) {
-        w.bleeding = false;
+    if (w.bleeding > 0) {
+      if (lcsRandom(300) < cr.attribute(Attribute.heart)) {
+        w.bleeding -= 1;
       } else if (cr.squadId != null &&
           topmedical != null &&
-          topmedical.skillCheck(Skill.firstAid, Difficulty.formidable)) {
+          topmedical.skillCheck(Skill.firstAid, Difficulty.hard)) {
         clearMessageArea();
         setColor(lightGreen);
         move(9, 1);
@@ -235,11 +235,12 @@ Future<void> advancecreature(Creature cr) async {
         addstr("'s wounds.");
 
         topmedical.train(Skill.firstAid, max(50 - topmedicalskill * 2, 0));
-        w.bleeding = false;
+        w.bleeding = 0;
 
         await getKey();
       } else {
-        bleed++;
+        bleed += w.bleeding;
+        w.relativeHealth -= w.bleeding / cr.maxBlood;
       }
     }
   }

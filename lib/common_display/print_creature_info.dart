@@ -179,7 +179,7 @@ void printTopSkills(int y, int x, Creature cr, int numberToPrint,
 void printWounds(Creature cr, {int y = 2, int x = 49}) {
   for (int i = 0; i < cr.body.parts.length; i++) {
     BodyPart p = cr.body.parts[i];
-    setColor(p.bleeding ? red : lightGray);
+    setColor(p.bleeding > 0 ? red : lightGray);
     mvaddstr(y + i, x, "${p.name}: ");
     move(y + i, x + 12);
     if (p.nastyOff) {
@@ -188,7 +188,11 @@ void printWounds(Creature cr, {int y = 2, int x = 49}) {
       addstr("Clean sever");
     } else if (!p.wounded) {
       setColor(lightGreen);
-      addstr(cr.align == Alignment.liberal ? "Liberal" : "Healthy");
+      if (cr.type.animal) {
+        addstr("Animal");
+      } else {
+        addstr(cr.align == Alignment.liberal ? "Liberal" : "Healthy");
+      }
     } else {
       List<String> injuries = [];
       if (p.shot) injuries.add("Sht");
@@ -197,6 +201,12 @@ void printWounds(Creature cr, {int y = 2, int x = 49}) {
       if (p.torn) injuries.add("Trn");
       if (p.burned) injuries.add("Brn");
       addstr(injuries.join(","));
+    }
+    if (!p.cleanOff && !p.nastyOff) {
+      int armor = cr.clothing.getArmorForLocation(p);
+      if (armor > 0) {
+        addstrc(lightBlue, "+$armor");
+      }
     }
   }
 }
@@ -455,18 +465,15 @@ void printFullCreatureStats(Creature cr,
   setColor(lightGray);
 
   // Add weapon
-  move(13, 0);
-  addstr("Weapon: ");
+  mvaddstr(13, 0, "Weapon: ");
   printWeapon(cr);
 
   // Add clothing
-  move(14, 0);
-  addstr("Clothes: ");
-  addstr(cr.clothing.equipTitle(full: true));
+  mvaddstr(14, 0, "Clothes: ");
+  cr.clothing.printEquipTitle(full: true, armor: false);
 
   // Add vehicle
-  move(15, 0);
-  addstr("Car: ");
+  mvaddstrc(15, 0, lightGray, "Car: ");
   Vehicle? v;
   if (showCarPrefs == ShowCarPrefs.showPreferences) {
     v = cr.preferredCar;
@@ -525,43 +532,7 @@ void printFullCreatureStats(Creature cr,
   }
 
   // Add wound status
-  for (int w = 0; w < cr.body.parts.length; w++) {
-    BodyPart part = cr.body.parts[w];
-    if (part.bleeding) {
-      setColor(red);
-    } else {
-      setColor(lightGray);
-    }
-
-    move(5 + w, 55);
-    addstr("${part.name}:");
-
-    move(5 + w, 66);
-    if (part.nastyOff) {
-      addstr("Ripped off");
-    } else if (part.cleanOff) {
-      addstr("Severed");
-    } else {
-      List<String> wounds = [];
-
-      if (part.shot) wounds.add("Shot");
-      if (part.cut) wounds.add("Cut");
-      if (part.bruised) wounds.add("Bruised");
-      if (part.burned) wounds.add("Burned");
-      if (part.torn) wounds.add("Torn");
-
-      if (wounds.isEmpty) {
-        setColor(lightGreen);
-        if (cr.type.animal) {
-          addstr("Animal");
-        } else {
-          addstr("Liberal");
-        }
-      } else {
-        addstr(wounds.join(","));
-      }
-    }
-  }
+  printWounds(cr, y: 5, x: 55);
   setColor(lightGray);
 
   //SPECIAL WOUNDS

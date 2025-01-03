@@ -1709,7 +1709,7 @@ Future<void> _fightSubdued() async {
   squad.clear();
   for (p = 0; p < pool.length; p++) {
     for (var w in pool[p].body.parts) {
-      w.bleeding = false;
+      w.bleeding = 0;
     }
   }
 
@@ -1920,7 +1920,7 @@ Future<void> squadCleanup() async {
   for (Creature p in pool) {
     p.justEscaped = false;
     for (var bp in p.body.parts) {
-      bp.bleeding = false;
+      bp.bleeding = 0;
     }
   }
 }

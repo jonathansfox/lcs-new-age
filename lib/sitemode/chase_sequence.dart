@@ -251,7 +251,7 @@ Future<ChaseOutcome> carChaseSequence() async {
     if (partyalive > 0 && baddiecount == 0) {
       await encounterMessage("It looks like you've lost them!");
       for (BodyPart w in pool.expand((p) => p.body.parts)) {
-        w.bleeding = false;
+        w.bleeding = 0;
       }
       mode = GameMode.base;
       return ChaseOutcome.escape;

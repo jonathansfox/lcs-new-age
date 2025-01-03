@@ -423,9 +423,10 @@ class CarTheftScene {
         mvaddstrc(y, 0, lightGray, "$key - ${v.longName}");
         addDifficultyText(y, 49, v.difficultyToFind);
       },
-      onChoice: (index) {
+      onChoice: (index) async {
         bailed = false;
         cartype = cart[index];
+        return true;
       },
     );
     if (bailed) cr.activity = Activity.none();

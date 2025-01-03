@@ -130,7 +130,7 @@ Future<void> doActivityProstitution(List<Creature> prostitutes) async {
 
 void _backgroundInfluenceCheck(Creature c, Skill skill) {
   if (c.skillCheck(skill, Difficulty.formidable)) {
-    politics.backgroundInfluence.update(View.issues.random, (v) => v + 5);
+    politics.addBackgroundInfluence(View.issues.random, 5);
   }
 }
 

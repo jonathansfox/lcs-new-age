@@ -69,7 +69,6 @@ NewsStory randomMajorEventStory() {
   } else {
     changePublicOpinion(ns.view!, -20);
   }
-  politics.publicInterest.update(ns.view!, (value) => value + 50);
   return ns;
 }
 

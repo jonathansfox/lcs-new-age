@@ -6,6 +6,7 @@ import 'package:lcs_new_age/creature/creature.dart';
 import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/daily/activities/recruiting.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
+import 'package:lcs_new_age/items/armor_upgrade.dart';
 import 'package:lcs_new_age/items/clothing_type.dart';
 import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/politics/views.dart';
@@ -34,7 +35,10 @@ class Activity {
   RecruitData? get recruitData =>
       recruitableCreatures.firstWhere((e) => e.type.id == idString);
   Creature? get creature => pool.firstWhereOrNull((e) => e.id == idInt);
-  ClothingType? get armorType => clothingTypes[idString];
+  ClothingType? get clothingType =>
+      clothingTypes[idString?.split(":ARMOR").firstOrNull];
+  ArmorUpgrade? get armorUpgrade => clothingType?.allowedArmor.elementAtOrNull(
+      int.tryParse(idString?.split(":ARMOR").lastOrNull ?? "0") ?? 0);
   Site? get location =>
       gameState.sites.firstWhereOrNull((e) => e.idString == idString);
 
@@ -42,8 +46,8 @@ class Activity {
     switch (type) {
       case ActivityType.interrogation:
         return "Tending to ${creature?.name ?? "a bug"}";
-      case ActivityType.makeArmor:
-        return "Making ${armorType?.shortName ?? "a bug"}";
+      case ActivityType.makeClothing:
+        return "Making ${clothingType?.shortName ?? "a bug"}";
       case ActivityType.visit:
         return "Visiting ${location?.name ?? "a bug"}";
       case ActivityType.study:
@@ -71,7 +75,7 @@ enum ActivityType {
   prostitution("Prostitution", red),
   ccfraud("Credit Card Fraud", red),
   hacking("Hacking", lightGreen),
-  makeArmor("Tailoring", lightBlue),
+  makeClothing("Tailoring", lightBlue),
   stealCars("Stealing a Car", lightBlue),
   wheelchair("Procuring a Wheelchair", lightBlue),
   bury("Burying Dead", darkGray),

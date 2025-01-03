@@ -138,11 +138,10 @@ Future<void> trial(Creature g) async {
         "E - Accept sleeper ${sleeperlawyer.name}'s offer to assist pro bono.");
   }
   mvaddstrc(++y, 5, lightGray, "Your attributes if you defend yourself: ");
-  mvaddstr(++y, 5, "Heart: ${g.attribute(Attribute.heart)}");
-  mvaddstr(y, 25, "Persuasion: ${g.skill(Skill.persuasion)}");
   mvaddstr(++y, 5, "Charisma: ${g.attribute(Attribute.charisma)}");
+  mvaddstr(y, 25, "Persuasion: ${g.skill(Skill.persuasion)}");
+  mvaddstr(++y, 5, "Intelligence: ${g.attribute(Attribute.intelligence)}");
   mvaddstr(y++, 25, "Law: ${g.skill(Skill.law)}");
-  mvaddstr(y++, 5, "Intelligence: ${g.attribute(Attribute.intelligence)}");
 
   int defense;
   int c;

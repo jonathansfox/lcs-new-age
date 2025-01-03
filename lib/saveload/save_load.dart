@@ -126,8 +126,9 @@ Future<bool> loadGameMenu() async {
           mvaddstr(y, 50, lastPlayedStr);
           mvaddstr(y, 70, version);
         },
-        onChoice: (index) {
+        onChoice: (index) async {
           selectedGame = index;
+          return true;
         },
         onOtherKey: (key) {
           if (key == Key.plus) {

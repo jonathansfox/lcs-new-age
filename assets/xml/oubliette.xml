@@ -43,13 +43,18 @@
         <exit>Done</exit>
         <item>
             <class>ARMOR</class>
-            <type>CLOTHING_TRENCHCOAT</type>
-            <price>70</price>
+            <type>CLOTHING_TOGA</type>
+            <price>25</price>
         </item>
         <item>
             <class>ARMOR</class>
-            <type>CLOTHING_WORKCLOTHES</type>
+            <type>CLOTHING_BLACKROBE</type>
             <price>50</price>
+        </item>
+        <item>
+            <class>ARMOR</class>
+            <type>CLOTHING_TRENCHCOAT</type>
+            <price>100</price>
         </item>
         <item>
             <class>ARMOR</class>
@@ -58,7 +63,7 @@
         </item>
         <item>
             <class>ARMOR</class>
-            <type>CLOTHING_BLACKROBE</type>
+            <type>CLOTHING_HARDHAT</type>
             <price>200</price>
         </item>
         <item>
@@ -70,11 +75,6 @@
             <class>ARMOR</class>
             <type>CLOTHING_BONDAGEGEAR</type>
             <price>350</price>
-        </item>
-        <item>
-            <class>ARMOR</class>
-            <type>CLOTHING_TOGA</type>
-            <price>90</price>
         </item>
         <item>
             <class>ARMOR</class>

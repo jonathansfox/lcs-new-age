@@ -2,12 +2,14 @@ import 'dart:math';
 
 import 'package:json_annotation/json_annotation.dart';
 import 'package:lcs_new_age/creature/skills.dart';
+import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/items/ammo.dart';
 import 'package:lcs_new_age/items/ammo_type.dart';
 import 'package:lcs_new_age/items/attack.dart';
 import 'package:lcs_new_age/items/item.dart';
 import 'package:lcs_new_age/items/weapon_type.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
+import 'package:lcs_new_age/politics/laws.dart';
 
 part 'weapon.g.dart';
 
@@ -16,7 +18,7 @@ class Weapon extends Item {
   Weapon(super.typeName, {super.stackSize = 1}) : super.superConstructor();
   factory Weapon.fromType(WeaponType type, {bool fullammo = false}) {
     Weapon w = Weapon(type.idName);
-    if (fullammo && type.ammoCapacity > 0) {
+    if (fullammo && type.usesAmmo && type.ammoCapacity > 0) {
       w.ammo = type.ammoCapacity;
       w.loadedAmmoType = ammoTypes.values.firstWhere(
           (a) => type.attacks.any((attack) => attack.cartridge == a.cartridge));
@@ -113,5 +115,10 @@ class Weapon extends Item {
     if (ammo < other.ammo) return -1;
     if (ammo > other.ammo) return 1;
     return 0;
+  }
+
+  bool get isAGun => type.isAGun;
+  bool get isCurrentlyLegal {
+    return (type.bannedAtGunControl?.index ?? 99) > laws[Law.gunControl]!.index;
   }
 }

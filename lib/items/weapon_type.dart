@@ -55,4 +55,8 @@ class WeaponType extends ItemType {
       .where((at) => acceptableCartridge.contains(at.cartridge));
   int ammoCapacity = 1;
   bool canKeepOneInTheChamber = false;
+
+  bool get isAGun {
+    return attacks.any((a) => a.ranged && a.cartridge != null);
+  }
 }

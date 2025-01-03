@@ -1,14 +1,12 @@
 import 'dart:ui';
 
 import 'package:lcs_new_age/basemode/activities.dart';
-import 'package:lcs_new_age/creature/body.dart';
 import 'package:lcs_new_age/creature/creature.dart';
 import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_mode.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/gamestate/squad.dart';
 import 'package:lcs_new_age/items/clothing.dart';
-import 'package:lcs_new_age/politics/alignment.dart';
 import 'package:lcs_new_age/politics/states.dart';
 import 'package:lcs_new_age/sitemode/stealth.dart';
 import 'package:lcs_new_age/utils/colors.dart';
@@ -106,71 +104,22 @@ void setColorForArmor(Creature creature) {
 
 void printHealthStat(int y, int x, Creature creature, {bool small = false}) {
   move(y, x);
-  bool bleeding = creature.body.parts.any((e) => e.bleeding);
+  bool bleeding = creature.body.parts.any((e) => e.bleeding > 0);
 
-  setColor(bleeding ? red : white);
-
-  if (!creature.alive) {
-    setColor(darkGray);
-    addstr("Deceased");
-  } else if (creature.blood < creature.maxBlood) {
-    addstr("${creature.blood}/${creature.maxBlood}");
-  } else {
-    String? condition = creature.body.specialInjuryDescription(small);
-    if (condition != null) {
-      if (!bleeding) setColor(green);
-      addstr(condition);
-    } else {
-      setColor(creature.align.color);
-      if (creature.align == Alignment.conservative) {
-        addstr(small ? "Consrvtv" : "Conservative");
-      } else if (creature.align == Alignment.moderate) {
-        addstr("moderate");
-      } else {
-        if (creature.body.type == BodyType.human) {
-          addstr("Liberal");
-        } else {
-          addstr(creature.body.typeName);
-        }
-      }
-    }
-  }
-
-  /*
-  Old description of health status
+  setColor(lightGreen);
+  if (creature.blood < creature.maxBlood) setColor(white);
+  if (bleeding) setColor(red);
 
   if (!creature.alive) {
-    setColor(darkGray);
-    addstr("Deceased");
-  } else if (creature.blood <= 0.2 * creature.maxBlood) {
-    addstr(small ? "NearDETH" : "Near Death");
-  } else if (creature.blood <= 0.5 * creature.maxBlood) {
-    addstr(small ? "BadWound" : "Badly Wounded");
-  } else if (creature.blood <= 0.75 * creature.maxBlood) {
-    addstr("Wounded");
-  } else if (creature.blood < creature.maxBlood) {
-    addstr(small ? "LtWound" : "Lightly Wounded");
+    addstrc(darkGray, "Deceased");
   } else {
-    String? condition = creature.body.specialInjuryDescription(small);
-    if (condition != null) {
-      if (!bleeding) setColor(green);
-      addstr(condition);
+    if (small) {
+      addstr("${creature.blood}");
     } else {
-      setColor(creature.align.color);
-      if (creature.align == Alignment.conservative) {
-        addstr(small ? "Consrvtv" : "Conservative");
-      } else if (creature.align == Alignment.moderate) {
-        addstr("moderate");
-      } else {
-        if (creature.body.type == BodyType.human) {
-          addstr("Liberal");
-        } else {
-          addstr(creature.body.typeName);
-        }
-      }
+      addstr("${creature.blood}/${creature.maxBlood}");
     }
+    addstrc(lightBlue, creature.clothing.shortArmorDetail());
   }
-  */
 }
 
 String romanNumeral(int num) {
@@ -652,27 +601,33 @@ Future<void> pagedInterface({
   String headerPrompt = "",
   Map<int, String> headerKey = const {},
   String footerPrompt = "",
-  int pageSize = 19,
+  int pageSize = 20,
   int topY = 0,
   required int count,
   required void Function(int y, String key, int index) lineBuilder,
-  required void Function(int index) onChoice,
+  required Future<bool> Function(int index) onChoice,
   bool Function(int key)? onOtherKey,
 }) async {
   int page = 0;
+  int pageCount = (count / pageSize).ceil();
   if (topY == 0) {
     erase();
   } else {
-    eraseArea(startY: topY, startX: 0, endY: pageSize + 4 + topY, endX: 80);
+    eraseArea(startY: topY, startX: 0, endY: pageSize + 3 + topY, endX: 80);
   }
   mvaddstrc(topY, 0, white, headerPrompt);
   addHeader(headerKey, y: topY + 1);
-  mvaddstrc(pageSize + 3 + topY, 0, lightGray, footerPrompt);
-  if (count > pageSize) mvaddstr(pageSize + 4 + topY, 0, pageStr);
+  mvaddstrc(pageSize + 2 + topY, 0, lightGray, footerPrompt);
   while (true) {
-    eraseArea(startY: 2 + topY, startX: 0, endY: pageSize + 2, endX: 80);
+    eraseArea(startY: 2 + topY, startX: 0, endY: pageSize + 2 + topY, endX: 80);
     for (int i = 0; i + page * pageSize < count && i < pageSize; i++) {
       lineBuilder(i + 2 + topY, letterAPlus(i), i + page * pageSize);
+    }
+    if (pageCount > 1) {
+      setColor(lightGray);
+      eraseLine(pageSize + 3 + topY);
+      mvaddstr(pageSize + 3 + topY, 0,
+          pageStrWithCurrentAndMax(page + 1, pageCount));
     }
 
     int c = await getKey();
@@ -681,12 +636,15 @@ Future<void> pagedInterface({
     if (c >= Key.a && c < Key.a + pageSize) {
       int index = page * pageSize + c - Key.a;
       if (index < count) {
-        onChoice(index);
-        return;
+        if (await onChoice(index)) {
+          return;
+        } else {
+          continue;
+        }
       }
     }
-    if (isBackKey(c)) return;
     if (onOtherKey != null && onOtherKey(c)) return;
+    if (isBackKey(c)) return;
   }
 }
 

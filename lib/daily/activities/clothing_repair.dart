@@ -7,7 +7,7 @@ import 'package:lcs_new_age/items/loot.dart';
 import 'package:lcs_new_age/utils/colors.dart';
 import 'package:lcs_new_age/utils/interface_options.dart';
 
-Future<void> doActivityRepairArmor(Creature cr) async {
+Future<void> doActivityRepairClothing(Creature cr) async {
   Clothing? armor;
   bool pile = false;
   if (cr.clothing.bloody || cr.clothing.damaged) {
@@ -40,8 +40,7 @@ Future<void> doActivityRepairArmor(Creature cr) async {
   bool repairFailed = true;
   bool armorDestroyed = armor.quality > armor.type.qualityLevels;
   if (armor.damaged) {
-    int difficulty = armor.type.makeDifficultyFor(cr);
-    cr.train(Skill.tailoring, difficulty);
+    cr.train(Skill.tailoring, 5);
   }
 
   if (pile && armor.stackSize > 0) {

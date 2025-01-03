@@ -161,7 +161,7 @@ Future<void> tendHostage(InterrogationSession intr) async {
   attack += business - cr.skill(Skill.business);
   attack += religion - cr.skill(Skill.religion);
   attack += science - cr.skill(Skill.science);
-  attack += lead.skillRoll(Skill.psychology) - cr.skillRoll(Skill.psychology);
+  attack -= cr.skillRoll(Skill.psychology);
 
   attack += cr.attributeRoll(Attribute.heart);
   attack -= cr.attributeRoll(Attribute.wisdom) * 2;
@@ -947,7 +947,7 @@ Future<void> tendHostage(InterrogationSession intr) async {
     }
     //Failure to break religious convictions
     else if (cr.skill(Skill.religion) >
-            lead.skill(Skill.religion) + lead.skill(Skill.psychology) &&
+            religion + lead.skill(Skill.psychology) &&
         techniques[Technique.drugs] != true) {
       move(y++, 0);
       addstr([
@@ -960,7 +960,7 @@ Future<void> tendHostage(InterrogationSession intr) async {
     }
     //Failure to persuade entrenched capitalists
     else if (cr.skill(Skill.business) >
-            lead.skill(Skill.business) + lead.skill(Skill.psychology) &&
+            business + lead.skill(Skill.psychology) &&
         techniques[Technique.drugs] != true) {
       move(y++, 0);
       addstr([
@@ -972,8 +972,7 @@ Future<void> tendHostage(InterrogationSession intr) async {
       lead.train(Skill.business, cr.skill(Skill.business) * 4);
     }
     //Failure to persuade scientific minds
-    else if (cr.skill(Skill.science) >
-            lead.skill(Skill.science) + lead.skill(Skill.psychology) &&
+    else if (cr.skill(Skill.science) > science + lead.skill(Skill.psychology) &&
         techniques[Technique.drugs] != true) {
       move(y++, 0);
       addstr([

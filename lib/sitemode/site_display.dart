@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:lcs_new_age/common_display/common_display.dart';
 import 'package:lcs_new_age/creature/creature.dart';
 import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_mode.dart';
@@ -1078,14 +1079,7 @@ void printBasicEncounter() {
     mvaddstr(y, 2, name);
     mvaddstrc(y, 20, lightGray, e.clothing.shortName);
     mvaddstrc(y, 36, lightGray, e.weapon.type.shortName);
-    if (e.body.parts.any((p) => p.bleeding)) {
-      setColor(red);
-    } else if (e.alive) {
-      setColor(lightGray);
-    } else {
-      setColor(darkGray);
-    }
-    mvaddstr(y, 47, "${e.blood}/${e.maxBlood}");
+    printHealthStat(y, 47, e, small: true);
   }
 }
 

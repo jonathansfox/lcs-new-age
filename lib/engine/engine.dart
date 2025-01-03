@@ -127,6 +127,8 @@ abstract class Key {
   static const int questionMark = 63;
   static const int plus = 43;
   static const int minus = 45;
+  static const int rightAngleBracket = 62;
+  static const int leftAngleBracket = 60;
 }
 
 extension CodePointExtension on String {

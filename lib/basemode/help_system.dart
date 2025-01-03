@@ -130,7 +130,7 @@ Future<void> helpOnActivity(ActivityType type) async {
           "to turn heads in Liberal society. This is less important than it "
           "is if you're just soliciting donations though. If protest songs "
           "don't hit like they used to, you can always just play covers of "
-          "Imagine by John Lennon.\n\n"
+          "John Lennon's \"Imagine\".\n\n"
           "Music and Business will improve revenues. Make sure to equip a "
           "guitar. Drumming on buckets makes a lot less money.");
     case ActivityType.sellArt:
@@ -200,12 +200,19 @@ Future<void> helpOnActivity(ActivityType type) async {
       body("Injuries can be healed slowly at home, but for anything serious "
           "you're going to need professional care. This activity hauls a "
           "Liberal off to get medical attention.");
-    case ActivityType.makeArmor:
+    case ActivityType.makeClothing:
       head("=== Make Clothing or Armor ===");
-      body("Tailoring skill is used to make clothing or armor. Body armor "
-          "works, so if you can make it, it helps. Disguises are also useful.\n\n"
-          "Darker colored clothing also helps with stealth. Don't think about "
-          "it too much, it just does.");
+      body("Tailoring skill is used to make clothing and armor. The first "
+          "step is choosing a disguise, and then you select how much armor "
+          "you want to integrate into the kit, which may affect the cost and "
+          "difficulty of crafting the kit. Most disguises can only support "
+          "wearing well-concealed soft armor underneath, but "
+          "some clothes allow you to add hard armor over the top without "
+          "looking out of place. Obvious displays of heavier armor are "
+          "generally only allowed when crafting police and military "
+          "disguises.\n\n"
+          "Wearing darker colored clothing also helps with stealth. Don't "
+          "think about that too much, it just works.");
     case ActivityType.wheelchair:
       head("=== Get a Wheelchair ===");
       body("Wheelchairs are used to help the disabled get around. If you "

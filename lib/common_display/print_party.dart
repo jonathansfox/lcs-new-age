@@ -25,9 +25,9 @@ void printParty({
       0: "#",
       2: "CODE NAME",
       23: "SKILL",
-      31: "WEAPON",
-      46: "ARMOR",
-      61: "HEALTH",
+      29: "WEAPON",
+      44: "ARMOR",
+      59: "HEALTH",
       70: "TRANSPORT",
     });
     for (int p = 0; p < party.length; p++) {
@@ -38,12 +38,12 @@ void printParty({
       mvaddstr(p + 2, 2, party[p].name);
       if (party[p].isHoldingBody) addstr("+H");
       printSkillSummary(p + 2, 23, party[p], showWeaponSkill: true);
-      move(p + 2, 31);
+      move(p + 2, 29);
       setWeaponColor(party[p]);
       printWeapon(party[p]);
       setColorForArmor(party[p]);
-      mvaddstr(p + 2, 46, party[p].clothing.shortName);
-      printHealthStat(p + 2, 61, party[p], small: true);
+      mvaddstr(p + 2, 44, party[p].clothing.shortName);
+      printHealthStat(p + 2, 59, party[p], small: true);
       setColor(lightGray);
       move(p + 2, 70);
       printTransportation(party[p], showCarPrefs);

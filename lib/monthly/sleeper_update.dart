@@ -28,7 +28,6 @@ Future<void> sleeperEffect(Creature cr, Map<View, int> libpower) async {
   switch (cr.activity.type) {
     case ActivityType.sleeperLiberal:
       sleeperInfluence(cr, libpower);
-      cr.infiltration -= 0.02;
     case ActivityType.sleeperEmbezzle:
       await sleeperEmbezzle(cr, libpower);
     case ActivityType.sleeperSteal:
@@ -109,6 +108,7 @@ void sleeperInfluence(Creature cr, Map<View, int> libpower) {
     case CreatureTypeIds.gangUnit:
     case CreatureTypeIds.militaryPolice:
     case CreatureTypeIds.seal:
+    case CreatureTypeIds.conservativeJudge:
       power *= 4;
     default:
       power *= 2;
@@ -240,6 +240,7 @@ void sleeperInfluence(Creature cr, Map<View, int> libpower) {
   //Transfer the liberal power adjustment to background liberal power
   for (View v in View.issues) {
     libpower[v] = libpower[v]! + transferpower[v]!;
+    if (transferpower[v]! > 50) changePublicOpinion(v, transferpower[v]! ~/ 50);
   }
 }
 

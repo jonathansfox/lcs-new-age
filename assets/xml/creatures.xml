@@ -1002,7 +1002,6 @@ Elements marked as hardcoded may have their values overridden by the game.
         <armor>CLOTHING_CLOTHES</armor>
         <age>YOUNGADULT</age>
         <alignment>LIBERAL</alignment>
-        <attribute_points>30</attribute_points>
         <attributes>
             <intelligence>1</intelligence>
             <!-- <health> Hardcoded random max. -->
@@ -1342,7 +1341,6 @@ Elements marked as hardcoded may have their values overridden by the game.
         <armor>CLOTHING_CLOTHES</armor>
         <age>18-57</age>
         <alignment>LIBERAL</alignment>
-        <attribute_points>35</attribute_points>
         <attributes>
             <heart>6-15</heart>
             <wisdom>1</wisdom>

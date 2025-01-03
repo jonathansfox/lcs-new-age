@@ -2,10 +2,10 @@ import 'package:lcs_new_age/basemode/activities.dart';
 import 'package:lcs_new_age/common_actions/common_actions.dart';
 import 'package:lcs_new_age/common_display/common_display.dart';
 import 'package:lcs_new_age/creature/creature.dart';
-import 'package:lcs_new_age/daily/activities/armor_creation.dart';
-import 'package:lcs_new_age/daily/activities/armor_repair.dart';
 import 'package:lcs_new_age/daily/activities/bury_dead.dart';
 import 'package:lcs_new_age/daily/activities/car_theft.dart';
+import 'package:lcs_new_age/daily/activities/clothing_creation.dart';
+import 'package:lcs_new_age/daily/activities/clothing_repair.dart';
 import 'package:lcs_new_age/daily/activities/fundraising.dart';
 import 'package:lcs_new_age/daily/activities/graffiti.dart';
 import 'package:lcs_new_age/daily/activities/guardian.dart';
@@ -22,7 +22,7 @@ import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
 import 'package:lcs_new_age/politics/views.dart';
 
-Future<void> soloActivities() async {
+Future<void> soloActivities(bool disbanding) async {
   Map<ActivityType, List<Creature>> activities = {};
   for (Creature p in pool) {
     p.income = 0;
@@ -67,66 +67,87 @@ Future<void> soloActivities() async {
           p.activity = Activity.none();
         }
       case ActivityType.none:
+        if (disbanding) continue;
         for (Creature p in people) {
-          await doActivityRepairArmor(p);
+          await doActivityRepairClothing(p);
         }
-      case ActivityType.makeArmor:
+      case ActivityType.makeClothing:
+        if (disbanding) continue;
         for (Creature p in people) {
-          await doActivityMakeArmor(p);
+          await doActivityMakeClothing(p);
         }
       case ActivityType.wheelchair:
+        if (disbanding) continue;
         for (Creature p in people) {
           await doActivityGetWheelchair(p);
         }
       case ActivityType.recruiting:
+        if (disbanding) continue;
         for (Creature p in people) {
           await doActivityRecruit(p);
         }
       case ActivityType.stealCars:
+        if (disbanding) continue;
         for (Creature p in people) {
           CarTheftScene scene = CarTheftScene(p);
           await scene.play();
         }
       case ActivityType.donations:
+        if (disbanding) continue;
         await doActivitySolicitDonations(people);
       case ActivityType.sellTshirts:
+        if (disbanding) continue;
         await doActivitySellTshirts(people);
       case ActivityType.sellMusic:
+        if (disbanding) continue;
         await doActivitySellMusic(people);
       case ActivityType.sellArt:
+        if (disbanding) continue;
         await doActivitySellArt(people);
       case ActivityType.sellDrugs:
+        if (disbanding) continue;
         await doActivitySellBrownies(people);
       case ActivityType.prostitution:
+        if (disbanding) continue;
         await doActivityProstitution(people);
       case ActivityType.graffiti:
+        if (disbanding) continue;
         await doActivityGraffiti(people);
       case ActivityType.trouble:
+        if (disbanding) continue;
         await doActivityTrouble(people);
       case ActivityType.communityService:
+        if (disbanding) continue;
         for (Creature p in people) {
           addjuice(p, 1, 10);
           changePublicOpinion(View.lcsLiked, 1);
         }
       case ActivityType.hacking:
+        if (disbanding) continue;
         await doActivityHacking(people);
       case ActivityType.ccfraud:
+        if (disbanding) continue;
         await doActivityCCFraud(people);
       case ActivityType.bury:
+        if (disbanding) continue;
         await doActivityBury(people);
       case ActivityType.teachLiberalArts:
       case ActivityType.teachFighting:
       case ActivityType.teachCovert:
+        if (disbanding) continue;
         await doActivityTeach(people);
       case ActivityType.streamGuardian:
         doActivityStreamGuardian(people);
       case ActivityType.writeGuardian:
         doActivityWriteGuardian(people);
       case ActivityType.study:
+        if (disbanding) continue;
         await doActivityStudy(people);
       case ActivityType.takeClass:
+        if (disbanding) continue;
         await doActivityTakeClasses(people);
       case ActivityType.clinic:
+        if (disbanding) continue;
         for (Creature p in people) {
           if (p.site?.city == null) continue;
           Site? hospital =
@@ -135,6 +156,7 @@ Future<void> soloActivities() async {
           await hospitalize(hospital, p);
         }
       case ActivityType.sleeperJoinLcs:
+        if (disbanding) continue;
         await doActivitySleeperJoinLCS(people);
       default:
         break;

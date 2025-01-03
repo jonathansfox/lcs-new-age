@@ -142,11 +142,11 @@ Future<void> advanceMonth() async {
           }
         }
         if (align == Alignment.liberal) {
-          politics.backgroundInfluence.update(View.lcsKnown, (a) => a + power);
-          politics.backgroundInfluence.update(View.ccsHated, (a) => a + power);
+          politics.addBackgroundInfluence(View.lcsKnown, power);
+          politics.addBackgroundInfluence(View.ccsHated, power);
         } else if (align == Alignment.conservative) {
-          politics.backgroundInfluence.update(View.lcsKnown, (a) => a - power);
-          politics.backgroundInfluence.update(View.ccsHated, (a) => a - power);
+          politics.addBackgroundInfluence(View.lcsKnown, -power);
+          politics.addBackgroundInfluence(View.ccsHated, -power);
         }
       }
     }

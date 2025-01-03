@@ -5,16 +5,19 @@ import 'package:lcs_new_age/creature/creature.dart';
 import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/gamestate/ledger.dart';
+import 'package:lcs_new_age/items/armor_upgrade.dart';
 import 'package:lcs_new_age/items/clothing.dart';
 import 'package:lcs_new_age/items/clothing_type.dart';
 import 'package:lcs_new_age/items/item.dart';
 import 'package:lcs_new_age/items/loot.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 
-Future<void> doActivityMakeArmor(Creature cr) async {
-  ClothingType at = cr.activity.armorType ?? clothingTypes.values.first;
-  int cost = at.makePrice;
-  int dif = at.makeDifficultyFor(cr);
+Future<void> doActivityMakeClothing(Creature cr) async {
+  ClothingType clothing =
+      cr.activity.clothingType ?? clothingTypes.values.first;
+  ArmorUpgrade armor = cr.activity.armorUpgrade ?? armorUpgrades.values.first;
+  int cost = clothing.makePrice + armor.makePrice;
+  int dif = clothing.makeDifficultyFor(cr, armor);
   Iterable<Item>? cloths =
       cr.site?.loot.where((e) => e is Loot && e.type.cloth);
   Item? foundCloth;
@@ -37,15 +40,16 @@ Future<void> doActivityMakeArmor(Creature cr) async {
     return;
   }
   ledger.subtractFunds(cost, Expense.sewingSupplies);
-  cr.train(Skill.tailoring, dif * 2 + 1);
+  cr.train(Skill.tailoring,
+      (clothing.makeDifficulty + armor.makeDifficulty) * 2 + 1);
   int quality = 1;
   while (min(lcsRandom(10), lcsRandom(10)) < dif - quality &&
-      quality <= at.qualityLevels) {
+      quality <= clothing.qualityLevels) {
     quality++;
-    cr.train(Skill.tailoring, dif);
+    cr.train(Skill.tailoring, 5);
   }
-  if (quality <= at.qualityLevels) {
-    Item it = Clothing.fromType(at, quality: quality);
+  if (quality <= clothing.qualityLevels) {
+    Item it = Clothing.fromType(clothing, armor, quality: quality);
     String rate;
     switch (quality) {
       case 1:
@@ -59,16 +63,18 @@ Future<void> doActivityMakeArmor(Creature cr) async {
       default:
         rate = "${quality}th";
     }
-    await showMessage("${cr.name} created $rate-rate ${at.name}.");
+    await showMessage("${cr.name} created $rate-rate ${clothing.name}.");
     cr.site?.loot.add(it);
   } else {
     switch (lcsRandom(7)) {
       case 0:
         await showMessage("${cr.name} produced an unwearable cloth monster.");
       case 1:
-        await showMessage("${cr.name} wasted the materials for a ${at.name}.");
+        await showMessage(
+            "${cr.name} wasted the materials for a ${clothing.name}.");
       case 2:
-        await showMessage("${cr.name} tried to make ${at.name}, but failed.");
+        await showMessage(
+            "${cr.name} tried to make ${clothing.name}, but failed.");
       case 3:
         await showMessage(
             "${cr.name} made a horrible nightmare of cloth and stitching.");

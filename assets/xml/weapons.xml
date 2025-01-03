@@ -294,7 +294,7 @@
         <description>Pump action shotgun.  Used for hunting and home defense.</description>
         <magazine_size>6</magazine_size>
         <ammo_plus_one>true</ammo_plus_one>
-        <size>3</size>
+        <size>2</size>
         <attack preset="FIRE_GUN">
             <cartridge>CARTRIDGE_12GA</cartridge>
             <initiative>-1</initiative>
@@ -366,7 +366,7 @@
         <ammo_plus_one>true</ammo_plus_one>
         <price>2200</price>
         <description>US Military standard issue.  Full auto.</description>
-        <size>3</size>
+        <size>2</size>
         <attack preset="FIRE_GUN">
             <cartridge>CARTRIDGE_556</cartridge>
             <number_attacks>3</number_attacks>

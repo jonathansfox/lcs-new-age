@@ -115,8 +115,7 @@ Future<void> doActivityTrouble(List<Creature> trouble) async {
 
   changePublicOpinion(View.lcsKnown, mod);
   changePublicOpinion(View.lcsLiked, mod ~/ 2);
-  politics.publicInterest.update(issue, (v) => v + mod);
-  politics.backgroundInfluence.update(issue, (v) => v + mod);
+  politics.addBackgroundInfluence(issue, mod);
 
   await showMessage(message);
   message = "";

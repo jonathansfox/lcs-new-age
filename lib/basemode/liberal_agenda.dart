@@ -312,7 +312,7 @@ void _pollsPage(int start) {
         "$president ${execName[Exec.president]!.firstLast}");
     addstrc(lightGray, ".");
     String concern = "";
-    if (politics.publicInterest[maxView]! < 10) {
+    if (politics.publicInterest[maxView]! < 5) {
       concern = "a recent sports scandal";
     } else {
       concern = _concernString(maxView);

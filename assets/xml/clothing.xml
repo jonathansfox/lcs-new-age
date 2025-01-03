@@ -3,8 +3,8 @@
   <!-- Clarification
     <clothingtype idname="(string)"> idname is used internally by the game to identify the clothing type.
                                   No two item types should have the same idname.
-        <make_difficulty> (integer) Difficulty to make it yourself. 0 means impossible.
-            Default: 0
+        <make_difficulty> (integer) Minimum skill to make it yourself. -1 means impossible.
+            Default: -1
         <make_price> (integer) Cost to make it yourself.
             Default: 0
         <deathsquad_legality> (boolean) Armor can only be made if arch-conservative police and death laws.
@@ -57,7 +57,7 @@
     </clothingtype>
     -->
   <clothingtype idname="CLOTHING_CLOTHES">
-    <make_difficulty>4</make_difficulty>
+    <make_difficulty>2</make_difficulty>
     <make_price>10</make_price>
     <stealth_value>1</stealth_value>
     <name>Clothes</name>
@@ -81,7 +81,6 @@
     <conceal_weapon_size>0</conceal_weapon_size>
   </clothingtype>
   <clothingtype idname="CLOTHING_ARMYARMOR">
-    <make_difficulty>0</make_difficulty>
     <make_price>2000</make_price>
     <intrinsic_armor>ARMOR_MILITARY</intrinsic_armor>
     <body_covering>
@@ -103,7 +102,7 @@
     <appropriate_weapon>WEAPON_M250_MACHINEGUN</appropriate_weapon>
   </clothingtype>
   <clothingtype idname="CLOTHING_MILITARY">
-    <make_difficulty>8</make_difficulty>
+    <make_difficulty>6</make_difficulty>
     <make_price>40</make_price>
     <body_covering>
       <head>true</head>
@@ -125,7 +124,7 @@
     <appropriate_weapon>WEAPON_M250_MACHINEGUN</appropriate_weapon>
   </clothingtype>
   <clothingtype idname="CLOTHING_CATSUIT">
-    <make_difficulty>7</make_difficulty>
+    <make_difficulty>5</make_difficulty>
     <make_price>150</make_price>
     <interrogation>
       <basepower>4</basepower>
@@ -139,7 +138,7 @@
     <stealth_value>3</stealth_value>
   </clothingtype>
   <clothingtype idname="CLOTHING_BLACKDRESS">
-    <make_difficulty>12</make_difficulty>
+    <make_difficulty>6</make_difficulty>
     <make_price>60</make_price>
     <name>Black Dress</name>
     <shortname>Black Dress</shortname>
@@ -152,7 +151,7 @@
     <stealth_value>2</stealth_value>
   </clothingtype>
   <clothingtype idname="CLOTHING_LEATHER">
-    <make_difficulty>7</make_difficulty>
+    <make_difficulty>5</make_difficulty>
     <make_price>300</make_price>
     <intrinsic_armor>ARMOR_LEATHER</intrinsic_armor>
     <body_covering>
@@ -183,7 +182,7 @@
     <stealth_value>3</stealth_value>
   </clothingtype>
   <clothingtype idname="CLOTHING_BLACKROBE">
-    <make_difficulty>5</make_difficulty>
+    <make_difficulty>1</make_difficulty>
     <make_price>20</make_price>
     <name>Black Robe</name>
     <shortname>Black Robe</shortname>
@@ -196,7 +195,7 @@
     <appropriate_weapon>WEAPON_GAVEL</appropriate_weapon>
   </clothingtype>
   <clothingtype idname="CLOTHING_BLACKSUIT">
-    <make_difficulty>12</make_difficulty>
+    <make_difficulty>6</make_difficulty>
     <make_price>60</make_price>
     <name>Black Suit</name>
     <shortname>Black Suit</shortname>
@@ -209,7 +208,7 @@
     <stealth_value>2</stealth_value>
   </clothingtype>
   <clothingtype idname="CLOTHING_BLACKCLOTHES">
-    <make_difficulty>4</make_difficulty>
+    <make_difficulty>2</make_difficulty>
     <make_price>15</make_price>
     <name>Black Turtleneck</name>
     <shortname>Bl. Turtleneck</shortname>
@@ -218,7 +217,7 @@
     <stealth_value>2</stealth_value>
   </clothingtype>
   <clothingtype idname="CLOTHING_BONDAGEGEAR">
-    <make_difficulty>7</make_difficulty>
+    <make_difficulty>5</make_difficulty>
     <make_price>30</make_price>
     <body_covering>
       <head>true</head>
@@ -237,22 +236,24 @@
     <stealth_value>1</stealth_value>
   </clothingtype>
   <clothingtype idname="CLOTHING_BUNKERGEAR">
-    <make_difficulty>13</make_difficulty>
-    <make_price>500</make_price>
+    <make_difficulty>5</make_difficulty>
+    <make_price>250</make_price>
     <intrinsic_armor>ARMOR_TURNOUTGEAR</intrinsic_armor>
+    <armor_allowed>ARMOR_COSMETIC</armor_allowed>
     <body_covering>
       <head>true</head>
+      <conceals_face>true</conceals_face>
     </body_covering>
-    <name>Firefighter Bunker Gear</name>
-    <shortname>Bunker Gear</shortname>
-    <fencevalue>75</fencevalue>
+    <name>Firefighter Turnout Gear</name>
+    <shortname>Turnout Gear</shortname>
+    <fencevalue>500</fencevalue>
     <professionalism>2</professionalism>
     <appropriate_weapon>WEAPON_AXE</appropriate_weapon>
     <appropriate_weapon>WEAPON_FLAMETHROWER</appropriate_weapon>
     <durability>25</durability>
   </clothingtype>
   <clothingtype idname="CLOTHING_CHEAPDRESS">
-    <make_difficulty>6</make_difficulty>
+    <make_difficulty>4</make_difficulty>
     <make_price>20</make_price>
     <name>Cheap Dress</name>
     <shortname>Cheap Dress</shortname>
@@ -264,7 +265,7 @@
     <stealth_value>1</stealth_value>
   </clothingtype>
   <clothingtype idname="CLOTHING_CHEAPSUIT">
-    <make_difficulty>9</make_difficulty>
+    <make_difficulty>4</make_difficulty>
     <make_price>50</make_price>
     <name>Cheap Suit</name>
     <shortname>Cheap Suit</shortname>
@@ -276,7 +277,7 @@
     <stealth_value>1</stealth_value>
   </clothingtype>
   <clothingtype idname="CLOTHING_CLOWNSUIT">
-    <make_difficulty>7</make_difficulty>
+    <make_difficulty>5</make_difficulty>
     <make_price>20</make_price>
     <name>Clown Suit</name>
     <shortname>Clown Suit</shortname>
@@ -288,12 +289,13 @@
     <professionalism>1</professionalism>
   </clothingtype>
   <clothingtype idname="CLOTHING_DEATHSQUADUNIFORM">
-    <make_difficulty>9</make_difficulty>
+    <make_difficulty>6</make_difficulty>
     <make_price>40</make_price>
     <deathsquad_legality>true</deathsquad_legality>
     <name>Death Squad Uniform</name>
     <shortname>DSquad Uniform</shortname>
     <fencevalue>80</fencevalue>
+    <allow_visible_armor>true</allow_visible_armor>
     <body_covering>
       <head>true</head>
       <conceals_face>true</conceals_face>
@@ -312,7 +314,7 @@
     <lawenforcement>true</lawenforcement>
   </clothingtype>
   <clothingtype idname="CLOTHING_DONKEYSUIT">
-    <make_difficulty>10</make_difficulty>
+    <make_difficulty>8</make_difficulty>
     <make_price>300</make_price>
     <name>Donkey Suit</name>
     <shortname>Donkey Suit</shortname>
@@ -328,7 +330,7 @@
     <professionalism>1</professionalism>
   </clothingtype>
   <clothingtype idname="CLOTHING_ELEPHANTSUIT">
-    <make_difficulty>10</make_difficulty>
+    <make_difficulty>8</make_difficulty>
     <make_price>300</make_price>
     <name>Elephant Suit</name>
     <shortname>Elephant Suit</shortname>
@@ -344,7 +346,7 @@
     <professionalism>1</professionalism>
   </clothingtype>
   <clothingtype idname="CLOTHING_EXPENSIVEDRESS">
-    <make_difficulty>14</make_difficulty>
+    <make_difficulty>10</make_difficulty>
     <make_price>200</make_price>
     <name>Expensive Dress</name>
     <shortname>ExpensiveDress</shortname>
@@ -356,7 +358,7 @@
     <stealth_value>1</stealth_value>
   </clothingtype>
   <clothingtype idname="CLOTHING_EXPENSIVESUIT">
-    <make_difficulty>14</make_difficulty>
+    <make_difficulty>10</make_difficulty>
     <make_price>200</make_price>
     <name>Expensive Suit</name>
     <shortname>Expensive Suit</shortname>
@@ -368,7 +370,7 @@
     <stealth_value>1</stealth_value>
   </clothingtype>
   <clothingtype idname="CLOTHING_PRISONGUARD">
-    <make_difficulty>8</make_difficulty>
+    <make_difficulty>6</make_difficulty>
     <make_price>40</make_price>
     <name>Guard Uniform</name>
     <shortname>Guard Uniform</shortname>
@@ -384,7 +386,7 @@
     <appropriate_weapon>WEAPON_NIGHTSTICK</appropriate_weapon>
   </clothingtype>
   <clothingtype idname="CLOTHING_HEAVYARMOR">
-    <make_difficulty>17</make_difficulty>
+    <make_difficulty>11</make_difficulty>
     <make_price>5000</make_price>
     <intrinsic_armor>ARMOR_TANKSUIT</intrinsic_armor>
     <body_covering>
@@ -396,11 +398,12 @@
     <interrogation>
       <basepower>2</basepower>
     </interrogation>
+    <upgradable>false</upgradable>
     <professionalism>1</professionalism>
     <durability>10</durability>
   </clothingtype>
   <clothingtype idname="CLOTHING_LABCOAT">
-    <make_difficulty>6</make_difficulty>
+    <make_difficulty>2</make_difficulty>
     <make_price>20</make_price>
     <name>Lab Coat</name>
     <shortname>Lab Coat</shortname>
@@ -437,7 +440,7 @@
     <durability>30</durability>
   </clothingtype>
   <clothingtype idname="CLOTHING_NINJASUIT">
-    <make_difficulty>7</make_difficulty>
+    <make_difficulty>5</make_difficulty>
     <make_price>200</make_price>
     <body_covering>
       <head>true</head>
@@ -453,7 +456,7 @@
     <stealth_value>3</stealth_value>
   </clothingtype>
   <clothingtype idname="CLOTHING_PRISONER">
-    <make_difficulty>5</make_difficulty>
+    <make_difficulty>3</make_difficulty>
     <make_price>20</make_price>
     <name>Orange Jumpsuit</name>
     <shortname>Orange Jmpsuit</shortname>
@@ -462,7 +465,7 @@
     <appropriate_weapon>WEAPON_SHANK</appropriate_weapon>
   </clothingtype>
   <clothingtype idname="CLOTHING_OVERALLS">
-    <make_difficulty>4</make_difficulty>
+    <make_difficulty>2</make_difficulty>
     <make_price>10</make_price>
     <body_covering>
       <arms>false</arms>
@@ -477,8 +480,6 @@
     <appropriate_weapon>WEAPON_PUMP_SHOTGUN</appropriate_weapon>
   </clothingtype>
   <clothingtype idname="CLOTHING_POLICEARMOR">
-    <make_difficulty>11</make_difficulty>
-    <make_price>1000</make_price>
     <intrinsic_armor>ARMOR_EXTERNALPLATE</intrinsic_armor>
     <body_covering>
       <arms>false</arms>
@@ -507,7 +508,7 @@
     <lawenforcement>true</lawenforcement>
   </clothingtype>
   <clothingtype idname="CLOTHING_POLICEUNIFORM">
-    <make_difficulty>8</make_difficulty>
+    <make_difficulty>6</make_difficulty>
     <make_price>40</make_price>
     <body_covering>
       <head>true</head>
@@ -536,10 +537,11 @@
     <lawenforcement>true</lawenforcement>
   </clothingtype>
   <clothingtype idname="CLOTHING_SEALSUIT">
-    <make_difficulty>16</make_difficulty>
-    <make_price>3000</make_price>
+    <make_difficulty>7</make_difficulty>
+    <make_price>450</make_price>
     <intrinsic_armor>ARMOR_SWAT</intrinsic_armor>
-    <name>SEAL Stealth Armor</name>
+    <armor_allowed>ARMOR_COSMETIC</armor_allowed>
+    <name>SEAL Armor</name>
     <shortname>SEAL Suit</shortname>
     <fencevalue>300</fencevalue>
     <body_covering>
@@ -560,7 +562,7 @@
     <appropriate_weapon>WEAPON_M7</appropriate_weapon>
   </clothingtype>
   <clothingtype idname="CLOTHING_SECURITYUNIFORM">
-    <make_difficulty>8</make_difficulty>
+    <make_difficulty>6</make_difficulty>
     <make_price>40</make_price>
     <body_covering>
       <head>true</head>
@@ -573,6 +575,11 @@
     </interrogation>
     <professionalism>2</professionalism>
     <stealth_value>1</stealth_value>
+    <!-- only allow explicit armor upgrades listed below -->
+    <upgradable>false</upgradable>
+    <armor_allowed>ARMOR_HIDDEN</armor_allowed>
+    <armor_allowed>ARMOR_SOFTSYSTEM</armor_allowed>
+    <armor_allowed>ARMOR_EXTERNALPLATE</armor_allowed>
     <appropriate_weapon>WEAPON_22_REVOLVER</appropriate_weapon>
     <appropriate_weapon>WEAPON_44_REVOLVER</appropriate_weapon>
     <appropriate_weapon>WEAPON_DESERT_EAGLE</appropriate_weapon>
@@ -584,7 +591,7 @@
     <appropriate_weapon>WEAPON_M7</appropriate_weapon>
   </clothingtype>
   <clothingtype idname="CLOTHING_SERVANTUNIFORM">
-    <make_difficulty>7</make_difficulty>
+    <make_difficulty>5</make_difficulty>
     <make_price>20</make_price>
     <name>Servant Uniform</name>
     <shortname>Servant Unif.</shortname>
@@ -593,9 +600,10 @@
     <stealth_value>2</stealth_value>
   </clothingtype>
   <clothingtype idname="CLOTHING_SWATARMOR">
-    <make_difficulty>14</make_difficulty>
-    <make_price>2000</make_price>
+    <make_difficulty>6</make_difficulty>
+    <make_price>100</make_price>
     <intrinsic_armor>ARMOR_SWAT</intrinsic_armor>
+    <armor_allowed>ARMOR_COSMETIC</armor_allowed>
     <body_covering>
       <head>true</head>
     </body_covering>
@@ -605,6 +613,7 @@
     <interrogation>
       <basepower>4</basepower>
     </interrogation>
+    <upgradable>false</upgradable>
     <professionalism>1</professionalism>
     <stealth_value>1</stealth_value>
     <appropriate_weapon>WEAPON_MP5</appropriate_weapon>
@@ -615,7 +624,7 @@
  x    <lawenforcement>true</lawenforcement>
   </clothingtype>
   <clothingtype idname="CLOTHING_TOGA">
-    <make_difficulty>2</make_difficulty>
+    <make_difficulty>0</make_difficulty>
     <make_price>5</make_price>
     <upgradable>false</upgradable>
     <body_covering>
@@ -628,7 +637,7 @@
     <professionalism>1</professionalism>
   </clothingtype>
   <clothingtype idname="CLOTHING_TRENCHCOAT">
-    <make_difficulty>6</make_difficulty>
+    <make_difficulty>4</make_difficulty>
     <make_price>20</make_price>
     <stealth_value>2</stealth_value>
     <name>Trenchcoat</name>
@@ -641,9 +650,8 @@
     <conceal_weapon_size>2</conceal_weapon_size>
   </clothingtype>
   <clothingtype idname="CLOTHING_HARDHAT">
-    <make_difficulty>6</make_difficulty>
-    <make_price>100</make_price>
     <intrinsic_armor>ARMOR_HARDHAT</intrinsic_armor>
+    <armor_allowed>ARMOR_COSMETIC</armor_allowed>
     <body_covering>
       <head>true</head>
     </body_covering>
@@ -656,7 +664,7 @@
     <appropriate_weapon>WEAPON_CHAIN</appropriate_weapon>
   </clothingtype>
   <clothingtype idname="CLOTHING_WIFEBEATER">
-    <make_difficulty>2</make_difficulty>
+    <make_difficulty>1</make_difficulty>
     <make_price>5</make_price>
     <body_covering>
       <arms>false</arms>
@@ -673,7 +681,7 @@
     <appropriate_weapon>WEAPON_PUMP_SHOTGUN</appropriate_weapon>
   </clothingtype>
   <clothingtype idname="CLOTHING_WORKCLOTHES">
-    <make_difficulty>4</make_difficulty>
+    <make_difficulty>2</make_difficulty>
     <make_price>10</make_price>
     <name>Work Clothes</name>
     <shortname>Work Clothes</shortname>

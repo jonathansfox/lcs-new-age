@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:json_annotation/json_annotation.dart';
+import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/items/ammo.dart';
 import 'package:lcs_new_age/items/ammo_type.dart';
@@ -10,6 +13,7 @@ import 'package:lcs_new_age/items/loot_type.dart';
 import 'package:lcs_new_age/items/money.dart';
 import 'package:lcs_new_age/items/weapon.dart';
 import 'package:lcs_new_age/items/weapon_type.dart';
+import 'package:lcs_new_age/utils/colors.dart';
 
 part 'item.g.dart';
 
@@ -68,6 +72,8 @@ class Item implements Comparable<Item> {
   double get stackFenceValue => fenceValue * stackSize;
 
   String equipTitle({bool full = false}) => type.name;
+  void printEquipTitle({bool full = false, Color baseColor = lightGray}) =>
+      addstrc(baseColor, equipTitle());
 
   Item clone() => Item(type.idName)..stackSize = stackSize;
 

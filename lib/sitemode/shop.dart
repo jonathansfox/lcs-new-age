@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:lcs_new_age/basemode/base_mode.dart';
 import 'package:lcs_new_age/common_actions/equipment.dart';
 import 'package:lcs_new_age/common_display/common_display.dart';
@@ -342,7 +344,9 @@ class Shop extends ShopOption {
         if (index < availableOptions.length &&
             availableOptions[index].isAvailable()) {
           chosenOption = availableOptions[index];
+          return true;
         }
+        return false;
       },
     );
     if (chosenOption != null) {
@@ -405,6 +409,7 @@ class Shop extends ShopOption {
             availableOptions[index].isAvailable()) {
           chosenOption = availableOptions[index];
         }
+        return true;
       },
     );
     if (chosenOption != null) {
@@ -446,7 +451,9 @@ class Shop extends ShopOption {
         if (index < availableOptions.length &&
             availableOptions[index].isAvailable()) {
           chosenOption = availableOptions[index];
+          return true;
         }
+        return false;
       },
     );
     if (chosenOption != null) {
@@ -475,31 +482,7 @@ class Shop extends ShopOption {
         addstr(" - ");
         addstr(clothing.name);
         move(y, 24);
-        List<String> traits = [];
-        if (clothing.concealsFace) {
-          traits.add("Hides Face");
-        }
-        if (clothing.stealthValue > 1) {
-          if (clothing.stealthValue == 2) {
-            traits.add("Sneaky");
-          } else {
-            traits.add("Very Sneaky");
-          }
-        }
-        if ((clothing.intrinsicArmor?.bodyArmor ?? 0) > 0) {
-          traits.add("Armor [${clothing.intrinsicArmor!.bodyArmor}]");
-        }
-        if (clothing.intrinsicArmor?.fireResistant ?? false) {
-          traits.add("Fire Resistant");
-        }
-        if (clothing.concealWeaponSize >= 3) {
-          traits.add("Hammerspace");
-        } else if (clothing.concealWeaponSize == 2) {
-          traits.add("Spacious");
-        } else if (clothing.concealWeaponSize == 0) {
-          traits.add("No Pockets");
-        }
-        addstr(traits.join(", "));
+        addstr(clothing.traitsList(true).join(", "));
         move(y, 59);
         addstr("\$${(availableOptions[index] as ShopItem).price(false)}");
       },
@@ -507,7 +490,9 @@ class Shop extends ShopOption {
         if (index < availableOptions.length &&
             availableOptions[index].isAvailable()) {
           chosenOption = availableOptions[index];
+          return true;
         }
+        return false;
       },
     );
     if (chosenOption != null) {
@@ -625,29 +610,27 @@ class Shop extends ShopOption {
       printParty();
 
       int x = 1, y = 10;
-      String outstr, itemstr;
 
       for (int l = page * 18; l < base.loot.length && l < page * 18 + 18; l++) {
+        Color baseColor;
         if (selected[l] > 0) {
-          setColor(lightGreen);
+          baseColor = lightGreen;
         } else if (base.loot[l].isForSale) {
-          setColor(lightGray);
+          baseColor = lightGray;
         } else {
-          setColor(darkGray);
+          baseColor = darkGray;
         }
-        itemstr = base.loot[l].equipTitle();
+        mvaddstrc(y, x, baseColor, "${letterAPlus(l - page * 18)} - ");
+        base.loot[l].printEquipTitle(baseColor: baseColor);
+        setColor(baseColor);
         if (base.loot[l].stackSize > 1) {
           if (selected[l] > 0) {
-            itemstr += " ${selected[l]}/";
+            addstr(" ${selected[l]}/");
           } else {
-            itemstr += " x";
+            addstr(" x");
           }
-          itemstr += base.loot[l].stackSize.toString();
+          addstr(base.loot[l].stackSize.toString());
         }
-
-        outstr = "${letterAPlus(l - page * 18)} - $itemstr";
-
-        mvaddstr(y, x, outstr);
 
         x += 26;
         if (x > 53) {

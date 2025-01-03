@@ -446,10 +446,12 @@ Future<bool> _mediaBroadcast(String takeover, View mediaView, String medium,
 
   //CHECK PUBLIC OPINION
   changePublicOpinion(View.lcsKnown, 10);
-  changePublicOpinion(View.lcsLiked,
-      ((segmentpower - 50) * (publicOpinion[View.amRadio]! / 200)).round());
+  changePublicOpinion(
+      View.lcsLiked,
+      ((segmentpower - 50) * ((100 - publicOpinion[mediaView]!) / 200))
+          .round());
   changePublicOpinion(viewhit,
-      ((segmentpower - 50) * (publicOpinion[View.amRadio]! / 100)).round(),
+      ((segmentpower - 50) * ((100 - publicOpinion[mediaView]!) / 100)).round(),
       coloredByLcsOpinions: true);
 
   if (siteAlienated.index >= SiteAlienation.alienatedModerates.index &&

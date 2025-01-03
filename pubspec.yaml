@@ -21,6 +21,7 @@ dependencies:
   source_map_stack_trace: ^2.1.1
   source_maps: ^0.10.12
   http: ^1.2.1
+  cupertino_icons: ^1.0.8
 
 dev_dependencies:
   flutter_test:

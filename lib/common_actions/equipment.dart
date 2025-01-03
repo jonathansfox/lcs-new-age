@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:collection/collection.dart';
 import 'package:lcs_new_age/common_display/common_display.dart';
@@ -41,14 +42,12 @@ Future<void> equip(List<Item>? loot) async {
 
     int x = 1, y = 10;
     for (int l = page * 18; l < loot.length && l < page * 18 + 18; l++) {
-      String s = loot[l].equipTitle();
-
-      if (loot[l].stackSize > 1 && !loot[l].type.isMoney) {
-        s += " x${loot[l].stackSize}";
-      }
       String let = letterAPlus(l - page * 18, capitalize: true);
-
-      mvaddstr(y, x, "$let - $s");
+      mvaddstrc(y, x, lightGray, "$let - ");
+      loot[l].printEquipTitle();
+      if (loot[l].stackSize > 1 && !loot[l].type.isMoney) {
+        addstrc(lightGray, " x${loot[l].stackSize}");
+      }
 
       x += 26;
       if (x > 53) {
@@ -281,10 +280,13 @@ Future<void> moveLoot(List<Item> dest, List<Item> source) async {
     int x = 1, y = 10;
 
     for (int l = page * 18; l < source.length && l < page * 18 + 18; l++) {
-      setColor(selected[l] > 0 ? lightGreen : lightGray);
+      String str = letterAPlus(l - page * 18, capitalize: true);
+      mvaddstrc(y, x, lightGray, "$str - ");
 
-      String s = source[l].equipTitle();
+      Color baseColor = selected[l] > 0 ? lightGreen : lightGray;
+      source[l].printEquipTitle(baseColor: baseColor);
 
+      String s = "";
       if (source[l].stackSize > 1) {
         s += " ";
         if (selected[l] > 0) {
@@ -294,10 +296,7 @@ Future<void> moveLoot(List<Item> dest, List<Item> source) async {
         }
         s += source[l].stackSize.toString();
       }
-
-      String str = letterAPlus(l - page * 18, capitalize: true);
-
-      mvaddstr(y, x, "$str - $s");
+      addstrc(baseColor, s);
 
       x += 26;
       if (x > 53) {
@@ -394,8 +393,8 @@ Future<void> equipmentBaseAssign() async {
     for (p = pageLoot * 19;
         p < items.length && p < pageLoot * 19 + 19;
         p++, y++) {
-      mvaddstrc(
-          y, 0, lightGray, "${letterAPlus(y - 2)} - ${items[p].equipTitle()}");
+      mvaddstrc(y, 0, lightGray, "${letterAPlus(y - 2)} - ");
+      items[p].printEquipTitle();
       mvaddstr(y, 25,
           siteFromItem[items[p]]!.getName(short: true, includeCity: true));
     }

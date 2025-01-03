@@ -147,6 +147,15 @@ class Politics {
     });
   }
 
+  void addBackgroundInfluence(View view, int power) {
+    backgroundInfluence.update(view, (v) => v + power);
+    power = power.abs();
+    while (power > 0) {
+      publicInterest[view] = publicInterest[view]! + 1;
+      power -= publicInterest[view]!;
+    }
+  }
+
   void changePublicOpinion(
     View view,
     num power, {
@@ -155,10 +164,6 @@ class Politics {
   }) {
     double existingView = publicOpinion[view]!;
     int existingInterest = publicInterest[view]!;
-    if (view.index < View.amRadio.index) {
-      backgroundInfluence[view] =
-          ((backgroundInfluence[view] ?? 0) + power * 10).round();
-    }
     if (coloredByLcsOpinions) {
       // Power from people who haven't heard of the LCS or don't care
       double rawPower = power * ((100 - publicOpinion[View.lcsKnown]!) / 100);
@@ -178,14 +183,13 @@ class Politics {
     } else if (view == View.ccsHated) {
       power = power.clamp(-10, 25);
     }
+    int remainingPower = (power * 5).round().abs();
+    while (remainingPower > 0) {
+      publicInterest[view] = publicInterest[view]! + 1;
+      remainingPower -= publicInterest[view]!;
+    }
     power = (power * min(2, 1 + existingInterest / 50)).round();
     power = power.clamp(-75, 75);
-    for (int i = 0; i < power; i++) {
-      int interestDiv5 = publicInterest[view]! ~/ power;
-      if (interestDiv5 == 0 || i % interestDiv5 == 0) {
-        publicInterest[view] = publicInterest[view]! + 1;
-      }
-    }
     if (power > 0) {
       publicOpinion[view] = existingView + ((100 - existingView) * power / 100);
     } else {

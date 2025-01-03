@@ -337,7 +337,7 @@ Future<LootType?> chooseSpecialEdition() async {
     lineBuilder: (y, key, index) {
       mvaddstr(y, 0, "$key - ${lootTypesAvailable[index].name}");
     },
-    onChoice: (index) {
+    onChoice: (index) async {
       for (Site loc in sites.where((s) => s.controller == SiteController.lcs)) {
         Loot? l = loc.loot.whereType<Loot>().firstWhereOrNull(
             (l) => l.type.idName == lootTypesAvailable[index].idName);
@@ -347,6 +347,7 @@ Future<LootType?> chooseSpecialEdition() async {
         break;
       }
       lootTypeChosen = lootTypesAvailable[index];
+      return true;
     },
   );
   return lootTypeChosen;
