@@ -10,6 +10,7 @@ import 'package:lcs_new_age/location/location_type.dart';
 import 'package:lcs_new_age/location/siege.dart';
 import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
+import 'package:lcs_new_age/politics/laws.dart';
 import 'package:lcs_new_age/sitemode/site_display.dart';
 import 'package:lcs_new_age/sitemode/sitemap.dart';
 import 'package:lcs_new_age/utils/colors.dart';
@@ -227,8 +228,11 @@ Future<void> disguisecheck(int timer) async {
         // Spotted! Act casual.
         if (spotted) {
           // Scary weapons are not very casual.
-          if (weaponCheck(c) == WeaponCheckResult.suspicious) {
+          if (weaponCheck(c) == WeaponCheckResult.suspicious &&
+              !(politics.laws[Law.gunControl] ==
+                  DeepAlignment.archConservative)) {
             noticed = true;
+            squaddieThatBlewIt = c;
             break;
           } else {
             int penalty = disguiseQuality(c).penalty;
@@ -236,7 +240,7 @@ Future<void> disguisecheck(int timer) async {
             result -= timer;
             if (result < disguiseDifficulty) {
               // That was not very casual, dude.
-              if (result < 0) squaddieThatBlewIt = c;
+              squaddieThatBlewIt = c;
 
               noticed = true;
               break;
@@ -268,11 +272,9 @@ Future<void> disguisecheck(int timer) async {
         await getKey();
       }
     } else {
-      if (squaddieThatBlewIt == null) {
-        for (Creature p in squad) {
-          if (disguiseQuality(p) != DisguiseQuality.trespassing) {
-            p.train(Skill.disguise, 50);
-          }
+      for (Creature p in squad) {
+        if (disguiseQuality(p) != DisguiseQuality.trespassing) {
+          p.train(Skill.disguise, 50);
         }
       }
 
@@ -342,7 +344,9 @@ Future<void> disguisecheck(int timer) async {
         }
       }
     } else {
-      if (weapon != WeaponCheckResult.ok && !n.type.dog) {
+      if (weapon != WeaponCheckResult.ok &&
+          !n.type.dog &&
+          !(politics.laws[Law.gunControl] == DeepAlignment.archConservative)) {
         addstr(" sees the Squad's Liberal Weapons ");
         move(10, 1);
         if (n.align == Alignment.conservative) {
@@ -379,7 +383,8 @@ enum WeaponCheckResult {
 
 WeaponCheckResult weaponCheck(Creature creature, {bool metalDetector = false}) {
   bool suspicious = creature.weapon.type.suspicious;
-  bool concealed = creature.weaponIsConcealed;
+  bool concealed = creature.weaponIsConcealed ||
+      politics.laws[Law.gunControl] == DeepAlignment.archConservative;
   bool inCharacter = creature.weaponIsInCharacter;
   if (disguiseQuality(creature).lowQuality) inCharacter = false;
   if (suspicious) {

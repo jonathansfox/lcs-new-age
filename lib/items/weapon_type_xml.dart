@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:lcs_new_age/creature/creature_type_xml.dart';
+import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/items/attack.dart';
 import 'package:lcs_new_age/items/weapon_type.dart';
@@ -87,6 +88,32 @@ void parseWeaponType(WeaponType weapon, XmlElement xml) {
 
 Attack parseAttack(XmlElement element) {
   Attack attack = Attack();
+  for (XmlAttribute a in element.attributes) {
+    switch (a.name.local) {
+      case "preset":
+        switch (a.value) {
+          case "FIRE_GUN":
+            attack.priority = 1;
+            attack.ranged = true;
+            attack.attackDescription.add("shoots at");
+            attack.skill = Skill.firearms;
+            attack.shoots = true;
+            attack.bleeds = true;
+          case "PISTOL_WHIP":
+            attack.priority = 2;
+            attack.attackDescription.add("swings at");
+            attack.skill = Skill.martialArts;
+            attack.bruises = true;
+            attack.damage = 15;
+          case "BUTT_STROKE":
+            attack.priority = 2;
+            attack.attackDescription.add("swings at");
+            attack.skill = Skill.martialArts;
+            attack.bruises = true;
+            attack.damage = 25;
+        }
+    }
+  }
   for (XmlElement e in element.childElements) {
     switch (e.name.local) {
       case "priority":
@@ -150,38 +177,11 @@ Attack parseAttack(XmlElement element) {
         attack.severType = SeverType.values
                 .firstWhereOrNull((v) => v.name == e.innerText.toLowerCase()) ??
             attack.severType;
-      case "damages_armor":
-        attack.damagesArmor = parseBool(e.innerText) ?? attack.damagesArmor;
-      case "armorpiercing":
-        attack.armorPenetration =
-            int.tryParse(e.innerText) ?? attack.armorPenetration;
       case "social_damage":
         attack.socialDamage = parseBool(e.innerText) ?? attack.socialDamage;
       case "no_damage_reduction_for_limbs_chance":
         attack.noDamageReductionForLimbsChance =
             int.tryParse(e.innerText) ?? attack.noDamageReductionForLimbsChance;
-      case "critical":
-        Critical critical = Critical();
-        for (XmlElement c in e.childElements) {
-          switch (c.name.local) {
-            case "chance":
-              critical.chance = int.tryParse(c.innerText) ?? critical.chance;
-            case "hits_required":
-              critical.hitsRequired =
-                  int.tryParse(c.innerText) ?? critical.hitsRequired;
-            case "random_damage":
-              critical.randomDamage =
-                  int.tryParse(c.innerText) ?? critical.randomDamage;
-            case "fixed_damage":
-              critical.fixedDamage =
-                  int.tryParse(c.innerText) ?? critical.fixedDamage;
-            case "severtype":
-              critical.severType = SeverType.values.firstWhereOrNull(
-                      (v) => v.name == c.innerText.toLowerCase()) ??
-                  critical.severType;
-          }
-        }
-        attack.critical = critical;
       case "fire":
         Fire fire = Fire();
         for (XmlElement c in e.childElements) {

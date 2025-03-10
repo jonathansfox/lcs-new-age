@@ -1286,7 +1286,29 @@ Future<void> specialSecurity(bool metaldetect) async {
     case REJECTED_WEAPONS:
       if (metaldetect) {
         addstr("-BEEEP- -BEEEP- -BEEEP-");
-        siteAlarm = true;
+        if (politics.laws[Law.gunControl] == DeepAlignment.archConservative) {
+          await getKey();
+          clearMessageArea();
+          mvaddstrc(9, 1, white,
+              "The guard disables the alarm and doesn't even look up at the squad.");
+          await getKey();
+          mvaddstrc(
+              10,
+              1,
+              lightGreen,
+              [
+                "\"Anyone carrying a gun is welcome. Head on in.\"",
+                "\"Don't mind it, not sure why we even turn it on.\"",
+                "\"Ignore the noise. Keep your gun, just don't shoot nobody.\"",
+                "\"Don't mind Metal Mabel here, she's just here to impress Liberals.\"",
+                "\"It's a free country. Don't know why we even have this thing.\"",
+                "\"Constitution says you can carry guns anywhere you want.\"",
+                "\"You've a right to bear arms here or anywhere else.\"",
+              ].random);
+          rejectReason = NOT_REJECTED;
+        } else {
+          siteAlarm = true;
+        }
       } else {
         addstr([
           "\"Put that away!\"",

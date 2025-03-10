@@ -101,6 +101,10 @@ class Weapon extends Item {
           ammo > 0) {
         continue;
       }
+      if (attack.usesAmmo) {
+        //attack = attack.();
+        attack.damage = loadedAmmoType?.damage ?? attack.damage;
+      }
       return attack;
     }
     return null;

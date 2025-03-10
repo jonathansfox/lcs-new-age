@@ -1063,7 +1063,7 @@ void printBasicEncounter() {
 
   for (int i = 0; i < encounter.length; i++) {
     Creature e = encounter[i];
-    if (!e.alive) continue;
+    //if (!e.alive) continue;
     int y = 12 + i;
     mvaddstrc(y, 0, darkGray, ((i + 1) % 10).toString());
     String name = e.name;
@@ -1071,7 +1071,7 @@ void printBasicEncounter() {
       setColor(darkGray);
     } else {
       setColor(e.align.color);
-      if (e.align == Alignment.conservative && e.nonCombatant) {
+      if (e.align == Alignment.conservative && e.calculateWillRunAway()) {
         name = name.toLowerCase();
         setColor(darkRed);
       }

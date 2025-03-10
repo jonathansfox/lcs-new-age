@@ -75,14 +75,6 @@
                 Default: false
             <severtype> (CLEAN, NASTY, NONE)
                 Default: NONE
-            <ignores_armor> (boolean) Armor piercing ability.
-                Default: false
-            <fire>
-                <chance> (integer) The chance that the weapon will start a fire. (of 100)
-                    Default: 0
-                <chance_causes_debris> (integer)  Chance of 100 using the weapon will cause debris in the square.
-                    Default: 0
-            </fire>
         </attack>
     </weapontype>
     -->
@@ -476,6 +468,8 @@
             <cuts>true</cuts>
             <bleeding>true</bleeding>
             <severtype>CLEAN</severtype>
+            <number_attacks>3</number_attacks>
+            <successive_attacks_difficulty>4</successive_attacks_difficulty>
         </attack>
     </weapontype>
 
@@ -493,6 +487,8 @@
             <ranged>false</ranged>
             <damage>35</damage>
             <bruises>true</bruises>
+            <number_attacks>3</number_attacks>
+            <successive_attacks_difficulty>4</successive_attacks_difficulty>
         </attack>
     </weapontype>
 
@@ -509,6 +505,8 @@
             <attack_description>swings at</attack_description>
             <damage>20</damage>
             <bruises>true</bruises>
+            <number_attacks>3</number_attacks>
+            <successive_attacks_difficulty>6</successive_attacks_difficulty>
         </attack>
     </weapontype>
 
@@ -559,6 +557,8 @@
             <damage>20</damage>
             <bruises>true</bruises>
             <bleeding>true</bleeding>
+            <number_attacks>3</number_attacks>
+            <successive_attacks_difficulty>4</successive_attacks_difficulty>
         </attack>
     </weapontype>
 
@@ -717,6 +717,8 @@
             <attack_description>swings at</attack_description>
             <damage>30</damage>
             <bruises>true</bruises>
+            <number_attacks>3</number_attacks>
+            <successive_attacks_difficulty>4</successive_attacks_difficulty>
         </attack>
     </weapontype>
 
@@ -741,6 +743,8 @@
             <cuts>true</cuts>
             <bleeding>true</bleeding>
             <severtype>CLEAN</severtype>
+            <number_attacks>3</number_attacks>
+            <successive_attacks_difficulty>4</successive_attacks_difficulty>
         </attack>
     </weapontype>
 
@@ -759,6 +763,8 @@
             <cuts>true</cuts>
             <bleeding>true</bleeding>
             <severtype>CLEAN</severtype>
+            <number_attacks>3</number_attacks>
+            <successive_attacks_difficulty>4</successive_attacks_difficulty>
         </attack>
     </weapontype>
 

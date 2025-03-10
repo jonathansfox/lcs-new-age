@@ -109,17 +109,14 @@ void printHealthStat(int y, int x, Creature creature, {bool small = false}) {
   setColor(lightGreen);
   if (creature.blood < creature.maxBlood) setColor(white);
   if (bleeding) setColor(red);
+  if (!creature.alive) setColor(darkGray);
 
-  if (!creature.alive) {
-    addstrc(darkGray, "Deceased");
+  if (small) {
+    addstr("${creature.blood}");
   } else {
-    if (small) {
-      addstr("${creature.blood}");
-    } else {
-      addstr("${creature.blood}/${creature.maxBlood}");
-    }
-    addstrc(lightBlue, creature.clothing.shortArmorDetail());
+    addstr("${creature.blood}/${creature.maxBlood}");
   }
+  addstrc(lightBlue, creature.clothing.shortArmorDetail());
 }
 
 String romanNumeral(int num) {

@@ -219,7 +219,7 @@ class Creature {
   @JsonKey(includeFromJson: true, includeToJson: true, defaultValue: 1)
   double _blood = 1;
   @JsonKey(includeFromJson: false, includeToJson: false)
-  int get blood => (_blood * maxBlood).round().clamp(0, maxBlood);
+  int get blood => min((_blood * maxBlood).round(), maxBlood);
   set blood(int value) => _blood = value / maxBlood;
   @JsonKey(includeFromJson: false, includeToJson: false)
   int get maxBlood {
@@ -361,7 +361,7 @@ class Creature {
 
   void die() {
     alive = false;
-    blood = 0;
+    if (blood > 0) blood = 0;
     if (id == uniqueCreatures.ceo.id) {
       uniqueCreatures.newCEO();
     }
@@ -753,6 +753,8 @@ class Creature {
     if (type.freeable && !isEnemy) courage += 1000;
     if (type.majorEnemy) courage += 2000;
     if (justConverted) courage += 2000;
+
+    if (fear > courage) nonCombatant = true;
 
     return fear > courage;
   }

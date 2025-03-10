@@ -377,7 +377,7 @@ Future<ChaseOutcome> footChaseSequence({
           await getKey();
         }
         for (BodyPart w in pool.expand((p) => p.body.parts)) {
-          w.bleeding = false;
+          w.bleeding = 0;
         }
         mode = GameMode.base;
         if (ranAway) {
@@ -929,12 +929,12 @@ Future<void> crashfriendlycar(Vehicle v) async {
           // Inflict injuries
           if (oneIn(3)) {
             w.torn = true;
-            w.bleeding = true;
+            w.bleeding += 1;
             p.blood -= 1 + lcsRandom(15);
           }
           if (oneIn(3)) {
             w.cut = true;
-            w.bleeding = true;
+            w.bleeding += 1;
             p.blood -= 1 + lcsRandom(15);
           }
           if (oneIn(2)) {
@@ -1078,7 +1078,7 @@ Future<void> chaseGiveUp() async {
     }
   }
   for (BodyPart w in pool.expand((p) => p.body.parts)) {
-    w.bleeding = false;
+    w.bleeding = 0;
   }
   clearMessageArea();
   clearCommandArea();
