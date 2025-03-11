@@ -168,4 +168,16 @@
       <head>80</head>
     </armor>
   </armorupgrade>
+  <armorupgrade idname="ARMOR_COMPOSITE">
+    <name>Composite Armor</name>
+    <description>Advanced vehicle armor made of multiple layers of different materials.</description>
+    <make_price>300000</make_price>
+    <restricted>true</restricted>
+    <make_difficulty>10</make_difficulty>
+    <armor>
+      <body>2400</body>
+      <limbs>600</limbs>
+      <head>300</head>
+    </armor>
+  </armorupgrade>
 </armorupgrades>

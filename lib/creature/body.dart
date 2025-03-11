@@ -145,7 +145,7 @@ class TankBody extends Body {
   TankBody()
       : super(
           Weapon("WEAPON_120MM_CANNON"),
-          Clothing("CLOTHING_NONE"),
+          Clothing("CLOTHING_COMPOSITE_ARMOR"),
         );
   factory TankBody.fromJson(Map<String, dynamic> json) =>
       _$TankBodyFromJson(json);
@@ -189,8 +189,8 @@ class TankBody extends Body {
   BodyPart turretFront =
       BodyPart("Turret Front", size: 5, critical: true, naturalArmor: 20);
   BodyPart frontArmor =
-      BodyPart("Front Armor", size: 5, critical: true, naturalArmor: 20);
-  BodyPart rearArmor = BodyPart("Rear Armor",
+      BodyPart("Front", size: 5, critical: true, naturalArmor: 20);
+  BodyPart rearArmor = BodyPart("Rear",
       size: 3, critical: true, weakSpot: true, naturalArmor: 10);
   BodyPart leftSide =
       BodyPart("Left Side", size: 7, critical: true, naturalArmor: 15);

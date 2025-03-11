@@ -105,19 +105,20 @@ void setWeaponColor(Creature cr) {
 
 void printWeapon(Creature cr) {
   addstr(cr.weapon.type.shortName);
+  setColor(lightGray);
   if (cr.weapon.type.usesAmmo) {
     if (cr.weapon.ammo > 0) {
-      addstr(" (${cr.weapon.ammo})");
+      addstr(" ${cr.weapon.ammo}/${cr.spareAmmo?.stackSize ?? 0}");
     } else {
       setColor(darkGray);
       if ((cr.spareAmmo?.stackSize ?? 0) > 0) {
-        addstr(" (${cr.spareAmmo!.stackSize})");
+        addstr(" ${cr.spareAmmo!.stackSize}");
       } else {
-        addstr(" (XX)");
+        addstr(" 0");
       }
     }
   } else if (cr.weapon.type.thrown) {
-    addstr(" (${cr.weapon.stackSize})");
+    addstr(" ${cr.weapon.stackSize}");
   }
 }
 

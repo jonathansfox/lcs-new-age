@@ -290,6 +290,7 @@
         <attack preset="FIRE_GUN">
             <cartridge>CARTRIDGE_12GA</cartridge>
             <initiative>-1</initiative>
+            <severtype>NASTY</severtype>
         </attack>
         <attack preset="BUTT_STROKE" />
     </weapontype>
@@ -516,7 +517,7 @@
         <can_take_hostages>true</can_take_hostages>
         <threatening>true</threatening>
         <price>60</price>
-        <description>For stealthy takedowns and flurried slashes.</description>
+        <description>For stealthy takedowns.</description>
         <size>1</size>
         <attack>
             <attack_description>lunges at</attack_description>
@@ -526,7 +527,7 @@
             <cuts>true</cuts>
             <bleeding>true</bleeding>
             <number_attacks>3</number_attacks>
-            <successive_attacks_difficulty>4</successive_attacks_difficulty>
+            <successive_attacks_difficulty>2</successive_attacks_difficulty>
         </attack>
     </weapontype>
 
@@ -558,7 +559,7 @@
             <bruises>true</bruises>
             <bleeding>true</bleeding>
             <number_attacks>3</number_attacks>
-            <successive_attacks_difficulty>4</successive_attacks_difficulty>
+            <successive_attacks_difficulty>5</successive_attacks_difficulty>
         </attack>
     </weapontype>
 
@@ -567,7 +568,7 @@
         <can_take_hostages>true</can_take_hostages>
         <threatening>true</threatening>
         <price>60</price>
-        <description>For stealthy takedowns and flurried stabs.</description>
+        <description>For the stealthy assassin.  Backstab the unwary.</description>
         <size>1</size>
         <attack>
             <attack_description>lunges at</attack_description>
@@ -577,7 +578,7 @@
             <cuts>true</cuts>
             <bleeding>true</bleeding>
             <number_attacks>3</number_attacks>
-            <successive_attacks_difficulty>4</successive_attacks_difficulty>
+            <successive_attacks_difficulty>2</successive_attacks_difficulty>
         </attack>
     </weapontype>
 
@@ -626,6 +627,8 @@
             <damage>40</damage>
             <bruises>true</bruises>
             <bleeding>true</bleeding>
+            <number_attacks>3</number_attacks>
+            <successive_attacks_difficulty>3</successive_attacks_difficulty>
         </attack>
     </weapontype>
 
@@ -634,12 +637,12 @@
         <shortname>Maul</shortname>
         <threatening>true</threatening>
         <price>200</price>
-        <description>A mighty hammer at the end of a six foot rod.</description>
-        <size>3</size>
+        <description>A mighty hammer at the end of a six foot rod.  Quite slow.</description>
+        <size>4</size>
         <attack>
             <priority>1</priority>
             <attack_description>swings at</attack_description>
-            <damage>45</damage>
+            <damage>85</damage>
             <bruises>true</bruises>
         </attack>
     </weapontype>
@@ -685,7 +688,7 @@
             <cuts>true</cuts>
             <bleeding>true</bleeding>
             <number_attacks>3</number_attacks>
-            <successive_attacks_difficulty>4</successive_attacks_difficulty>
+            <successive_attacks_difficulty>2</successive_attacks_difficulty>
         </attack>
     </weapontype>
 
@@ -718,7 +721,7 @@
             <damage>30</damage>
             <bruises>true</bruises>
             <number_attacks>3</number_attacks>
-            <successive_attacks_difficulty>4</successive_attacks_difficulty>
+            <successive_attacks_difficulty>3</successive_attacks_difficulty>
         </attack>
     </weapontype>
 
@@ -749,22 +752,21 @@
     </weapontype>
 
     <weapontype idname="WEAPON_SWORD">
-        <name>German Sword</name>
-        <shortname>Sword</shortname>
+        <name>Zweihänder</name>
         <can_take_hostages>true</can_take_hostages>
         <threatening>true</threatening>
-        <price>300</price>
-        <description>Large and well balanced, with a long two-handed hilt.</description>
+        <price>400</price>
+        <description>A very large sword, well over a meter in length.</description>
         <size>4</size>
         <attack>
             <priority>1</priority>
             <attack_description>slashes at</attack_description>
-            <damage>45</damage>
+            <damage>70</damage>
             <cuts>true</cuts>
             <bleeding>true</bleeding>
             <severtype>CLEAN</severtype>
-            <number_attacks>3</number_attacks>
-            <successive_attacks_difficulty>4</successive_attacks_difficulty>
+            <number_attacks>2</number_attacks>
+            <successive_attacks_difficulty>6</successive_attacks_difficulty>
         </attack>
     </weapontype>
 
@@ -792,6 +794,25 @@
             <attack_description>swings at</attack_description>
             <damage>10</damage>
             <burns>true</burns>
+        </attack>
+    </weapontype>
+
+    <weapontype idname="WEAPON_120MM_CANNON">
+        <name>120mm Gun</name>
+        <threatening>true</threatening>
+        <price>10000</price>
+        <description>Mounted on a tank.  You're not going to be able to carry this around.</description>
+        <size>5</size>
+        <attack>
+            <priority>1</priority>
+            <ranged>true</ranged>
+            <attack_description>fires at</attack_description>
+            <skill>HEAVYWEAPONS</skill>
+            <damage>1000</damage>
+            <burns>true</burns>
+            <shoots>true</shoots>
+            <tears>true</tears>
+            <severtype>NASTY</severtype>
         </attack>
     </weapontype>
 

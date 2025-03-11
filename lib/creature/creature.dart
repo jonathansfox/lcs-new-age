@@ -318,7 +318,9 @@ class Creature {
     Item? ammo = spareAmmo;
     int capacity = weapon.type.ammoCapacity;
     if (weapon.type.canKeepOneInTheChamber && weapon.ammo > 0) capacity++;
-    if (canReload() && (weapon.ammo < capacity) && ammo is Ammo) {
+    if (canReload() &&
+        (weapon.ammo < capacity / 4 || wasteful) &&
+        ammo is Ammo) {
       bool r = weapon.reload(ammo);
       if (ammo.stackSize == 0) spareAmmo = null;
       return r;
@@ -753,6 +755,9 @@ class Creature {
     if (type.freeable && !isEnemy) courage += 1000;
     if (type.majorEnemy) courage += 2000;
     if (justConverted) courage += 2000;
+    if (mode == GameMode.carChase) {
+      courage += 10000;
+    }
 
     if (fear > courage) nonCombatant = true;
 

@@ -1195,6 +1195,10 @@ Elements marked as hardcoded may have their values overridden by the game.
         <age>TEENAGER</age>
         <alignment>CONSERVATIVE</alignment>
         <gender>NEUTRAL</gender>
+        <attribute_points>230</attribute_points>
+        <attributes>
+            <wisdom>200</wisdom>
+        </attributes>
         <skills>
             <heavyweapons>6</heavyweapons>
         </skills>

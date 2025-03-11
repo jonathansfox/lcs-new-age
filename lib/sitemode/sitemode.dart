@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:lcs_new_age/basemode/base_actions.dart';
+import 'package:lcs_new_age/basemode/help_system.dart';
 import 'package:lcs_new_age/basemode/review_mode.dart';
 import 'package:lcs_new_age/common_actions/common_actions.dart';
 import 'package:lcs_new_age/common_actions/equipment.dart';
@@ -498,6 +499,10 @@ Future<void> _siteModeAux() async {
             .isEmpty) {
           override = true;
         }
+      }
+
+      if (c == "?".codePoint) {
+        await helpOnSitemode();
       }
 
       if (c == Key.v && enemy && siteAlarm) {

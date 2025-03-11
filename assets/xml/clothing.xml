@@ -80,6 +80,23 @@
     <professionalism>0</professionalism>
     <conceal_weapon_size>0</conceal_weapon_size>
   </clothingtype>
+  <clothingtype idname="CLOTHING_COMPOSITE_ARMOR">
+    <!-- Cosmetic component of the Tank creature; actual armor value is part of the tank body -->
+    <body_covering>
+      <head>false</head>
+      <body>false</body>
+      <arms>false</arms>
+      <legs>false</legs>
+    </body_covering>
+    <can_get_bloody>false</can_get_bloody>
+    <can_get_damaged>false</can_get_damaged>
+    <intrinsic_armor>ARMOR_COMPOSITE</intrinsic_armor>
+    <upgradable>false</upgradable>
+    <name>Composite Armor</name>
+    <shortname>Composite</shortname>
+    <professionalism>0</professionalism>
+    <conceal_weapon_size>0</conceal_weapon_size>
+  </clothingtype>
   <clothingtype idname="CLOTHING_ARMYARMOR">
     <make_price>2000</make_price>
     <intrinsic_armor>ARMOR_MILITARY</intrinsic_armor>
@@ -485,8 +502,8 @@
       <arms>false</arms>
       <legs>false</legs>
     </body_covering>
-    <name>Police Body Armor</name>
-    <shortname>PoliceBdyArmor</shortname>
+    <name>Police Uniform</name>
+    <shortname>Police Uniform</shortname>
     <fencevalue>150</fencevalue>
     <interrogation>
       <basepower>6</basepower>

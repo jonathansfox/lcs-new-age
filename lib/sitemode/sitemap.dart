@@ -13,7 +13,7 @@ import 'package:lcs_new_age/utils/lcsrandom.dart';
 
 part 'sitemap.g.dart';
 
-const ENCMAX = 18;
+const ENCMAX = 10;
 const RNG_SIZE = 4;
 const MAPX = 70;
 const MAPY = 23;

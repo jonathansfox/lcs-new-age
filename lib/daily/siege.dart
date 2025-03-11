@@ -1041,7 +1041,7 @@ Future<SallyForthResult> sallyForthPart3(Site loc) async {
   if (siege.escalationState == SiegeEscalation.police) {
     if (loc.type == SiteType.homelessEncampment) {
       // Regular cops sweeping the homeless camp
-      for (int e = 0; e < ENCMAX - 9; e++) {
+      for (int e = 0; e < 6; e++) {
         if (deathSquadsActive) {
           encounter.add(Creature.fromId(CreatureTypeIds.deathSquad));
         } else if (gangUnitsActive) {
@@ -1051,21 +1051,24 @@ Future<SallyForthResult> sallyForthPart3(Site loc) async {
         }
       }
       // Bystanders that might help out
-      prepareEncounter(loc.type, false, addToExisting: true);
-      prepareEncounter(loc.type, false, addToExisting: true);
-      for (int e = ENCMAX - 9; e < encounter.length; e++) {
+      prepareEncounter(loc.type, false, addToExisting: true, num: 4);
+      if (encounter.length < ENCMAX) {
+        prepareEncounter(loc.type, true,
+            addToExisting: true, num: encounter.length - ENCMAX);
+      }
+      for (int e = 6; e < encounter.length; e++) {
         encounter[e].align = Alignment.liberal;
       }
     } else {
       // SWAT teams
-      for (int e = 0; e < ENCMAX - 9; e++) {
+      for (int e = 0; e < 6; e++) {
         encounter.add(Creature.fromId(CreatureTypeIds.swat));
       }
     }
   } else if (siege.escalationState.index >=
       SiegeEscalation.nationalGuard.index) {
     // Military
-    for (int e = 0; e < ENCMAX - 9; e++) {
+    for (int e = 0; e < 6; e++) {
       encounter.add(Creature.fromId(CreatureTypeIds.soldier));
     }
   }

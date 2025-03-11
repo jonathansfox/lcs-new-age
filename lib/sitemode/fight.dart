@@ -72,7 +72,9 @@ Future<void> squadMemberAttacks(Creature p, bool wasAlarm) async {
   List<Creature> nonEnemies = [];
   for (Creature e in encounter) {
     if (e.alive) {
-      if (e.isEnemy && !e.nonCombatant && !e.calculateWillRunAway()) {
+      if (e.isEnemy &&
+          ((!e.nonCombatant && !e.calculateWillRunAway()) ||
+              e.type.majorEnemy)) {
         if (e.type.tank && e.stunned == 0) {
           superEnemies.add(e);
         } else if ((e.attack.socialDamage || e.attack.damage > 20) &&
@@ -160,29 +162,28 @@ Future<void> squadMemberAttacks(Creature p, bool wasAlarm) async {
   }
 }
 
+const List<String> escapeCrawling = [
+  " crawls off moaning...",
+  " crawls off whimpering...",
+  " crawls off trailing blood...",
+  " crawls off screaming...",
+  " crawls off crying...",
+  " crawls off sobbing...",
+  " crawls off whispering...",
+  " crawls off praying...",
+  " crawls off cursing..."
+];
+const List<String> escapeRunning = [
+  " makes a break for it!",
+  " escapes crying!",
+  " runs away!",
+  " gets out of there!",
+  " runs hollering!",
+  " bolts out of there!",
+  " runs away screaming!",
+];
+
 Future<void> enemyattack() async {
-  const List<String> escapeCrawling = [
-    " crawls off moaning...",
-    " crawls off whimpering...",
-    " crawls off trailing blood...",
-    " crawls off screaming...",
-    " crawls off crying...",
-    " crawls off sobbing...",
-    " crawls off whispering...",
-    " crawls off praying...",
-    " crawls off cursing..."
-  ];
-
-  const List<String> escapeRunning = [
-    " makes a break for it!",
-    " escapes crying!",
-    " runs away!",
-    " gets out of there!",
-    " runs hollering!",
-    " bolts out of there!",
-    " runs away screaming!",
-  ];
-
   for (int i = encounter.length - 1; i >= 0; i--) {
     Creature e = encounter[i];
     if (!e.alive) continue;
@@ -369,25 +370,56 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
   bool melee = !attackUsed.ranged;
   bool sneakAttack = false;
   bool addNastyOff = false;
+  int maxNumberOfAttacks = attackUsed.numberOfAttacks;
+  double damageMultiplier = 1;
 
   mvaddstr(9, 1, "${a.name} ");
   if (mistake) addstr("MISTAKENLY ");
   if (a.weapon.type.idName == "WEAPON_NONE") {
-    if (oneIn(a.skill(Skill.martialArts) + 1)) {
+    int result = a.skillRoll(Skill.martialArts);
+    if (result < 15) {
+      addstr("flails at");
+      maxNumberOfAttacks = 1;
+      damageMultiplier = 0.5;
+    } else if (result < 20) {
       addstr("punches");
-    } else if (oneIn(a.skill(Skill.martialArts))) {
-      addstr("swings at");
-    } else if (oneIn(a.skill(Skill.martialArts) - 1)) {
+      maxNumberOfAttacks = 1;
+      damageMultiplier = 1;
+    } else if (result < 25) {
       addstr("kicks");
-    } else if (oneIn(a.skill(Skill.martialArts) - 2)) {
-      addstr("pummels");
-    } else if (oneIn(a.skill(Skill.martialArts) - 3)) {
-      addstr("strikes");
-    } else if (oneIn(a.skill(Skill.martialArts) - 4)) {
-      addstr("jump kicks");
+      maxNumberOfAttacks = 1;
+      damageMultiplier = 1;
+    } else if (result < 45) {
+      switch (lcsRandom(3)) {
+        case 0:
+          addstr("pummels");
+          maxNumberOfAttacks = 6;
+          damageMultiplier = 1;
+        case 1:
+          addstr("combos");
+          maxNumberOfAttacks = 4;
+          damageMultiplier = 2;
+        case 2:
+          addstr("jump kicks");
+          maxNumberOfAttacks = 1;
+          damageMultiplier = 5;
+      }
     } else {
-      addstr("slows time and touches");
-      addNastyOff = true;
+      switch (lcsRandom(3)) {
+        case 0:
+          addstr("unleashes ${a.gender.hisHer} Stand on");
+          maxNumberOfAttacks = 12;
+          damageMultiplier = 1;
+        case 1:
+          addstr("launches a flurry of blows at");
+          maxNumberOfAttacks = 6;
+          damageMultiplier = 2;
+        case 2:
+          addstr("slows time and touches");
+          addNastyOff = true;
+          maxNumberOfAttacks = 1;
+          damageMultiplier = 10;
+      }
     }
   } else {
     if (attackUsed.canBackstab && a.align == Alignment.liberal && !mistake) {
@@ -409,7 +441,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
   addstr(" ${t.name}");
 
   if (a.equippedWeapon != null && !attackUsed.thrown) {
-    addstr(" with a ${a.weapon.getName()}");
+    addstr(" with a ${a.weapon.getName(primary: true)}");
   }
   addstr("!");
 
@@ -423,9 +455,9 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
 
   // Basic roll
   int aroll = a.skillRoll(wsk);
-  int droll = (t.skillRoll(Skill.dodge) / 2).round();
+  int droll = t.skillRoll(Skill.dodge);
   //Founders are better dodgers
-  if (targetIsLeader) droll = t.skillRoll(Skill.dodge);
+  if (targetIsLeader) droll = max(droll, t.skillRoll(Skill.dodge));
   if (sneakAttack) {
     droll = (t.attributeRoll(Attribute.wisdom) / 2).round();
     aroll += a.skillRoll(Skill.stealth);
@@ -466,8 +498,13 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
   if (a.equippedWeapon == null) //Move into WEAPON_NONE -XML
   {
     // Martial arts multi-strikes
-    bursthits = 1 + lcsRandom(a.skill(Skill.martialArts) ~/ 3 + 1);
-    if (bursthits > 5) bursthits = 5;
+    if (maxNumberOfAttacks == 1) {
+      bursthits = 1;
+    } else {
+      bursthits = maxNumberOfAttacks ~/ 2 +
+          lcsRandom((a.skill(Skill.martialArts) - maxNumberOfAttacks) ~/ 3 + 1);
+    }
+    if (bursthits > maxNumberOfAttacks) bursthits = maxNumberOfAttacks;
     if (!a.human) {
       bursthits = 1; // Whoops, must be human to use martial arts fanciness
     }
@@ -492,7 +529,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
       }
     }
 
-    for (int i = 0; i < attackUsed.numberOfAttacks; i++) {
+    for (int i = 0; i < maxNumberOfAttacks; i++) {
       if (attackUsed.usesAmmo) {
         if (a.weapon.ammo > 0) {
           a.weapon.ammo -= 1;
@@ -552,41 +589,48 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
 
   move(10, 1);
   debugPrint("${a.name} rolls $aroll + $bonus, ${t.name} rolls $droll");
-  Map<BodyPart, int> weights = {};
-  for (BodyPart p in t.body.parts) {
-    if (p.missing) continue;
-    if (p.immuneInCar && mode == GameMode.carChase) {
-      continue;
-    }
-    int size = p.size;
-    if (sneakAttack) {
-      if (p.weakSpot) size *= 4;
-      if (!p.critical) continue;
-    }
-    if (aroll + bonus > droll + 10) {
-      if (p.weakSpot) size *= 2;
-      if (p.critical) size *= 2;
-    } else if (aroll + bonus > droll + 5) {
-      if (p.critical) size *= 2;
-    }
-    weights[p] = size;
-  }
   BodyPart? hitPart;
-  if (weights.isNotEmpty) hitPart = lcsRandomWeighted(weights);
+  BodyPart? rollHitLocation() {
+    Map<BodyPart, int> weights = {};
+    for (BodyPart p in t.body.parts) {
+      if (p.missing) continue;
+      if (p.immuneInCar && mode == GameMode.carChase) {
+        continue;
+      }
+      int size = p.size;
+      if (sneakAttack) {
+        if (p.weakSpot) size *= 4;
+        if (!p.critical) continue;
+      }
+      if (aroll + bonus > droll + 10) {
+        if (p.weakSpot) size *= 2;
+        if (p.critical) size *= 2;
+      } else if (aroll + bonus > droll + 5) {
+        if (p.critical) size *= 2;
+      }
+      weights[p] = size;
+    }
+    if (weights.isNotEmpty) return lcsRandomWeighted(weights);
+    return null;
+  }
+
+  hitPart = rollHitLocation();
 
   if (hitPart != null && aroll + bonus > droll) {
     //HIT!
     String str = a.name;
     if (sneakAttack) {
       str += " stabs the ";
-    } else {
+    } else if (bursthits == 1 || attackUsed.ranged) {
       str += " hits the ";
     }
 
-    if (t.clothing.covers(hitPart)) {
-      if (hitPart.weakSpot && t.clothing.headArmor > 4) {
+    if (bursthits > 1 && !attackUsed.ranged) {
+      str += " strikes true";
+    } else if (t.clothing.covers(hitPart)) {
+      if (hitPart.weakSpot && t.clothing.headArmor > 4 && t.human) {
         str += "helmet";
-      } else if (hitPart.critical && t.clothing.bodyArmor > 4) {
+      } else if (hitPart.critical && t.clothing.bodyArmor > 4 && t.human) {
         str += "body armor";
       } else if (t.clothing.getLimbArmor(hitPart) > 4) {
         str += "${hitPart.name.toLowerCase()} armor";
@@ -598,8 +642,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
     }
 
     // show multiple hits
-    if ((attackUsed.alwaysDescribeHit || bursthits > 1) &&
-        a.weapon.type.idName != "WEAPON_NONE") {
+    if (attackUsed.alwaysDescribeHit || bursthits > 1) {
       String multiHit = switch (bursthits) {
         1 => "",
         2 => " twice",
@@ -615,7 +658,10 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
 
     bool aliveBefore = t.alive;
     for (int i = 0; i < bursthits; i++) {
-      await hit(a, t, attackUsed, hitPart, sneakAttack, addNastyOff);
+      await hit(a, t, attackUsed, hitPart!, sneakAttack, addNastyOff,
+          damageMultiplier);
+      if (!attackUsed.ranged) hitPart = rollHitLocation();
+      if (hitPart == null) break;
     }
 
     if (aliveBefore && !t.alive && t.squad == null) {
@@ -683,57 +729,42 @@ int healthmodroll(int aroll, Creature a) {
 
 /* adjusts attack damage based on armor, other factors */
 int damagemod(Creature t, Attack attackUsed, int damamount,
-    BodyPart hitlocation, int mod) {
+    BodyPart hitlocation, double mod) {
   debugPrint("Damage mod: $mod, damage before application: $damamount");
 
-  if (mod > 20) {
-    mod = 20; // Cap damage multiplier (every 10 points adds 1x damage)
-  }
-
-  if (mod <= -1) {
+  if (mod < 0) {
     damamount = (damamount / (1.0 - 1.0 * mod)).round();
     debugPrint("Damage reduced to $damamount");
   } else if (mod >= 0) {
-    damamount = (damamount * (1.0 + 0.1 * mod)).round();
+    damamount = (damamount * (1.0 + 0.2 * mod)).round();
     debugPrint("Damage increased to $damamount");
   }
 
   if (damamount < 0) damamount = 0;
 
-  if (hitlocation.weakSpot) damamount = damamount * 2;
-  if (!hitlocation.critical) damamount = (damamount / 2).round();
-  debugPrint("Final damage after hit location effects: $damamount");
-
   return damamount;
 }
 
 Future<void> hit(Creature a, Creature t, Attack attackUsed, BodyPart hitPart,
-    bool sneakAttack, bool addNastyOff) async {
+    bool sneakAttack, bool addNastyOff, double damageMultiplier) async {
   if (hitPart.missing) return;
   String str = "";
   int damamount = 0;
-  int strengthmin = attackUsed.ranged ? 0 : attackUsed.strengthMin;
-  int strengthmax = attackUsed.ranged ? 0 : attackUsed.strengthMax;
   SeverType severtype = attackUsed.severType;
 
   severtype = attackUsed.severType;
   if (addNastyOff) severtype = SeverType.nasty;
-  int random = (attackUsed.damage * 0.8).round() + a.skill(attackUsed.skill);
-  int fixed = (attackUsed.damage * 0.2).round() + a.skill(attackUsed.skill);
+  int random = (attackUsed.damage * 0.8).round();
+  int fixed = (attackUsed.damage * 0.2).round();
   if (sneakAttack) fixed += 100;
   //debugPrint("Random: $random, fixed: $fixed, hits: $bursthits");
   //debugPrint("Initial damage roll: $damamount");
 
   // Damage bonus from high skill, strength
-  int mod = 0;
-  if (strengthmax > strengthmin) {
-    // Melee attacks: Maximum strength bonus (soft cap), minimum
-    // strength to deliver full damage
-    int strength = a.attribute(Attribute.strength);
-    if (strength > strengthmax) {
-      strength = strengthmax + (strength - strengthmax) ~/ 2;
-    }
-    mod += strength - strengthmin;
+  double mod = 0;
+  if (!attackUsed.ranged) {
+    double strength = a.attribute(Attribute.strength).toDouble();
+    mod += strength;
   }
 
   int bursthits = a.weapon.loadedAmmoType?.multihit ?? 1;
@@ -741,6 +772,7 @@ Future<void> hit(Creature a, Creature t, Attack attackUsed, BodyPart hitPart,
   bool bruiseOnly = true;
   for (int i = 0; i < bursthits; i++) {
     int hitDamage = lcsRandom(random) + fixed;
+    hitDamage = (hitDamage * damageMultiplier).round();
     hitDamage = damagemod(t, attackUsed, hitDamage, hitPart, mod);
 
     // Armor
@@ -753,10 +785,12 @@ Future<void> hit(Creature a, Creature t, Attack attackUsed, BodyPart hitPart,
       if (totalArmor < hitDamage) {
         bruiseOnly = false;
       }
-      hitDamage -= (blocked * 0.8).floor();
+      if (attackUsed.bruises && !attackUsed.bleeds) {
+        hitDamage -= (blocked * 0.5).floor();
+      } else {
+        hitDamage -= (blocked * 0.8).floor();
+      }
       if (armorDamage > 0) {
-        debugPrint("Armor blocked $blocked, damage reduced to $hitDamage, "
-            "armor damage: $armorDamage");
         int externalDamage = min(armorDamage, externalArmor);
         int internalDamage = min(armorDamage - externalDamage, internalArmor);
         t.clothing.damageArmorInLocation(hitPart, externalDamage);
@@ -810,6 +844,12 @@ Future<void> hit(Creature a, Creature t, Attack attackUsed, BodyPart hitPart,
       }
     }
 
+    hitPart.relativeHealth -= damamount / target.maxBlood;
+
+    if (hitPart.weakSpot) damamount = damamount * 2;
+    if (!hitPart.critical) damamount = (damamount / 2).round();
+    debugPrint("Final damage after hit location effects: $damamount");
+
     if (!hitPart.critical && target.alive) {
       if (lcsRandom(100) >= attackUsed.noDamageReductionForLimbsChance) {
         damamount = min(damamount, (target.blood / 2).round());
@@ -825,7 +865,8 @@ Future<void> hit(Creature a, Creature t, Attack attackUsed, BodyPart hitPart,
     if (severtype == SeverType.nasty) bloodblast(t.clothing);
 
     if (str != "") {
-      mvaddstrc(10, 1, a.align.color, str);
+      clearMessageArea();
+      mvaddstrc(9, 1, a.align.color, str);
       printParty();
       printEncounter();
       await getKey();
@@ -833,7 +874,6 @@ Future<void> hit(Creature a, Creature t, Attack attackUsed, BodyPart hitPart,
 
     if ((hitPart.critical && hitPart.missing) || target.blood <= 0) {
       bool alreadydead = !target.alive;
-      bool alienate = false;
 
       if (!alreadydead) {
         target.die();
@@ -879,9 +919,6 @@ Future<void> hit(Creature a, Creature t, Attack attackUsed, BodyPart hitPart,
             siteCrime += 90;
           }
           if (a.squad == activeSquad) {
-            if (mode == GameMode.site && !activeSiteUnderSiege) {
-              alienate = true;
-            }
             addDramaToSiteStory(Drama.killedSomebody);
             criminalizeparty(Crime.murder);
           }
@@ -926,7 +963,7 @@ Future<void> hit(Creature a, Creature t, Attack attackUsed, BodyPart hitPart,
         }
       }
 
-      if (damamount >= 40) {
+      if (damamount >= 40 || (damamount >= 20 && attackUsed.bruises)) {
         if (attackUsed.cuts ||
             attackUsed.shoots ||
             attackUsed.tears ||
@@ -1009,13 +1046,13 @@ Future<void> hit(Creature a, Creature t, Attack attackUsed, BodyPart hitPart,
             if (!body.missingRightEye && heavydam) {
               mvaddstr(9, 1, target.name);
               if (attackUsed.shoots) {
-                addstr("'s right eye is blasted out!");
+                addstr("'s right eye is shot out!");
               } else if (attackUsed.burns) {
                 addstr("'s right eye is burned away!");
               } else if (attackUsed.tears) {
                 addstr("'s right eye is torn out!");
               } else if (attackUsed.cuts) {
-                addstr("'s right eye is poked out!");
+                addstr("'s right eye is cut open!");
               } else {
                 addstr("'s right eye is removed!");
               }
@@ -1029,13 +1066,13 @@ Future<void> hit(Creature a, Creature t, Attack attackUsed, BodyPart hitPart,
             if (!body.missingLeftEye && heavydam) {
               mvaddstr(9, 1, target.name);
               if (attackUsed.shoots) {
-                addstr("'s left eye is blasted out!");
+                addstr("'s left eye is shot out!");
               } else if (attackUsed.burns) {
                 addstr("'s left eye is burned away!");
               } else if (attackUsed.tears) {
                 addstr("'s left eye is torn out!");
               } else if (attackUsed.cuts) {
-                addstr("'s left eye is poked out!");
+                addstr("'s left eye is cut open!");
               } else {
                 addstr("'s left eye is removed!");
               }
@@ -1049,7 +1086,7 @@ Future<void> hit(Creature a, Creature t, Attack attackUsed, BodyPart hitPart,
             if (!body.missingTongue && heavydam) {
               mvaddstr(9, 1, target.name);
               if (attackUsed.shoots) {
-                addstr("'s tongue is blasted off!");
+                addstr("'s tongue is blown off!");
               } else if (attackUsed.burns) {
                 addstr("'s tongue is burned away!");
               } else if (attackUsed.tears) {
@@ -1069,7 +1106,7 @@ Future<void> hit(Creature a, Creature t, Attack attackUsed, BodyPart hitPart,
             if (!body.missingNose && heavydam) {
               mvaddstr(9, 1, target.name);
               if (attackUsed.shoots) {
-                addstr("'s nose is blasted off!");
+                addstr("'s nose is blown off!");
               } else if (attackUsed.burns) {
                 addstr("'s nose is burned away!");
               } else if (attackUsed.tears) {
@@ -1279,7 +1316,7 @@ Future<void> hit(Creature a, Creature t, Attack attackUsed, BodyPart hitPart,
                 if (ribminus == body.ribs) {
                   addstr("All ");
                 }
-                addstr("$ribminus  of ${target.name}'s ribs are ");
+                addstr("$ribminus of ${target.name}'s ribs are ");
               } else if (body.ribs > 1) {
                 addstr("One of ${target.name}'s ribs is ");
               } else {
@@ -1287,7 +1324,7 @@ Future<void> hit(Creature a, Creature t, Attack attackUsed, BodyPart hitPart,
               }
 
               if (attackUsed.shoots) {
-                addstr("shot apart!");
+                addstr("shattered!");
               } else {
                 addstr("broken!");
               }
@@ -1424,7 +1461,7 @@ Future<void> severloot(Creature cr, List<Item> loot) async {
   if (cr.equippedWeapon != null && armok == 0) {
     clearMessageArea();
     mvaddstrc(9, 1, yellow, "The ");
-    addstr(cr.weapon.getName(sidearm: true));
+    addstr(cr.weapon.getName());
     addstr(" slips from");
     mvaddstr(10, 1, cr.name);
     addstr("'s grasp.");
@@ -1546,7 +1583,7 @@ Future<bool> incapacitated(Creature a, bool noncombat) async {
       if (noncombat) {
         clearMessageArea();
         mvaddstrc(9, 1, white, a.name);
-        if (a.squad == null) a.nonCombatant = true;
+        if (a.squad == null && !a.type.majorEnemy) a.nonCombatant = true;
         switch (lcsRandom(54)) {
           case 0:
             addstr(" desperately cries out to Jesus.");

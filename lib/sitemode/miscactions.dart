@@ -554,18 +554,18 @@ Future<bool> reloadparty(bool wasteful, {bool showText = false}) async {
     String message = "";
     if (p.hasThrownWeapon) {
       pReloaded = p.readyAnotherThrowingWeapon();
-      message = "${p.name} readies another ${p.weapon.getName()}.";
+      //message = "${p.name} readies another ${p.weapon.getName()}.";
     } else if (p.canReload()) {
       pReloaded = p.reload(wasteful);
-      message = "${p.name} reloads.";
+      //message = "${p.name} reloads.";
     }
     if (pReloaded) {
       didReload = true;
       if (showText && message.isNotEmpty) {
         clearMessageArea();
         printParty();
-        mvaddstrc(9, 1, white, message);
-        await getKey();
+        //mvaddstrc(9, 1, white, message);
+        //await getKey();
       }
     }
   }

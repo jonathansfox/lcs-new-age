@@ -502,51 +502,57 @@ Future<void> intimidate(Creature liberal) async {
   move(10, 1);
   setColor(lightGreen);
 
-  switch (lcsRandom(15)) {
-    case 0:
-      // Formatting the slogan so that it always has quotes around it and punctuation
-      if (slogan[0] != '"') addchar('"');
-      addstr(slogan);
-      int last = slogan.length;
-      if (last > 0 &&
-          slogan[last - 1] != '"' &&
-          slogan[last - 1] != '!' &&
-          slogan[last - 1] != '.' &&
-          slogan[last - 1] != '?') {
-        addchar('!');
-      }
-      if (last > 0 && slogan[last - 1] != '"') addchar('"');
-
-    case 1:
-      addstr("Run, you Conservative swine!");
-    case 2:
-      addstr("We're the Liberal Crime Squad!");
-    case 3:
-      addstr("Praying won't help you now!");
-    case 4:
-      addstr("You fight like a dairy farmer!");
-    case 5:
-      addstr("You're in the wrong place!");
-    case 6:
-      addstr("Don't mess with the LCS!");
-    case 7:
-      addstr("You're in for it now!");
-    case 8:
-      addstr("I'll kill you!");
-    case 9:
-      addstr("Run away, and never return!");
-    case 10:
-      addstr(noProfanity ? "[Please leave!]" : "Get the fuck out of here!");
-    case 11:
-      addstr("I swear to Darwin I'll end you!");
-    case 12:
-      addstr("Don't make me ${noProfanity ? "[be mean]" : "fuck you up"}!");
-    case 13:
-      addstr("I pity the fool who stands against me!");
-    case 14:
-      addstr("Anybody feel like dying a hero?");
+  bool enemyPresent = false;
+  for (Creature e in encounter) {
+    if (e.alive && e.isEnemy && !e.calculateWillRunAway()) {
+      enemyPresent = true;
+      break;
+    }
   }
 
+  String formattedSlogan = "";
+  if (slogan[0] != '"') formattedSlogan += '"';
+  formattedSlogan += slogan;
+  int last = slogan.length;
+  if (last > 0 &&
+      slogan[last - 1] != '"' &&
+      slogan[last - 1] != '!' &&
+      slogan[last - 1] != '.' &&
+      slogan[last - 1] != '?') {
+    formattedSlogan += "!";
+  }
+  if (last > 0 && slogan[last - 1] != '"') formattedSlogan += '"';
+
+  if (enemyPresent) {
+    addstr([
+      formattedSlogan,
+      "Run, you Conservative swine!",
+      "We're the Liberal Crime Squad!",
+      "Praying won't help you now!",
+      "You fight like a dairy farmer!",
+      "You're in the wrong place!",
+      "Don't mess with the LCS!",
+      "You're in for it now!",
+      "Go now or I'll kill you!",
+      "Run away, and never return!",
+      if (noProfanity) "[Please leave!]" else "Get the fuck out of here!",
+      "I swear to Darwin I'll end you!",
+      "Don't make me ${noProfanity ? "[be mean]" : "fuck you up"}!",
+      "I pity the fool who stands against the LCS!"
+          "Anybody feel like dying a hero?",
+    ].random);
+  } else {
+    addstr([
+      formattedSlogan,
+      "Be glad I'm feeling merciful!",
+      "Run, little fascists!",
+      "Get the hell out of here.",
+      "Go on, run away.",
+      "Not feeling so tough, huh?",
+      "Look who's scared of the big bad Liberal...",
+      "Run away, Conservative bastards!",
+    ].random);
+  }
   await getKey();
 
   for (int i = encounter.length - 1; i >= 0; i--) {
@@ -560,27 +566,11 @@ Future<void> intimidate(Creature liberal) async {
       if (attack > defense || e.nonCombatant) {
         clearMessageArea();
         mvaddstrc(9, 1, white, e.name);
-        switch (lcsRandom(10)) {
-          case 0:
-            addstr(" chickens out!");
-          case 1:
-            addstr(" backs off!");
-          case 2:
-            addstr(" doesn't want to die!");
-          case 3:
-            addstr(" is out of there!");
-          case 4:
-            addstr(" has a family!");
-          case 5:
-            addstr(" is too young to die!");
-          case 6:
-            addstr(" scatters!");
-          case 7:
-            addstr(" runs away!");
-          case 8:
-            addstr(" flees!");
-          case 9:
-            addstr(" is gone!");
+
+        if (e.body.legok < 2 || e.blood < e.maxBlood * 0.45) {
+          addstr(escapeCrawling.random);
+        } else {
+          addstr(escapeRunning.random);
         }
         encounter.removeAt(i);
         addjuice(liberal, 2, 1000); // Instant juice!

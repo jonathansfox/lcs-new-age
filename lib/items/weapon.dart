@@ -57,8 +57,10 @@ class Weapon extends Item {
       ..loadedAmmoType = loadedAmmoType;
   }
 
-  String getName({bool sidearm = false}) {
-    return (sidearm && type.shortName != "") ? type.shortName : type.name;
+  String getName({bool sidearm = false, bool primary = false}) {
+    if (primary) return type.largeSubtypeName ?? type.name;
+    if (sidearm) return type.smallSubtypeShortName ?? type.shortName;
+    return type.name;
   }
 
   @override
