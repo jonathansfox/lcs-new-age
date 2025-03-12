@@ -668,7 +668,7 @@ void _activityFooter(Creature cr) {
       mvaddstr(23, 3, "Uses Street Smarts to avoid the police.");
     case ActivityType.ccfraud:
       addstr(" commit credit card fraud.");
-      mvaddstr(23, 3, "Uses Computers. Requires a Hacker Den.");
+      mvaddstr(23, 3, "Uses Computers.  Requires a Hacker Den.");
     case ActivityType.clinic:
       addstr(" go to the hospital.");
     case ActivityType.communityService:
@@ -683,7 +683,7 @@ void _activityFooter(Creature cr) {
       mvaddstr(23, 3, "Uses Art.");
     case ActivityType.hacking:
       addstr(" hack into private networks.");
-      mvaddstr(23, 3, "Uses Computers. Requires a Hacker Den.");
+      mvaddstr(23, 3, "Uses Computers.  Requires a Hacker Den.");
     case ActivityType.interrogation:
       addstr(" tend to hostages.");
       mvaddstr(23, 3, "Uses Psychology and other social skills.");
@@ -863,7 +863,7 @@ Future<void> _activateBulk() async {
         }
       }
     }
-    if (c >= Key.num2 && c <= Key.num6) {
+    if (c >= Key.num1 && c <= Key.num6) {
       selectedactivity = c - Key.num1;
     }
 
