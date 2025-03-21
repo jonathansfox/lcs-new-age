@@ -118,19 +118,21 @@ Future<void> doActivityTrouble(List<Creature> trouble) async {
   politics.publicInterest.update(issue, (v) => v + mod);
   politics.backgroundInfluence.update(issue, (v) => v + mod);
 
-  await showMessage(message);
-  message = "";
+  if (!disbanding) {
+    await showMessage(message);
+    message = "";
 
-  if (crime != null) {
-    for (int t = 0; t < trouble.length; t++) {
-      if (oneIn(30) &&
-          !trouble[t].skillCheck(Skill.streetSmarts, Difficulty.average)) {
-        if (oneIn(4)) {
-          criminalize(trouble[t], crime);
-          sitestory = NewsStory.prepare(NewsStories.arrestGoneWrong);
-          await attemptArrest(trouble[t], "causing trouble");
-        } else {
-          await redneckFight(trouble[t]);
+    if (crime != null) {
+      for (int t = 0; t < trouble.length; t++) {
+        if (oneIn(30) &&
+            !trouble[t].skillCheck(Skill.streetSmarts, Difficulty.average)) {
+          if (oneIn(4)) {
+            criminalize(trouble[t], crime);
+            sitestory = NewsStory.prepare(NewsStories.arrestGoneWrong);
+            await attemptArrest(trouble[t], "causing trouble");
+          } else {
+            await redneckFight(trouble[t]);
+          }
         }
       }
     }

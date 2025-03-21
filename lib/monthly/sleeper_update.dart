@@ -28,7 +28,7 @@ Future<void> sleeperEffect(Creature cr, Map<View, int> libpower) async {
   switch (cr.activity.type) {
     case ActivityType.sleeperLiberal:
       sleeperInfluence(cr, libpower);
-      cr.infiltration -= 0.02;
+      if (!disbanding) cr.infiltration -= 0.02;
     case ActivityType.sleeperEmbezzle:
       await sleeperEmbezzle(cr, libpower);
     case ActivityType.sleeperSteal:

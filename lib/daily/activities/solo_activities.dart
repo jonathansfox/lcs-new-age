@@ -63,43 +63,56 @@ Future<void> soloActivities() async {
     List<Creature> people = entry.value;
     switch (type) {
       case ActivityType.visit:
+        if (disbanding) continue;
         for (Creature p in people) {
           p.activity = Activity.none();
         }
       case ActivityType.none:
+        if (disbanding) continue;
         for (Creature p in people) {
           await doActivityRepairArmor(p);
         }
       case ActivityType.makeArmor:
+        if (disbanding) continue;
         for (Creature p in people) {
           await doActivityMakeArmor(p);
         }
       case ActivityType.wheelchair:
+        if (disbanding) continue;
         for (Creature p in people) {
           await doActivityGetWheelchair(p);
         }
       case ActivityType.recruiting:
+        if (disbanding) continue;
         for (Creature p in people) {
           await doActivityRecruit(p);
         }
       case ActivityType.stealCars:
+        if (disbanding) continue;
         for (Creature p in people) {
           CarTheftScene scene = CarTheftScene(p);
           await scene.play();
         }
       case ActivityType.donations:
+        if (disbanding) continue;
         await doActivitySolicitDonations(people);
       case ActivityType.sellTshirts:
+        if (disbanding) continue;
         await doActivitySellTshirts(people);
       case ActivityType.sellMusic:
+        if (disbanding) continue;
         await doActivitySellMusic(people);
       case ActivityType.sellArt:
+        if (disbanding) continue;
         await doActivitySellArt(people);
       case ActivityType.sellDrugs:
+        if (disbanding) continue;
         await doActivitySellBrownies(people);
       case ActivityType.prostitution:
+        if (disbanding) continue;
         await doActivityProstitution(people);
       case ActivityType.graffiti:
+        if (disbanding) continue;
         await doActivityGraffiti(people);
       case ActivityType.trouble:
         await doActivityTrouble(people);
@@ -109,24 +122,31 @@ Future<void> soloActivities() async {
           changePublicOpinion(View.lcsLiked, 1);
         }
       case ActivityType.hacking:
+        if (disbanding) continue;
         await doActivityHacking(people);
       case ActivityType.ccfraud:
+        if (disbanding) continue;
         await doActivityCCFraud(people);
       case ActivityType.bury:
+        if (disbanding) continue;
         await doActivityBury(people);
       case ActivityType.teachLiberalArts:
       case ActivityType.teachFighting:
       case ActivityType.teachCovert:
+        if (disbanding) continue;
         await doActivityTeach(people);
       case ActivityType.streamGuardian:
         doActivityStreamGuardian(people);
       case ActivityType.writeGuardian:
         doActivityWriteGuardian(people);
       case ActivityType.study:
+        if (disbanding) continue;
         await doActivityStudy(people);
       case ActivityType.takeClass:
+        if (disbanding) continue;
         await doActivityTakeClasses(people);
       case ActivityType.clinic:
+        if (disbanding) continue;
         for (Creature p in people) {
           if (p.site?.city == null) continue;
           Site? hospital =
@@ -135,6 +155,7 @@ Future<void> soloActivities() async {
           await hospitalize(hospital, p);
         }
       case ActivityType.sleeperJoinLcs:
+        if (disbanding) continue;
         await doActivitySleeperJoinLCS(people);
       default:
         break;
