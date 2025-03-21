@@ -53,7 +53,8 @@ Future<void> prison(Creature g) async {
     "lethal injection",
     "hanging",
     "firing squad",
-    "electrocution"
+    "electrocution",
+    "inert gas asphyxiation"
   ];
 
   const List<String> supposedlyHumaneExecutionMethods = ["lethal injection"];

@@ -417,6 +417,19 @@ String majorEventStoryText(View? view, bool positive) {
         String timeOfDeath =
             "${lcsRandom(12) + 1}:${lcsRandom(6)}${lcsRandom(10)} ${oneIn(2) ? "AM" : "PM"}";
         int yearConvicted = year - lcsRandom(11) - 10;
+        String byExecutionMethod = switch (laws[Law.deathPenalty]) {
+          DeepAlignment.archConservative => [
+              "on the cross",
+              "in a fire ant nest",
+              "in a sewage digester vat",
+              "in the guillotine",
+            ].random,
+          DeepAlignment.conservative => [
+              "in the gallows",
+              "in the electric chair",
+            ].random,
+          _ => "by lethal injection",
+        };
         String exculpatoryEvidence = [
           "a confession from another convict",
           "a battery of negative DNA tests",
@@ -429,7 +442,7 @@ String majorEventStoryText(View? view, bool positive) {
         ].random;
 
         story = "${randomStateName()} - An innocent citizen has been put "
-            "to death in the electric chair.  "
+            "to death $byExecutionMethod.  "
             "$victim was pronounced dead at $timeOfDeath yesterday at the "
             "${lastName()} Correctional Facility.&r"
             "  ${victim.last} was convicted in $yearConvicted of 13 "

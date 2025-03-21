@@ -101,7 +101,7 @@ Future<void> characterCreationQuestions(Creature founder, bool choose) async {
       _Option(
           "I was grounded from electronics.  I spent a lot of time drawing.",
           "+1 Art, +1 Heart", () {
-        founder.adjustSkill(Skill.psychology, 1);
+        founder.adjustSkill(Skill.art, 1);
         founder.adjustAttribute(Attribute.heart, 1);
       }),
     ]),
@@ -328,7 +328,6 @@ Future<void> characterCreationQuestions(Creature founder, bool choose) async {
           "I started wearing a security uniform to explore major buildings downtown.",
           "+1 Disguise, Security Uniform, Downtown Maps", () {
         founder.adjustSkill(Skill.disguise, 1);
-        founder.adjustAttribute(Attribute.agility, 1);
         founder.giveClothingType("CLOTHING_SECURITYUNIFORM",
             lootPile: founder.base?.loot);
         for (Site site in founder.base?.city.districts.first.sites ?? []) {

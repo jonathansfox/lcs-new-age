@@ -155,16 +155,17 @@ class Creature {
   bool justEscaped = false;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  Site? get site => location is Site ? location! as Site : null;
+  Site? get site {
+    Location? l = location;
+    return l is Site ? l : null;
+  }
+
   @JsonKey(includeFromJson: false, includeToJson: false)
-  Location? get location =>
-      allLocations.firstWhereOrNull((l) => l.idString == locationId);
+  Location? get location => locationMap[locationId];
   set location(Location? loc) => locationId = loc?.idString;
   @JsonKey(includeFromJson: false, includeToJson: false)
   Location get workLocation {
-    return sites.firstWhereOrNull((e) => e.idString == workLocationId) ??
-        location?.city ??
-        cities.first;
+    return siteMap[workLocationId] ?? location?.city ?? cities.first;
   }
 
   set workLocation(Location? loc) => workLocationId = loc?.idString;

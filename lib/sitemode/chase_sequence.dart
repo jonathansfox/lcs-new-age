@@ -919,7 +919,7 @@ Future<void> crashfriendlycar(Vehicle v) async {
 
   await getKey();
 
-  for (int i = squad.length; i >= 0; i--) {
+  for (int i = squad.length - 1; i >= 0; i--) {
     Creature p = squad[i];
     if (p.carId == v.id) {
       // Inflict injuries on Liberals

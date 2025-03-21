@@ -186,17 +186,23 @@ Future<void> advanceMonth() async {
     // opinion over time -- if left unchecked, their subtle influence
     // on society will become a self-perpetuating Conservative nightmare!
     else if (v == View.amRadio || v == View.cableNews) {
-      if (politics.publicMood() - 10 < publicOpinion[v]!) {
-        changePublicOpinion(v, -1);
-      }
+      // If the public is much more liberal than the media, slowly shift
+      // away from watching Conservative media
       if (politics.publicMood() - 20 > publicOpinion[v]!) {
         changePublicOpinion(v, 1);
+      }
+      // When disbanding and public opinion is very liberal, don't allow
+      // the Conservative media to gain traction (it's just annoying)
+      if (politics.publicMood() > 90 && disbanding) continue;
+      // Otherwise, slowly shift in favor of Conservative media
+      if (politics.publicMood() - 10 < publicOpinion[v]!) {
+        changePublicOpinion(v, -1);
       }
     }
   }
 
   // Seduction monthly experience stipends for those liberals
-  // who have been getting it on with their love slaves/masters
+  // who have been getting it on with their romantic partners
   // in the background
   for (int s = 0; s < pool.length; s++) {
     int stipendsize = 0;

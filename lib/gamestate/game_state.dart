@@ -156,10 +156,24 @@ Iterable<Creature> get poolAndProspects => pool
     .followedBy(datingSessions.expand((d) => d.dates))
     .followedBy(recruitmentSessions.map((r) => r.recruit));
 List<Site> get sites => gameState.sites;
+Map<String, Site>? _siteMap;
+Map<String, Site> get siteMap {
+  _siteMap ??= {for (var site in sites) site.idString: site};
+  return _siteMap!;
+}
+
 Iterable<Location> get allLocations =>
     Iterable.castFrom<Site, Location>(gameState.sites)
         .followedBy(gameState.districts)
         .followedBy(gameState.cities);
+Map<String, Location>? _locationMap;
+Map<String, Location> get locationMap {
+  _locationMap ??= {
+    for (var location in allLocations) location.idString: location
+  };
+  return _locationMap!;
+}
+
 int get month => gameState.date.month;
 int get day => gameState.date.day;
 int get year => gameState.date.year;

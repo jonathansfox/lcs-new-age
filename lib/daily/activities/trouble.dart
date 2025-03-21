@@ -117,24 +117,27 @@ Future<void> doActivityTrouble(List<Creature> trouble) async {
   changePublicOpinion(View.lcsLiked, mod ~/ 2);
   politics.addBackgroundInfluence(issue, mod);
 
-  await showMessage(message);
-  message = "";
+  if (!disbanding) {
+    await showMessage(message);
+    message = "";
 
-  if (crime != null) {
-    for (int t = 0; t < trouble.length; t++) {
-      if (oneIn(30) &&
-          !trouble[t].skillCheck(Skill.streetSmarts, Difficulty.average)) {
-        if (oneIn(4)) {
-          sitestory = NewsStory.prepare(NewsStories.arrestGoneWrong);
-          await attemptArrest(trouble[t], "causing trouble");
-        } else {
-          await redneckFight(trouble[t]);
+    if (crime != null) {
+      for (int t = 0; t < trouble.length; t++) {
+        if (oneIn(30) &&
+            !trouble[t].skillCheck(Skill.streetSmarts, Difficulty.average)) {
+          if (oneIn(4)) {
+            criminalize(trouble[t], crime);
+            sitestory = NewsStory.prepare(NewsStories.arrestGoneWrong);
+            await attemptArrest(trouble[t], "causing trouble");
+          } else {
+            await redneckFight(trouble[t]);
+          }
         }
       }
     }
+  }
 
-    for (int h = 0; h < trouble.length; h++) {
-      addjuice(trouble[h], juiceval, 50);
-    }
+  for (int h = 0; h < trouble.length; h++) {
+    addjuice(trouble[h], juiceval, 50);
   }
 }
