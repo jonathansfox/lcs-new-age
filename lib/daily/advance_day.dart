@@ -75,11 +75,12 @@ Future<void> _tendHostages() async {
 void _moveSquadlessToBases() {
   for (Creature c in pool) {
     if (c.squad != null || !c.isActiveLiberal) continue;
-    if (c.location != c.base && c.base?.siege.underSiege == true) {
-      c.base = sites.firstWhere((l) =>
+    Site? base = c.base;
+    if (c.locationId != base?.idString && base?.siege.underSiege == true) {
+      base = sites.firstWhere((l) =>
           l.city == c.location?.city && l.type == SiteType.homelessEncampment);
     }
-    if (c.base != null) c.location = c.base;
+    if (base != null) c.location = base;
   }
 }
 
@@ -358,6 +359,12 @@ Future<void> dispersalCheck() async {
     // reached and marked safe, all remaining squad members are nuked.
     Map<Creature, DispersalTypes> dispersalStatus =
         Map.fromEntries(pool.map((e) => MapEntry(e, DispersalTypes.noContact)));
+    Set<int> prisonerIds = sites
+        .where((s) => s.type == SiteType.prison)
+        .expand((s) => s.creaturesPresent)
+        .where((c) => !c.sleeperAgent)
+        .map((c) => c.id)
+        .toSet();
 
     bool promotion;
     do {
@@ -406,7 +413,7 @@ Future<void> dispersalCheck() async {
       for (int i = pool.length - 1; i >= 0; i--) {
         Creature p = pool[i];
         if (!p.alive) continue;
-        if (p.site?.type == SiteType.prison && !p.sleeperAgent) {
+        if (prisonerIds.contains(p.id)) {
           inprison = true;
         } else {
           inprison = false;
@@ -611,28 +618,23 @@ Future<void> _dailyHealing() async {
   // Healing - determine medical support at each location
   Map<Site, int> medical = {}, injuries = {};
   for (Site site in sites) {
-    medical[site] = 0;
     injuries[site] = 0;
+    int medicalLevel = 0;
     // Clinic is equal to a skill 6 liberal
-    if (site.type == SiteType.clinic) medical[site] = 6;
+    if (site.type == SiteType.clinic) medicalLevel = 6;
     // Hospital is equal to a skill 12 liberal
-    if (site.type == SiteType.universityHospital) medical[site] = 12;
-  }
-  for (Creature p in pool) {
-    // First pass is to identify medics
-    if (!p.alive) continue;
-    if (p.inHiding) continue;
-    if (p.sleeperAgent) continue;
-    if (p.site != null) {
-      // Don't let starving locations heal
-      if (p.site!.foodDaysLeft < 1 && p.site!.siege.underSiege) continue;
-      // Anyone present can help heal, but only the highest skill matters
-      if (medical[p.site]! < p.skill(Skill.firstAid)) {
-        medical[p.site!] = p.skill(Skill.firstAid);
-      }
+    if (site.type == SiteType.universityHospital) medicalLevel = 12;
+    // Safehouses have the quality of the most skilled liberal
+    // as long as they aren't starving
+    if (site.controller == SiteController.lcs &&
+        (!site.siege.underSiege || site.foodDaysLeft > 0)) {
+      medicalLevel = site.creaturesPresent
+          .where((c) => c.alive && c.align == Alignment.liberal && !c.away)
+          .map((c) => c.skill(Skill.firstAid))
+          .fold(0, max);
     }
+    medical[site] = medicalLevel;
   }
-
   //HEAL NON-CLINIC PEOPLE AND TRAIN
   for (Creature p in pool) {
     if (!p.alive) continue;
@@ -793,15 +795,10 @@ Future<void> _dailyHealing() async {
     }
   }
   //Give experience to medics
-  for (Creature p in pool) {
-    //If present, qualified to heal, and doing so
-    if (p.site != null) {
-      //Clear activity if their location doesn't have healing work to do
-      if (injuries[p.site]! > 0) {
-        //Give experience based on work done and current skill
-        p.train(Skill.firstAid,
-            max(0, injuries[p.site]! ~/ 5 - p.skill(Skill.firstAid) * 2));
-      }
+  for (Site siteWithInjuries
+      in injuries.entries.where((e) => e.value > 0).map((e) => e.key)) {
+    for (Creature p in siteWithInjuries.creaturesPresent) {
+      p.train(Skill.firstAid, injuries[siteWithInjuries]! ~/ 5);
     }
   }
 }

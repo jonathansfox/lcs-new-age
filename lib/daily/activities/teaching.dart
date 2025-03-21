@@ -6,6 +6,8 @@ import 'package:lcs_new_age/creature/creature.dart';
 import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/gamestate/ledger.dart';
+import 'package:lcs_new_age/location/city.dart';
+import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
 
 Future<void> doActivityTeach(List<Creature> teachers) async {
@@ -55,15 +57,25 @@ Future<void> doActivityTeach(List<Creature> teachers) async {
         continue;
     }
 
-    //Count potential students for this teacher to get an idea of efficiency
-    List<Creature> students = pool
-        .where((p) =>
-            p != teacher &&
-            p.site?.city == teacher.site?.city &&
-            p.align == Alignment.liberal &&
-            (p.site?.isPartOfTheJusticeSystem == false || p.sleeperAgent) &&
-            p.clinicMonthsLeft == 0)
-        .toList();
+    //Count potential students for this teacher to get an idea of efficiency.
+    //Much of the verbosity here is for performance reasons, to avoid iterating
+    //over the entire pool of creatures multiple times, and to avoid iterating
+    //over the entire list of sites multiple times.
+    List<Creature> students = [];
+    City? city = teacher.site?.city;
+    Iterable<Site> sites = city?.sites ?? [];
+    Iterable<String> siteIdsInJusticeSystem =
+        sites.where((s) => s.isPartOfTheJusticeSystem).map((s) => s.idString);
+    Iterable<String> siteIds = sites.map((s) => s.idString);
+    for (Creature p in pool) {
+      if (p != teacher &&
+          siteIds.contains(p.locationId) &&
+          p.align == Alignment.liberal &&
+          (!siteIdsInJusticeSystem.contains(p.locationId) || p.sleeperAgent) &&
+          p.clinicMonthsLeft == 0) {
+        students.add(p);
+      }
+    }
     for (Creature p in students) {
       for (Skill skill in skills) {
         // Count the number of skills being taught times the number of
