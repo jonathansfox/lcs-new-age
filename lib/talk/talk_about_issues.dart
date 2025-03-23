@@ -184,7 +184,7 @@ Map<Law, _DiscussionPoint> _discussionPoints = {
       "Abortion is murder."),
   Law.animalRights: _DiscussionPoint(
       "Animals endure unimaginable suffering in labs, just so we can test",
-      "shampoo and mascara.",
+      "cheap products like shampoo and mascara.",
       "Every time you eat chicken, a chicken ghost haunts your freezer.",
       "We've come so far, but animals are still denied the right to vote!",
       "Don't pretend animals are human."),

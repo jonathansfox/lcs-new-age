@@ -26,7 +26,7 @@ enum UnlockTypes { door, cage, cageHard, cell, safe, armory, vault }
 
 enum BashTypes { door }
 
-enum UnlockResult { unlocked, failed, noAttempt }
+enum UnlockResult { unlocked, failed, noAttempt, bashed }
 
 enum HackTypes { supercomputer, vault }
 
@@ -226,7 +226,7 @@ Future<UnlockResult> bash(BashTypes type) async {
       await getKey();
     }
 
-    return UnlockResult.unlocked;
+    return UnlockResult.bashed;
   } else {
     clearMessageArea();
     mvaddstrc(9, 1, white, maxp.name);

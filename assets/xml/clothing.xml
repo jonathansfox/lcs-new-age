@@ -13,9 +13,7 @@
             Default: true
         <can_get_damaged> (boolean) Whether or not the clothing can get damaged.
             Default: true
-        <default_armor> (string) The idname of the default armor level of the clothing.
-            Default: CLOTHING_NONE
-        <CLOTHING_allowed> (string) Idname of an armor upgrade that is allowed.
+        <armor_allowed> (string) Idname of an armor upgrade that is allowed.
             Default: (not set)
         <body_covering> What parts of the body is the clothing is worn on.
             <head> (boolean) If worn on head.
@@ -310,7 +308,7 @@
     <make_price>40</make_price>
     <deathsquad_legality>true</deathsquad_legality>
     <name>Death Squad Uniform</name>
-    <shortname>DSquad Uniform</shortname>
+    <shortname>Death Uniform</shortname>
     <fencevalue>80</fencevalue>
     <allow_visible_armor>true</allow_visible_armor>
     <body_covering>

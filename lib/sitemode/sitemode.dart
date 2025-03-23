@@ -1813,7 +1813,7 @@ Future<void> _openDoor(bool restricted) async {
         UnlockResult result = await unlock(UnlockTypes.door);
         // If the unlock was successful
 
-        if (result == UnlockResult.unlocked) {
+        if (result == UnlockResult.unlocked || result == UnlockResult.bashed) {
           // Unlock the door
           currentTile.flag &= ~(SITEBLOCK_LOCKED | SITEBLOCK_ALARMED);
           addDramaToSiteStory(Drama.unlockedDoor);
@@ -1832,7 +1832,7 @@ Future<void> _openDoor(bool restricted) async {
         }
 
         // Check for people noticing you fiddling with the lock
-        if (result != UnlockResult.noAttempt) {
+        if (result == UnlockResult.bashed) {
           await noticeCheck();
         }
         return;

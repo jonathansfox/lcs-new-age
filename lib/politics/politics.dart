@@ -127,6 +127,8 @@ class Politics {
       presidentParty = PoliticalParty.democrat;
     }
     uniqueCreatures.newPresident();
+    fillCabinetPost(Exec.vicePresident);
+    execTerm = 1;
   }
 
   void fillCabinetPost(Exec position) {

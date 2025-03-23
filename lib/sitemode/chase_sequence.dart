@@ -44,6 +44,7 @@ class ChaseSequence {
   Site? get site => location is Site ? location as Site : null;
   List<Vehicle> friendcar = [];
   List<Vehicle> enemycar = [];
+  List<int> enemyCarDistance = [];
   bool canpullover = false;
   void clean() {
     enemycar.clear();
@@ -347,6 +348,10 @@ Future<ChaseOutcome> footChaseSequence({
         if (encounter.any((e) => e.type.lawEnforcement)) {
           sitestory?.drama.add(Drama.footChase);
           criminalizeparty(Crime.resistingArrest);
+          if (encounter.any((e) => e.type.id == CreatureTypeIds.deathSquad)) {
+            // Death squads: Resist arrest and now they just want to kill you
+            chaseSequence!.canpullover = false;
+          }
         }
         if (c == Key.d) {
           ranAway = true;
@@ -428,15 +433,23 @@ Future<void> evasivedrive() async {
       "You make obscene gestures at the pursuers!",
   ].random);
 
-  int cnt;
   for (int i = 0; i < theirRolls.length; i++) {
-    cnt = yourRolls.random;
-    if (theirRolls[i] < cnt) {
-      await backOffEnemyCar(theirRollsCar[i]);
+    Vehicle enemyCar = theirRollsCar[i];
+    int enemyCarIndex = chaseSequence!.enemycar.indexOf(enemyCar);
+    if (theirRolls[i] < yourworst) {
+      chaseSequence!.enemyCarDistance[enemyCarIndex] +=
+          yourworst - theirRolls[i];
+      if (chaseSequence!.enemyCarDistance[enemyCarIndex] >= 70) {
+        await backOffEnemyCar(enemyCar);
+      }
     } else {
-      clearMessageArea();
-      mvaddstrc(
-          9, 1, yellow, "${theirRollsDriver[i].name} is still on your tail!");
+      chaseSequence!.enemyCarDistance[enemyCarIndex] -=
+          theirRolls[i] - yourworst;
+      if (chaseSequence!.enemyCarDistance[enemyCarIndex] <= 0) {
+        chaseSequence!.enemyCarDistance[enemyCarIndex] = 0;
+        clearMessageArea();
+        mvaddstrc(9, 1, yellow, "${enemyCar.fullName()} is on you!");
+      }
       await getKey();
     }
   }
@@ -740,7 +753,10 @@ void makeChasers(SiteType? sitetype, int sitecrime) {
         if (pnum > 6) pnum = 6;
         if (deathSquadsActive) {
           creatureType = CreatureTypeIds.deathSquad;
-          chaseSequence!.canpullover = false;
+          // Uncomment this if we want death squads to not a viable surrender
+          // target; classically, you can surrender to a death squad member
+          // on the first round of combat.
+          //chaseSequence!.canpullover = false;
         } else if (laws[Law.policeReform]! <= DeepAlignment.conservative) {
           creatureType = CreatureTypeIds.gangUnit;
         } else {
@@ -775,6 +791,7 @@ void makeChasers(SiteType? sitetype, int sitecrime) {
     //If car type is unknown, due to change in xml file, the game will crash here. -XML
     Vehicle v = Vehicle(vehicleTypes[cartype]!.idName);
     chaseSequence!.enemycar.add(v);
+    chaseSequence!.enemyCarDistance.add(6 * (c + 1) + lcsRandom(8 * (c + 1)));
 
     for (n = 0; n < pnum; n++) {
       if (encounter[n].carId == null) {
