@@ -250,17 +250,17 @@ Future<void> advancecreature(Creature cr) async {
       (levelMap[locx][locy][locz].firePeak ||
           levelMap[locx][locy][locz].fireEnd)) {
     int burndamage =
-        (levelMap[locx][locy][locz].firePeak) ? lcsRandom(30) : lcsRandom(10);
+        (levelMap[locx][locy][locz].firePeak) ? lcsRandom(10) : lcsRandom(5);
     clearMessageArea();
 
     // Firefighter's bunker gear reduces burn damage
     if (cr.clothing.fireResistant) {
-      // Base effect is 3/4 damage reduction, the denominator
+      // Base effect is 3/3 damage reduction, the denominator
       // increases with low quality or damaged gear
-      int denom = 4;
+      int denom = 3;
 
       // Damaged gear
-      if (cr.clothing.damaged) denom += 2;
+      if (cr.clothing.damaged) denom += 1;
       // Shoddy quality gear
       denom += cr.clothing.quality - 1;
 

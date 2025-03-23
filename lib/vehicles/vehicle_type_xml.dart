@@ -72,3 +72,44 @@ void parseVehicleType(VehicleType type, XmlElement xml) {
     }
   }
 }
+
+/*
+Easter egg: Some car ascii art that probably won't ever be used in the game.
+
+   _o_
+__/o| \_
+-o----o- police cruiser (5, or 2 cops)
+  _ 
+_/o|____
+-o----o- pickup truck (6)
+   ____
+__/o \ \
+-o----o- station wagon (6)
+   ___
+__/o| \_
+-o----o- taxi / sedan (5)
+
+ __/o__
+-o----o- sports car / agent car (2)
+  _____
+_/o| | \
+-o----o- minivan (6)
+  ______
+_/o|   |
+-o----o- van (6)
+   ____
+__/o|| |
+-O----O- jeep (5)
+  _____
+__|o| |\
+-O----O- hmmwv (4)
+   ___
+ _/o| \
+ o----o  bug (4)
+   __
+  /o |
+  o--o   microcar (2)
+
+  (o_
+  o/o    motorcycle (1)
+*/

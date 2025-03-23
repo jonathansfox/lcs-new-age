@@ -144,7 +144,7 @@ void applyHardcodedCreatureTypeStuff(Creature cr, CreatureType type) {
       {
         cr.align = Alignment.moderate;
         cr.name = "Police Negotiator";
-        cr.rawSkill[Skill.persuasion] = lcsRandom(4) + 1;
+        cr.rawSkill[Skill.persuasion] = lcsRandom(4) + 3;
         cr.rawSkill[Skill.firearms] = lcsRandom(3) + 1;
       } else {
         if (laws[Law.gunControl] == DeepAlignment.archConservative &&
@@ -159,8 +159,8 @@ void applyHardcodedCreatureTypeStuff(Creature cr, CreatureType type) {
         }
         cr.reload(false);
         cr.align = Alignment.conservative;
-        cr.rawSkill[Skill.firearms] = lcsRandom(4) + 1;
-        cr.rawSkill[Skill.martialArts] = lcsRandom(2) + 1;
+        cr.rawSkill[Skill.firearms] = lcsRandom(4) + 3;
+        cr.rawSkill[Skill.martialArts] = lcsRandom(2) + 3;
       }
     case CreatureTypeIds.firefighter:
       if (fahrenheit451) {

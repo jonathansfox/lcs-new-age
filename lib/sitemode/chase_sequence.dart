@@ -63,7 +63,7 @@ int get partysize => squad.length;
 int get partyalive => squad.where((s) => s.alive).length;
 
 void printChaseOptions() {
-  mvaddstrc(23, 1, blue, "D");
+  mvaddstrc(10, 1, blue, "D");
   addstrc(lightGray, "-Try to lose them, ");
   addstrc(blue, "F");
   addstrc(lightGray, "ight, ");
@@ -74,6 +74,25 @@ void printChaseOptions() {
   bool surrenderIsAnOption = chaseSequence?.canpullover ?? false;
   addstrc(surrenderIsAnOption ? blue : darkGray, "G");
   addstrc(surrenderIsAnOption ? lightGray : darkGray, "-Give up, ");
+  addstrc(blue, "?");
+}
+
+void printCarChaseOptions(
+    {String dOption = "rive hard", String fOption = "ight", String? gOption}) {
+  mvaddstrc(10, 1, blue, "D");
+  addstrc(lightGray, "$dOption, ");
+  addstrc(blue, "F");
+  addstrc(lightGray, "$fOption, ");
+  if (gOption != null) {
+    addstrc(blue, "G");
+    addstrc(lightGray, "$gOption, ");
+  }
+  addstrc(blue, "B");
+  addstrc(lightGray, "ail out and run, ");
+  if (chaseSequence!.canpullover) {
+    addstrc(blue, "P");
+    addstrc(lightGray, "ull over, ");
+  }
   addstrc(blue, "?");
 }
 
@@ -115,6 +134,7 @@ Future<ChaseOutcome> carChaseSequence() async {
 
   CarChaseObstacles? obstacle;
 
+  int turn = 0;
   while (true) {
     erase();
     mvaddstrc(0, 0, lightGray, chaseSequence!.location.name);
@@ -138,42 +158,73 @@ Future<ChaseOutcome> carChaseSequence() async {
       }
     }
 
-    printChaseOptions();
-
-    int y = 12;
     bool canDeliberatelyHit = false;
     if (obstacle == null) {
-      mvaddstrc(9, 1, lightGray, "D - Try to lose them!");
-      mvaddstr(10, 1, "E - Equip");
-      mvaddstr(11, 1, "F - Fight!");
+      if ((chaseSequence?.location.area ?? 0) > 0) {
+        // Roar through the streets of the city
+        mvaddstrc(
+          9,
+          1,
+          lightGray,
+          [
+            "The roar of engines echoes through narrow alleys.",
+            "You weave between cars as the pursuers tail you.",
+            "Red lights blur past as you race down avenues.",
+            "The pursuing headlights flash in your mirrors.",
+            "With tires screeching, you cut through the city's veins.",
+            "Skyscrapers loom above while engines roar below.",
+            "Bright billboards flash by in a neon haze.",
+            "Urban chaos surrounds you as the wheels scream.",
+            "Your GPS won't stop saying 'Recalculating.'",
+            "The lane marking are more suggestions than rules.",
+            "Pedestrians scramble to get out of your way.",
+          ].random,
+        );
+      } else {
+        // Outskirts car chase
+        mvaddstrc(
+          9,
+          1,
+          lightGray,
+          [
+            "The roar of engines echoes through the countryside.",
+            "You barrel down a tree-lined street with pursuers behind.",
+            "You are cruising through a suburban neighborhood.",
+            "The pursuing headlights flash in your mirrors.",
+            "Potholes shake everyone on a roughly maintained road.",
+            "Rows of pastel houses stretch out on either side.",
+            "The cracked asphalt of a surburban Main Street trembles.",
+            "Signs say to slow down as you careen past a school zone.",
+            "Rusty mailboxes shake on their posts as you speed by.",
+            "The road is lined with trees, their branches a blur.",
+            "You swerve past a tractor, its driver shouting curses.",
+          ].random,
+        );
+      }
+      printCarChaseOptions();
     } else {
       switch (obstacle) {
         case CarChaseObstacles.fruitStand:
-          mvaddstrc(9, 1, purple, "Street market ahead!");
-          mvaddstr(10, 1, "D - Swerve into a narrow alley!");
-          mvaddstr(11, 1, "F - Slow down!");
-          mvaddstr(12, 1,
-              "G - ${noProfanity ? "[Endanger]" : "Fuck"} these fruit stands!!!");
-          y = 13;
+          mvaddstrc(9, 1, purple,
+              "Street market ahead!  Flimsy fruit stands block the street.");
+          printCarChaseOptions(
+              dOption: "-Swerve into an alley",
+              fOption: "-Slow down",
+              gOption: "-Smash through");
           canDeliberatelyHit = true;
         case CarChaseObstacles.truckPullsOut:
           mvaddstrc(9, 1, purple, "A truck pulls out!");
-          mvaddstr(10, 1, "D - Go around at top speed!");
-          mvaddstr(11, 1, "F - Slow down!");
+          printCarChaseOptions(
+              dOption: "-Swerve around", fOption: "-Slow down");
         case CarChaseObstacles.crossTraffic:
           mvaddstrc(9, 1, purple, "Red light with cross traffic!");
-          mvaddstr(10, 1, "D - Run it!");
-          mvaddstr(11, 1, "F - Slow down!");
+          printCarChaseOptions(
+              dOption: "-Run the light", fOption: "-Slow down");
         case CarChaseObstacles.child:
           mvaddstrc(9, 1, purple, "A kid in the street!");
-          mvaddstr(10, 1, "D - Turn into oncoming traffic!");
-          mvaddstr(11, 1, "F - Slow down!");
-          y = 13;
+          printCarChaseOptions(
+              dOption: "-Swerve into traffic", fOption: "-Slow down");
       }
-    }
-    mvaddstr(y, 1, "B - Bail out and run!");
-    if (chaseSequence!.canpullover) {
-      mvaddstr(y + 1, 1, "P - Pull over");
     }
 
     //PRINT ENEMIES
@@ -205,7 +256,7 @@ Future<ChaseOutcome> carChaseSequence() async {
           criminalizeparty(Crime.resistingArrest);
         }
         if (c == Key.d) {
-          await evasivedrive();
+          await evasivedrive(turn);
           await enemyattack();
           await youattack();
         } else if (c == Key.f) {
@@ -232,6 +283,7 @@ Future<ChaseOutcome> carChaseSequence() async {
     }
 
     if (timePassed) {
+      turn++;
       await creatureadvance();
       if (await drivingupdate()) {
         if (partyalive > 0) return footChaseSequence();
@@ -396,7 +448,7 @@ Future<ChaseOutcome> footChaseSequence({
 }
 
 const drivingRandomness = 13;
-Future<void> evasivedrive() async {
+Future<bool> evasivedrive(int turn) async {
   List<int> yourRolls = [], theirRolls = [];
   List<Vehicle> theirRollsCar = [];
   List<Creature> theirRollsDriver = [];
@@ -404,7 +456,7 @@ Future<void> evasivedrive() async {
   for (Creature p in squad) {
     if (p.alive && p.isDriver) {
       Vehicle v = p.car!;
-      yourRolls.add(driveskill(p, v) + lcsRandom(drivingRandomness));
+      yourRolls.add(driveskill(p, v) + lcsRandom(drivingRandomness) + turn);
       p.train(Skill.driving, lcsRandom(50));
       if (yourworst > yourRolls.last) yourworst = yourRolls.last;
     }
@@ -424,35 +476,52 @@ Future<void> evasivedrive() async {
   encounter.removeWhere((e) => toRemove.contains(e));
 
   await encounterMessage([
-    "You keep the gas floored!",
-    "You swerve around the next corner!",
-    "You screech through an empty lot to the next street!",
-    if (yourworst > 15)
-      "You boldly weave through oncoming traffic!"
-    else
-      "You make obscene gestures at the pursuers!",
+    "You pick up speed on a long straightaway.",
+    "You swerve around the next corner.",
+    "You screech through an empty lot to the next street.",
+    "You thread the needle between two obstacles.",
+    "You downshift abruptly, engine growling as you corner hard.",
+    "You take a sharp turn, tires squealing.",
+    "You dodge a pothole and keep the pedal down.",
+    "You take a shortcut through a parking lot.",
+    "The tires grip just enough as you drift through a sharp turn.",
+    "You take a risky shortcut through an alley.",
+    "You soar into a downhill curve, barely keeping control.",
+    "You take a sharp turn, the car fishtailing.",
+    "You clip a stack of barrels, sending them rolling behind you.",
   ].random);
 
   for (int i = 0; i < theirRolls.length; i++) {
     Vehicle enemyCar = theirRollsCar[i];
     int enemyCarIndex = chaseSequence!.enemycar.indexOf(enemyCar);
-    if (theirRolls[i] < yourworst) {
+    if (theirRolls[i] < yourworst - 15) {
       chaseSequence!.enemyCarDistance[enemyCarIndex] +=
           yourworst - theirRolls[i];
       if (chaseSequence!.enemyCarDistance[enemyCarIndex] >= 70) {
         await backOffEnemyCar(enemyCar);
-      }
-    } else {
-      chaseSequence!.enemyCarDistance[enemyCarIndex] -=
-          theirRolls[i] - yourworst;
-      if (chaseSequence!.enemyCarDistance[enemyCarIndex] <= 0) {
+      } else if (chaseSequence!.enemyCarDistance[enemyCarIndex] <= 0) {
         chaseSequence!.enemyCarDistance[enemyCarIndex] = 0;
         clearMessageArea();
-        mvaddstrc(9, 1, yellow, "${enemyCar.fullName()} is on you!");
+        mvaddstrc(
+          9,
+          1,
+          red,
+          [
+            "${theirRollsCar[i].fullName()} pulls alongside you!",
+            "${theirRollsCar[i].fullName()} rolls up and rides your tailgate!",
+            "${theirRollsCar[i].fullName()} draws up ahead!",
+            "${theirRollsCar[i].fullName()} rams into you from behind!",
+            "${theirRollsCar[i].fullName()} draws dangerously close!",
+            "${theirRollsCar[i].fullName()} moves to cut you off!",
+            "${theirRollsCar[i].fullName()} tries to force you off the road!",
+            "${theirRollsCar[i].fullName()} tries to box you in!",
+          ].random,
+        );
+        await getKey();
       }
-      await getKey();
     }
   }
+  return false;
 }
 
 Future<void> evasiverun() async {
@@ -627,8 +696,7 @@ Future<void> evasiverun() async {
 }
 
 int driveskill(Creature cr, Vehicle v) {
-  debugPrint("driveskill: ${cr.name} ${v.fullName()}");
-  int driveskill = cr.skill(Skill.driving) * (3 + v.type.driveBonus);
+  int driveskill = cr.skill(Skill.driving) + v.type.driveBonus;
   healthmodroll(driveskill, cr);
   if (driveskill < 0) driveskill = 0;
   driveskill = (driveskill * cr.blood / cr.maxBlood * 2).round();
@@ -1162,18 +1230,22 @@ Future<void> backOffEnemyCar(Vehicle v) async {
   Creature driver = encounter.firstWhere((e) => e.carId == v.id && e.isDriver);
   clearMessageArea();
   setColor(lightBlue);
-  move(9, 1);
-  addstr(driver.name);
-  switch (lcsRandom(4)) {
-    case 1:
-      addstr(" skids out!");
-    case 2:
-      addstr(" backs off for safety.");
-    case 3:
-      addstr(" brakes hard and nearly crashes!");
-    default:
-      addstr(" falls behind!");
-  }
+  mvaddstrc(
+    9,
+    1,
+    lightBlue,
+    [
+      "${v.fullName()} spins out and comes to a stop.",
+      "${v.fullName()} backs off as ${driver.name} loses confidence.",
+      "${driver.name} brakes hard as ${v.fullName()} nearly crashes.",
+      "${v.fullName()} fishtails into a bush, and is no longer on you.",
+      "${driver.name} loses control and ${v.fullName()} is left behind.",
+      "${v.fullName()} can't keep up and disappears from view.",
+      "${v.fullName()} bows out as ${driver.name} opts for caution.",
+      "${v.fullName()} screeches to a halt, tires smoking.",
+      "${v.fullName()} struggles to maintain speed as falls away.",
+    ].random,
+  );
   encounter.removeWhere((e) => e.carId == v.id);
   chaseSequence!.enemycar.remove(v);
   printChaseEncounter();

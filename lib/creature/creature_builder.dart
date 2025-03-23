@@ -152,8 +152,8 @@ void _giveGender(Creature creature, CreatureType type) {
 
 void _giveSkills(Creature creature, CreatureType type) {
   for (MapEntry<Skill, (int, int)> entry in type.skillPoints.entries) {
-    creature.rawSkill[entry.key] =
-        entry.value.$1 + lcsRandom(entry.value.$2 - entry.value.$1 + 1);
+    creature.rawSkill[entry.key] = min(creature.skillCap(entry.key),
+        entry.value.$1 + lcsRandom(entry.value.$2 - entry.value.$1 + 1));
   }
   int randomskills = lcsRandom(4) + 4;
   if (creature.age > 20) {

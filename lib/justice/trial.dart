@@ -400,7 +400,7 @@ Future<void> trial(Creature g) async {
     else //Guilty
     {
       // Juice for getting convicted of something :)
-      addjuice(g, 25, 200);
+      addjuice(g, 25, 1000);
 
       // Check for lenience; sleeper judge will always be merciful
       if (defensepower / 3 >= jury / 4 || sleeperjudge != null) {

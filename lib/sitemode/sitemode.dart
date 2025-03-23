@@ -1030,6 +1030,8 @@ Future<void> _siteModeAux() async {
           bool guilty = squad.any((p) => p.isCriminal);
           if (!guilty) level = 0;
 
+          level = 1000;
+
           makeChasers(siteType, level);
 
           bool havecar = false;

@@ -641,14 +641,19 @@ Future<void> specialCourthouseJury() async {
       "homosexuality",
     ].random;
 
-    await encounterMessage(
-        "${maxp.name} works the room like in Twelve Angry Men, and the jury ",
-        line2: "concludes that $crime wasn't really wrong here.");
+    if (laws[Law.deathPenalty] == DeepAlignment.archConservative) {
+      await encounterMessage(
+          "${maxp.name} works the room like in Twelve Angry Men, and the jury ",
+          line2: "concludes that $crime isn't worth yet another execution.");
+      addjuice(maxp, 25, 1000);
+    } else {
+      await encounterMessage(
+          "${maxp.name} works the room like in Twelve Angry Men, and the jury ",
+          line2: "concludes that $crime wasn't really wrong here.");
+      addjuice(maxp, 25, 200);
+    }
 
     await noticeCheck();
-
-    //INSTANT JUICE BONUS
-    addjuice(maxp, 25, 200);
   } else {
     await encounterMessage("${maxp.name} wasn't quite convincing...");
 

@@ -82,9 +82,9 @@ Future<void> planSiteVisit() async {
         int heat = thisSite.heat;
         int heatProtection = thisSite.heatProtection;
         mvaddstrc(y, 54, lightGray, "Heat: ");
-        addstrc(heat > heatProtection ? red : darkGray, "$heat%");
+        addstrc(heat > heatProtection ? red : darkGray, "$heat");
         mvaddstrc(y, 66, lightGray, "Secrecy: ");
-        addstrc(heat > heatProtection ? red : darkGray, "$heatProtection%");
+        addstrc(heat > heatProtection ? red : darkGray, "$heatProtection");
       }
       if (thisCity != null) {
         mvaddstrc(y, 50, darkGray, thisCity.description);
