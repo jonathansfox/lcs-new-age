@@ -357,6 +357,7 @@ Future<void> characterCreationQuestions(Creature founder, bool choose) async {
           lawyer.hireId = founder.id;
           lawyer.workLocation =
               findSiteInSameCity(founder.base?.city, SiteType.courthouse);
+          lawyer.location = lawyer.workLocation;
           lawyer.nameCreature();
           pool.add(lawyer);
         },

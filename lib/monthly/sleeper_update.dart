@@ -15,8 +15,6 @@ import 'package:lcs_new_age/justice/crimes.dart';
 import 'package:lcs_new_age/location/location_type.dart';
 import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
-import 'package:lcs_new_age/politics/elections.dart';
-import 'package:lcs_new_age/politics/politics.dart';
 import 'package:lcs_new_age/politics/views.dart';
 import 'package:lcs_new_age/sitemode/fight.dart';
 import 'package:lcs_new_age/sitemode/map_specials.dart';
@@ -475,9 +473,14 @@ Future<void> sleeperSteal(Creature cr, Map<View, int> libpower) async {
 }
 
 Future<void> sleeperRecruit(Creature cr, Map<View, int> libpower) async {
-  if (cr.workSite == null) return;
   if (cr.subordinatesLeft > 0) {
-    prepareEncounter(cr.workSite!.type, false);
+    activeSite = cr.workSite;
+    activeSite ??=
+        findSiteInSameCity(cr.workLocation.city, SiteType.publicPark);
+    activeSite ??=
+        findSiteInSameCity(cr.workLocation.city, SiteType.homelessEncampment);
+    if (activeSite == null) return;
+    prepareEncounter(activeSite!.type, false);
     for (Creature e in encounter) {
       if (e.workLocation == cr.workLocation || oneIn(5)) {
         if (e.align != Alignment.liberal && !oneIn(5)) continue;

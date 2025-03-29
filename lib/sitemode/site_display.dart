@@ -1086,11 +1086,18 @@ void printBasicEncounter() {
 /* prints the names of creatures you see in car chases */
 void printChaseEncounter() {
   if (chaseSequence?.enemycar.isNotEmpty == true) {
-    clearEncounterArea();
-    List<int> carsy = [13, 13, 13, 13];
+    int startingY = 14;
+    eraseArea(startY: startingY - 1, endY: 21, startX: 0, endX: 80);
+    List<int> carsy = [
+      startingY + 1,
+      startingY + 1,
+      startingY + 1,
+      startingY + 1
+    ];
 
     for (int v = 0; v < chaseSequence!.enemycar.length; v++) {
-      mvaddstrc(12, v * 20 + 1, white, chaseSequence!.enemycar[v].fullName());
+      mvaddstrc(
+          startingY, v * 20 + 1, white, chaseSequence!.enemycar[v].fullName());
     }
 
     for (Creature e in encounter) {

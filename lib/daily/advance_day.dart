@@ -429,13 +429,13 @@ Future<void> dispersalCheck() async {
         else if ((dispersalStatus[p] == DispersalTypes.bossSafe && inprison) ||
             dispersalStatus[p] == DispersalTypes.bossInPrison) {
           DispersalTypes dispersalval = DispersalTypes.safe;
-          if (p.seduced) {
-            if ((dispersalStatus[p] == DispersalTypes.bossInPrison &&
-                    !inprison) ||
-                (dispersalStatus[p] == DispersalTypes.bossSafe && inprison)) {
-              p.juice--; // Love slaves bleed juice when not in prison with their lover
-              if (p.juice < -50) dispersalval = DispersalTypes.abandonLCS;
-            }
+          if (p.seduced &&
+              (p.location != p.boss?.location) &&
+              (p.typeId != CreatureTypeIds.lawyer || !p.sleeperAgent)) {
+            // Recruited by seduction loses juice when not in prison
+            // with their lover
+            p.juice--;
+            if (p.juice < -50) dispersalval = DispersalTypes.abandonLCS;
           }
           dispersalStatus[p] = dispersalval; // Guaranteed contactable in prison
 
@@ -796,8 +796,7 @@ Future<void> _dailyHealing() async {
       //Clear activity if their location doesn't have healing work to do
       if (injuries[p.site]! > 0) {
         //Give experience based on work done and current skill
-        p.train(Skill.firstAid,
-            max(0, injuries[p.site]! ~/ 5 - p.skill(Skill.firstAid) * 2));
+        p.train(Skill.firstAid, min(50, max(injuries[p.site]! ~/ 5, 1)));
       }
     }
   }

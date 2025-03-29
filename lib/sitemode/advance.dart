@@ -234,7 +234,7 @@ Future<void> advancecreature(Creature cr) async {
         addstr(cr.name);
         addstr("'s wounds.");
 
-        topmedical.train(Skill.firstAid, max(50 - topmedicalskill * 2, 0));
+        topmedical.train(Skill.firstAid, 50);
         w.bleeding = 0;
 
         await getKey();

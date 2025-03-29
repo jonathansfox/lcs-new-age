@@ -1,6 +1,5 @@
 // ignore_for_file: constant_identifier_names
 
-import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/sitemode/sitemap.dart';
@@ -703,8 +702,7 @@ class ConfigSiteLoot extends ConfigSiteCommand {
 Future<bool> readConfigFile(String filename) async {
   Configurable? object;
   String file = await rootBundle.loadString(filename);
-  Iterable<(String, String)> commands =
-      file.split("\n").map(readLine).whereNotNull();
+  Iterable<(String, String)> commands = file.split("\n").map(readLine).nonNulls;
   for (var (command, value) in commands) {
     if (command == "OBJECT") {
       object = createObject(value);

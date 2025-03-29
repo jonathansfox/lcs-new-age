@@ -779,10 +779,7 @@ Future<void> assembleSquad(Squad? cursquad) async {
     int y = 2;
     for (p = page * 19; p < temppool.length && p < page * 19 + 19; p++) {
       Creature tempp = temppool[p];
-      setColor(lightGray);
-      mvaddchar(y, 0, letterAPlus(y - 2));
-      addstr(" - ");
-      addstr(tempp.name);
+      mvaddstrc(y, 0, lightGray, "${letterAPlus(y - 2)} - ${tempp.name}");
 
       bool bright = false;
       int skill = 0;
@@ -792,55 +789,35 @@ Future<void> assembleSquad(Squad? cursquad) async {
             tempp.skill(sk) < tempp.skillCap(sk)) bright = true;
       }
 
-      setColor(bright ? white : lightGray);
-
-      move(y, 25);
-      addstr(skill.toString());
+      mvaddstrc(y, 25, bright ? white : lightGray, skill.toString());
 
       printHealthStat(y, 33, tempp);
 
       if (tempp.squadId == cursquad.id) {
-        setColor(lightGreen);
-        move(y, 75);
-        addstr("SQUAD");
+        mvaddstrc(y, 75, lightGreen, "SQUAD");
       } else if (tempp.squadId != null) {
-        setColor(yellow);
-        move(y, 75);
-        addstr("SQUAD");
+        mvaddstrc(y, 75, yellow, "SQUAD");
       } else if (cursquad.members.isNotEmpty) {
         if (cursquad.members[0].location != tempp.location) {
-          setColor(darkGray);
-          move(y, 75);
-          addstr("AWAY");
+          mvaddstrc(y, 75, darkGray, "AWAY");
         }
       }
 
-      setColor(tempp.align.color);
-      move(y, 50);
-      addstr(tempp.type.name);
+      mvaddstrc(y, 50, tempp.align.color, tempp.type.name);
       y++;
     }
 
-    setColor(lightGray);
-    move(22, 0);
-    addstr("Press a Letter to add or remove a Liberal from the squads.");
-    move(23, 0);
-    addstr(pageStr);
-    move(23, 50);
-    addstr("V - View a Liberal");
-    move(24, 0);
+    mvaddstrc(22, 0, lightGray,
+        "Press a Letter to add or remove a Liberal from the squads.");
+    mvaddstr(23, 0, pageStr);
+    mvaddstr(23, 50, "V - View a Liberal");
     if (partysize > 0) {
-      addstr("Enter - The squad is ready.");
+      mvaddstr(24, 0, "Enter - The squad is ready.");
     } else {
-      addstr("Enter - I need no squad!");
+      mvaddstr(24, 0, "Enter - I need no squad!");
     }
-    if (partysize > 0) {
-      setColor(lightGray);
-    } else {
-      setColor(darkGray);
-    }
-    move(24, 40);
-    addstr("9 - Dissolve the squad.");
+    mvaddstrc(24, 40, partysize > 0 ? lightGray : darkGray,
+        "9 - Dissolve the squad.");
 
     int c = await getKey();
 
@@ -892,9 +869,7 @@ Future<void> assembleSquad(Squad? cursquad) async {
     }
     if (c == Key.v) {
       eraseArea(startY: 22);
-      move(22, 0);
-      setColor(white);
-      addstr("Press a Letter to view Liberal details.");
+      mvaddstrc(22, 0, white, "Press a Letter to view Liberal details.");
       int c2 = await getKey();
       if (c2 >= Key.a && c2 <= Key.s) {
         int p = page * 19 + c2 - Key.a;
@@ -1014,8 +989,8 @@ Future<void> assignNewBasesToTheSquadless() async {
       addstr(pageStr);
     }
     if (temploc.length > 9) {
-      move(24, 0);
-      addstr(",. to view other Base pages.");
+      move(12, 51);
+      addstr(",. to change Base pages.");
     }
 
     int c = await getKey();

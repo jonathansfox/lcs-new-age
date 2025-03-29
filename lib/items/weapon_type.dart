@@ -50,7 +50,7 @@ class WeaponType extends ItemType {
   bool get usesAmmo => attacks.any((a) => a.usesAmmo);
 
   Iterable<String> get acceptableCartridge =>
-      attacks.map((attack) => attack.cartridge).whereNotNull();
+      attacks.map((attack) => attack.cartridge).nonNulls;
   Iterable<AmmoType> get acceptableAmmo => ammoTypes.values
       .where((at) => acceptableCartridge.contains(at.cartridge));
   int ammoCapacity = 1;
