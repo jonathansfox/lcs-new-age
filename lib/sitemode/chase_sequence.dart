@@ -163,7 +163,7 @@ int get partysize => squad.length;
 int get partyalive => squad.where((s) => s.alive).length;
 
 void printChaseOptions() {
-  mvaddstrc(11, 1, blue, "D");
+  mvaddstrc(10, 1, blue, "D");
   addstrc(lightGray, "-Try to lose them, ");
   addstrc(blue, "F");
   addstrc(lightGray, "ight, ");
@@ -299,7 +299,7 @@ Future<ChaseOutcome> carChaseSequence() async {
             "Bright billboards flash by in a neon haze.",
             "Urban chaos surrounds you as the wheels scream.",
             "Your GPS won't stop saying 'Recalculating.'",
-            "The lane marking are more suggestions than rules.",
+            "The lane markers are only suggestions to you.",
             "Pedestrians scramble to get out of your way.",
           ].randomSeeded(seed + chase.turn),
         );
@@ -393,17 +393,42 @@ Future<ChaseOutcome> carChaseSequence() async {
           criminalizeparty(Crime.resistingArrest);
         }
         if (c == Key.d) {
+          chase.turn++;
           if (await evasivedrive(chase.turn)) {
             animation.stop();
             return footChaseSequence();
-          } else {
-            chase.turn++;
           }
-          //await enemyattack();
-          //await youattack();
         } else if (c == Key.f) {
-          await youattack();
-          await enemyattack();
+          // Get list of enemies that are in the nearest vehicle
+          List<Creature> enemiesInNearestVehicle = encounter
+              .where((e) => e.car == nearestVehicle && e.alive)
+              .toList();
+          clearMessageArea();
+          mvaddstrc(9, 1, lightGray,
+              "You open fire on the ${nearestVehicle.fullName()} from ");
+          switch (nearestVehicleDistance) {
+            case <= 0:
+              addstrc(lightGreen, "point blank range");
+            case <= 5:
+              addstrc(lightBlue, "${5 * nearestVehicleDistance} feet away");
+            case <= 10:
+              addstrc(yellow, "${5 * nearestVehicleDistance} feet away");
+            default:
+              addstrc(red, "${5 * nearestVehicleDistance} feet away");
+          }
+          addstrc(lightGray, "!");
+          await getKey();
+          await youattack(enemiesInNearestVehicle);
+          await enemyattack(enemiesInNearestVehicle);
+          for (Vehicle v in chaseSequence!.enemycar) {
+            chaseSequence!.enemyCarDistance[v] =
+                (chaseSequence!.enemyCarDistance[v] ?? 70) - lcsRandom(5);
+          }
+          chase.turn--;
+          if (await enemyCarUpdate()) {
+            animation.stop();
+            return footChaseSequence();
+          }
         }
         timePassed = true;
       }
@@ -563,11 +588,11 @@ Future<ChaseOutcome> footChaseSequence({
         if (c == Key.d) {
           ranAway = true;
           await evasiverun();
-          await enemyattack();
+          await enemyattack(encounter);
           await creatureadvance();
         } else if (c == Key.f) {
-          await youattack();
-          await enemyattack();
+          await youattack(encounter);
+          await enemyattack(encounter);
         }
         await creatureadvance();
       }
@@ -651,7 +676,7 @@ Future<bool> evasivedrive(int turn) async {
     Vehicle enemyCar = theirRollsCar[i];
     // Update enemy car distance
     int delta = yourworst - theirRolls[i] + turn;
-    int enemyCarDistance = (chaseSequence!.enemyCarDistance[enemyCar] ?? 70);
+    int enemyCarDistance = chaseSequence!.enemyCarDistance[enemyCar] ?? 70;
     if (enemyCarDistance < 15) delta ~/= 2;
     if (enemyCarDistance > 30) delta *= 2;
     enemyCarDistance += delta;
@@ -659,8 +684,21 @@ Future<bool> evasivedrive(int turn) async {
     debugPrint(
         "${enemyCar.fullName()} distance: ${chaseSequence!.enemyCarDistance[enemyCar]} => $enemyCarDistance");
     chaseSequence!.enemyCarDistance[enemyCar] = enemyCarDistance;
+  }
+  return enemyCarUpdate();
+}
 
-    if (enemyCarDistance >= 60 + chaseSequence!.turn) {
+Future<bool> enemyCarUpdate() async {
+  for (Vehicle enemyCar in chaseSequence!.enemycar) {
+    Creature? enemyCarDriver =
+        encounter.firstWhereOrNull((c) => c.car == enemyCar && c.isDriver);
+    if (enemyCarDriver == null) {
+      await crashenemycar(enemyCar);
+      continue;
+    }
+    int enemyCarDistance = chaseSequence!.enemyCarDistance[enemyCar] ?? 70;
+    if (enemyCarDistance >= 60 + chaseSequence!.turn ||
+        enemyCarDriver.blood < enemyCarDriver.maxBlood ~/ 2) {
       // You lost them
       await backOffEnemyCar(enemyCar);
     } else if (enemyCarDistance <= 0) {
@@ -671,26 +709,32 @@ Future<bool> evasivedrive(int turn) async {
         1,
         red,
         [
-          "${theirRollsCar[i].fullName()} pulls alongside you!",
-          "${theirRollsCar[i].fullName()} rolls up and rides your tailgate!",
-          "${theirRollsCar[i].fullName()} is riding your bumper!",
-          "${theirRollsCar[i].fullName()} rams into you from behind!",
-          "${theirRollsCar[i].fullName()} draws dangerously close!",
-          "${theirRollsCar[i].fullName()} moves to cut you off!",
-          "${theirRollsCar[i].fullName()} tries to force you off the road!",
-          "${theirRollsCar[i].fullName()} tries to box you in!",
+          "${enemyCar.fullName()} pulls alongside you!",
+          "${enemyCar.fullName()} rolls up and rides your tailgate!",
+          "${enemyCar.fullName()} is riding your bumper!",
+          "${enemyCar.fullName()} rams into you from behind!",
+          "${enemyCar.fullName()} draws dangerously close!",
+          "${enemyCar.fullName()} moves to cut you off!",
+          "${enemyCar.fullName()} tries to force you off the road!",
+          "${enemyCar.fullName()} tries to box you in!",
         ].random,
       );
       await getKey();
 
-      Creature yourDriver =
-          squad.where((p) => p.alive && p.isDriver).toList().random;
+      Creature yourDriver = squad.where((p) => p.isDriver).toList().random;
       Vehicle yourCar = yourDriver.car!;
-      int attack = theirRollsDriver[i].skillRoll(Skill.driving) +
+      int attack = enemyCarDriver.skillRoll(Skill.driving) +
           lcsRandom(drivingRandomness);
-      int defense =
-          driveskill(yourDriver, yourCar) + lcsRandom(drivingRandomness + turn);
-      if (attack > defense + 15) {
+      int defense = driveskill(yourDriver, yourCar) +
+          lcsRandom(drivingRandomness + chaseSequence!.turn);
+      if (!yourDriver.alive) {
+        mvaddstrc(10, 1, red,
+            "${yourCar.fullName().toUpperCase()}'S DRIVER IS DEAD!");
+        chaseSequence!.crash();
+        await getKey();
+        await crashfriendlycar(yourCar);
+        return true;
+      } else if (attack > defense + 15) {
         mvaddstrc(
             10,
             1,
@@ -719,6 +763,9 @@ Future<bool> evasivedrive(int turn) async {
                 "${yourCar.fullName()} crashes into some greenery.",
               ].random);
           await getKey();
+          mvaddstrc(
+              10, 1, lightGray, "The squad will have to face them on foot!");
+          await getKey();
         }
         return true;
       } else if (attack > defense + 5) {
@@ -727,10 +774,13 @@ Future<bool> evasivedrive(int turn) async {
             1,
             red,
             [
-              "${theirRollsDriver[i].name} runs ${yourDriver.name} off the road!",
-              "${theirRollsDriver[i].name} sends ${yourDriver.name} into a spin!",
+              "${enemyCarDriver.name} runs ${yourDriver.name} off the road!",
+              "${enemyCarDriver.name} sends ${yourDriver.name} into a spin!",
             ].random);
         chaseSequence!.crash();
+        await getKey();
+        mvaddstrc(
+            11, 1, lightGray, "The squad will have to face them on foot!");
         await getKey();
         return true;
       } else if (defense > attack + 5) {
@@ -739,10 +789,10 @@ Future<bool> evasivedrive(int turn) async {
             1,
             lightGreen,
             [
-              "${yourDriver.name} runs ${theirRollsCar[i].fullName()} off the road!",
-              "${yourDriver.name} hits ${theirRollsCar[i].fullName()} hard!",
-              "${yourDriver.name} sends ${theirRollsCar[i].fullName()} out of control!",
-              "${theirRollsCar[i].fullName()} spins out of control!",
+              "${yourDriver.name} runs ${enemyCar.fullName()} off the road!",
+              "${yourDriver.name} hits ${enemyCar.fullName()} hard!",
+              "${yourDriver.name} sends ${enemyCar.fullName()} out of control!",
+              "${enemyCar.fullName()} spins out of control!",
             ].random);
         await getKey();
         await crashenemycar(enemyCar);
@@ -753,9 +803,9 @@ Future<bool> evasivedrive(int turn) async {
             yellow,
             [
               "Metal grinds on metal, but ${yourDriver.name} holds the line!",
-              "${yourDriver.name} and ${theirRollsCar[i].fullName()} trade paint!",
+              "${yourDriver.name} and ${enemyCar.fullName()} trade paint!",
               "${yourDriver.name} swerves, but recovers!",
-              "${yourDriver.name} and ${theirRollsCar[i].fullName()} race inches apart!",
+              "${yourDriver.name} and ${enemyCar.fullName()} race inches apart!",
             ].random);
         await getKey();
       }
@@ -944,28 +994,29 @@ int driveskill(Creature cr, Vehicle v) {
 }
 
 Future<bool> drivingupdate() async {
+  await creatureadvance();
   //CHECK TO SEE WHICH CARS ARE BEING DRIVEN
   for (int i = chaseSequence!.friendcar.length - 1; i >= 0; i--) {
     Vehicle v = chaseSequence!.friendcar[i];
-    Iterable<Creature> passenger =
-        squad.where((p) => p.carId == v.id && !p.isDriver);
-    Creature? driver = squad.firstWhereOrNull(
-        (p) => p.carId == v.id && p.isDriver && !p.body.fullParalysis);
+    Iterable<Creature> potentialDriver =
+        squad.where((p) => p.carId == v.id && !p.body.fullParalysis && p.alive);
+    Creature? driver = potentialDriver.firstWhereOrNull((p) => p.isDriver);
 
-    if (passenger.isNotEmpty && driver == null) {
+    if (potentialDriver.isNotEmpty && driver == null) {
       //MAKE BEST DRIVING PASSENGER INTO A DRIVER
-      int maxp = passenger.fold(0, (value, p) => max(value, driveskill(p, v)));
+      int maxp =
+          potentialDriver.fold(0, (value, p) => max(value, driveskill(p, v)));
       Iterable<Creature> goodp =
-          passenger.where((p) => driveskill(p, v) == maxp);
+          potentialDriver.where((p) => driveskill(p, v) == maxp);
 
       if (goodp.isNotEmpty) {
+        squad.where((p) => p.carId == v.id).forEach((p) => p.isDriver = false);
         Creature p = goodp.random;
         p.isDriver = true;
         driver = p;
 
         clearMessageArea();
-        mvaddstrc(9, 1, yellow, p.name);
-        addstr(" takes over the wheel.");
+        mvaddstrc(9, 1, yellow, "${p.name} takes over the wheel.");
         printParty();
         await getKey();
       }
@@ -986,7 +1037,7 @@ Future<bool> drivingupdate() async {
     }
   }
 
-  return false;
+  return enemyCarUpdate();
 }
 
 void makeChasers(SiteType? sitetype, int sitecrime) {
@@ -1007,8 +1058,7 @@ void makeChasers(SiteType? sitetype, int sitecrime) {
       ccsState.index >= CCSStrength.attacks.index &&
       oneIn(2) &&
       sitetype != null) {
-    cartype =
-        "SUV"; //A CCS property, not a vehicle property. Temporary solution -XML
+    cartype = "PICKUP";
     pnum = lcsRandom(sitecrime ~/ 5 + 1) + 1;
     if (pnum > 12) pnum = 12;
     for (n = 0; n < pnum; n++) {
@@ -1018,43 +1068,43 @@ void makeChasers(SiteType? sitetype, int sitecrime) {
     String creatureType;
     switch (sitetype) {
       case SiteType.armyBase:
-        cartype = "HMMWV"; //Site property? Temporary solution. -XML
+        cartype = "HMMWV";
         pnum = lcsRandom(sitecrime ~/ 5 + 1) + 3;
         creatureType = CreatureTypeIds.soldier;
       case SiteType.whiteHouse:
-        cartype = "AGENTCAR"; //Site property? Temporary solution. -XML
+        cartype = "AGENTCAR";
         pnum = lcsRandom(sitecrime ~/ 5 + 1) + 1;
         if (pnum > 6) pnum = 6;
         creatureType = CreatureTypeIds.secretService;
       case SiteType.intelligenceHQ:
-        cartype = "AGENTCAR"; //Site property? Temporary solution. -XML
+        cartype = "AGENTCAR";
         pnum = lcsRandom(sitecrime ~/ 5 + 1) + 1;
         if (pnum > 6) pnum = 6;
         creatureType = CreatureTypeIds.agent;
       case SiteType.corporateHQ:
       case SiteType.ceoHouse:
         if (oneIn(2)) {
-          cartype = "SUV"; //Site property? Temporary solution. -XML
+          cartype = "SUV";
         } else {
-          cartype = "JEEP"; //Site property? Temporary solution. -XML
+          cartype = "JEEP";
         }
         pnum = lcsRandom(sitecrime ~/ 5 + 1) + 1;
         if (pnum > 6) pnum = 6;
         creatureType = CreatureTypeIds.merc;
       case SiteType.amRadioStation:
       case SiteType.cableNewsStation:
-        cartype = "PICKUP"; //Site property? Temporary solution. -XML
+        cartype = "PICKUP";
         pnum = lcsRandom(sitecrime ~/ 3 + 1) + 1;
         if (pnum > 18) pnum = 18;
         creatureType = CreatureTypeIds.hick;
       case SiteType.drugHouse:
-        cartype = "STATIONWAGON"; //Site property? Temporary solution. -XML
+        cartype = ["STATIONWAGON", "SPORTSCAR"].random;
         pnum = lcsRandom(sitecrime ~/ 3 + 1) + 1;
         if (pnum > 18) pnum = 18;
         creatureType = CreatureTypeIds.gangMember;
       default:
         chaseSequence!.canpullover = true;
-        cartype = "POLICECAR"; //Police property? Temporary solution. -XML
+        cartype = "POLICECAR";
         pnum = lcsRandom(sitecrime ~/ 5 + 1) + 1;
         if (pnum > 6) pnum = 6;
         if (deathSquadsActive) {
@@ -1469,22 +1519,41 @@ Future<void> backOffEnemyCar(Vehicle v) async {
   Creature driver = encounter.firstWhere((e) => e.carId == v.id && e.isDriver);
   clearMessageArea();
   setColor(lightBlue);
-  mvaddstrc(
-    9,
-    1,
-    lightBlue,
-    [
-      "${v.fullName()} couldn't keep up.",
-      "${v.fullName()} gives up as ${driver.name} loses confidence.",
-      "${v.fullName()} trails behind and is lost.",
-      "${v.fullName()} vanishes far behind you.",
-      "${v.fullName()} is left behind.",
-      "${v.fullName()} can't keep up and disappears from view.",
-      "${v.fullName()} bows out as ${driver.name} gives up.",
-      "${v.fullName()} backs away completely.",
-      "${v.fullName()} struggles to maintain speed and falls away.",
-    ].random,
-  );
+  if (driver.blood < driver.maxBlood ~/ 2) {
+    chaseSequence!.enemyCarDistance[v] = 80;
+    mvaddstrc(
+      9,
+      1,
+      lightBlue,
+      [
+        "${v.fullName()} pulls over as ${driver.name} bleeds out.",
+        "${v.fullName()} bails on the chase as the driver bleeds.",
+        "${v.fullName()} rapidly pulls back.",
+        "${v.fullName()} retreats from the pursuit.",
+        "${v.fullName()} stops by the side of the road.",
+        "${v.fullName()} bows out as ${driver.name} gives up.",
+        "${v.fullName()} backs away completely.",
+        "${v.fullName()} struggles due to ${driver.name}'s injuries.",
+      ].random,
+    );
+  } else {
+    mvaddstrc(
+      9,
+      1,
+      lightBlue,
+      [
+        "${v.fullName()} couldn't keep up.",
+        "${v.fullName()} gives up as ${driver.name} loses confidence.",
+        "${v.fullName()} trails behind and is lost.",
+        "${v.fullName()} vanishes far behind you.",
+        "${v.fullName()} is left behind.",
+        "${v.fullName()} can't keep up and disappears from view.",
+        "${v.fullName()} bows out as ${driver.name} gives up.",
+        "${v.fullName()} backs away completely.",
+        "${v.fullName()} struggles to maintain speed and falls away.",
+      ].random,
+    );
+  }
   await getKey();
   encounter.removeWhere((e) => e.carId == v.id);
   chaseSequence!.enemycar.remove(v);

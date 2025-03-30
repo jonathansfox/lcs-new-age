@@ -538,8 +538,8 @@ Future<void> intimidate(Creature liberal) async {
       if (noProfanity) "[Please leave!]" else "Get the fuck out of here!",
       "I swear to Darwin I'll end you!",
       "Don't make me ${noProfanity ? "[be mean]" : "fuck you up"}!",
-      "I pity the fool who stands against the LCS!"
-          "Anybody feel like dying a hero?",
+      "I pity the fool who stands against the LCS!",
+      "Anybody feel like dying a hero?",
     ].random);
   } else {
     addstr([

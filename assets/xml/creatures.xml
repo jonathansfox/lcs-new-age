@@ -610,7 +610,6 @@ Elements marked as hardcoded may have their values overridden by the game.
         </attributes>
         <infiltration>0-30</infiltration>
         <skills>
-            <club>1-2</club>
             <driving>0-1</driving>
             <martialArts>1-2</martialArts>
             <psychology>3-6</psychology>
@@ -721,7 +720,6 @@ Elements marked as hardcoded may have their values overridden by the game.
         <infiltration>0-150</infiltration>
         <juice>200-350</juice>
         <skills>
-            <club>2-9</club>
             <dodge>4-7</dodge>
             <driving>4-9</driving>
             <martialArts>2-9</martialArts>
@@ -1335,9 +1333,8 @@ Elements marked as hardcoded may have their values overridden by the game.
         <gender>MALE BIAS</gender>
         <infiltration>0-30</infiltration>
         <skills>
-            <club>2-4</club>
             <driving>0-1</driving>
-            <martialArts>1-2</martialArts>
+            <martialArts>2-4</martialArts>
             <firearms>1-3</firearms>
         </skills>
         <seethroughstealth>  7</seethroughstealth>

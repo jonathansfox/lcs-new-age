@@ -33,15 +33,15 @@ import 'package:lcs_new_age/utils/colors.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 
 /* attack handling for each side as a whole */
-Future<void> youattack() async {
+Future<void> youattack(List<Creature> validTargets) async {
   bool wasAlarm = siteAlarm;
 
   for (Creature p in activeSquad!.livingMembers) {
-    await squadMemberAttacks(p, wasAlarm);
+    await squadMemberAttacks(p, wasAlarm, validTargets);
   }
 
   // Alarm enemies
-  for (Creature e in encounter) {
+  for (Creature e in validTargets) {
     if (e.alive && e.isEnemy) {
       siteAlarm = true;
       break;
@@ -58,19 +58,20 @@ Future<void> youattack() async {
 
       Attack? chosenAttack = p.getAttack(true, false, false);
       if (chosenAttack != null) {
-        await squadMemberAttacks(p, wasAlarm);
+        await squadMemberAttacks(p, wasAlarm, validTargets);
       }
     }
   }
 }
 
-Future<void> squadMemberAttacks(Creature p, bool wasAlarm) async {
+Future<void> squadMemberAttacks(
+    Creature p, bool wasAlarm, List<Creature> validTargets) async {
   // Categorize npcs into danger levels
   List<Creature> superEnemies = [];
   List<Creature> dangerousEnemies = [];
   List<Creature> enemies = [];
   List<Creature> nonEnemies = [];
-  for (Creature e in encounter) {
+  for (Creature e in validTargets) {
     if (e.alive) {
       if (e.isEnemy &&
           ((!e.nonCombatant && !e.calculateWillRunAway()) ||
@@ -91,8 +92,11 @@ Future<void> squadMemberAttacks(Creature p, bool wasAlarm) async {
   }
 
   // Intimidate if no enemies present who aren't fleeing
-  if (superEnemies.isEmpty && dangerousEnemies.isEmpty && enemies.isEmpty) {
-    if (encounter.any((e) => e.isEnemy && e.alive)) {
+  if (superEnemies.isEmpty &&
+      dangerousEnemies.isEmpty &&
+      enemies.isEmpty &&
+      mode != GameMode.carChase) {
+    if (validTargets.any((e) => e.isEnemy && e.alive)) {
       await intimidate(p);
     }
     return;
@@ -106,8 +110,12 @@ Future<void> squadMemberAttacks(Creature p, bool wasAlarm) async {
     target = dangerousEnemies.random;
   } else if (enemies.isNotEmpty) {
     target = enemies.random;
-  } else {
+  } else if (superEnemies.isNotEmpty) {
     target = superEnemies.random;
+  } else if (validTargets.isNotEmpty) {
+    target = validTargets.random;
+  } else {
+    return; // No valid targets to attack
   }
 
   // <1% chance for the LCS to accidentally hit bystanders
@@ -154,6 +162,7 @@ Future<void> squadMemberAttacks(Creature p, bool wasAlarm) async {
   if (!target.alive) {
     if (mode == GameMode.site) makeLoot(target, groundLoot);
     encounter.remove(target);
+    validTargets.remove(target);
     if (!mistake) {
       for (Creature p in squad) {
         addjuice(p, 5, 500);
@@ -183,9 +192,9 @@ const List<String> escapeRunning = [
   " runs away screaming!",
 ];
 
-Future<void> enemyattack() async {
-  for (int i = encounter.length - 1; i >= 0; i--) {
-    Creature e = encounter[i];
+Future<void> enemyattack(List<Creature> possibleEnemies) async {
+  for (int i = possibleEnemies.length - 1; i >= 0; i--) {
+    Creature e = possibleEnemies[i];
     if (!e.alive) continue;
 
     // Moderate bouncers are converted to conservatives
@@ -203,6 +212,7 @@ Future<void> enemyattack() async {
     // Fleeing npcs escape
     if (mode != GameMode.carChase) {
       bool runsAway = e.calculateWillRunAway() || e.nonCombatant;
+      if (mode == GameMode.carChase) runsAway = false;
 
       if (runsAway && e.body is HumanoidBody) {
         clearMessageArea();
@@ -215,6 +225,7 @@ Future<void> enemyattack() async {
         }
 
         encounter.remove(e);
+        possibleEnemies.remove(e);
 
         printParty();
         printEncounter();
@@ -246,7 +257,7 @@ Future<void> enemyattack() async {
         }
       }
     } else {
-      for (Creature e2 in encounter) {
+      for (Creature e2 in possibleEnemies) {
         if (e2.alive && e2.isEnemy) {
           goodtarg.add(e2);
         } else if (e2.alive && e2 != e) {
@@ -263,6 +274,7 @@ Future<void> enemyattack() async {
     // If the attack will be a social attack, it can't have friendly fire
     bool canmistake = true;
     if (e.attack.socialDamage && encounter.length < ENCMAX) canmistake = false;
+    if (mode == GameMode.carChase) canmistake = false;
 
     if (canmistake) {
       // Resolve hits on hostages and hauled liberals
@@ -301,6 +313,7 @@ Future<void> enemyattack() async {
         if (!target.alive) {
           if (mode == GameMode.site) makeLoot(target, groundLoot);
           encounter.remove(target);
+          possibleEnemies.remove(target);
         }
         continue;
       }
@@ -311,6 +324,7 @@ Future<void> enemyattack() async {
     if (!target.alive && encounter.contains(target)) {
       if (mode == GameMode.site) makeLoot(target, groundLoot);
       encounter.remove(target);
+      possibleEnemies.remove(target);
     }
   }
 }
@@ -456,16 +470,27 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
   // Basic roll
   int aroll = a.skillRoll(wsk);
   int droll = t.skillRoll(Skill.dodge);
-  //Founders are better dodgers
-  if (targetIsLeader) droll = max(droll, t.skillRoll(Skill.dodge));
-  if (sneakAttack) {
-    droll = (t.attributeRoll(Attribute.wisdom) / 2).round();
-    aroll += a.skillRoll(Skill.stealth);
-    a.train(Skill.stealth, 10);
-    a.train(wsk, 10);
+  if (mode == GameMode.carChase) {
+    droll = 0;
+    if (t.car != null && a.car != null) {
+      int tDistance = chaseSequence?.enemyCarDistance[t.car!] ?? 0;
+      int aDistance = chaseSequence?.enemyCarDistance[a.car!] ?? 0;
+      int difference = (tDistance - aDistance).abs();
+      droll = difference + lcsRandom(difference) + 5;
+    }
+    a.train(wsk, droll + 5);
   } else {
-    t.train(Skill.dodge, aroll * 2);
-    a.train(wsk, droll * 2 + 5);
+    //Founders are better dodgers
+    if (targetIsLeader) droll = max(droll, t.skillRoll(Skill.dodge));
+    if (sneakAttack) {
+      droll = (t.attributeRoll(Attribute.wisdom) / 2).round();
+      aroll += a.skillRoll(Skill.stealth);
+      a.train(Skill.stealth, 10);
+      a.train(wsk, 10);
+    } else {
+      t.train(Skill.dodge, aroll * 2);
+      a.train(wsk, droll * 2 + 5);
+    }
   }
 
   // Hostages interfere with attack
@@ -474,7 +499,9 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
 
   //Injured people suck at attacking, are like fish in a barrel to attackers
   aroll = healthmodroll(aroll, a);
-  droll = healthmodroll(droll, t);
+  if (mode != GameMode.carChase) {
+    droll = healthmodroll(droll, t);
+  }
 
   // If in a foot chance, double the debilitating effect of injuries
   if (mode == GameMode.footChase) {
@@ -631,7 +658,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
       if (hitPart.weakSpot && t.clothing.headArmor > 4 && t.human) {
         str += "helmet";
       } else if (hitPart.critical && t.clothing.bodyArmor > 4 && t.human) {
-        str += "body armor";
+        str += t.clothing.armor?.name.toLowerCase() ?? "armor";
       } else if (t.clothing.getLimbArmor(hitPart) > 4) {
         str += "${hitPart.name.toLowerCase()} armor";
       } else {
@@ -692,6 +719,20 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
           " jumps back and cries out in alarm!",
         ].random);
         siteAlarm = true;
+      } else if (mode == GameMode.carChase) {
+        addstr("${a.name}'s shot ${[
+          "misses!",
+          "goes wide!",
+          "hits the car!",
+          "hits the road!",
+          "hits the sidewalk!",
+          "hits a building!",
+          "hits a tree!",
+          "hits a parked car!",
+          "ricochets off the car!",
+          "ricochets off the road!",
+          "is too high!",
+        ].random}");
       } else if (t.skillCheck(
           Skill.dodge, Difficulty.average)) //Awesome dodge or regular one?
       {

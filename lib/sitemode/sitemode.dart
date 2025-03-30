@@ -574,7 +574,7 @@ Future<void> _siteModeAux() async {
               .any((c) => c.weapon.type.canGraffiti)) {
             await specialGraffiti();
             if (enemy && siteAlarm) {
-              await enemyattack();
+              await enemyattack(encounter);
             }
           }
         }
@@ -716,7 +716,7 @@ Future<void> _siteModeAux() async {
             if (tk != -1) {
               if (await talk(squad[sp], encounter[tk])) {
                 if (enemy && siteAlarm) {
-                  await enemyattack();
+                  await enemyattack(encounter);
                 } else if (enemy) {
                   await disguisecheck(encounterTimer);
                 }
@@ -774,8 +774,8 @@ Future<void> _siteModeAux() async {
         if (subdue) {
           await _fightSubdued();
         } else {
-          await youattack();
-          await enemyattack();
+          await youattack(encounter);
+          await enemyattack(encounter);
           await creatureadvance();
           encounterTimer++;
         }
@@ -899,7 +899,7 @@ Future<void> _siteModeAux() async {
         await equip(activeSquad!.loot);
 
         if (enemy && siteAlarm) {
-          await enemyattack();
+          await enemyattack(encounter);
         } else if (enemy) {
           await disguisecheck(encounterTimer);
         }
@@ -926,7 +926,7 @@ Future<void> _siteModeAux() async {
         groundLoot.clear();
 
         if (enemy && siteAlarm) {
-          await enemyattack();
+          await enemyattack(encounter);
         } else if (enemy) {
           await disguisecheck(encounterTimer);
         }
@@ -988,7 +988,7 @@ Future<void> _siteModeAux() async {
 
             await getKey();
           } else {
-            await enemyattack();
+            await enemyattack(encounter);
           }
         } else if (enemy) {
           await disguisecheck(encounterTimer);
@@ -1029,8 +1029,6 @@ Future<void> _siteModeAux() async {
           //MAKE SURE YOU ARE GUILTY OF SOMETHING
           bool guilty = squad.any((p) => p.isCriminal);
           if (!guilty) level = 0;
-
-          level = 1000;
 
           makeChasers(siteType, level);
 

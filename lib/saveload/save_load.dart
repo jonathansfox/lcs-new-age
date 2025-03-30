@@ -124,6 +124,11 @@ Future<bool> loadGameMenu() async {
           mvaddstr(y, 4, inGameDate);
           mvaddstr(y, 20, founder);
           mvaddstr(y, 50, lastPlayedStr);
+          if (compareVersionStrings(version, "1.2.0") < 0) {
+            setColor(orange);
+          } else {
+            setColor(lightGray);
+          }
           mvaddstr(y, 70, version);
         },
         onChoice: (index) async {
@@ -156,15 +161,28 @@ Future<bool> loadGameMenu() async {
 }
 
 Future<bool> loadGame(SaveFile selectedSave) async {
-  String broken =
-      selectedSave.gameState != null ? "" : "Conservatively Broken ";
+  bool broken = selectedSave.gameState == null;
+  String brokenText = broken ? "Conservatively Broken " : "";
   erase();
-  mvaddstrc(1, 1, lightGray, "Manage ${broken}Saved Game");
-  mvaddstr(3, 1,
+  int y = 3;
+  if (!broken && compareVersionStrings(selectedSave.version, "1.2.0") < 0) {
+    brokenText = "Outdated (${selectedSave.version}) ";
+    setColor(orange);
+    mvaddstr(y++, 1,
+        "This older save is expected to load, but some major changes are expected:");
+    mvaddstr(y++, 1, "- Many weapons will be renamed or replaced");
+    mvaddstr(y++, 1,
+        "- Clips in inventory will be replaced with single bullets or shells");
+    mvaddstr(y++, 1,
+        "- Existing Black Bloc Armor items will become Black Bloc Outfits");
+    y++;
+  }
+  mvaddstrc(1, 1, lightGray, "Manage ${brokenText}Saved Game");
+  mvaddstr(y++, 1,
       "L - ${selectedSave.gameState != null ? "Load Game" : "Load Game (Crash Report Expected)"}");
-  mvaddstr(4, 1, "D - Delete Save");
-  mvaddstr(5, 1, "B - Backup Save");
-  mvaddstr(7, 1, "Press the key for the action you want to take.");
+  mvaddstr(y++, 1, "D - Delete Save");
+  mvaddstr(y++, 1, "B - Backup Save");
+  mvaddstr(++y, 1, "Press the key for the action you want to take.");
   while (true) {
     int c = await getKey();
     if (c == Key.l) {

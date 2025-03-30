@@ -1,6 +1,4 @@
 /* handles end of round stuff for everyone */
-import 'dart:math';
-
 import 'package:lcs_new_age/creature/attributes.dart';
 import 'package:lcs_new_age/creature/body.dart';
 import 'package:lcs_new_age/creature/creature.dart';

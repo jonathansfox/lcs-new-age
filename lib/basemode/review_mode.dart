@@ -870,6 +870,7 @@ Future<void> assembleSquad(Squad? cursquad) async {
     if (c == Key.v) {
       eraseArea(startY: 22);
       mvaddstrc(22, 0, white, "Press a Letter to view Liberal details.");
+
       int c2 = await getKey();
       if (c2 >= Key.a && c2 <= Key.s) {
         int p = page * 19 + c2 - Key.a;

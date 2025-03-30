@@ -1543,7 +1543,7 @@ Future<void> specialOvalOffice() async {
     }
     printEncounter();
 
-    await enemyattack();
+    await enemyattack(encounter);
     await creatureadvance();
   } else {
     await encounterMessage("The President is in the Oval Office.");

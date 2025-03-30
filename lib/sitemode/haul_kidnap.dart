@@ -180,7 +180,7 @@ Future<void> kidnapattempt() async {
       }
     }
 
-    if (siteAlarm) await enemyattack();
+    if (siteAlarm) await enemyattack(encounter);
     await creatureadvance();
   } else {
     await encounterMessage("All of the targets are too dangerous.");
