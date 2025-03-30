@@ -27,6 +27,7 @@ import 'package:lcs_new_age/location/siege.dart';
 import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
 import 'package:lcs_new_age/sitemode/sitemap.dart';
+import 'package:lcs_new_age/sitemode/stealth.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 import 'package:lcs_new_age/vehicles/vehicle.dart';
 
@@ -733,10 +734,16 @@ class Creature {
         fire = 2;
       }
     }
-    bool armed =
-        activeSquad?.members.any((s) => s.equippedWeapon != null) ?? false;
+    int armedLiberals = activeSquad?.members
+            .where((s) =>
+                (siteAlarm && s.equippedWeapon != null) ||
+                (weaponCheck(s) != WeaponCheckResult.ok))
+            .length ??
+        0;
+    int armedConservatives =
+        encounter.where((e) => e.isEnemy && e.equippedWeapon != null).length;
     int fear = maxBlood - blood;
-    if (isEnemy && armed) fear += 100;
+    if (isEnemy) fear += armedLiberals * 50;
     if (blood < maxBlood * 0.45) fear += 100;
     if (!clothing.fireResistant) fear += fire * 100;
     if (nonCombatant) fear += 1000;
@@ -748,9 +755,11 @@ class Creature {
         courage += 100;
       }
     }
+    if (isEnemy) courage += armedConservatives * 50;
+    if (!siteAlarm) courage += 100;
     if (type.canPerformArrests || type.lawEnforcement) courage += 200;
     if (type.ccsMember) courage += 200;
-    if (equippedWeapon != null) courage += 100;
+    if (equippedWeapon != null || skill(Skill.martialArts) > 2) courage += 100;
     if (type.tank) courage += 2000;
     if (type.animal) courage += 200;
     if (type.freeable && !isEnemy) courage += 1000;
@@ -759,6 +768,8 @@ class Creature {
     if (mode == GameMode.carChase) {
       courage += 10000;
     }
+
+    debugPrint("$name - Fear: $fear, Courage: $courage");
 
     if (fear > courage) nonCombatant = true;
 

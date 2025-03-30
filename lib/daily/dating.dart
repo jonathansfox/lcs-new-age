@@ -202,8 +202,6 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
         addstr("Things go downhill fast.");
 
         await getKey();
-
-        break;
     }
 
     const List<String> dateFail = [
@@ -966,7 +964,6 @@ Future<bool> completeVacation(DatingSession d, Creature p) async {
     case DateResult.arrested:
       return true;
     case DateResult.meetTomorrow:
-    default:
       return false;
   }
 }

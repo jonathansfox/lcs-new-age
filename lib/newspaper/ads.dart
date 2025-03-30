@@ -175,7 +175,6 @@ void displaysinglead(bool liberalguardian, List<(int, int)> addplace,
           ad += "&cIt Seems&r";
           ad += "&cYou've Found&r";
           ad += "&cA Bug!&r";
-          break;
       }
     }
 

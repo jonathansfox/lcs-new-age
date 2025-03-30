@@ -391,49 +391,59 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
   if (mistake) addstr("MISTAKENLY ");
   if (a.weapon.type.idName == "WEAPON_NONE") {
     int result = a.skillRoll(Skill.martialArts);
-    if (result < 15) {
-      addstr("flails at");
-      maxNumberOfAttacks = 1;
-      damageMultiplier = 0.5;
-    } else if (result < 20) {
-      addstr("punches");
-      maxNumberOfAttacks = 1;
-      damageMultiplier = 1;
-    } else if (result < 25) {
-      addstr("kicks");
-      maxNumberOfAttacks = 1;
-      damageMultiplier = 1;
-    } else if (result < 45) {
-      switch (lcsRandom(3)) {
-        case 0:
-          addstr("pummels");
-          maxNumberOfAttacks = 6;
-          damageMultiplier = 1;
-        case 1:
-          addstr("combos");
-          maxNumberOfAttacks = 4;
-          damageMultiplier = 2;
-        case 2:
-          addstr("jump kicks");
-          maxNumberOfAttacks = 1;
-          damageMultiplier = 5;
+    if (a.body is HumanoidBody) {
+      if (result < 15) {
+        addstr("flails at");
+        maxNumberOfAttacks = 1;
+        damageMultiplier = 0.5;
+      } else if (result < 20) {
+        addstr("punches");
+        maxNumberOfAttacks = 1;
+        damageMultiplier = 1;
+      } else if (result < 25) {
+        addstr("kicks");
+        maxNumberOfAttacks = 1;
+        damageMultiplier = 1;
+      } else if (result < 45) {
+        switch (lcsRandom(3)) {
+          case 0:
+            addstr("pummels");
+            maxNumberOfAttacks = 6;
+            damageMultiplier = 1;
+          case 1:
+            addstr("combos");
+            maxNumberOfAttacks = 4;
+            damageMultiplier = 2;
+          case 2:
+            addstr("jump kicks");
+            maxNumberOfAttacks = 1;
+            damageMultiplier = 5;
+        }
+      } else {
+        switch (lcsRandom(3)) {
+          case 0:
+            addstr("unleashes ${a.gender.hisHer} Stand on");
+            maxNumberOfAttacks = 12;
+            damageMultiplier = 1;
+          case 1:
+            addstr("launches a flurry of blows at");
+            maxNumberOfAttacks = 6;
+            damageMultiplier = 2;
+          case 2:
+            addstr("slows time and touches");
+            addNastyOff = true;
+            maxNumberOfAttacks = 1;
+            damageMultiplier = 10;
+        }
       }
+    } else if (a.weapon.typeName == "WEAPON_BITE") {
+      addstr("lunges with fangs out at");
+      maxNumberOfAttacks = 1;
+      damageMultiplier = 1;
     } else {
-      switch (lcsRandom(3)) {
-        case 0:
-          addstr("unleashes ${a.gender.hisHer} Stand on");
-          maxNumberOfAttacks = 12;
-          damageMultiplier = 1;
-        case 1:
-          addstr("launches a flurry of blows at");
-          maxNumberOfAttacks = 6;
-          damageMultiplier = 2;
-        case 2:
-          addstr("slows time and touches");
-          addNastyOff = true;
-          maxNumberOfAttacks = 1;
-          damageMultiplier = 10;
-      }
+      addstr("attacks");
+      maxNumberOfAttacks = 1;
+      damageMultiplier = 1;
     }
   } else {
     if (attackUsed.canBackstab && a.align == Alignment.liberal && !mistake) {
@@ -576,8 +586,12 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
         break;
       }
       // Each shot in a burst is increasingly less likely to hit
-      if (aroll + bonus - i * attackUsed.successiveAttacksDifficulty > droll &&
-          a.skill(wsk) >= i * attackUsed.successiveAttacksDifficulty) {
+      int recoil = attackUsed.successiveAttacksDifficulty * i;
+      if (attackUsed.usesAmmo) {
+        recoil += (a.weapon.loadedAmmoType?.recoil ?? 0) * i;
+      }
+      if (aroll + bonus - recoil > droll &&
+          a.skill(wsk) >= attackUsed.successiveAttacksDifficulty * i) {
         bursthits++;
       }
     }
@@ -2029,7 +2043,6 @@ void addDeathMessage(Creature cr) {
             addstr("\"A plague on both your houses...\"");
           default:
             addstr("\"Better dead than liberal...\"");
-            break;
         }
     }
   }

@@ -988,17 +988,17 @@ Future<void> specialArmory() async {
   setColor(white);
   bool empty = true;
   if (!lcsGotM249 && activeSite!.type == SiteType.armyBase) {
-    await encounterMessage("Jackpot! The squad found a M249 Machine Gun!");
-    _lootWeapon("WEAPON_M249_MACHINEGUN", 9);
+    await encounterMessage("Jackpot! The squad found an XM250 Machine Gun!");
+    _lootWeapon("WEAPON_M250_MACHINEGUN", 9);
     lcsGotM249 = true;
     empty = false;
   }
 
   if (oneIn(2)) {
-    await encounterMessage("The squad finds some M16 Assault Rifles.");
+    await encounterMessage("The squad finds some XM7 Assault Rifles.");
     int num = 0;
     do {
-      _lootWeapon("WEAPON_AUTORIFLE_M16", 5);
+      _lootWeapon("WEAPON_M7", 5);
       num++;
     } while (num < 2 || (oneIn(2) && num < 5));
     empty = false;
@@ -1008,7 +1008,7 @@ Future<void> specialArmory() async {
     await encounterMessage("The squad finds some M4 Carbines.");
     int num = 0;
     do {
-      _lootWeapon("WEAPON_CARBINE_M4", 5);
+      _lootWeapon("WEAPON_M4", 5);
       num++;
     } while (num < 2 || (oneIn(2) && num < 5));
     empty = false;
@@ -1174,14 +1174,16 @@ Future<void> specialSecurity(bool metaldetect) async {
 
   spawnSecurity();
 
-  for (Creature p in pool) {
-    if (p.base == activeSite) {
-      autoAdmit = true;
-      if (p.type == encounter[0].type) {
-        sleeper = p;
-        encounter[0] = sleeper;
-        encounter[0].isWillingToTalk = false;
-        break;
+  if (encounter.isNotEmpty) {
+    for (Creature p in pool) {
+      if (p.base == activeSite) {
+        autoAdmit = true;
+        if (p.type == encounter[0].type) {
+          sleeper = p;
+          encounter[0] = sleeper;
+          encounter[0].isWillingToTalk = false;
+          break;
+        }
       }
     }
   }

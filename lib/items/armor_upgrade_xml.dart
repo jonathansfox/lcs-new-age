@@ -36,10 +36,10 @@ void parseArmorUpgrade(ArmorUpgrade armor, XmlElement xml) {
       case "restricted":
         armor.restricted = parseBool(element.innerText) ?? armor.restricted;
       case "accuracypenalty":
-        armor.accuracyPenalty = int.tryParse(element.innerText) ?? armor.accuracyPenalty;
+        armor.accuracyPenalty =
+            int.tryParse(element.innerText) ?? armor.accuracyPenalty;
       default:
         debugPrint("Unknown armor upgrade key: $key");
-        break;
     }
   }
 }

@@ -1861,7 +1861,7 @@ Future<void> _openDoor(bool restricted) async {
       if (c == Key.y) {
         UnlockResult result = await bash(BashTypes.door);
 
-        if (result == UnlockResult.unlocked) {
+        if (result == UnlockResult.unlocked || result == UnlockResult.bashed) {
           currentTile.flag &= ~SITEBLOCK_DOOR;
           int time = 0;
           if (siteAlarmTimer > time || siteAlarmTimer == -1) {

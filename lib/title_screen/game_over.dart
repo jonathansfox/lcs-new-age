@@ -10,7 +10,9 @@ Future<bool> checkForDefeat(
   if (pool.any((p) =>
       p.alive &&
       p.align == Alignment.liberal &&
-      !(p.sleeperAgent && p.hireId != null))) return false;
+      !(p.sleeperAgent && p.hireId != null))) {
+    return false;
+  }
 
   HighScore yourScore;
   if (possibleEnding != Ending.unspecified) {

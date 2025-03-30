@@ -260,7 +260,9 @@ Future<void> equip(List<Item>? loot) async {
     }
     //PAGE DOWN
     if ((isPageDown(c) || c == Key.downArrow || c == Key.rightArrow) &&
-        (page + 1) * 18 < loot.length) page++;
+        (page + 1) * 18 < loot.length) {
+      page++;
+    }
   }
 }
 
@@ -342,7 +344,9 @@ Future<void> moveLoot(List<Item> dest, List<Item> source) async {
     }
     //PAGE DOWN
     if ((isPageDown(c) || c == Key.downArrow || c == Key.rightArrow) &&
-        (page + 1) * 18 < source.length) page++;
+        (page + 1) * 18 < source.length) {
+      page++;
+    }
   }
 
   for (int l = source.length - 1; l >= 0; l--) {
@@ -439,7 +443,9 @@ Future<void> equipmentBaseAssign() async {
     }
     //PAGE DOWN (items)
     if ((isPageDown(c) || c == Key.downArrow || c == Key.rightArrow) &&
-        (pageLoot + 1) * 19 < items.length) pageLoot++;
+        (pageLoot + 1) * 19 < items.length) {
+      pageLoot++;
+    }
 
     //PAGE UP (locations)
     if (c == ','.codePoint && pageLoc > 0) pageLoc--;

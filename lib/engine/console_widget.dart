@@ -178,6 +178,10 @@ class _ConsoleWidgetState extends State<ConsoleWidget> {
         if (['░', '▒', '▓', '▀', '▌', '▐', '▄', '█'].contains(glyph)) {
           glyph = ' '; // leave these to the BlockPainter
         }
+        if (glyph.codeUnitAt(0) < 32) {
+          // ignore control characters
+          glyph = " ";
+        }
         text += bg ? "." : glyph;
         foreground = bg ? char.background : char.foreground;
         background = bg ? char.background : Colors.transparent;

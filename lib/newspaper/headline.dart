@@ -161,7 +161,6 @@ int displayStoryHeader(NewsStory ns, bool liberalguardian, View? header) {
           displayCenteredNewsFont("SQUAD RAMPAGE", 13);
         }
       }
-      break;
   }
   return y;
 }

@@ -87,7 +87,6 @@ void parseClothingType(ClothingType clothing, XmlElement xml) {
         clothing.allowedArmorIds.add(element.innerText);
       default:
         debugPrint("Unknown clothing type key: $key");
-        break;
     }
   }
 }

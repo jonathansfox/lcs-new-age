@@ -200,6 +200,8 @@ Future<void> displayStory(
                     Drama.carChase,
                     Drama.carCrash,
                     Drama.footChase,
+                    Drama.legalGunUsed,
+                    Drama.illegalGunUsed,
                   ].contains(entry.key))
               .length;
 
@@ -415,6 +417,7 @@ Future<void> displayStory(
             if (did(Drama.unlockedDoor)) {
               addDrama("unlawful entry", "picked locks");
             }
+
             story += "."
                 "&r";
           }
@@ -476,7 +479,6 @@ Future<void> displayStory(
               story += "&r";
             }
           }
-          break;
       }
 
       story += generateFiller(200);
@@ -732,6 +734,7 @@ void displayCenteredNewsFont(String str, int y) {
           }
         }
       }
+      refresh();
       x += lim;
     } else {
       setColor(lightGray, background: lightGray);

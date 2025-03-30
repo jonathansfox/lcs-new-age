@@ -150,6 +150,11 @@ enum SiteAlienation {
   bool get alienated => this != none;
 }
 
+void resetGameStateCaches() {
+  _siteMap = null;
+  _locationMap = null;
+}
+
 GameState gameState = GameState();
 List<Creature> get pool => gameState.lcs.pool;
 Iterable<Creature> get poolAndProspects => pool

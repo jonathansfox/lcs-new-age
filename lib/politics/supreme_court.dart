@@ -270,7 +270,9 @@ Future<void> supremeCourt() async {
       if (laws[scase[c]]!.index < vote && scasedir[c] == 1) yesvotes++;
 
       if (l == politics.court.length - 1 &&
-          yesvotes >= politics.court.length / 2) yeswin = true;
+          yesvotes >= politics.court.length / 2) {
+        yeswin = true;
+      }
     }
 
     if (canSeeThings) {

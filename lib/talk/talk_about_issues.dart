@@ -21,7 +21,9 @@ Future<bool> talkAboutIssues(Creature a, Creature tk) async {
   bool youAreStupid = false;
   bool issueTooLiberal = false;
 
-  if (!a.attributeCheck(Attribute.intelligence, Difficulty.easy)) {
+  if (a.attribute(Attribute.intelligence) < 5 ||
+      oneIn(a.attribute(Attribute.intelligence)) &&
+          a.attributeCheck(Attribute.intelligence, Difficulty.average)) {
     youAreStupid = true;
   } else if (laws[lw] == DeepAlignment.eliteLiberal) {
     issueTooLiberal = true;

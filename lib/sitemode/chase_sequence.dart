@@ -689,7 +689,7 @@ Future<bool> evasivedrive(int turn) async {
 }
 
 Future<bool> enemyCarUpdate() async {
-  for (Vehicle enemyCar in chaseSequence!.enemycar) {
+  for (Vehicle enemyCar in chaseSequence!.enemycar.toList()) {
     Creature? enemyCarDriver =
         encounter.firstWhereOrNull((c) => c.car == enemyCar && c.isDriver);
     if (enemyCarDriver == null) {
@@ -959,7 +959,6 @@ Future<void> evasiverun() async {
               message += "thrown to the ground, and beaten senseless!";
             }
             p.blood -= 60;
-            break;
         }
         if (p.blood <= 0) {
           p.die();
@@ -1246,7 +1245,7 @@ Future<bool> dodgedrive(
   }
   await getKey();
 
-  for (Vehicle v in chaseSequence!.friendcar) {
+  for (Vehicle v in chaseSequence!.friendcar.toList()) {
     Creature? driver =
         squad.firstWhereOrNull((s) => s.carId == v.id && s.isDriver);
     if (driver?.skillCheck(Skill.driving, Difficulty.easy) != true) {
@@ -1255,7 +1254,7 @@ Future<bool> dodgedrive(
       return true;
     }
   }
-  for (Vehicle v in chaseSequence!.enemycar) {
+  for (Vehicle v in chaseSequence!.enemycar.toList()) {
     Creature? driver =
         encounter.firstWhereOrNull((e) => e.carId == v.id && e.isDriver);
     if (driver?.skillCheck(Skill.driving, Difficulty.easy) != true) {

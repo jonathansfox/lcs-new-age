@@ -613,8 +613,11 @@ Future<void> _dailyHealing() async {
   for (Site site in sites) {
     medical[site] = 0;
     injuries[site] = 0;
-    // Clinic is equal to a skill 6 liberal
+    // Clinic and lockups are equal to a skill 6 liberal
     if (site.type == SiteType.clinic) medical[site] = 6;
+    if (site.type == SiteType.policeStation) medical[site] = 6;
+    if (site.type == SiteType.courthouse) medical[site] = 6;
+    if (site.type == SiteType.prison) medical[site] = 6;
     // Hospital is equal to a skill 12 liberal
     if (site.type == SiteType.universityHospital) medical[site] = 12;
   }
@@ -627,7 +630,7 @@ Future<void> _dailyHealing() async {
       // Don't let starving locations heal
       if (p.site!.foodDaysLeft < 1 && p.site!.siege.underSiege) continue;
       // Anyone present can help heal, but only the highest skill matters
-      if (medical[p.site]! < p.skill(Skill.firstAid)) {
+      if ((medical[p.site] ?? 0) < p.skill(Skill.firstAid)) {
         medical[p.site!] = p.skill(Skill.firstAid);
       }
     }
@@ -794,7 +797,7 @@ Future<void> _dailyHealing() async {
     //If present, qualified to heal, and doing so
     if (p.site != null) {
       //Clear activity if their location doesn't have healing work to do
-      if (injuries[p.site]! > 0) {
+      if ((injuries[p.site] ?? 0) > 0) {
         //Give experience based on work done and current skill
         p.train(Skill.firstAid, min(50, max(injuries[p.site]! ~/ 5, 1)));
       }

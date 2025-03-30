@@ -816,4 +816,22 @@
         </attack>
     </weapontype>
 
+    <weapontype idname="WEAPON_BITE">
+        <name>Fangs</name>
+        <can_take_hostages>true</can_take_hostages>
+        <threatening>true</threatening>
+        <price>0</price>
+        <description>The teeth of a carnivore.</description>
+        <size>0</size>
+        <attack>
+            <attack_description>snarls and lunges at</attack_description>
+            <hit_description>savagely biting</hit_description>
+            <damage>30</damage>
+            <tears>true</tears>
+            <bleeding>true</bleeding>
+            <severtype>NASTY</severtype>
+            <number_attacks>1</number_attacks>
+        </attack>
+    </weapontype>
+
 </weapons>

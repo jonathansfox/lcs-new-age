@@ -19,7 +19,6 @@ void parseLootType(LootType loot, XmlElement xml) {
         loot.fenceValue = double.tryParse(element.innerText) ?? loot.fenceValue;
       default:
         debugPrint("Unknown loot type key: $key");
-        break;
     }
   }
 }

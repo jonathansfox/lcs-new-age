@@ -110,6 +110,8 @@ class Item implements Comparable<Item> {
 
 String mapOutdatedItem(String typename) {
   switch (typename) {
+    case "WEAPON_BITE":
+      return "WEAPON_NONE";
     case "OUTFIT_BLACKBLOC":
       return "CLOTHING_BLACKBLOC";
     case "ARMOR_MASK":

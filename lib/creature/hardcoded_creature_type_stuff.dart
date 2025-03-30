@@ -277,10 +277,16 @@ void applyHardcodedCreatureTypeStuff(Creature cr, CreatureType type) {
           cr.name += "Pink Elephant";
           cr.body = pinkElephantBody();
       }
-      if (!animalsArePeopleToo) cr.money = 0;
+      if (!animalsArePeopleToo) {
+        cr.money = 0;
+        cr.equippedWeapon = null;
+      }
     case CreatureTypeIds.guardDog:
       cr.body = dogBody();
-      if (!animalsArePeopleToo) cr.money = 0;
+      if (!animalsArePeopleToo) {
+        cr.money = 0;
+        cr.equippedWeapon = null;
+      }
     case CreatureTypeIds.prisoner:
       // Prisoners should not be "prisoners" after recruiting them,
       // they should be some brand of criminal

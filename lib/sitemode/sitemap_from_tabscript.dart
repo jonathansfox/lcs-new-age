@@ -294,7 +294,9 @@ class ConfigSiteScript extends ConfigSiteCommand {
     if ((dx <= (ROOMDIMENSION + 1) || dy <= (ROOMDIMENSION + 1)) &&
         dx < dy * 2 &&
         dy < dx * 2 &&
-        lcsRandom(2) == 0) return;
+        lcsRandom(2) == 0) {
+      return;
+    }
     // Very likely to stop iterating for small rooms
     if (dx <= ROOMDIMENSION && dy <= ROOMDIMENSION) return;
     // Guaranteed to stop iterating for hallways

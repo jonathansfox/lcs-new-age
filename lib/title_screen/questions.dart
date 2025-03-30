@@ -162,7 +162,7 @@ Future<void> characterCreationQuestions(Creature founder, bool choose) async {
     _Question("In middle school...", [
       _Option("I broke into lockers and was into punk rock.",
           "+2 Security, +1 Agility, Black Leather Jacket", () {
-        founder.adjustSkill(Skill.security, 1);
+        founder.adjustSkill(Skill.security, 2);
         founder.adjustSkill(Skill.music, 1);
         founder.adjustAttribute(Attribute.agility, 1);
         founder.giveClothingType("CLOTHING_LEATHER",

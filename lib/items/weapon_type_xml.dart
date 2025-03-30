@@ -64,6 +64,7 @@ void parseWeaponType(WeaponType weapon, XmlElement xml) {
             parseAlignment(element.innerText) ?? weapon.bannedAtGunControl;
       case "price":
         weapon.price = int.tryParse(element.innerText) ?? weapon.price;
+        if (weapon.fenceValue == 0) weapon.fenceValue = weapon.price * 0.25;
       case "fencevalue":
         weapon.fenceValue =
             double.tryParse(element.innerText) ?? weapon.fenceValue;

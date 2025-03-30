@@ -26,7 +26,6 @@ void parseAmmoType(AmmoType type, XmlElement xml) {
         type.boxPrice = int.tryParse(element.innerText) ?? type.boxPrice;
       default:
         debugPrint("Unknown ammo type key: $key");
-        break;
     }
   }
 }

@@ -53,8 +53,17 @@ void prepareEncounter(SiteType type, bool sec,
         } else {
           weights.add(CreatureTypeIds.swat, 1000);
         }
+      case SiteType.drugHouse:
+        weights.add(CreatureTypeIds.gangMember, 1000);
       default:
-        break;
+        if (activeSite!.controller == SiteController.ccs) {
+          weights.add(CreatureTypeIds.ccsVigilante, 1000);
+          weights.add(CreatureTypeIds.ccsSniper, 1000);
+        } else if (deathSquadsActive) {
+          weights.add(CreatureTypeIds.deathSquad, 1000);
+        } else {
+          weights.add(CreatureTypeIds.swat, 1000);
+        }
     }
     if (siteOnFire && !noProfanity) {
       weights.add(CreatureTypeIds.firefighter, 1000);
