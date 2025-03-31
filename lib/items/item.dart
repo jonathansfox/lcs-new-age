@@ -156,8 +156,8 @@ String mapOutdatedItem(String typename) {
       return "AMMO_68";
     default:
       if (typename.contains("ARMOR_")) {
-        if (itemTypes.containsKey(typename.replaceFirst("CLOTHES", "ARMOR"))) {
-          return typename.replaceFirst("CLOTHES", "ARMOR");
+        if (itemTypes.containsKey(typename.replaceFirst("ARMOR", "CLOTHING"))) {
+          return typename.replaceFirst("ARMOR", "CLOTHING");
         } else {
           return "CLOTHING_CLOTHES";
         }
