@@ -130,6 +130,23 @@ class GameState {
   List<Item> groundLoot = [];
   @JsonKey(includeFromJson: false, includeToJson: false)
   CantSeeReason cantSeeReason = CantSeeReason.none;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  List<NewsStory> newsStories = [];
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  Map<String, Site>? _siteMap;
+  Map<String, Site> get siteMap {
+    _siteMap ??= {for (var site in sites) site.idString: site};
+    return _siteMap!;
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  Map<String, Location>? _locationMap;
+  Map<String, Location> get locationMap {
+    _locationMap ??= {
+      for (var location in allLocations) location.idString: location
+    };
+    return _locationMap!;
+  }
 }
 
 enum CCSStrength {
@@ -150,34 +167,19 @@ enum SiteAlienation {
   bool get alienated => this != none;
 }
 
-void resetGameStateCaches() {
-  _siteMap = null;
-  _locationMap = null;
-}
-
 GameState gameState = GameState();
 List<Creature> get pool => gameState.lcs.pool;
 Iterable<Creature> get poolAndProspects => pool
     .followedBy(datingSessions.expand((d) => d.dates))
     .followedBy(recruitmentSessions.map((r) => r.recruit));
 List<Site> get sites => gameState.sites;
-Map<String, Site>? _siteMap;
-Map<String, Site> get siteMap {
-  _siteMap ??= {for (var site in sites) site.idString: site};
-  return _siteMap!;
-}
+Map<String, Site> get siteMap => gameState.siteMap;
 
 Iterable<Location> get allLocations =>
     Iterable.castFrom<Site, Location>(gameState.sites)
         .followedBy(gameState.districts)
         .followedBy(gameState.cities);
-Map<String, Location>? _locationMap;
-Map<String, Location> get locationMap {
-  _locationMap ??= {
-    for (var location in allLocations) location.idString: location
-  };
-  return _locationMap!;
-}
+Map<String, Location> get locationMap => gameState.locationMap;
 
 int get month => gameState.date.month;
 int get day => gameState.date.day;
@@ -348,7 +350,7 @@ int get ccsSiegeConverts => gameState.ccsSiegeConverts;
 set ccsSiegeConverts(int value) => gameState.ccsSiegeConverts = value;
 int get ccsBossConverts => gameState.ccsBossConverts;
 set ccsBossConverts(int value) => gameState.ccsBossConverts = value;
-List<NewsStory> newsStories = [];
+List<NewsStory> get newsStories => gameState.newsStories;
 int locx = 0;
 int locy = 0;
 int locz = 0;

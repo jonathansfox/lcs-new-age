@@ -20,7 +20,6 @@ import 'package:lcs_new_age/utils/lcsrandom.dart';
 
 Future<void> setupNewGame() async {
   gameState = GameState();
-  resetGameStateCaches();
   bool classicmode = false;
   bool strongccs = false;
   bool nightmarelaws = false;
