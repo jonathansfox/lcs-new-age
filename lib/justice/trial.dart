@@ -84,33 +84,29 @@ Future<void> trial(Creature g) async {
     addstr("The judge reads the charges:");
   }
 
-  mvaddstrc(5, 1, red, "The defendant, ${g.properName}, is charged with ");
-  int x = 2, y = 5;
+  String charges = "The defendant, ${g.properName}, is charged with ";
+
   Future<void> listCrime(Crime crime) async {
     typenum--;
-    if ((x++) >= 2) {
-      x = 0;
-      move(++y, 1);
-    }
     if (g.wantedForCrimes[crime]! > 0) {
-      if ((x++) >= 2) {
-        x = 0;
-        move(++y, 1);
-      }
       if (g.wantedForCrimes[crime]! > 1) {
-        addstr("${g.wantedForCrimes[crime]!} counts of ");
+        charges += "${g.wantedForCrimes[crime]!} counts of ";
       }
-      addstr(crime.chargedWith);
+      charges += crime.chargedWith;
     }
-    if (typenum > 1) addstr(", ");
-    if (typenum == 1) addstr(" and ");
-    if (typenum == 0) addstr(".");
+    if (typenum > 1) charges += ", ";
+    if (typenum == 1) charges += " and ";
+    if (typenum == 0) charges += ".";
+    setColor(red);
+    addparagraph(5, 1, 12, 79, charges);
     await getKey();
   }
 
   for (var c in g.wantedForCrimes.entries.where((e) => e.value > 0)) {
     await listCrime(c.key);
   }
+
+  int y = console.y - 1;
 
   if (g.confessions > 0) {
     move(y += 2, 1);
