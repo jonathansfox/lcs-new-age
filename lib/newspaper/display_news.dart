@@ -377,7 +377,7 @@ Future<void> displayStory(
                 story += ", ";
               } else if (typesum == 2) {
                 if (drama.contains(" and ") || (liberalguardian && !ccs)) {
-                  story += ", and";
+                  story += ", and ";
                 } else {
                   story += " and ";
                 }
