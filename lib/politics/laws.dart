@@ -54,7 +54,7 @@ enum Law {
     "Nuclear power is allowed, but other options are preferred.",
     "Nuclear power is intensely regulated and seldom used.",
     "Nuclear power is illegal.",
-    "A global ban on nuclear power is and nuclear weapons is enforced by UN inspectors.",
+    "A global ban on nuclear power and nuclear weapons is enforced by UN inspectors.",
   ]),
   pollution("Pollution", [
     "Deformed children are the norm in industrial zones.",
