@@ -18,8 +18,6 @@
             Default: true
         <protects_against_kidnapping> (boolean) If the weapon makes someone too dangerous to kidnap.
             Default: true
-        <musical_attack> (boolean) If the weapon uses a special musical attack, eg guitars.
-            Default: false
         <instrument> (boolean) The weapon will give a bonus when fund raising with music.
             Default: false
         <graffiti> (boolean) Weapon can be used to make graffiti.
@@ -423,8 +421,6 @@
             <burns>true</burns>
             <damage>100</damage>
             <fire>
-                <starts_fire>true</starts_fire>
-                <causes_debris>false</causes_debris>
                 <chance>33</chance>
             </fire>
         </attack>
@@ -435,7 +431,7 @@
         <name>Molotov Bomb</name>
         <shortname>Molotov</shortname>
         <threatening>true</threatening>
-        <price>20</price>
+        <price>5</price>
         <description>Nobody sells them, but here's everything you need to make one...</description>
         <size>4</size>
         <attack>
@@ -449,7 +445,6 @@
             <damage>100</damage>
             <burns>true</burns>
             <fire>
-                <chance_causes_debris>100</chance_causes_debris>
                 <chance>100</chance>
             </fire>
         </attack>
@@ -599,7 +594,6 @@
 
     <weapontype idname="WEAPON_GUITAR">
         <name>Guitar</name>
-        <musical_attack>true</musical_attack>
         <instrument>true</instrument>
         <price>150</price>
         <description>Play in combat to stun enemies and maybe even convert them.</description>
@@ -608,6 +602,59 @@
         <size>3</size>
         <attack>
             <priority>1</priority>
+            <alignment_restriction>LIBERAL</alignment_restriction>
+            <attack_description>plays a song for</attack_description>
+            <attack_description>sings to</attack_description>
+            <attack_description>rocks out at</attack_description>
+            <attack_description>plays protest songs at</attack_description>
+            <attack_description>tries to inspire</attack_description>
+            <attack_description>rips into a solo at</attack_description>
+            <social_damage>true</social_damage>
+            <skill>MUSIC</skill>
+            <stuns>true</stuns>
+        </attack>
+        <attack>
+            <priority>1</priority>
+            <alignment_restriction>CONSERVATIVE</alignment_restriction>
+            <attack_description>plays a song for</attack_description>
+            <attack_description>sings to</attack_description>
+            <attack_description>rocks out at</attack_description>
+            <attack_description>plays country songs at</attack_description>
+            <attack_description>tries to enthuse</attack_description>
+            <attack_description>rips into a solo at</attack_description>
+            <social_damage>true</social_damage>
+            <skill>MUSIC</skill>
+            <stuns>true</stuns>
+        </attack>
+        <attack>
+            <priority>2</priority>
+            <attack_description>swings at</attack_description>
+            <damage>20</damage>
+            <bruises>true</bruises>
+        </attack>
+    </weapontype>
+
+    <weapontype idname="WEAPON_BANJO">
+        <name>Banjo</name>
+        <instrument>true</instrument>
+        <price>150</price>
+        <description>Play in combat to stun enemies and maybe even convert them.</description>
+        <suspicious>false</suspicious>
+        <can_threaten_hostages>false</can_threaten_hostages>
+        <size>3</size>
+        <attack>
+            <priority>1</priority>
+            <attack_description>plays a song for</attack_description>
+            <attack_description>sings to</attack_description>
+            <attack_description>strums up a storm at</attack_description>
+            <attack_description>twangs away at</attack_description>
+            <attack_description>cuts loose on a roll at</attack_description>
+            <social_damage>true</social_damage>
+            <skill>MUSIC</skill>
+            <stuns>true</stuns>
+        </attack>
+        <attack>
+            <priority>2</priority>
             <attack_description>swings at</attack_description>
             <damage>20</damage>
             <bruises>true</bruises>
@@ -831,6 +878,42 @@
             <bleeding>true</bleeding>
             <severtype>NASTY</severtype>
             <number_attacks>1</number_attacks>
+        </attack>
+    </weapontype>
+
+    <weapontype idname="WEAPON_PROBOSCIS">
+        <name>Proboscis</name>
+        <can_take_hostages>true</can_take_hostages>
+        <threatening>true</threatening>
+        <price>0</price>
+        <description>The feeding tube of a blood sucking insect.</description>
+        <size>0</size>
+        <attack>
+            <attack_description>lunges toward</attack_description>
+            <hit_description>draining</hit_description>
+            <damage>50</damage>
+            <bleeding>true</bleeding>
+            <number_attacks>1</number_attacks>
+        </attack>
+    </weapontype>
+
+    <weapontype idname="WEAPON_FIRE_BREATH">
+        <name>Fire Breath</name>
+        <can_take_hostages>true</can_take_hostages>
+        <threatening>true</threatening>
+        <price>0</price>
+        <description>Ignition of a spray of combustible chemicals.</description>
+        <size>0</size>
+        <attack>
+            <priority>1</priority>
+            <ranged>true</ranged>
+            <attack_description>breathes fire at</attack_description>
+            <hit_description>burning</hit_description>
+            <damage>100</damage>
+            <burns>true</burns>
+            <fire>
+                <chance>33</chance>
+            </fire>
         </attack>
     </weapontype>
 

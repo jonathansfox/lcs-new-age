@@ -9,6 +9,7 @@ import 'package:lcs_new_age/creature/name.dart';
 import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/gamestate/game_mode.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
+import 'package:lcs_new_age/items/clothing.dart';
 import 'package:lcs_new_age/justice/crimes.dart';
 import 'package:lcs_new_age/location/location_type.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
@@ -40,7 +41,7 @@ void applyHardcodedCreatureTypeStuff(Creature cr, CreatureType type) {
   switch (type.id) {
     case CreatureTypeIds.bouncer:
       if (mode == GameMode.site && activeSite?.hasHighSecurity == true) {
-        cr.name = "Enforcer";
+        cr.name = "Huge Bouncer";
         cr.rawSkill[Skill.martialArts] = lcsRandom(3) + 3;
       }
       if (laws[Law.gunControl] == DeepAlignment.archConservative) {
@@ -96,52 +97,19 @@ void applyHardcodedCreatureTypeStuff(Creature cr, CreatureType type) {
       }
     case CreatureTypeIds.sweatshopWorker:
       criminalize(cr, Crime.illegalEntry);
-    case CreatureTypeIds.lawyer:
-      if (laws[Law.gunControl] == DeepAlignment.archConservative && oneIn(3)) {
-        cr.giveWeaponAndAmmo("WEAPON_22_HANDGUN", 1);
-      }
-    case CreatureTypeIds.doctor:
-      if (laws[Law.gunControl] == DeepAlignment.archConservative && oneIn(3)) {
-        cr.giveWeaponAndAmmo("WEAPON_22_HANDGUN", 1);
-      }
-    case CreatureTypeIds.psychologist:
-      if (laws[Law.gunControl] == DeepAlignment.archConservative && oneIn(3)) {
-        cr.giveWeaponAndAmmo("WEAPON_22_HANDGUN", 1);
-        cr.reload(false);
-      }
       if (cr.gender == Gender.male || oneIn(2)) {
         cr.giveClothingType("CLOTHING_CHEAPSUIT");
       } else {
         cr.giveClothingType("CLOTHING_CHEAPDRESS");
       }
-    case CreatureTypeIds.nurse:
-      if (laws[Law.gunControl] == DeepAlignment.archConservative && oneIn(3)) {
-        cr.giveWeaponAndAmmo("WEAPON_22_HANDGUN", 1);
-      }
     case CreatureTypeIds.tank:
       cr.body = TankBody();
-    case CreatureTypeIds.merc:
-      if (laws[Law.gunControl]! < DeepAlignment.conservative) {
-        cr.giveWeaponAndAmmo("WEAPON_M4", 7);
-      } else {
-        cr.giveWeaponAndAmmo("WEAPON_AR15", 7);
-      }
-    case CreatureTypeIds.hick:
-      cr.name = hickNames.random;
-      if ((laws[Law.gunControl] == DeepAlignment.archConservative &&
-              oneIn(2)) ||
-          oneIn(10)) {
-        cr.giveWeaponAndAmmo("WEAPON_PUMP_SHOTGUN", 4);
-      } else if (oneIn(2)) {
-        cr.giveWeaponAndAmmo("WEAPON_TORCH", 0);
-      } else {
-        cr.giveWeaponAndAmmo("WEAPON_PITCHFORK", 0);
-      }
+    case CreatureTypeIds.angryRuralMob:
+      cr.name = ruralMobNames.random;
     case CreatureTypeIds.cop:
       if (laws[Law.policeReform] == DeepAlignment.eliteLiberal &&
           cr.align == Alignment.liberal &&
-          oneIn(3)) // Peace Officer
-      {
+          oneIn(3)) {
         cr.align = Alignment.moderate;
         cr.name = "Police Negotiator";
         cr.rawSkill[Skill.persuasion] = lcsRandom(4) + 3;
@@ -158,6 +126,8 @@ void applyHardcodedCreatureTypeStuff(Creature cr, CreatureType type) {
           }
         }
         cr.reload(false);
+        cr.equippedClothing = Clothing("CLOTHING_POLICEUNIFORM",
+            stackSize: 1, armorId: "ARMOR_HIDDEN");
         cr.align = Alignment.conservative;
         cr.rawSkill[Skill.firearms] = lcsRandom(4) + 3;
         cr.rawSkill[Skill.martialArts] = lcsRandom(2) + 3;
@@ -178,14 +148,6 @@ void applyHardcodedCreatureTypeStuff(Creature cr, CreatureType type) {
         // Respond to emergencies in bunker gear
         cr.giveClothingType("CLOTHING_BUNKERGEAR");
       }
-    case CreatureTypeIds.ccsMolotov:
-      if (mode == GameMode.site) {
-        nameCCSMember(cr);
-      }
-    case CreatureTypeIds.ccsSniper:
-      if (mode == GameMode.site) {
-        nameCCSMember(cr);
-      }
     case CreatureTypeIds.ccsVigilante:
       cr.giveClothingType("CLOTHING_CLOTHES");
       switch (lcsRandom(5) + ccsState.index) {
@@ -199,7 +161,6 @@ void applyHardcodedCreatureTypeStuff(Creature cr, CreatureType type) {
           cr.giveWeaponAndAmmo("WEAPON_PUMP_SHOTGUN", 7);
         case 5:
           cr.giveWeaponAndAmmo("WEAPON_AR15", 7);
-          cr.giveClothingType("CLOTHING_CIVILLIANARMOR");
         case 6:
           cr.giveWeaponAndAmmo("WEAPON_AR15", 7);
           cr.giveClothingType("CLOTHING_ARMYARMOR");
@@ -207,7 +168,7 @@ void applyHardcodedCreatureTypeStuff(Creature cr, CreatureType type) {
           cr.giveWeaponAndAmmo("WEAPON_M4", 7);
           cr.giveClothingType("CLOTHING_ARMYARMOR");
       }
-      if (mode == GameMode.site /* && sitealarm>0*/) {
+      if (mode == GameMode.site) {
         nameCCSMember(cr);
       }
     case CreatureTypeIds.ccsArchConservative:
@@ -217,22 +178,6 @@ void applyHardcodedCreatureTypeStuff(Creature cr, CreatureType type) {
         cr.name = "CCS Founder";
       } else {
         cr.name = "CCS Lieutenant";
-      }
-    case CreatureTypeIds.prisonGuard:
-      if (laws[Law.gunControl] == DeepAlignment.archConservative && oneIn(3)) {
-        cr.giveWeaponAndAmmo("WEAPON_MP5", 4);
-      } else if (oneIn(3)) {
-        cr.giveWeaponAndAmmo("WEAPON_PUMP_SHOTGUN", 4);
-      } else {
-        cr.giveWeaponAndAmmo("WEAPON_NIGHTSTICK", 0);
-      }
-    case CreatureTypeIds.educator:
-      if (laws[Law.gunControl] == DeepAlignment.archConservative && oneIn(3)) {
-        cr.giveWeaponAndAmmo("WEAPON_MP5", 4);
-      } else if (oneIn(3)) {
-        cr.giveWeaponAndAmmo("WEAPON_9MM_HANDGUN", 4);
-      } else {
-        cr.giveWeaponAndAmmo("WEAPON_SYRINGE", 0);
       }
     case CreatureTypeIds.genetic:
       if (activeSite?.type == SiteType.ceoHouse) {
@@ -313,106 +258,50 @@ void applyHardcodedCreatureTypeStuff(Creature cr, CreatureType type) {
       if (cr.align == Alignment.conservative) {
         cr.align = nonConservativeAlignment();
       }
-    case CreatureTypeIds.bum:
-      giveCivilianWeapon(cr);
-      if (cr.equippedWeapon == null && oneIn(5)) {
-        cr.giveWeaponAndAmmo("WEAPON_SHANK", 0);
-      }
-      if (cr.align == Alignment.conservative) {
-        cr.align = nonConservativeAlignment();
-      }
-    case CreatureTypeIds.mutant:
-      giveCivilianWeapon(cr);
-      if (cr.equippedWeapon == null && oneIn(5)) {
-        cr.giveWeaponAndAmmo("WEAPON_SHANK", 0);
-      }
     case CreatureTypeIds.gangMember:
-      if (oneIn(20) ||
-          (laws[Law.gunControl] == DeepAlignment.archConservative &&
-              oneIn(5))) {
-        cr.giveWeaponAndAmmo("WEAPON_AK102", 3);
-      } else if (oneIn(16) ||
-          (laws[Law.gunControl] == DeepAlignment.archConservative &&
-              oneIn(5))) {
-        cr.giveWeaponAndAmmo("WEAPON_MP5", 4);
-      } else if (oneIn(15)) {
-        cr.giveWeaponAndAmmo("WEAPON_45_HANDGUN", 4);
-      } else if (oneIn(10)) {
-        cr.giveWeaponAndAmmo("WEAPON_PUMP_SHOTGUN", 4);
-      } else if (oneIn(4)) {
-        cr.giveWeaponAndAmmo("WEAPON_9MM_HANDGUN", 4);
-      } else if (oneIn(2)) {
-        cr.giveWeaponAndAmmo("WEAPON_22_REVOLVER", 4);
-      } else {
-        cr.giveWeaponAndAmmo("WEAPON_COMBATKNIFE", 0);
-      }
-      cr.reload(false);
-      // We'll make the crack house a bit dicey
-      if (activeSite?.type == SiteType.drugHouse) {
-        cr.align = Alignment.conservative;
-      } else if (activeSiteUnderSiege) {
-        cr.align = Alignment.conservative;
-      }
       if (oneIn(2)) {
         criminalize(
             cr, [Crime.drugDistribution, Crime.assault, Crime.murder].random);
       }
     case CreatureTypeIds.crackhead:
-      giveCivilianWeapon(cr);
-      if (oneIn(5)) {
-        cr.giveWeaponAndAmmo("WEAPON_SHANK", 0);
-      }
       cr.rawAttributes[Attribute.heart] =
           max(1, cr.rawAttributes[Attribute.heart]! - 2);
       cr.rawAttributes[Attribute.wisdom] =
           max(1, cr.rawAttributes[Attribute.wisdom]! - 2);
     case CreatureTypeIds.sexWorker:
-      if (oneIn(10)) criminalize(cr, Crime.prostitution);
+      if (oneIn(2)) criminalize(cr, Crime.prostitution);
     case CreatureTypeIds.hippie:
       if (oneIn(10)) criminalize(cr, Crime.drugDistribution);
-    case CreatureTypeIds.socialite:
-      if (cr.gender == Gender.female) {
-        cr.giveClothingType("CLOTHING_EXPENSIVEDRESS");
-      } else {
-        cr.giveClothingType("CLOTHING_EXPENSIVESUIT");
-      }
     case CreatureTypeIds.thief:
-      cr.name = creatureTypes[[
-        CreatureTypeIds.socialite,
-        CreatureTypeIds.clerk,
-        CreatureTypeIds.officeWorker,
-        CreatureTypeIds.artCritic,
-        CreatureTypeIds.musicCritic
-      ].random]!
-          .randomEncounterName;
-      if (oneIn(10)) criminalize(cr, Crime.breakingAndEntering);
-      if (oneIn(10)) criminalize(cr, Crime.theft);
+      if (oneIn(4)) criminalize(cr, Crime.breakingAndEntering);
+      if (oneIn(4)) criminalize(cr, Crime.theft);
   }
 }
 
-const List<String> hickNames = [
+const List<String> ruralMobNames = [
   "Country Boy",
-  "Good ol' Boy",
-  "Hick",
-  "Hillbilly",
-  "Redneck",
-  "Rube",
-  "Yokel",
-  "Bumpkin",
+  "Country Folk",
+  "Mountain Man",
+  "Rancher",
+  "Rural Fury",
+  "Homesteader",
+  "Hinterlander",
+  "Backroads Bully",
+  "Spittin' Mad",
+  "Heartlander",
   "Hayseed",
+  "Small-Towner",
   "Rustic",
 ];
 
 /* gives a CCS member a cover name */
 void nameCCSMember(Creature cr) {
-  if (cr.clothing.type.idName == "CLOTHING_CIVILLIANARMOR") {
-    cr.name = "Mercenary";
-  } else if (cr.clothing.type.idName == "CLOTHING_ARMYARMOR") {
+  if (cr.clothing.type.idName == "CLOTHING_ARMYARMOR") {
     cr.name = "Soldier";
   } else if (cr.clothing.type.idName == "CLOTHING_HEAVYARMOR") {
     cr.name = "CCS Heavy";
   } else if (cr.weapon.type.idName == "WEAPON_PUMP_SHOTGUN" || oneIn(2)) {
-    cr.name = hickNames.random;
+    cr.name = ruralMobNames.random;
   } else {
     cr.name = [
       "Biker",

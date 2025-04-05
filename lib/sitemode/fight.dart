@@ -381,7 +381,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
     }
   }
 
-  bool melee = !attackUsed.ranged;
+  bool melee = !attackUsed.ranged && !attackUsed.socialDamage;
   bool sneakAttack = false;
   bool addNastyOff = false;
   int maxNumberOfAttacks = attackUsed.numberOfAttacks;
@@ -532,7 +532,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
   int thrownweapons =
       0; // Used by thrown weapons to remove the weapons at the end of the turn if needed
 
-  if (a.equippedWeapon == null) //Move into WEAPON_NONE -XML
+  if (a.weapon.typeName == "WEAPON_NONE") //Move into WEAPON_NONE -XML
   {
     // Martial arts multi-strikes
     if (maxNumberOfAttacks == 1) {

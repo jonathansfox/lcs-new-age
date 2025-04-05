@@ -33,6 +33,7 @@ class ClothingType extends ItemType {
   int interrogationDrugBonus = 0;
   int professionalism = 0;
   int concealWeaponSize = 1;
+  bool alarming = false;
   bool mask = false;
   bool surpriseMask = false;
   int durability = 1;
@@ -62,6 +63,10 @@ class ClothingType extends ItemType {
       }
       armors.addAll(armorUpgrades.values
           .where((a) => !a.visible && !a.restricted && !armors.contains(a)));
+      if (!allowVisibleArmor) {
+        armors.addAll(armorUpgrades.values
+            .where((a) => a.visible && !a.restricted && !armors.contains(a)));
+      }
     }
     return armors;
   }
@@ -75,7 +80,8 @@ class ClothingType extends ItemType {
     if (concealsFace) {
       traits.add("Hides Face");
     }
-    if (stealthValue > 1) {
+    if (stealthValue > 1 &&
+        (allowVisibleArmor || (specifiedArmorUpgrade?.visible == false))) {
       if (stealthValue == 2) {
         traits.add("Sneaky");
       } else {

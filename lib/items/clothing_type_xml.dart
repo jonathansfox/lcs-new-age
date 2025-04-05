@@ -75,6 +75,8 @@ void parseClothingType(ClothingType clothing, XmlElement xml) {
             int.tryParse(element.innerText) ?? clothing.durability;
       case "description":
         clothing.description = element.innerText;
+      case "alarming":
+        clothing.alarming = parseBool(element.innerText) ?? clothing.alarming;
       case "upgradable":
         clothing.upgradable =
             parseBool(element.innerText) ?? clothing.upgradable;

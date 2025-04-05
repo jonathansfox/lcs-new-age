@@ -65,7 +65,6 @@ Body madCowBody() {
   return HumanoidBody()
     ..type = BodyType.madCow
     ..typeName = "Mad Cow"
-    ..naturalWeapon = Weapon("WEAPON_BITE")
     ..leftLeg.name = "Left Rear Leg"
     ..leftLeg.size = 1
     ..rightLeg.name = "Right Rear Leg"
@@ -119,7 +118,6 @@ class SixLeggedPigBody extends HumanoidBody {
   SixLeggedPigBody() : super() {
     type = BodyType.sixLeggedPig;
     typeName = "Six-Legged Pig";
-    naturalWeapon = Weapon("WEAPON_BITE");
     maxTeeth = 44;
     teeth = 44;
     leftLeg.name = "Left Rear Leg";

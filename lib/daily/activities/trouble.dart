@@ -4,7 +4,7 @@ import 'package:lcs_new_age/creature/creature.dart';
 import 'package:lcs_new_age/creature/difficulty.dart';
 import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/daily/activities/arrest.dart';
-import 'package:lcs_new_age/daily/activities/redneck_fight.dart';
+import 'package:lcs_new_age/daily/activities/hardliner_fight.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/justice/crimes.dart';
 import 'package:lcs_new_age/newspaper/news_story.dart';
@@ -130,7 +130,7 @@ Future<void> doActivityTrouble(List<Creature> trouble) async {
             sitestory = NewsStory.prepare(NewsStories.arrestGoneWrong);
             await attemptArrest(trouble[t], "causing trouble");
           } else {
-            await redneckFight(trouble[t]);
+            await hardlinerFight(trouble[t]);
           }
         }
       }

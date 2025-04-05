@@ -29,7 +29,7 @@
     -->
   <armorupgrade idname="ARMOR_NONE">
     <name>No Armor</name>
-    <description>Clothing with no protective value.</description>
+    <description>Clothing with no armor value.</description>
     <make_difficulty>0</make_difficulty>
     <make_price>0</make_price>
   </armorupgrade>
@@ -41,7 +41,7 @@
     <restricted>true</restricted>
   </armorupgrade>
   <armorupgrade idname="ARMOR_HIDDEN">
-    <name>Hidden Soft Armor Vest</name>
+    <name>Soft Armor Vest</name>
     <description>Commercial body armor worn under your clothing.</description>
     <make_difficulty>0</make_difficulty>
     <make_price>500</make_price>
@@ -135,7 +135,7 @@
   </armorupgrade>
   <armorupgrade idname="ARMOR_LEATHER">
     <name>Leather Armor</name>
-    <description>Padded leathers commonly worn by motorcyclists.</description>
+    <description>Tough leather able to offer some basic protection.</description>
     <make_price>200</make_price>
     <restricted>true</restricted>
     <armor>

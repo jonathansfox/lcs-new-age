@@ -95,10 +95,6 @@
         </item>
         <item>
             <class>AMMO</class>
-            <type>AMMO_SMG</type>
-        </item>
-        <item>
-            <class>AMMO</class>
             <type>AMMO_556</type>
         </item>
         <item>

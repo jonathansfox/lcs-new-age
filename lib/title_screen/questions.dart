@@ -7,6 +7,9 @@ import 'package:lcs_new_age/creature/gender.dart';
 import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
+import 'package:lcs_new_age/items/armor_upgrade.dart';
+import 'package:lcs_new_age/items/clothing.dart';
+import 'package:lcs_new_age/items/clothing_type.dart';
 import 'package:lcs_new_age/location/location_type.dart';
 import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
@@ -165,8 +168,10 @@ Future<void> characterCreationQuestions(Creature founder, bool choose) async {
         founder.adjustSkill(Skill.security, 2);
         founder.adjustSkill(Skill.music, 1);
         founder.adjustAttribute(Attribute.agility, 1);
-        founder.giveClothingType("CLOTHING_LEATHER",
-            lootPile: founder.base?.loot);
+        founder.giveArmor(Clothing.fromType(
+          clothingTypes["CLOTHING_PUNK_JACKET"]!,
+          armorUpgrades["ARMOR_LEATHER"]!,
+        ));
       }),
       _Option(
           "I was obsessed with Japanese swords and started lifting weights.",
@@ -341,8 +346,40 @@ Future<void> characterCreationQuestions(Creature founder, bool choose) async {
           founder.adjustSkill(Skill.seduction, 1);
           Creature lawyer =
               Creature.fromId(CreatureTypeIds.lawyer, align: Alignment.liberal);
+          // Cap strength and agility at 3, and wisdom at 1...
+          int spare = 0;
+          if (lawyer.rawAttributes[Attribute.strength]! > 3) {
+            spare += lawyer.rawAttributes[Attribute.strength]! - 3;
+            lawyer.rawAttributes[Attribute.strength] = 3;
+          }
+          if (lawyer.rawAttributes[Attribute.agility]! > 3) {
+            spare += lawyer.rawAttributes[Attribute.agility]! - 3;
+            lawyer.rawAttributes[Attribute.agility] = 3;
+          }
+          if (lawyer.rawAttributes[Attribute.wisdom]! > 1) {
+            spare += lawyer.rawAttributes[Attribute.wisdom]! - 1;
+            lawyer.rawAttributes[Attribute.wisdom] = 1;
+          }
+          // ...and move the excess to intelligence, charisma, and heart
+          while (spare > 0) {
+            lawyer.adjustAttribute(
+                [Attribute.intelligence, Attribute.charisma, Attribute.heart]
+                    .random,
+                1);
+            spare--;
+          }
+          // Force competence in law and persuasion
+          while (lawyer.skill(Skill.law) < lawyer.skillCap(Skill.law) - 1) {
+            lawyer.adjustSkill(Skill.law, 1);
+          }
+          while (lawyer.skill(Skill.persuasion) <
+              lawyer.skillCap(Skill.persuasion) - 1) {
+            lawyer.adjustSkill(Skill.persuasion, 1);
+          }
+          // Finally, add juice to boost stats even further
+          lawyer.juice = 100;
           lawyer.birthDate = gameState.date
-              .subtract(Duration(days: 257 * 25 + lcsRandom(256)));
+              .subtract(Duration(days: 365 * 25 + lcsRandom(365)));
           if (gay) {
             lawyer.genderAssignedAtBirth = lawyer.gender = founder.gender;
           } else {
@@ -468,6 +505,12 @@ Future<void> characterCreationQuestions(Creature founder, bool choose) async {
             recruit.weapon.type.idName == "WEAPON_MP5" ||
             recruit.equippedWeapon == null) {
           recruit.giveWeaponAndAmmo("WEAPON_9MM_HANDGUN", 4);
+        }
+        while (recruit.rawAttributes[Attribute.wisdom]! > 1) {
+          recruit.adjustAttribute(Attribute.wisdom, -1);
+          recruit.adjustAttribute(
+              [Attribute.heart, Attribute.agility, Attribute.strength].random,
+              1);
         }
         recruit.nameCreature();
         recruit.location = founder.base;

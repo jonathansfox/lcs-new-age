@@ -327,7 +327,7 @@ void _legalChoice(Creature c, int choice) {
 }
 
 void _legalDefault(Creature c) {
-  if (c.weapon.type.musicalAttack) {
+  if (c.weapon.type.instrument) {
     c.activity = Activity(ActivityType.sellMusic);
   } else if (c.rawSkill[Skill.art]! > 1) {
     c.activity = Activity(ActivityType.sellArt);
@@ -476,6 +476,7 @@ Future<void> _selectClothingToMake(Creature cr) async {
   List<ClothingType> craftable = clothingTypes.values
       .where((c) =>
           c.makeDifficulty >= 0 && (!c.deathsquadLegality || deathSquadsActive))
+      .sorted((a, b) => a.name.compareTo(b.name))
       .sorted((a, b) => minDifficulty(a).compareTo(minDifficulty(b)));
 
   int selectedClothingIndex = -1;
@@ -560,6 +561,10 @@ void _clothingDetailFooter(
   eraseArea(startY: 16);
   makeDelimiter(y: 16);
   move(17, 0);
+  bool alarming = clothing.alarming ||
+      (armor.visible &&
+          !clothing.allowVisibleArmor &&
+          clothing.intrinsicArmorId != armor.idName);
   for (int i = 0; i < 2; i++) {
     eraseLine(17);
     if (armorIndex > 0) {
@@ -583,16 +588,28 @@ void _clothingDetailFooter(
     move(console.y, (console.width - console.x) ~/ 2);
   }
 
-  setColor(darkGray);
+  if (alarming) {
+    setColor(red);
+  } else {
+    setColor(lightBlue);
+  }
   mvaddstrCenter(18, armor.description);
 
   mvaddstrc(19, 20, lightGray, "Special Traits: ");
   List<String> traits =
       clothing.traitsList(false, specifiedArmorUpgrade: armor);
   if (traits.isEmpty) {
-    addstrc(darkGray, "None");
+    if (alarming) {
+      addstrc(red, "Immediate Alarm");
+    } else {
+      addstrc(darkGray, "None");
+    }
   } else {
     addstrc(lightBlue, traits.join(", "));
+    if (alarming) {
+      addstr(", ");
+      addstrc(red, "Alarming");
+    }
   }
   mvaddstrc(20, 20, lightGray, "Head: ");
   addstrc(lightBlue, "${armor.headArmor} Armor");
@@ -677,7 +694,7 @@ void _activityFooter(Creature cr) {
           23, 3, "A tiny bit of juice.  It's not *real* though, you know?");
     case ActivityType.donations:
       addstr(" solicit donations.");
-      mvaddstr(23, 3, "Uses Persuasion and Business.");
+      mvaddstr(23, 3, "Uses Persuasion and Street Smarts.");
     case ActivityType.graffiti:
       addstr(" spray graffiti.");
       mvaddstr(23, 3, "Uses Art.");

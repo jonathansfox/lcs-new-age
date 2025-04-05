@@ -434,7 +434,7 @@ Future<void> _siteModeAux() async {
           if (p.prisoner!.squadId == null) {
             //They scream for help -- flag them kidnapped, cause alarm
             p.prisoner!.kidnapped = true;
-            if (p.type.preciousToHicks) offendedHicks = true;
+            if (p.type.preciousToAngryRuralMobs) offendedAngryRuralMobs = true;
             havehostage = true;
           }
         }

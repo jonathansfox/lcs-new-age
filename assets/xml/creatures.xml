@@ -328,7 +328,7 @@ Elements marked as hardcoded may have their values overridden by the game.
         <type_name>Janitor</type_name>
         <!-- Hardcoded to Custodian for L+ labor law. -->
         <weapon>CIVILIAN</weapon>
-        <armor>CLOTHING_CLOTHES</armor>
+        <armor>CLOTHING_OVERALLS</armor>
         <age>MATURE</age>
         <talkreceptive>1</talkreceptive>
     </creaturetype>
@@ -444,7 +444,7 @@ Elements marked as hardcoded may have their values overridden by the game.
         <type_name>Police Officer</type_name>
         <!-- <encounter_name> Hardcoded -->
         <!-- <weapon> Hardcoded -->
-        <armor>CLOTHING_POLICEARMOR</armor>
+        <armor>CLOTHING_POLICEUNIFORM</armor>
         <age>MATURE</age>
         <!-- <alignment> Hardcoded -->
         <attributes>
@@ -597,23 +597,24 @@ Elements marked as hardcoded may have their values overridden by the game.
         <!-- <skills> Hardcoded heavyweapons or axe skill depending on free speech. -->
     </creaturetype>
     <creaturetype idname="CREATURE_EDUCATOR">
-        <type_name>Educator</type_name>
-        <!-- <weapon> Hardcoded -->
+        <type_name>Re-Educator</type_name>
+        <weapon>WEAPON_MP5</weapon>
+        <weapon>WEAPON_PUMP_SHOTGUN</weapon>
+        <weapon>WEAPON_SYRINGE</weapon>
         <armor>CLOTHING_LABCOAT</armor>
         <age>MATURE</age>
         <alignment>CONSERVATIVE</alignment>
         <attributes>
             <agility>3-10</agility>
-            <health>3-10</health>
             <strength>3-10</strength>
             <wisdom>4-10</wisdom>
         </attributes>
         <infiltration>0-30</infiltration>
         <skills>
-            <driving>0-1</driving>
-            <martialArts>1-2</martialArts>
-            <psychology>3-6</psychology>
-            <firearms>1-3</firearms>
+            <driving>1</driving>
+            <martialArts>2</martialArts>
+            <psychology>6</psychology>
+            <firearms>2</firearms>
         </skills>
         <kidnap_resistant>1</kidnap_resistant>
         <reports_to_police>1</reports_to_police>
@@ -886,7 +887,6 @@ Elements marked as hardcoded may have their values overridden by the game.
     </creaturetype>
     <creaturetype idname="CREATURE_LAWYER">
         <type_name>Lawyer</type_name>
-        <!-- <weapon> Hardcoded -->
         <armor>CLOTHING_CHEAPSUIT</armor>
         <age>GRADUATE</age>
         <attributes>
@@ -930,6 +930,14 @@ Elements marked as hardcoded may have their values overridden by the game.
         <type_name>Musician</type_name>
         <weapon>CIVILIAN</weapon>
         <armor>CLOTHING_CLOTHES</armor>
+        <armor>CLOTHING_BOHO</armor>
+        <armor>CLOTHING_PUNK_JACKET</armor>
+        <armor>CLOTHING_STREETWEAR</armor>
+        <armor>CLOTHING_CHIC</armor>
+        <armor>CLOTHING_TIE_DYE</armor>
+        <armor>CLOTHING_KIMONO</armor>
+        <armor>CLOTHING_JERSEY</armor>
+        <armor>CLOTHING_BLACKCLOTHES</armor>
         <age>MATURE</age>
         <money>0-10</money>
         <skills>
@@ -942,7 +950,7 @@ Elements marked as hardcoded may have their values overridden by the game.
     <creaturetype idname="CREATURE_MATHEMATICIAN">
         <type_name>Mathematician</type_name>
         <weapon>CIVILIAN</weapon>
-        <armor>CLOTHING_CLOTHES</armor>
+        <armor>CLOTHING_BLACKCLOTHES</armor>
         <age>MATURE</age>
         <attributes>
             <intelligence>7-10</intelligence>
@@ -969,27 +977,33 @@ Elements marked as hardcoded may have their values overridden by the game.
     <creaturetype idname="CREATURE_HSDROPOUT">
         <type_name>Highschool Dropout</type_name>
         <weapon>CIVILIAN</weapon>
-        <armor>CLOTHING_CLOTHES</armor>
+        <armor>CLOTHING_STREETWEAR</armor>
         <age>TEENAGER</age>
         <money>20-50</money>
         <talkreceptive>1</talkreceptive>
     </creaturetype>
     <creaturetype idname="CREATURE_BUM">
-        <type_name>Transient</type_name>
-        <!-- <weapon> Hardcoded -->
+        <type_name>Homeless</type_name>
+        <weapon>WEAPON_NONE</weapon>
+        <weapon>WEAPON_SHANK</weapon>
         <armor>CLOTHING_CLOTHES</armor>
+        <armor>CLOTHING_STREETWEAR</armor>
         <age>MATURE</age>
-        <!-- <alignment> Hardcoded to not conservative. -->
+        <alignment>LIBERAL</alignment>
         <money>20-50</money>
         <talkreceptive>1</talkreceptive>
     </creaturetype>
     <creaturetype idname="CREATURE_GANGMEMBER">
         <type_name>Gang Member</type_name>
-        <!-- <weapon> Hardcoded -->
-        <armor>CLOTHING_CLOTHES</armor>
-        <armor>CLOTHING_LEATHER</armor>
+        <weapon>WEAPON_9MM_HANDGUN</weapon>
+        <weapon>WEAPON_AK102</weapon>
+        <weapon>WEAPON_MP5</weapon>
+        <weapon>WEAPON_PUMP_SHOTGUN</weapon>
+        <weapon>WEAPON_22_REVOLVER</weapon>
+        <weapon>WEAPON_COMBATKNIFE</weapon>
+        <armor>CLOTHING_STREETWEAR</armor>
         <age>YOUNGADULT</age>
-        <!-- <alignment> Hardcoded -->
+        <alignment>CONSERVATIVE</alignment>
         <gender>MALE BIAS</gender>
         <juice>-5</juice>
         <money>20-50</money>
@@ -1002,8 +1016,9 @@ Elements marked as hardcoded may have their values overridden by the game.
     </creaturetype>
     <creaturetype idname="CREATURE_CRACKHEAD">
         <type_name>Crackhead</type_name>
-        <!-- <weapon> Hardcoded -->
-        <armor>CLOTHING_CLOTHES</armor>
+        <weapon>CIVILIAN</weapon>
+        <weapon>WEAPON_SHANK</weapon>
+        <armor>CLOTHING_STREETWEAR</armor>
         <age>YOUNGADULT</age>
         <alignment>LIBERAL</alignment>
         <attributes>
@@ -1016,30 +1031,73 @@ Elements marked as hardcoded may have their values overridden by the game.
     </creaturetype>
     <creaturetype idname="CREATURE_PRIEST">
         <type_name>Priest</type_name>
+        <weapon>WEAPON_NONE</weapon>
+        <weapon>WEAPON_CROSS</weapon>
+        <armor>CLOTHING_CASSOCK</armor>
         <armor>CLOTHING_BLACKSUIT</armor>
         <age>MATURE</age>
         <gender>MALE BIAS</gender>
         <money>20-50</money>
+        <attributes>
+            <charisma>7-10</charisma>
+            <heart>7-10</heart>
+            <wisdom>7-10</wisdom>
+        </attributes>
         <skills>
-            <religion>3-7</religion>
+            <persuasion>3-6</persuasion>
+            <religion>4-7</religion>
         </skills>
+    </creaturetype>
+    <creaturetype idname="CREATURE_TELEVANGELIST">
+        <type_name>Televangelist</type_name>
+        <armor>CLOTHING_EXPENSIVESUIT</armor>
+        <age>MATURE</age>
+        <gender>MALE</gender>
+        <age>MATURE</age>
+        <alignment>CONSERVATIVE</alignment>
+        <attributes>
+            <charisma>10</charisma>
+            <wisdom>10</wisdom>
+        </attributes>
+        <skills>
+            <persuasion>4-8</persuasion>
+            <religion>4-8</religion>
+        </skills>
+        <infiltration>100</infiltration>
+        <juice>500</juice>
+        <money>500-1000</money>
+        <seethroughstealth>5</seethroughstealth>
+        <seethroughdisguise>11</seethroughdisguise>
+        <social_attack>
+            <priority>1</priority>
+            <attack_description>rebukes</attack_description>
+            <attack_description>preaches to</attack_description>
+            <attack_description>tries to convert</attack_description>
+            <attack_description>guilt-trips</attack_description>
+            <attack_description>blesses</attack_description>
+            <attack_description>condemns</attack_description>
+            <attack_description>prays for</attack_description>
+            <social_damage>true</social_damage>
+            <skill>PERSUASION</skill>
+            <stuns>true</stuns>
+        </social_attack>
     </creaturetype>
     <creaturetype idname="CREATURE_ENGINEER">
         <type_name>Engineer</type_name>
         <weapon>CIVILIAN</weapon>
-        <armor>CLOTHING_CLOTHES</armor>
+        <armor>CLOTHING_HARDHAT</armor>
         <age>MATURE</age>
         <gender>MALE BIAS</gender>
         <money>20-50</money>
         <skills>
-            <computers>1-2</computers>
-            <science>1-3</science>
+            <computers>2</computers>
+            <science>3</science>
         </skills>
     </creaturetype>
     <creaturetype idname="CREATURE_FASTFOODWORKER">
         <type_name>Fast Food Worker</type_name>
         <weapon>CIVILIAN</weapon>
-        <armor>CLOTHING_CLOTHES</armor>
+        <armor>CLOTHING_APRON</armor>
         <age>14-25</age>
         <money>20-50</money>
         <talkreceptive>1</talkreceptive>
@@ -1047,14 +1105,14 @@ Elements marked as hardcoded may have their values overridden by the game.
     <creaturetype idname="CREATURE_BAKER">
         <type_name>Baker</type_name>
         <weapon>CIVILIAN</weapon>
-        <armor>CLOTHING_CLOTHES</armor>
+        <armor>CLOTHING_CHEF</armor>
         <age>MATURE</age>
         <money>20-50</money>
     </creaturetype>
     <creaturetype idname="CREATURE_BARISTA">
         <type_name>Barista</type_name>
         <weapon>CIVILIAN</weapon>
-        <armor>CLOTHING_CLOTHES</armor>
+        <armor>CLOTHING_APRON</armor>
         <age>YOUNGADULT</age>
         <money>20-50</money>
         <talkreceptive>1</talkreceptive>
@@ -1062,6 +1120,7 @@ Elements marked as hardcoded may have their values overridden by the game.
     <creaturetype idname="CREATURE_BARTENDER">
         <type_name>Bartender</type_name>
         <weapon>CIVILIAN</weapon>
+        <armor>CLOTHING_APRON</armor>
         <armor>CLOTHING_CLOTHES</armor>
         <age>MATURE</age>
         <gender>MALE BIAS</gender>
@@ -1075,27 +1134,31 @@ Elements marked as hardcoded may have their values overridden by the game.
         <age>YOUNGADULT</age>
         <money>20-50</money>
         <skills>
-            <persuasion>1-3</persuasion>
+            <persuasion>3</persuasion>
         </skills>
         <talkreceptive>1</talkreceptive>
     </creaturetype>
     <creaturetype idname="CREATURE_CARSALESMAN">
         <type_name>Car Salesperson</type_name>
-        <!-- Hardcoded to Car Salesman for C+ women's rights law. -->
         <weapon>CIVILIAN</weapon>
         <armor>CLOTHING_CHEAPSUIT</armor>
+        <gender>MALE BIAS</gender>
         <age>MATURE</age>
         <money>40-80</money>
+        <attributes>
+            <charisma>4-10</charisma>
+        </attributes>
         <skills>
             <business>1-4</business>
             <driving>1-3</driving>
-            <persuasion>1-4</persuasion>
+            <persuasion>3-6</persuasion>
         </skills>
     </creaturetype>
     <creaturetype idname="CREATURE_OFFICEWORKER">
         <type_name>Office Worker</type_name>
         <weapon>CIVILIAN</weapon>
         <armor>CLOTHING_CLOTHES</armor>
+        <armor>CLOTHING_CHEAPSUIT</armor>
         <age>MATURE</age>
         <money>20-50</money>
         <skills>
@@ -1107,7 +1170,11 @@ Elements marked as hardcoded may have their values overridden by the game.
         <weapon>CIVILIAN</weapon>
         <armor>CLOTHING_CLOTHES</armor>
         <age>MIDDLEAGED</age>
-        <!-- <attributes> Hardcoded -->
+        <attributes>
+            <charisma>5-10</charisma>
+            <strength>4-10</strength>
+            <intelligence>4-10</intelligence>
+        </attributes>
         <gender>MALE BIAS</gender>
         <money>20-50</money>
         <skills>
@@ -1120,6 +1187,8 @@ Elements marked as hardcoded may have their values overridden by the game.
         <weapon>CIVILIAN</weapon>
         <armor>CLOTHING_CHEAPDRESS</armor>
         <armor>CLOTHING_CLOTHES</armor>
+        <armor>CLOTHING_STREETWEAR</armor>
+        <armor>CLOTHING_CHIC</armor>
         <age>YOUNGADULT</age>
         <alignment>LIBERAL</alignment>
         <gender>FEMALE BIAS</gender>
@@ -1140,7 +1209,7 @@ Elements marked as hardcoded may have their values overridden by the game.
         <money>20-50</money>
     </creaturetype>
     <creaturetype idname="CREATURE_GARBAGEMAN">
-        <type_name>Garbage Collector</type_name>
+        <type_name>Sanitary Worker</type_name>
         <weapon>CIVILIAN</weapon>
         <armor>CLOTHING_WORKCLOTHES</armor>
         <age>MATURE</age>
@@ -1155,6 +1224,7 @@ Elements marked as hardcoded may have their values overridden by the game.
         <type_name>Plumber</type_name>
         <weapon>CIVILIAN</weapon>
         <armor>CLOTHING_WORKCLOTHES</armor>
+        <armor>CLOTHING_OVERALLS</armor>
         <age>MATURE</age>
         <gender>MALE BIAS</gender>
         <money>20-50</money>
@@ -1163,7 +1233,7 @@ Elements marked as hardcoded may have their values overridden by the game.
     <creaturetype idname="CREATURE_CHEF">
         <type_name>Chef</type_name>
         <weapon>CIVILIAN</weapon>
-        <armor>CLOTHING_WORKCLOTHES</armor>
+        <armor>CLOTHING_CHEF</armor>
         <age>MATURE</age>
         <gender>MALE BIAS</gender>
         <money>20-50</money>
@@ -1186,7 +1256,10 @@ Elements marked as hardcoded may have their values overridden by the game.
     <creaturetype idname="CREATURE_AMATEURMAGICIAN">
         <type_name>Amateur Magician</type_name>
         <weapon>CIVILIAN</weapon>
-        <armor>CLOTHING_CLOTHES</armor>
+        <armor>CLOTHING_BLACKSUIT</armor>
+        <armor>CLOTHING_BLACKDRESS</armor>
+        <armor>CLOTHING_CHIC</armor>
+        <armor>CLOTHING_BLACKCLOTHES</armor>
         <age>MATURE</age>
         <money>20-50</money>
         <talkreceptive>1</talkreceptive>
@@ -1208,9 +1281,10 @@ Elements marked as hardcoded may have their values overridden by the game.
         </skills>
     </creaturetype>
     <creaturetype idname="CREATURE_MERC">
-        <type_name>Mercenary</type_name>
-        <!-- <weapon> Hardcoded -->
-        <armor>CLOTHING_CIVILLIANARMOR</armor>
+        <type_name>Private Military</type_name>
+        <weapon>WEAPON_M4</weapon>
+        <weapon>WEAPON_AK102</weapon>
+        <armor>CLOTHING_PMC</armor>
         <age>YOUNGADULT</age>
         <attributes>
             <agility>5-10</agility>
@@ -1236,9 +1310,14 @@ Elements marked as hardcoded may have their values overridden by the game.
         <edgelord>true</edgelord>
     </creaturetype>
     <creaturetype idname="CREATURE_HICK">
-        <type_name>Redneck</type_name>
+        <type_name>Country Folk</type_name>
         <!-- <encounter_name> Hardcoded -->
-        <!-- <weapon> Hardcoded -->
+        <weapon>WEAPON_PUMP_SHOTGUN</weapon>
+        <weapon>WEAPON_TORCH</weapon>
+        <weapon>WEAPON_PITCHFORK</weapon>
+        <weapon>WEAPON_COMBATKNIFE</weapon>
+        <weapon>WEAPON_AXE</weapon>
+        <weapon>WEAPON_BANJO</weapon>
         <armor>CLOTHING_OVERALLS</armor>
         <armor>CLOTHING_WIFEBEATER</armor>
         <age>MATURE</age>
@@ -1321,7 +1400,8 @@ Elements marked as hardcoded may have their values overridden by the game.
     </creaturetype>
     <creaturetype idname="CREATURE_PRISONGUARD">
         <type_name>Prison Guard</type_name>
-        <!-- <weapon> Hardcoded -->
+        <weapon>WEAPON_PUMP_SHOTGUN</weapon>
+        <weapon>WEAPON_NIGHTSTICK</weapon>
         <armor>CLOTHING_PRISONGUARD</armor>
         <age>MATURE</age>
         <alignment>CONSERVATIVE</alignment>
@@ -1388,7 +1468,10 @@ Elements marked as hardcoded may have their values overridden by the game.
     <creaturetype idname="CREATURE_SOCIALITE">
         <type_name>Socialite</type_name>
         <weapon>CIVILIAN</weapon>
-        <!-- <armor> Hardcoded -->
+        <armor>CLOTHING_EXPENSIVESUIT</armor>
+        <armor>CLOTHING_EXPENSIVEDRESS</armor>
+        <armor>CLOTHING_CHIC</armor>
+        <gender>FEMALE BIAS</gender>
         <age>MATURE</age>
         <money>100-230</money>
         <skills>
@@ -1464,6 +1547,15 @@ Elements marked as hardcoded may have their values overridden by the game.
     <creaturetype idname="CREATURE_DANCER">
         <type_name>Dancer</type_name>
         <armor>CLOTHING_CLOTHES</armor>
+        <armor>CLOTHING_BOHO</armor>
+        <armor>CLOTHING_SARONG</armor>
+        <armor>CLOTHING_SARI</armor>
+        <armor>CLOTHING_STREETWEAR</armor>
+        <armor>CLOTHING_CHEAPDRESS</armor>
+        <armor>CLOTHING_CHIC</armor>
+        <armor>CLOTHING_TIE_DYE</armor>
+        <armor>CLOTHING_KIMONO</armor>
+        <armor>CLOTHING_TRACKSUIT</armor>
         <age>YOUNGADULT</age>
         <attributes>
             <agility>10</agility>
@@ -1480,16 +1572,21 @@ Elements marked as hardcoded may have their values overridden by the game.
         <type_name>Photographer</type_name>
         <weapon>CIVILIAN</weapon>
         <armor>CLOTHING_CLOTHES</armor>
+        <armor>CLOTHING_BLACKCLOTHES</armor>
+        <armor>CLOTHING_BOHO</armor>
         <age>MATURE</age>
+        <gender>FEMALE BIAS</gender>
         <skills>
             <art>2-3</art>
         </skills>
     </creaturetype>
     <creaturetype idname="CREATURE_CAMERAMAN">
-        <type_name>Cameraman</type_name>
+        <type_name>Camera Operator</type_name>
         <weapon>CIVILIAN</weapon>
         <armor>CLOTHING_CLOTHES</armor>
+        <armor>CLOTHING_BLACKCLOTHES</armor>
         <age>MATURE</age>
+        <gender>MALE BIAS</gender>
         <skills>
             <art>1-2</art>
         </skills>
@@ -1498,6 +1595,8 @@ Elements marked as hardcoded may have their values overridden by the game.
         <type_name>Hairstylist</type_name>
         <weapon>CIVILIAN</weapon>
         <armor>CLOTHING_CLOTHES</armor>
+        <armor>CLOTHING_BLACKCLOTHES</armor>
+        <armor>CLOTHING_CHIC</armor>
         <age>MATURE</age>
         <gender>FEMALE BIAS</gender>
         <skills>
@@ -1508,7 +1607,7 @@ Elements marked as hardcoded may have their values overridden by the game.
     <creaturetype idname="CREATURE_FASHIONDESIGNER">
         <type_name>Fashion Designer</type_name>
         <weapon>CIVILIAN</weapon>
-        <armor>CLOTHING_CLOTHES</armor>
+        <armor>CLOTHING_CHIC</armor>
         <age>MATURE</age>
         <gender>FEMALE BIAS</gender>
         <skills>
@@ -1521,15 +1620,23 @@ Elements marked as hardcoded may have their values overridden by the game.
         <type_name>Clerk</type_name>
         <weapon>CIVILIAN</weapon>
         <armor>CLOTHING_CLOTHES</armor>
+        <armor>CLOTHING_WORKCLOTHES</armor>
         <age>MATURE</age>
         <talkreceptive>1</talkreceptive>
     </creaturetype>
     <creaturetype idname="CREATURE_THIEF">
         <type_name>Professional Thief</type_name>
-        <!-- <encounter_name> Hardcoded -->
+        <encounter_name>Socialite</encounter_name>
+        <encounter_name>Clerk</encounter_name>
+        <encounter_name>Art Critic</encounter_name>
+        <encounter_name>Music Critic</encounter_name>
+        <encounter_name>Office Worker</encounter_name>
         <weapon>CIVILIAN</weapon>
         <armor>CLOTHING_BLACKCLOTHES</armor>
         <age>MATURE</age>
+        <attributes>
+            <agility>7-10</agility>
+        </attributes>
         <skills>
             <disguise>3-7</disguise>
             <security>3-7</security>
@@ -1539,7 +1646,9 @@ Elements marked as hardcoded may have their values overridden by the game.
     <creaturetype idname="CREATURE_ACTOR">
         <type_name>Actor</type_name>
         <weapon>CIVILIAN</weapon>
-        <armor>CLOTHING_CLOTHES</armor>
+        <armor>CLOTHING_CHIC</armor>
+        <armor>CLOTHING_EXPENSIVESUIT</armor>
+        <armor>CLOTHING_EXPENSIVEDRESS</armor>
         <age>MATURE</age>
         <attributes>
             <charisma>5-10</charisma>
@@ -1554,6 +1663,7 @@ Elements marked as hardcoded may have their values overridden by the game.
     <creaturetype idname="CREATURE_YOGAINSTRUCTOR">
         <type_name>Yoga Instructor</type_name>
         <armor>CLOTHING_CLOTHES</armor>
+        <armor>CLOTHING_SARONG</armor>
         <age>MATURE</age>
         <attributes>
             <agility>10</agility>
@@ -1568,6 +1678,7 @@ Elements marked as hardcoded may have their values overridden by the game.
     <creaturetype idname="CREATURE_MARTIALARTIST">
         <type_name>Martial Artist</type_name>
         <armor>CLOTHING_CLOTHES</armor>
+        <armor>CLOTHING_TRACKSUIT</armor>
         <age>MATURE</age>
         <attributes>
             <agility>6-10</agility>
@@ -1584,13 +1695,16 @@ Elements marked as hardcoded may have their values overridden by the game.
     <creaturetype idname="CREATURE_ATHLETE">
         <type_name>Athlete</type_name>
         <weapon>CIVILIAN</weapon>
-        <armor>CLOTHING_CLOTHES</armor>
+        <armor>CLOTHING_JERSEY</armor>
         <age>YOUNGADULT</age>
         <attributes>
             <agility>8-10</agility>
             <health>8-10</health>
             <strength>8-10</strength>
         </attributes>
+        <skills>
+            <dodge>2-7</dodge>
+        </skills>
         <gender>MALE BIAS</gender>
         <recruit_activity_difficulty>4</recruit_activity_difficulty>
     </creaturetype>
@@ -1632,7 +1746,8 @@ Elements marked as hardcoded may have their values overridden by the game.
     </creaturetype>
     <creaturetype idname="CREATURE_NUN">
         <type_name>Nun</type_name>
-        <armor>CLOTHING_CLOTHES</armor>
+        <weapon>WEAPON_CROSS</weapon>
+        <armor>CLOTHING_HABIT</armor>
         <age>MATURE</age>
         <gender>FEMALE</gender>
         <skills>
@@ -1641,8 +1756,10 @@ Elements marked as hardcoded may have their values overridden by the game.
     </creaturetype>
     <creaturetype idname="CREATURE_MUTANT">
         <type_name>Mutant</type_name>
-        <!-- <weapon> Hardcoded -->
+        <weapon>CIVILIAN</weapon>
+        <weapon>WEAPON_SHANK</weapon>
         <armor>CLOTHING_CLOTHES</armor>
+        <armor>CLOTHING_STREETWEAR</armor>
         <age>MATURE</age>
         <alignment>LIBERAL</alignment>
         <attribute_points>7-66</attribute_points>
@@ -1661,7 +1778,6 @@ Elements marked as hardcoded may have their values overridden by the game.
     </creaturetype>
     <creaturetype idname="CREATURE_DOCTOR">
         <type_name>Doctor</type_name>
-        <!-- <weapon> Hardcoded -->
         <armor>CLOTHING_LABCOAT</armor>
         <age>GRADUATE</age>
         <attributes>
@@ -1675,8 +1791,7 @@ Elements marked as hardcoded may have their values overridden by the game.
     </creaturetype>
     <creaturetype idname="CREATURE_NURSE">
         <type_name>Nurse</type_name>
-        <!-- <weapon> Hardcoded -->
-        <armor>CLOTHING_LABCOAT</armor>
+        <armor>CLOTHING_SCRUBS</armor>
         <age>GRADUATE</age>
         <gender>FEMALE BIAS</gender>
         <skills>
@@ -1684,20 +1799,26 @@ Elements marked as hardcoded may have their values overridden by the game.
         </skills>
     </creaturetype>
     <creaturetype idname="CREATURE_CCS_VIGILANTE">
-        <type_name>Vigilante</type_name>
+        <type_name>CCS Member</type_name>
         <!-- <encounter_name> Hardcoded -->
         <!-- <weapon> Hardcoded -->
         <!-- <armor> Hardcoded -->
+        <armor>CLOTHING_CLOTHES</armor>
+        <armor>CLOTHING_TRENCHCOAT</armor>
+        <armor>CLOTHING_LEATHER</armor>
+        <armor>CLOTHING_PMC</armor>
+        <armor>CLOTHING_DUSTER</armor>
+        <armor>CLOTHING_TACHARNESS</armor>
+        <armor>CLOTHING_CAMOSUIT</armor>
         <age>MATURE</age>
         <alignment>CONSERVATIVE</alignment>
         <attributes>
-            <agility>4-20</agility>
-            <charisma>1-20</charisma>
-            <health>4-20</health>
+            <agility>4-10</agility>
+            <charisma>1-10</charisma>
             <heart>1-4</heart>
-            <intelligence>1-20</intelligence>
-            <strength>4-20</strength>
-            <wisdom>8-20</wisdom>
+            <intelligence>1-10</intelligence>
+            <strength>4-10</strength>
+            <wisdom>8-10</wisdom>
         </attributes>
         <gender>MALE BIAS</gender>
         <infiltration>50-80</infiltration>
@@ -1714,23 +1835,22 @@ Elements marked as hardcoded may have their values overridden by the game.
         <edgelord>true</edgelord>
     </creaturetype>
     <creaturetype idname="CREATURE_CCS_ARCHCONSERVATIVE">
-        <type_name>CCS Officer</type_name>
+        <type_name>CCS Leader</type_name>
         <!-- <encounter_name> Hardcoded -->
         <weapon>WEAPON_AA12</weapon>
         <armor>CLOTHING_HEAVYARMOR</armor>
         <age>MIDDLEAGED</age>
         <alignment>CONSERVATIVE</alignment>
         <attributes>
-            <agility>4-25</agility>
-            <charisma>1-25</charisma>
-            <health>4-25</health>
+            <agility>4-10</agility>
+            <charisma>1-10</charisma>
             <heart>1</heart>
-            <intelligence>1-25</intelligence>
-            <strength>4-25</strength>
-            <wisdom>10-25</wisdom>
+            <intelligence>1-10</intelligence>
+            <strength>4-10</strength>
+            <wisdom>10</wisdom>
         </attributes>
         <gender>MALE BIAS</gender>
-        <infiltration>90-100</infiltration>
+        <infiltration>100</infiltration>
         <juice>500-750</juice>
         <money>150-200</money>
         <skills>
@@ -1756,68 +1876,20 @@ Elements marked as hardcoded may have their values overridden by the game.
         <talkreceptive>1</talkreceptive>
     </creaturetype>
     <creaturetype idname="CREATURE_CCS_MOLOTOV">
-        <type_name>Arsonist</type_name>
-        <!-- <encounter_name> Hardcoded -->
-        <weapon>WEAPON_MOLOTOV</weapon>
-        <armor>CLOTHING_TRENCHCOAT</armor>
-        <age>MATURE</age>
-        <alignment>CONSERVATIVE</alignment>
-        <attributes>
-            <agility>6-20</agility>
-            <charisma>1-20</charisma>
-            <health>6-20</health>
-            <heart>1-4</heart>
-            <intelligence>1-20</intelligence>
-            <strength>6-20</strength>
-            <wisdom>8-20</wisdom>
-        </attributes>
-        <gender>MALE BIAS</gender>
-        <infiltration>50-80</infiltration>
-        <juice>90-210</juice>
-        <skills>
-            <business>0-2</business>
-            <driving>2-5</driving>
-            <martialArts>2-5</martialArts>
-            <psychology>0-2</psychology>
-            <religion>1-3</religion>
-            <throwing>2-5</throwing>
-        </skills>
+        <!-- Removed -->
+        <type_name>CCS Arsonist</type_name>
         <kidnap_resistant>1</kidnap_resistant>
         <edgelord>true</edgelord>
     </creaturetype>
     <creaturetype idname="CREATURE_CCS_SNIPER">
-        <type_name>Sniper</type_name>
-        <!-- <encounter_name> Hardcoded -->
-        <weapon>WEAPON_AR15</weapon>
-        <armor>CLOTHING_TRENCHCOAT</armor>
-        <age>MATURE</age>
-        <alignment>CONSERVATIVE</alignment>
-        <attributes>
-            <agility>6-20</agility>
-            <charisma>1-20</charisma>
-            <health>6-20</health>
-            <heart>1-4</heart>
-            <intelligence>1-20</intelligence>
-            <strength>6-20</strength>
-            <wisdom>8-20</wisdom>
-        </attributes>
-        <gender>MALE BIAS</gender>
-        <infiltration>50-80</infiltration>
-        <juice>90-210</juice>
-        <skills>
-            <business>0-2</business>
-            <driving>2-5</driving>
-            <martialArts>2-5</martialArts>
-            <psychology>0-2</psychology>
-            <religion>1-3</religion>
-            <firearms>6-9</firearms>
-        </skills>
+        <!-- Removed -->
+        <type_name>CCS Sniper</type_name>
         <kidnap_resistant>1</kidnap_resistant>
         <edgelord>true</edgelord>
     </creaturetype>
     <creaturetype idname="CREATURE_PSYCHOLOGIST">
         <type_name>Psychologist</type_name>
-        <!-- <weapon> Hardcoded -->
+        <weapon>CIVILIAN</weapon>
         <armor>CLOTHING_CHEAPSUIT</armor>
         <age>GRADUATE</age>
         <attributes>
@@ -1916,5 +1988,85 @@ Elements marked as hardcoded may have their values overridden by the game.
         <kidnap_resistant>  1</kidnap_resistant>
         <intimidation_resistant>true</intimidation_resistant>
         <can_perform_arrests>true</can_perform_arrests>
+    </creaturetype>
+    <creaturetype idname="CREATURE_CHEERLEADER">
+        <type_name>Cheerleader</type_name>
+        <encounter_name>Cheerleader</encounter_name>
+        <gender>FEMALE BIAS</gender>
+        <age>YOUNGADULT</age>
+        <armor>CLOTHING_CHEERLEADER</armor>
+        <attributes>
+            <agility>7-10</agility>
+            <health>7-10</health>
+            <charisma>7-10</charisma>
+        </attributes>
+        <skills>
+            <dodge>2-6</dodge>
+            <martialArts>0-4</martialArts>
+            <seduction>0-4</seduction>
+        </skills>
+    </creaturetype>
+    <creaturetype idname="CREATURE_GOTH">
+        <type_name>Goth</type_name>
+        <weapon>WEAPON_NONE</weapon>
+        <weapon>WEAPON_CROSS</weapon>
+        <armor>CLOTHING_BLACKSUIT</armor>
+        <armor>CLOTHING_BLACKDRESS</armor>
+        <alignment>LIBERAL</alignment>
+        <age>YOUNGADULT</age>
+        <skills>
+            <music>0-2</music>
+            <tailoring>0-2</tailoring>
+            <martialArts>0-2</martialArts>
+        </skills>
+    </creaturetype>
+    <creaturetype idname="CREATURE_PUNK">
+        <type_name>Punk</type_name>
+        <weapon>WEAPON_NONE</weapon>
+        <weapon>WEAPON_CHAIN</weapon>
+        <weapon>WEAPON_COMBATKNIFE</weapon>
+        <armor>CLOTHING_PUNK_JACKET</armor>
+        <alignment>LIBERAL</alignment>
+        <age>YOUNGADULT</age>
+        <skills>
+            <music>0-2</music>
+            <tailoring>0-2</tailoring>
+            <martialArts>0-2</martialArts>
+        </skills>
+    </creaturetype>
+    <creaturetype idname="CREATURE_NAZIPUNK">
+        <type_name>Nazi Punk</type_name>
+        <weapon>WEAPON_NONE</weapon>
+        <weapon>WEAPON_CHAIN</weapon>
+        <weapon>WEAPON_COMBATKNIFE</weapon>
+        <armor>CLOTHING_PUNK_JACKET</armor>
+        <alignment>CONSERVATIVE</alignment>
+        <gender>MALE</gender>
+        <age>YOUNGADULT</age>
+        <skills>
+            <music>0-2</music>
+            <tailoring>0-2</tailoring>
+            <martialArts>0-2</martialArts>
+        </skills>
+    </creaturetype>
+    <creaturetype idname="CREATURE_EMO">
+        <type_name>Emo</type_name>
+        <weapon>WEAPON_NONE</weapon>
+        <armor>CLOTHING_BANDTEE</armor>
+        <alignment>LIBERAL</alignment>
+        <age>YOUNGADULT</age>
+        <skills>
+            <music>0-2</music>
+        </skills>
+    </creaturetype>
+    <creaturetype idname="CREATURE_NEONAZI">
+        <type_name>Neo-Nazi</type_name>
+        <weapon>WEAPON_NONE</weapon>
+        <armor>CLOTHING_TRENCHCOAT</armor>
+        <armor>CLOTHING_TACHARNESS</armor>
+        <armor>CLOTHING_BLACKSUIT</armor>
+        <armor>CLOTHING_DEATHSQUADUNIFORM</armor>
+        <alignment>CONSERVATIVE</alignment>
+        <gender>MALE</gender>
     </creaturetype>
 </creatures>

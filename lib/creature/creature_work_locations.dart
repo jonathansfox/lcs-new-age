@@ -163,8 +163,6 @@ bool testWorkLocation(CreatureType type, Site location) {
         SiteType.universityHospital,
       ]);
     case CreatureTypeIds.ccsArchConservative:
-    case CreatureTypeIds.ccsMolotov:
-    case CreatureTypeIds.ccsSniper:
     case CreatureTypeIds.ccsVigilante:
       okaySite.add(SiteType.bunker);
       okaySite.add(SiteType.bombShelter);
@@ -176,10 +174,9 @@ bool testWorkLocation(CreatureType type, Site location) {
       okaySite.add(SiteType.drugHouse);
     case CreatureTypeIds.engineer:
       okaySite.addAll([
-        SiteType.amRadioStation,
-        SiteType.cableNewsStation,
         SiteType.nuclearPlant,
         SiteType.corporateHQ,
+        SiteType.dirtyIndustry,
       ]);
     case CreatureTypeIds.barista:
       okaySite.addAll([
@@ -234,6 +231,7 @@ bool testWorkLocation(CreatureType type, Site location) {
     case CreatureTypeIds.photographer:
     case CreatureTypeIds.cameraman:
     case CreatureTypeIds.newsAnchor:
+    case CreatureTypeIds.televangelist:
       okaySite.add(SiteType.cableNewsStation);
     case CreatureTypeIds.clerk:
       okaySite.addAll([

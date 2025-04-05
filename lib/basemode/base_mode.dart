@@ -219,7 +219,7 @@ void printLocation(Site loc) {
           mvaddstr(2, 1, "The police are raiding");
         case SiegeType.cia:
           mvaddstr(2, 1, "The CIA is raiding");
-        case SiegeType.hicks:
+        case SiegeType.angryRuralMob:
           mvaddstr(2, 1, "An angry mob is storming");
         case SiegeType.corporateMercs:
           mvaddstr(2, 1, "Corporate mercs are attacking");

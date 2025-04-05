@@ -87,6 +87,7 @@ void setColorForArmor(Creature creature) {
         fg = yellow;
       case DisguiseQuality.disturbing:
         fg = orange;
+      case DisguiseQuality.alarming:
       case DisguiseQuality.trespassing:
         fg = red;
       case DisguiseQuality.hidden:

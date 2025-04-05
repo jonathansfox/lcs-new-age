@@ -436,7 +436,7 @@ class Creature {
     if (skillMod < 1) roll = roll ~/ 2;
     if (healthMod) {
       roll -= (maxBlood - blood) * 4 ~/ maxBlood;
-      roll += body.combatRollModifier;
+      roll -= body.combatRollModifier;
     }
     roll = roll + attMod + skillMod;
     if (skill == Skill.stealth) {
@@ -446,15 +446,17 @@ class Creature {
   }
 
   int stealthMod(int value) {
-    double stealth = clothing.type.stealthValue.toDouble();
-    for (int i = 1; i < clothing.quality; i++) {
-      stealth *= 0.8;
-    }
-    if (clothing.damaged) {
-      stealth *= 0.5;
+    double stealth = clothing.type.stealthValue.toDouble() - 2.0;
+    if (stealth > 0) {
+      for (int i = 1; i < clothing.quality; i++) {
+        stealth *= 0.8;
+      }
+      if (clothing.damaged) {
+        stealth *= 0.5;
+      }
     }
 
-    value = ((value * stealth) / 2).round();
+    value = value + (stealth * 5).round();
     // Shredded clothes get you no stealth.
     if (clothing.quality > clothing.type.qualityLevels) {
       value = 0;
@@ -477,7 +479,7 @@ class Creature {
     int attMod = attribute(att) - 5;
     if (healthMod) {
       roll -= (maxBlood - blood) * 4 ~/ maxBlood;
-      roll += body.combatRollModifier;
+      roll -= body.combatRollModifier;
     }
     return roll + attMod;
   }
@@ -758,7 +760,11 @@ class Creature {
     if (isEnemy) courage += armedConservatives * 50;
     if (!siteAlarm) courage += 100;
     if (type.canPerformArrests || type.lawEnforcement) courage += 200;
+    if (type.intimidationResistant) courage += 200;
     if (type.ccsMember) courage += 200;
+    if (typeId == CreatureTypeIds.angryRuralMob) {
+      courage += 400 * (blood / maxBlood).round();
+    }
     if (equippedWeapon != null || skill(Skill.martialArts) > 2) courage += 100;
     if (type.tank) courage += 2000;
     if (type.animal) courage += 200;

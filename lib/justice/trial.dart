@@ -318,8 +318,8 @@ Future<void> trial(Creature g) async {
       }
     }
     if (defense == 1) {
-      // *JDS* LEGAL SELF-REPRESENTATION: To succeed here, you really need to have two skills be
-      // high: persuasion and law, with law being 1.5 times as influential. You can't have
+      // LEGAL SELF-REPRESENTATION: To succeed here, you really need to have two skills be
+      // high: persuasion and law, with law being especially important. You can't have
       // just one or just the other. Even if you're a very persuasive person, the court will eat
       // you alive if you can't sound intelligent when talking about the relevant charges, and you
       // won't be able to fool the jury into letting you go if you aren't persuasive, as no
@@ -327,8 +327,9 @@ Future<void> trial(Creature g) async {
       //
       // If either your persuasion or your law roll is too low, you'll end up getting a negative
       // result that will drag down your defense. So try not to suck in either area.
-      defensepower = 5 * (g.skillRoll(Skill.persuasion) - 5) +
-          10 * (g.skillRoll(Skill.law) - 5);
+      defensepower = sqrt(max(g.skillRoll(Skill.persuasion) - 5, 0)).round() *
+          sqrt(max(g.skillRoll(Skill.law) - 10, 0)).round() *
+          5;
       g.train(Skill.persuasion, 50);
       g.train(Skill.law, 50);
 

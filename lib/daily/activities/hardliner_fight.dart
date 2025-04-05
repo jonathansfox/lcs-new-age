@@ -9,8 +9,9 @@ import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/utils/colors.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 
-Future<void> redneckFight(Creature cr) async {
-  await showMessage("${cr.name} is cornered by a mob of angry rednecks.");
+Future<void> hardlinerFight(Creature cr) async {
+  await showMessage(
+      "${cr.name} is cornered by a gang of right-wing hardliners.");
 
   bool wonfight = false;
   if (cr.weapon.type.threatening) {
@@ -26,7 +27,7 @@ Future<void> redneckFight(Creature cr) async {
               "breaks the arm of the nearest person!",
               "knees a guy in the balls!",
               "knocks one out with a fist to the face!",
-              "bites some hick's ear off!",
+              "bites some asshole's ear off!",
               "smashes one of them in the jaw!",
               "shakes off a grab from behind!",
               "yells the slogan!",
@@ -45,7 +46,7 @@ Future<void> redneckFight(Creature cr) async {
               "is forced into a headlock!",
               "crumples under a flurry of blows!",
               "is hit in the chest with a pipe!",
-            ]}",
+            ].random}",
             color: yellow);
         count++; // fight goes faster when you're losing
         wonfight = false;

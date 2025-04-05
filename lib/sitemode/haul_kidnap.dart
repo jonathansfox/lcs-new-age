@@ -176,7 +176,7 @@ Future<void> kidnapattempt() async {
         siteAlarm = true;
         siteCrime += 5;
         criminalizeAll(squad, Crime.kidnapping);
-        if (target.type.preciousToHicks) offendedHicks = true;
+        if (target.type.preciousToAngryRuralMobs) offendedAngryRuralMobs = true;
       }
     }
 

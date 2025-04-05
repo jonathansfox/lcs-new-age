@@ -736,7 +736,7 @@ Future<void> printNews(LootType li, Iterable<Creature> publishers) async {
         issues.add(View.womensRights);
     }
     issues.add(View.cableNews);
-    offendedHicks = true;
+    offendedAngryRuralMobs = true;
     potency = reception(50);
     mvaddstr(console.y + 2, 1,
         "This is bound to get the Conservative masses a little riled up...");
@@ -760,7 +760,7 @@ Future<void> printNews(LootType li, Iterable<Creature> publishers) async {
     }
     issues.add(View.amRadio);
     potency = reception(50);
-    offendedHicks = true;
+    offendedAngryRuralMobs = true;
     mvaddstr(console.y + 2, 1,
         "This is bound to get the Conservative masses a little riled up...");
     for (Creature c in publishers) {

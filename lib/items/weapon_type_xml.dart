@@ -52,9 +52,6 @@ void parseWeaponType(WeaponType weapon, XmlElement xml) {
       case "protects_against_kidnapping":
         weapon.protectsAgainstKidnapping =
             parseBool(element.innerText) ?? weapon.protectsAgainstKidnapping;
-      case "musical_attack":
-        weapon.musicalAttack =
-            parseBool(element.innerText) ?? weapon.musicalAttack;
       case "instrument":
         weapon.instrument = parseBool(element.innerText) ?? weapon.instrument;
       case "graffiti":

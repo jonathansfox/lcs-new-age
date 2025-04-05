@@ -80,6 +80,7 @@ void sleeperInfluence(Creature cr, Map<View, int> libpower) {
       power += cr.skill(Skill.business);
     case CreatureTypeIds.priest:
     case CreatureTypeIds.nun:
+    case CreatureTypeIds.televangelist:
       power += cr.skill(Skill.religion) * 5;
     case CreatureTypeIds.educator:
       power += cr.skill(Skill.psychology);
@@ -103,6 +104,7 @@ void sleeperInfluence(Creature cr, Map<View, int> libpower) {
       power *= 20;
     case CreatureTypeIds.deathSquad:
     case CreatureTypeIds.educator:
+    case CreatureTypeIds.televangelist:
       power *= 6;
     case CreatureTypeIds.actor:
     case CreatureTypeIds.gangUnit:
@@ -134,6 +136,7 @@ void sleeperInfluence(Creature cr, Map<View, int> libpower) {
       addIssues(
           View.issues, power * (100 - publicOpinion[View.cableNews]!) ~/ 100);
     /* Cultural leaders block - influences cultural issues */
+    case CreatureTypeIds.televangelist:
     case CreatureTypeIds.priest:
     case CreatureTypeIds.nun:
     case CreatureTypeIds.painter:
@@ -220,18 +223,22 @@ void sleeperInfluence(Creature cr, Map<View, int> libpower) {
     case CreatureTypeIds.bum:
     case CreatureTypeIds.crackhead:
     case CreatureTypeIds.tank:
-    case CreatureTypeIds.hippie: // too liberal to be a proper sleeper
-    case CreatureTypeIds.unionWorker: // same
-    case CreatureTypeIds.liberalJudge: // more again
+    // too liberal to be a proper sleeper
+    case CreatureTypeIds.punk:
+    case CreatureTypeIds.goth:
+    case CreatureTypeIds.emo:
+    case CreatureTypeIds.hippie:
+    case CreatureTypeIds.unionWorker:
+    case CreatureTypeIds.liberalJudge:
       return;
     /* Miscellaneous block -- includes everyone else */
     case CreatureTypeIds.president:
       addIssues(
           [View.issues.random, View.issues.random, View.issues.random], power);
     case CreatureTypeIds.ccsArchConservative:
-    case CreatureTypeIds.ccsMolotov:
-    case CreatureTypeIds.ccsSniper:
     case CreatureTypeIds.ccsVigilante:
+    case CreatureTypeIds.neoNazi:
+    case CreatureTypeIds.naziPunk:
       addIssues([View.ccsHated, View.issues.random], power);
     default: // Affect a random issue
       addIssues([View.issues.random], power);

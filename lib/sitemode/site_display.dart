@@ -212,7 +212,10 @@ void drawTileContent(SiteTile tile) {
       if (canSeeFoes) {
         bg = lightGray;
       }
-      if (tile.neighbors().any((t) => t.megaBloody)) {
+      if (tile.burning) {
+        setColor(orange, background: bg);
+        addchar("¤");
+      } else if (tile.neighbors().any((t) => t.megaBloody)) {
         bg = darkRed;
         setColor(bg, background: bg);
         addchar(" ");
@@ -234,6 +237,8 @@ void drawTileContent(SiteTile tile) {
       // Pick color
       if (tile.metal) {
         setColor(white, background: white);
+      } else if (tile.burning) {
+        setColor(orange);
       } else if (tile.cantUnlock && tile.locked) {
         setColor(red);
       } else if (tile.knownLock && tile.locked) {
@@ -265,6 +270,15 @@ void drawTileContent(SiteTile tile) {
     } else if (tile.exit) {
       setColor(yellow);
       addchar("X");
+    } else if (tile.firePeak) {
+      setColor(orange);
+      addchar("₰");
+    } else if (tile.fireEnd) {
+      setColor(orange);
+      addchar("৵");
+    } else if (tile.fireStart) {
+      setColor(orange);
+      addchar("¤");
     } else if ([
       TileSpecial.displayCase,
       TileSpecial.cagedRabbits,
@@ -349,6 +363,9 @@ void drawTileContent(SiteTile tile) {
       setColor(canSeeFoes ? lightGreen : green);
       if (tile.bloody) setColor(canSeeFoes ? red : darkRed);
       addchar(',');
+    } else if (tile.debris) {
+      setColor(canSeeFoes ? lightGray : darkGray);
+      addchar('~');
     } else {
       if (tile.restricted) {
         setColor(canSeeFoes ? blue : darkBlue);
@@ -499,7 +516,30 @@ void printSiteMapSmall(int x, int y, int z) {
     default:
       str = "";
   }
-  mvaddstrc(23, 57, yellow, str);
+  move(23, 57);
+  if (str != "") {
+    addstrc(yellow, str);
+  }
+  if (levelMap[locx][locy][locz].burning) {
+    if (str != "") addstr(" ");
+    if (levelMap[locx][locy][locz].firePeak) {
+      addstrc(red, "!");
+      addstrc(orange, "!");
+      addstrc(yellow, "!");
+      addstrc(white, "FIRE");
+      addstrc(yellow, "!");
+      addstrc(orange, "!");
+      addstrc(red, "!");
+    } else if (levelMap[locx][locy][locz].fireEnd) {
+      addstrc(red, "!");
+      addstrc(orange, "!");
+      addstrc(yellow, "FIRE");
+      addstrc(orange, "!");
+      addstrc(red, "!");
+    } else if (levelMap[locx][locy][locz].fireStart) {
+      addstrc(red, "!FIRE!");
+    }
+  }
 
   int encsize = encounter.length;
   //PRINT ANY OPPOSING FORCE INFO

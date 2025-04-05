@@ -52,6 +52,12 @@ class Clothing extends Item {
     _damaged = value;
   }
 
+  bool get alarming =>
+      (type.alarming) ||
+      ((armor?.visible ?? false) &&
+          !type.allowVisibleArmor &&
+          type.intrinsicArmorId != armor?.idName);
+
   @JsonKey(includeToJson: true, includeFromJson: true, defaultValue: 1)
   int _quality = 1;
 

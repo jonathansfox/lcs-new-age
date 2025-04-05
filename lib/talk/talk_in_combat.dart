@@ -222,9 +222,9 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
           addDramaToSiteStory(Drama.killedSomebody);
           criminalizeparty(Crime.murder);
 
-          if (executer.prisoner!.type.preciousToHicks) {
+          if (executer.prisoner!.type.preciousToAngryRuralMobs) {
             siteCrime += 30;
-            offendedHicks = true;
+            offendedAngryRuralMobs = true;
           }
           makeLoot(executer.prisoner!, groundLoot);
           await getKey();
@@ -368,7 +368,7 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
           addstr("pretends to be part of a police raid.");
         case SiegeType.cia:
           addstr("pretends to be a Secret Agent.");
-        case SiegeType.hicks:
+        case SiegeType.angryRuralMob:
           switch (lcsRandom(2)) {
             case 0:
               addstr("pretends to be Mountain ");
@@ -449,7 +449,7 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
 
       setColor(red);
       move(9, 1);
-      if (target.type.id == CreatureTypeIds.hick) {
+      if (target.type.id == CreatureTypeIds.angryRuralMob) {
         addstr("But ${target.name} weren't born yesterday.");
       } else {
         addstr(target.name);

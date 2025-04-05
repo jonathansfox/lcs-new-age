@@ -1095,7 +1095,7 @@ void makeChasers(SiteType? sitetype, int sitecrime) {
         cartype = "PICKUP";
         pnum = lcsRandom(sitecrime ~/ 3 + 1) + 1;
         if (pnum > 18) pnum = 18;
-        creatureType = CreatureTypeIds.hick;
+        creatureType = CreatureTypeIds.angryRuralMob;
       case SiteType.drugHouse:
         cartype = ["STATIONWAGON", "SPORTSCAR"].random;
         pnum = lcsRandom(sitecrime ~/ 3 + 1) + 1;

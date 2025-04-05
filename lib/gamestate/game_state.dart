@@ -57,7 +57,7 @@ class GameState {
   List<DatingSession> datingSessions = [];
   List<InterrogationSession> interrogationSessions = [];
 
-  bool offendedHicks = false;
+  bool offendedAngryRuralMobs = false;
   bool offendedCia = false;
   bool offendedCorps = false;
 
@@ -283,8 +283,9 @@ bool get corporateFeudalism =>
     laws[Law.taxes] == DeepAlignment.archConservative &&
     laws[Law.labor] == DeepAlignment.archConservative;
 
-bool get offendedHicks => gameState.offendedHicks;
-set offendedHicks(bool value) => gameState.offendedHicks = value;
+bool get offendedAngryRuralMobs => gameState.offendedAngryRuralMobs;
+set offendedAngryRuralMobs(bool value) =>
+    gameState.offendedAngryRuralMobs = value;
 bool get offendedCia => gameState.offendedCia;
 set offendedCia(bool value) => gameState.offendedCia = value;
 bool get offendedCorps => gameState.offendedCorps;

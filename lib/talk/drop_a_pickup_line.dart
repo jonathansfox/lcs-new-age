@@ -172,7 +172,7 @@ Future<bool> doYouComeHereOften(Creature a, Creature tk) async {
   }
 
   if (a.indecent) {
-    if (lcsRandom(5) > 0) {
+    if (!oneIn(5)) {
       difficulty += 10;
     } else {
       difficulty -= 10;

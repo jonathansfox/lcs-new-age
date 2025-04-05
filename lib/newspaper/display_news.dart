@@ -576,7 +576,7 @@ Future<void> displayStory(
                 "this kind of government-condoned violence is stopped.  We will not be "
                 "intimidated, and we will not be silenced";
           }
-        case SiegeType.hicks:
+        case SiegeType.angryRuralMob:
           if (!liberalguardian) {
             story +=
                 "Burned...  stabbed with, maybe, pitchforks.  There may have "

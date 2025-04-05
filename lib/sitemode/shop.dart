@@ -407,21 +407,18 @@ class Shop extends ShopOption {
       onChoice: (index) async {
         if (index < availableOptions.length &&
             availableOptions[index].isAvailable()) {
-          chosenOption = availableOptions[index];
+          await chosenOption!.choose(customers, buyer!, false);
+          return true;
         }
-        return true;
+        return false;
       },
     );
-    if (chosenOption != null) {
-      await chosenOption!.choose(customers, buyer, false);
-    }
   }
 
   Future<void> browseAmmo(Squad customers, Creature? buyer) async {
     buyer ??= customers.members[0];
     List<ShopOption> availableOptions =
         options.where((o) => o.display()).toList();
-    ShopOption? chosenOption;
     await pagedInterface(
       headerPrompt: "What will ${buyer.name} buy?",
       headerKey: {4: "NAME", 24: "DAMAGE", 39: "BOX SIZE", 59: "BOX PRICE"},
@@ -450,15 +447,11 @@ class Shop extends ShopOption {
       onChoice: (index) async {
         if (index < availableOptions.length &&
             availableOptions[index].isAvailable()) {
-          chosenOption = availableOptions[index];
-          return true;
+          await availableOptions[index].choose(customers, buyer!, false);
         }
         return false;
       },
     );
-    if (chosenOption != null) {
-      await chosenOption!.choose(customers, buyer, false);
-    }
   }
 
   Future<void> browseClothes(Squad customers, Creature? buyer) async {
@@ -489,15 +482,11 @@ class Shop extends ShopOption {
       onChoice: (index) async {
         if (index < availableOptions.length &&
             availableOptions[index].isAvailable()) {
-          chosenOption = availableOptions[index];
-          return true;
+          await chosenOption!.choose(customers, buyer!, false);
         }
         return false;
       },
     );
-    if (chosenOption != null) {
-      await chosenOption!.choose(customers, buyer, false);
-    }
   }
 
   Future<void> sellLoot(Squad customers) async {

@@ -487,10 +487,10 @@ Future<void> siegeCheck() async {
         l.siege.timeuntilcia = -1; // Silently call off foiled cia raids
       }
 
-      //HICKS
+      //RURAL MOB
       if (l.heat > l.heatProtection &&
           !l.siege.underSiege &&
-          offendedHicks &&
+          offendedAngryRuralMobs &&
           oneIn(120) &&
           numpres > 0) {
         erase();
@@ -499,11 +499,11 @@ Future<void> siegeCheck() async {
         mvaddstr(9, 1, "are storming the ${l.getName()}!");
         await getKey();
 
-        l.siege.activeSiegeType = SiegeType.hicks;
+        l.siege.activeSiegeType = SiegeType.angryRuralMob;
         l.siege.underAttack = true;
         l.siege.lightsOff = false;
         l.siege.camerasOff = false;
-        offendedHicks = false;
+        offendedAngryRuralMobs = false;
       }
     }
   }
@@ -888,8 +888,8 @@ Future<void> siegeDefeat() async {
       if (p.missing && p.align == Alignment.conservative) {
         kcount++;
         kname = p.properName;
-        if (p.type.preciousToHicks) {
-          offendedHicks = true;
+        if (p.type.preciousToAngryRuralMobs) {
+          offendedAngryRuralMobs = true;
         }
         p.activity = Activity.none();
       }
