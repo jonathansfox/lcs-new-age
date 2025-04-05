@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:lcs_new_age/creature/attributes.dart';
 import 'package:lcs_new_age/creature/body.dart';
+import 'package:lcs_new_age/creature/conversion.dart';
 import 'package:lcs_new_age/creature/creature.dart';
 import 'package:lcs_new_age/creature/creature_type.dart';
 import 'package:lcs_new_age/creature/gender.dart';
@@ -12,6 +13,7 @@ import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/items/clothing.dart';
 import 'package:lcs_new_age/justice/crimes.dart';
 import 'package:lcs_new_age/location/location_type.dart';
+import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
 import 'package:lcs_new_age/politics/laws.dart';
 import 'package:lcs_new_age/sitemode/stealth.dart';
@@ -262,6 +264,11 @@ void applyHardcodedCreatureTypeStuff(Creature cr, CreatureType type) {
       if (oneIn(2)) {
         criminalize(
             cr, [Crime.drugDistribution, Crime.assault, Crime.murder].random);
+      }
+      if (mode == GameMode.site &&
+          activeSite?.type == SiteType.drugHouse &&
+          activeSite?.controller != SiteController.lcs) {
+        conservatize(cr);
       }
     case CreatureTypeIds.crackhead:
       cr.rawAttributes[Attribute.heart] =

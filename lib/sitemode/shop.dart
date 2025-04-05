@@ -407,7 +407,12 @@ class Shop extends ShopOption {
         if (index < availableOptions.length &&
             availableOptions[index].isAvailable()) {
           await availableOptions[index].choose(customers, buyer!, false);
-          return true;
+          if (fullscreen) {
+            return true;
+          } else {
+            locHeader();
+            printParty();
+          }
         }
         return false;
       },
@@ -447,6 +452,8 @@ class Shop extends ShopOption {
         if (index < availableOptions.length &&
             availableOptions[index].isAvailable()) {
           await availableOptions[index].choose(customers, buyer!, false);
+          locHeader();
+          printParty();
         }
         return false;
       },
@@ -457,7 +464,6 @@ class Shop extends ShopOption {
     buyer ??= customers.members[0];
     List<ShopOption> availableOptions =
         options.where((o) => o.display()).toList();
-    ShopOption? chosenOption;
     await pagedInterface(
       headerPrompt: "What will ${buyer.name} buy?",
       headerKey: {4: "NAME", 24: "SPECIAL TRAITS (IF ANY)", 59: "PRICE"},
@@ -481,7 +487,9 @@ class Shop extends ShopOption {
       onChoice: (index) async {
         if (index < availableOptions.length &&
             availableOptions[index].isAvailable()) {
-          await chosenOption!.choose(customers, buyer!, false);
+          await availableOptions[index].choose(customers, buyer!, false);
+          locHeader();
+          printParty();
         }
         return false;
       },

@@ -1003,9 +1003,7 @@ Elements marked as hardcoded may have their values overridden by the game.
         <weapon>WEAPON_COMBATKNIFE</weapon>
         <armor>CLOTHING_STREETWEAR</armor>
         <age>YOUNGADULT</age>
-        <alignment>CONSERVATIVE</alignment>
         <gender>MALE BIAS</gender>
-        <juice>-5</juice>
         <money>20-50</money>
         <skills>
             <firearms>1-2</firearms>
@@ -2018,6 +2016,8 @@ Elements marked as hardcoded may have their values overridden by the game.
             <art>0-2</art>
             <tailoring>0-2</tailoring>
         </skills>
+        <talkreceptive>1</talkreceptive>
+        <recruit_activity_difficulty>1</recruit_activity_difficulty>
     </creaturetype>
     <creaturetype idname="CREATURE_PUNK">
         <type_name>Punk</type_name>
@@ -2032,6 +2032,8 @@ Elements marked as hardcoded may have their values overridden by the game.
             <tailoring>0-2</tailoring>
             <martialArts>0-2</martialArts>
         </skills>
+        <talkreceptive>1</talkreceptive>
+        <recruit_activity_difficulty>1</recruit_activity_difficulty>
     </creaturetype>
     <creaturetype idname="CREATURE_NAZIPUNK">
         <type_name>Nazi Punk</type_name>
@@ -2059,6 +2061,8 @@ Elements marked as hardcoded may have their values overridden by the game.
             <art>0-2</art>
             <writing>0-2</writing>
         </skills>
+        <talkreceptive>1</talkreceptive>
+        <recruit_activity_difficulty>1</recruit_activity_difficulty>
     </creaturetype>
     <creaturetype idname="CREATURE_NEONAZI">
         <type_name>Neo-Nazi</type_name>
