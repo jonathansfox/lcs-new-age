@@ -358,7 +358,6 @@ class Shop extends ShopOption {
     buyer ??= customers.members[0];
     List<ShopOption> availableOptions =
         options.where((o) => o.display()).toList();
-    ShopOption? chosenOption;
     bool fullscreen = false;
     if (availableOptions.length > 5) fullscreen = true;
     await pagedInterface(
@@ -407,7 +406,7 @@ class Shop extends ShopOption {
       onChoice: (index) async {
         if (index < availableOptions.length &&
             availableOptions[index].isAvailable()) {
-          await chosenOption!.choose(customers, buyer!, false);
+          await availableOptions[index].choose(customers, buyer!, false);
           return true;
         }
         return false;

@@ -489,7 +489,7 @@ Elements marked as hardcoded may have their values overridden by the game.
     <creaturetype idname="CREATURE_POLICE_CHIEF">
         <type_name>Chief of Police</type_name>
         <encounter_name>Chief of Police</encounter_name>
-        <weapon>WEAPON_SHOTGUN_PUMP</weapon>
+        <weapon>WEAPON_PUMP_SHOTGUN</weapon>
         <armor>CLOTHING_POLICEARMOR</armor>
         <age>MATURE</age>
         <alignment>CONSERVATIVE</alignment>
@@ -2002,7 +2002,6 @@ Elements marked as hardcoded may have their values overridden by the game.
         </attributes>
         <skills>
             <dodge>2-6</dodge>
-            <martialArts>0-4</martialArts>
             <seduction>0-4</seduction>
         </skills>
     </creaturetype>
@@ -2016,8 +2015,8 @@ Elements marked as hardcoded may have their values overridden by the game.
         <age>YOUNGADULT</age>
         <skills>
             <music>0-2</music>
+            <art>0-2</art>
             <tailoring>0-2</tailoring>
-            <martialArts>0-2</martialArts>
         </skills>
     </creaturetype>
     <creaturetype idname="CREATURE_PUNK">
@@ -2057,6 +2056,8 @@ Elements marked as hardcoded may have their values overridden by the game.
         <age>YOUNGADULT</age>
         <skills>
             <music>0-2</music>
+            <art>0-2</art>
+            <writing>0-2</writing>
         </skills>
     </creaturetype>
     <creaturetype idname="CREATURE_NEONAZI">
