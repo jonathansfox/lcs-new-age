@@ -369,23 +369,26 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
         case SiegeType.cia:
           addstr("pretends to be a Secret Agent.");
         case SiegeType.angryRuralMob:
-          switch (lcsRandom(2)) {
-            case 0:
-              addstr("pretends to be Mountain ");
-              mvaddstr(10, 1, "like Patrick Swayze in Next of Kin.");
-            case 1:
-              addstr("squeals like Ned Beatty ");
-              mvaddstr(10, 1, "in Deliverance.");
-          }
+          addstr([
+            "complains loudly about John Deere contracts.",
+            "mutters about city folks messing things up.",
+            "grumbles about the 'good old days'.",
+            "blusters about the rising cost of feed.",
+            "yells \"I think they went that-a-way!\"",
+            "says \"They're hidin' here somewhere!\"",
+            "asks \"Y'all seen 'em anywheres?\"",
+            "says \"I reckon they's in the barn.\"",
+            "says \"Doubt they coulda gone far!\"",
+            "shouts \"They went 'round that way!\"",
+          ].random);
         case SiegeType.ccs:
-          switch (lcsRandom(3)) {
-            case 0:
-              addstr("makes a neo-Nazi hand gesture.");
-            case 1:
-              addstr("mutters something racist.");
-            case 2:
-              addstr("just starts growling slurs.");
-          }
+          addstr([
+            "makes a neo-Nazi hand gesture.",
+            "mutters something racist.",
+            "just starts growling slurs.",
+            "parrots a hateful slogan.",
+            "mutters a vague insult about minorities.",
+          ].random);
         case SiegeType.corporateMercs:
           addstr("pretends to be a mercenary.");
         case SiegeType.none:
@@ -542,16 +545,37 @@ Future<void> intimidate(Creature liberal) async {
       "Anybody feel like dying a hero?",
     ].random);
   } else {
-    addstr([
-      formattedSlogan,
-      "Be glad I'm feeling merciful!",
-      "Run, little fascists!",
-      "Get the hell out of here.",
-      "Go on, run away.",
-      "Not feeling so tough, huh?",
-      "Look who's scared of the big bad Liberal...",
-      "Run away, Conservative bastards!",
-    ].random);
+    if (encounter.any(
+        (e) => e.equippedWeapon != null && e.align == Alignment.conservative)) {
+      addstr([
+        "Hands in the air and you can walk!",
+        "Step back, drop your weapons, and walk out.",
+        "Drop it now!  I won't ask twice!",
+        "If you're giving up, show me your hands.",
+        "Put your weapons down and walk away.",
+        "Drop it before I drop you!",
+        "Lose the weapon and get out of here!",
+        "Drop your weapons and back off!",
+      ].random);
+    } else {
+      addstr([
+        formattedSlogan,
+        "Don't push your luck.",
+        "Walk away. Now!",
+        "If you don't want more trouble, then go.",
+        "I'm giving you chance to run.",
+        "Go on, get out of here.",
+        "You better leave.",
+        "You don't want to be here.",
+        "Back off and live to see another day.",
+        "You don't have to die today.",
+        "You can walk away from this.",
+        "Turn around and walk away.",
+        "Get moving. Now.",
+        "I don't want to see you again.",
+        "Out! Go, before I change my mind.",
+      ].random);
+    }
   }
   await getKey();
 
@@ -566,6 +590,11 @@ Future<void> intimidate(Creature liberal) async {
       if (attack > defense || e.nonCombatant) {
         clearMessageArea();
         mvaddstrc(9, 1, white, e.name);
+
+        if (e.equippedWeapon != null) {
+          addstr(" drops the ${e.equippedWeapon!.getName()} and");
+          e.dropWeapon(lootPile: groundLoot);
+        }
 
         if (e.body.legok < 2 || e.blood < e.maxBlood * 0.45) {
           addstr(escapeCrawling.random);
