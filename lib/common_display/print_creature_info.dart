@@ -558,21 +558,21 @@ void printFullCreatureCrimes(Creature cr) {
     if (cr.site?.type == SiteType.prison) {
       mvaddstr(3, 0, "On DEATH ROW");
     } else {
-      mvaddstr(3, 0, "Sentenced to DEATH");
+      mvaddstr(3, 0, "Escaped prisoner sentenced to DEATH");
     }
   } else if (cr.sentence < 0) {
     setColor(red);
     if (cr.site?.type == SiteType.prison) {
       mvaddstr(3, 0, "Serving life in prison");
     } else {
-      mvaddstr(3, 0, "Sentenced to life in prison");
+      mvaddstr(3, 0, "Escaped prisoner sentenced to life in prison");
     }
   } else if (cr.sentence > 0) {
     setColor(yellow);
     if (cr.site?.type == SiteType.prison) {
       mvaddstr(3, 0, "Serving ");
     } else {
-      mvaddstr(3, 0, "Sentenced to ");
+      mvaddstr(3, 0, "Escaped prisoner sentenced to ");
     }
     addstr("${cr.sentence} months in prison.");
   }
