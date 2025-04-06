@@ -195,9 +195,10 @@ String squadStoryTextOpening(NewsStory ns, bool liberalguardian, bool ccs) {
         story += "&r";
       } else {
         story +=
-            "A gang of worthless M16-toting hicks calling itself the Conservative Crime Squad ";
+            "A gang of M16-wielding vigilantes calling itself the Conservative Crime Squad ";
         story += "went on a rampage yesterday, according ";
         story += "to a spokesperson from the police department.";
+        story += "&r";
       }
     } else {
       if (ns.positive > 0 && !liberalguardian) {
