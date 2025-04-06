@@ -310,7 +310,7 @@ Future<void> trial(Creature g) async {
               "$attorneyname's arguments made several of the jurors stand up ");
           mvaddstr(10, 1,
               "and shout \"NOT GUILTY!\" before deliberations even began.");
-          if (defense == 4) addjuice(sleeperlawyer!, 10, 500); // Bow please
+          if (defense == 4) addjuice(sleeperlawyer!, 50, 1000); // Bow please
         } else {
           addstr(attorneyname!);
           addstr(" conducts an incredible defense.");
