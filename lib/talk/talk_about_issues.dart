@@ -229,7 +229,7 @@ Map<Law, _DiscussionPoint> _discussionPoints = {
   Law.lgbtRights: _DiscussionPoint(
       "Trans people are just like anyone else, yet they're still fighting",
       "against laws that treat them as second-class citizens.",
-      "The man doesn't even know you is a pronoun.  That's messed up.",
+      "The man doesn't even know you is a pronoun.",
       "We still have work to do ensuring society treats trans people fairly.",
       "I hate trans people."),
   Law.corporate: _DiscussionPoint(
@@ -244,7 +244,8 @@ Map<Law, _DiscussionPoint> _discussionPoints = {
       "The government won't let me fucking swear!",
       "Free speech is an eternal struggle.  We could easily slide back.",
       "Don't be offensive and you'll be fine.")
-    ..noProfanityStupidPrompt = "The government won't let me [kindly] swear!",
+    ..noProfanityStupidPrompt =
+        "[The government is great and I have nothing to say about it.]",
   Law.flagBurning: _DiscussionPoint(
       "Burning a piece of cloth is actually stigmatized in this country.",
       "You can love freedom and still hate what our government stands for.",
