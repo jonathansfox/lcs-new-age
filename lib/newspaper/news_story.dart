@@ -59,6 +59,7 @@ enum Drama {
   bankVaultRobbery,
   bankTellerRobbery,
   bankStickup,
+  hijackedBroadcast,
   legalGunUsed,
   illegalGunUsed,
 }
