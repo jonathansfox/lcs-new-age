@@ -409,6 +409,7 @@ Future<bool> _mediaBroadcast(String takeover, View mediaView, String medium,
   criminalizeparty(Crime.disturbingThePeace);
 
   View viewhit = View.issues.random;
+  View hostageviewhit = View.issues.random;
   await encounterMessage("The Squad takes control of the $takeover and ",
       line2: "talks about ${_mediaIssueDescription(viewhit)}.");
 
@@ -420,10 +421,10 @@ Future<bool> _mediaBroadcast(String takeover, View mediaView, String medium,
       if (p.prisoner?.alive == true &&
           p.prisoner?.type.id == celebrityType &&
           p.prisoner?.align == Alignment.conservative) {
-        viewhit = View.issues.random;
+        hostageviewhit = View.issues.random;
         await encounterMessage(
             "The hostage ${p.prisoner!.name} is forced on air to ",
-            line2: "discuss ${_mediaIssueDescription(viewhit)}.");
+            line2: "discuss ${_mediaIssueDescription(hostageviewhit)}.");
 
         int usegmentpower = 10; //FAME BONUS
         usegmentpower += p.prisoner!.attribute(Attribute.intelligence);
@@ -431,7 +432,7 @@ Future<bool> _mediaBroadcast(String takeover, View mediaView, String medium,
         usegmentpower += p.prisoner!.attribute(Attribute.charisma);
         usegmentpower += p.prisoner!.skill(Skill.persuasion);
 
-        changePublicOpinion(viewhit, (usegmentpower / 2).round());
+        changePublicOpinion(hostageviewhit, (usegmentpower / 2).round());
 
         segmentpower += usegmentpower;
       } else {
