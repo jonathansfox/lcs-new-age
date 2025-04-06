@@ -762,10 +762,12 @@ class Creature {
     if (type.canPerformArrests || type.lawEnforcement) courage += 200;
     if (type.intimidationResistant) courage += 200;
     if (type.ccsMember) courage += 200;
-    if (typeId == CreatureTypeIds.angryRuralMob) {
+    if ((equippedWeapon != null &&
+            (equippedWeapon!.type.threatening ||
+                equippedWeapon!.type.musicalAttack)) ||
+        skill(Skill.martialArts) > 2) {
       courage += 400 * (blood / maxBlood).round();
     }
-    if (equippedWeapon != null || skill(Skill.martialArts) > 2) courage += 100;
     if (type.tank) courage += 2000;
     if (type.animal) courage += 200;
     if (type.freeable && !isEnemy) courage += 1000;
