@@ -672,7 +672,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
       if (hitPart.weakSpot && t.clothing.headArmor > 4 && t.human) {
         str += "helmet";
       } else if (hitPart.critical && t.clothing.bodyArmor > 4 && t.human) {
-        str += t.clothing.armor?.name.toLowerCase() ?? "armor";
+        str += t.clothing.armor?.name.split(",").first.toLowerCase() ?? "armor";
       } else if (t.clothing.getLimbArmor(hitPart) > 4) {
         str += "${hitPart.name.toLowerCase()} armor";
       } else {
