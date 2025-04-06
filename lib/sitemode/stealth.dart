@@ -326,7 +326,8 @@ Future<void> disguisecheck(int timer) async {
 
     mvaddstrc(9, 1, red, n.name);
     if (siteAlarmTimer != 0 &&
-        weapon == WeaponCheckResult.ok &&
+        [WeaponCheckResult.ok, WeaponCheckResult.inCharacter]
+            .contains(weapon) &&
         disguise != DisguiseQuality.alarming &&
         !n.type.dog) {
       if ((siteType == SiteType.tenement ||
@@ -357,6 +358,7 @@ Future<void> disguisecheck(int timer) async {
       }
     } else {
       if (weapon != WeaponCheckResult.ok &&
+          weapon != WeaponCheckResult.inCharacter &&
           !n.type.dog &&
           !(politics.laws[Law.gunControl] == DeepAlignment.archConservative)) {
         addstr(" takes one look at the Squad's Liberal Weapons");
