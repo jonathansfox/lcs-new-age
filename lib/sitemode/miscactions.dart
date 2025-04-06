@@ -1,7 +1,6 @@
 /* everybody reload! */
 import 'dart:math';
 
-import 'package:lcs_new_age/common_actions/common_actions.dart';
 import 'package:lcs_new_age/common_display/print_party.dart';
 import 'package:lcs_new_age/creature/attributes.dart';
 import 'package:lcs_new_age/creature/creature.dart';
@@ -406,7 +405,8 @@ Future<bool> _mediaBroadcast(String takeover, View mediaView, String medium,
     return false;
   }
 
-  criminalizeparty(Crime.disturbingThePeace);
+  addPotentialCrime(squad, Crime.disturbingThePeace);
+  addPotentialCrime(squad, Crime.unlawfulSpeech);
 
   View viewhit = View.issues.random;
   await encounterMessage("The Squad takes control of the $takeover and ",
@@ -424,6 +424,8 @@ Future<bool> _mediaBroadcast(String takeover, View mediaView, String medium,
         await encounterMessage(
             "The hostage ${p.prisoner!.name} is forced on air to ",
             line2: "discuss ${_mediaIssueDescription(viewhit)}.");
+
+        addPotentialCrime(squad, Crime.terrorism);
 
         int usegmentpower = 10; //FAME BONUS
         usegmentpower += p.prisoner!.attribute(Attribute.intelligence);
@@ -453,6 +455,16 @@ Future<bool> _mediaBroadcast(String takeover, View mediaView, String medium,
   changePublicOpinion(viewhit,
       ((segmentpower - 50) * ((100 - publicOpinion[mediaView]!) / 100)).round(),
       coloredByLcsOpinions: true);
+  changePublicOpinion(View.freeSpeech,
+      ((segmentpower - 50) * ((100 - publicOpinion[mediaView]!) / 100)).round(),
+      coloredByLcsOpinions: true);
+  if (squad.any((c) => c.weapon.isAGun && c.weapon.isCurrentlyLegal)) {
+    changePublicOpinion(
+        View.gunControl,
+        ((segmentpower - 50) * ((100 - publicOpinion[mediaView]!) / 100))
+            .round(),
+        coloredByLcsOpinions: true);
+  }
 
   if (siteAlienated.index >= SiteAlienation.alienatedModerates.index &&
       segmentpower >= 40) {
