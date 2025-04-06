@@ -1093,6 +1093,7 @@ Future<void> specialRadioBroadcastStudio() async {
 
   if (await radioBroadcast()) {
     sitestory?.claimed = 2;
+    addDramaToSiteStory(Drama.hijackedBroadcast);
     levelMap[locx][locy][locz].special = TileSpecial.none;
   }
 }
@@ -1112,6 +1113,7 @@ Future<void> specialCableBroadcastStudio() async {
 
   if (await tvBroadcast()) {
     sitestory?.claimed = 2;
+    addDramaToSiteStory(Drama.hijackedBroadcast);
     levelMap[locx][locy][locz].special = TileSpecial.none;
   }
 }
