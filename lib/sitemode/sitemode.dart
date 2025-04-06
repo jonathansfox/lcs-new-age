@@ -9,6 +9,7 @@ import 'package:lcs_new_age/common_display/common_display.dart';
 import 'package:lcs_new_age/common_display/print_creature_info.dart';
 import 'package:lcs_new_age/common_display/print_party.dart';
 import 'package:lcs_new_age/creature/attributes.dart';
+import 'package:lcs_new_age/creature/conversion.dart';
 import 'package:lcs_new_age/creature/creature.dart';
 import 'package:lcs_new_age/creature/creature_type.dart';
 import 'package:lcs_new_age/creature/difficulty.dart';
@@ -1586,15 +1587,23 @@ Future<void> _siteModeAux() async {
               await specialOvalOffice();
             default:
               bool squadmoved = olocx != locx || olocy != locy || olocz != locz;
+              bool isApartment = activeSite!.type == SiteType.apartment ||
+                  activeSite!.type == SiteType.tenement ||
+                  activeSite!.type == SiteType.upscaleApartment;
 
-              if (squadmoved &&
-                  (activeSite!.type == SiteType.apartment ||
-                      activeSite!.type == SiteType.tenement ||
-                      activeSite!.type == SiteType.upscaleApartment)) {
-                if (!oneIn(3)) break; // Rarely encounter someone in apartments.
+              if (squadmoved && isApartment) {
+                // Rarely encounter someone in apartments
+                if (!oneIn(3)) break;
               }
 
               prepareEncounter(siteType, activeSite!.highSecurity > 0);
+
+              if (isApartment && currentTile.restricted) {
+                // Nobody likes you if you're breaking into their home
+                for (var e in encounter) {
+                  conservatize(e);
+                }
+              }
           }
           hostcheck = true;
         }
