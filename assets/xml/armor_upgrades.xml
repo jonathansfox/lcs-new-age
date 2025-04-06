@@ -97,7 +97,7 @@
     </armor>
   </armorupgrade>
   <armorupgrade idname="ARMOR_TANKSUIT">
-    <name>Too Much Armor</name>
+    <name>Homemade Tank Suit</name>
     <description>This is a bad idea. You can barely move in this.</description>
     <restricted>true</restricted>
     <visible>true</visible>
