@@ -493,7 +493,7 @@ Future<void> specialNuclearOnOff() async {
   await alienationCheck(true);
   levelMap[locx][locy][locz].special = TileSpecial.none;
   siteCrime += 5;
-  criminalizeAll(squad, Crime.terrorism);
+  addPotentialCrime(squad, Crime.terrorism);
 }
 
 Future<void> specialLabGeneticCagedAnimals() async {
@@ -544,7 +544,7 @@ Future<void> specialPoliceStationLockup() async {
     levelMap[locx][locy][locz].special = TileSpecial.none;
     siteCrime += 2;
     addDramaToSiteStory(Drama.openedPoliceLockup);
-    criminalizeAll(squad, Crime.aidingEscape);
+    addPotentialCrime(squad, Crime.aidingEscape);
   }
 }
 
@@ -569,7 +569,7 @@ Future<void> specialCourthouseLockup() async {
     levelMap[locx][locy][locz].special = TileSpecial.none;
     siteCrime += 3;
     addDramaToSiteStory(Drama.openedCourthouseLockup);
-    criminalizeAll(squad, Crime.aidingEscape);
+    addPotentialCrime(squad, Crime.aidingEscape);
   }
 }
 
@@ -719,7 +719,7 @@ Future<void> specialPrisonControl(TileSpecial prisonControlType) async {
   printEncounter();
   refresh();
 
-  criminalizeAll(squad, Crime.aidingEscape);
+  addPotentialCrime(squad, Crime.aidingEscape);
   await partyrescue(prisonControlType);
 
   await noticeCheck();
@@ -772,7 +772,7 @@ Future<void> specialIntelSupercomputer() async {
     siteCrime += 3;
     addDramaToSiteStory(Drama.hackedIntelSupercomputer);
 
-    criminalizeAll(squad, Crime.treason);
+    addPotentialCrime(squad, Crime.treason);
   }
 }
 
