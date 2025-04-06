@@ -1,10 +1,8 @@
-import 'dart:async';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:lcs_new_age/engine/console.dart';
 import 'package:lcs_new_age/engine/console_char.dart';
 import 'package:lcs_new_age/engine/engine.dart';
-import 'package:lcs_new_age/engine/fullscreen/fullscreen.dart';
 import 'package:lcs_new_age/utils/colors.dart';
 import 'package:pixel_snap/material.dart';
 
@@ -20,7 +18,7 @@ class _ConsoleWidgetState extends State<ConsoleWidget> {
   late final FocusNode focusNode;
   late final FocusAttachment focusAttachment;
   bool hasFocus = false;
-  bool fullscreen = false;
+  final TextEditingController textEditingController = TextEditingController();
 
   @override
   void initState() {
@@ -31,22 +29,15 @@ class _ConsoleWidgetState extends State<ConsoleWidget> {
       console.stale = true;
       setState(() {});
     };
+    textEditingController.addListener(() {
+      if (textEditingController.text == " ") return;
+      onTextChanged(textEditingController.text);
+      textEditingController.text = " ";
+    });
     super.initState();
   }
 
   KeyEventResult _onKeyEvent(FocusNode node, KeyEvent value) {
-    if (value is KeyDownEvent && value.logicalKey == LogicalKeyboardKey.f11) {
-      setState(() {
-        if (!fullscreen) {
-          enterFullscreen();
-          fullscreen = true;
-        } else {
-          exitFullscreen();
-          fullscreen = false;
-        }
-      });
-      return KeyEventResult.handled;
-    }
     if ((value is KeyDownEvent || value is KeyRepeatEvent) &&
         ![
           LogicalKeyboardKey.altLeft,
@@ -86,7 +77,6 @@ class _ConsoleWidgetState extends State<ConsoleWidget> {
     TextSpan fg = consoleDataToTextSpan(false);
     TextPainter textPainter = TextPainter(
       strutStyle: const StrutStyle(
-        forceStrutHeight: true,
         height: 1,
         leading: 0,
         fontSize: 20,
@@ -188,6 +178,10 @@ class _ConsoleWidgetState extends State<ConsoleWidget> {
         if (['░', '▒', '▓', '▀', '▌', '▐', '▄', '█'].contains(glyph)) {
           glyph = ' '; // leave these to the BlockPainter
         }
+        if (glyph.codeUnitAt(0) < 32) {
+          // ignore control characters
+          glyph = " ";
+        }
         text += bg ? "." : glyph;
         foreground = bg ? char.background : char.foreground;
         background = bg ? char.background : Colors.transparent;
@@ -204,39 +198,39 @@ class _ConsoleWidgetState extends State<ConsoleWidget> {
     TextSpan fg = consoleDataToTextSpan(false);
     return Material(
       color: Color.lerp(darkGray, black, 0.8),
-      child: scalingFrame(
-        child: Material(
-          color: black,
-          child: SizedBox(
-            width: textSpanWidth,
-            height: textSpanHeight,
-            child: GestureDetector(
-              onTap: () {
-                debugPrint("Requesting focus");
-                focusNode.requestFocus();
-                debugPrint("Widget has focus: ${focusNode.hasFocus}");
-                SystemChannels.textInput
-                    // ignore: discarded_futures
-                    .invokeMethod("TextInput.show")
-                    .ignore();
-              },
-              child: Stack(
-                children: [
-                  background(),
-                  Positioned.fill(
-                    child: CustomPaint(painter: BlockPainter(console)),
-                  ),
-                  RichText(
-                    text: fg,
-                    softWrap: false,
-                    textHeightBehavior: const TextHeightBehavior(
-                      applyHeightToFirstAscent: false,
-                      applyHeightToLastDescent: false,
-                      leadingDistribution: TextLeadingDistribution.even,
+      child: Center(
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Material(
+            color: black,
+            child: SizedBox(
+              width: textSpanWidth,
+              height: textSpanHeight,
+              child: GestureDetector(
+                onTap: () {
+                  debugPrint("Requesting focus");
+                  focusNode.requestFocus();
+                  debugPrint("Widget has focus: ${focusNode.hasFocus}");
+                },
+                child: Stack(
+                  children: [
+                    background(),
+                    Positioned.fill(
+                      child: CustomPaint(painter: BlockPainter(console)),
                     ),
-                  ),
-                  ...graphics(),
-                ],
+                    RichText(
+                      text: fg,
+                      softWrap: false,
+                      textHeightBehavior: const TextHeightBehavior(
+                        applyHeightToFirstAscent: false,
+                        applyHeightToLastDescent: false,
+                        leadingDistribution: TextLeadingDistribution.even,
+                      ),
+                    ),
+                    ...graphics(),
+                    mobileKeyboardLayer(),
+                  ],
+                ),
               ),
             ),
           ),
@@ -245,22 +239,65 @@ class _ConsoleWidgetState extends State<ConsoleWidget> {
     );
   }
 
-  Widget scalingFrame({required Widget child}) {
-    if (fullscreen) {
-      return SizedBox.expand(
-        child: FittedBox(
-          fit: BoxFit.contain,
-          alignment: Alignment.center,
-          child: child,
+  Widget mobileKeyboardLayer() {
+    if (defaultTargetPlatform == TargetPlatform.android ||
+        defaultTargetPlatform == TargetPlatform.iOS) {
+      return Positioned.fill(
+        child: Visibility(
+          visible: false,
+          maintainState: true,
+          maintainAnimation: true,
+          maintainSize: true,
+          maintainInteractivity: true,
+          child: TextField(
+            minLines: 2,
+            maxLines: 80,
+            controller: textEditingController,
+            showCursor: false,
+            autocorrect: false,
+            enableSuggestions: false,
+            enableInteractiveSelection: false,
+            smartDashesType: SmartDashesType.disabled,
+            smartQuotesType: SmartQuotesType.disabled,
+            keyboardType: TextInputType.multiline,
+            textInputAction: TextInputAction.newline,
+            onChanged: onTextChanged,
+          ),
         ),
       );
     } else {
-      return Center(
-        child: FittedBox(
-          fit: BoxFit.scaleDown,
-          child: child,
-        ),
-      );
+      return Container();
+    }
+  }
+
+  void onTextChanged(String text) {
+    textEditingController.text = " ";
+    if (text.isEmpty) {
+      console.keyEvent(const KeyDownEvent(
+        logicalKey: LogicalKeyboardKey.backspace,
+        physicalKey: PhysicalKeyboardKey.backspace,
+        character: 'Backspace',
+        timeStamp: Duration(),
+      ));
+    } else if (text.contains("\n")) {
+      console.keyEvent(const KeyDownEvent(
+        logicalKey: LogicalKeyboardKey.enter,
+        physicalKey: PhysicalKeyboardKey.enter,
+        character: 'Enter',
+        timeStamp: Duration(),
+      ));
+    } else {
+      List<String> characters = text.split("").sublist(1);
+      for (String character in characters) {
+        if (character.codePoint >= 32 && character.codePoint <= 126) {
+          console.keyEvent(KeyDownEvent(
+            logicalKey: LogicalKeyboardKey.keyA,
+            physicalKey: PhysicalKeyboardKey.keyA,
+            character: character,
+            timeStamp: const Duration(),
+          ));
+        }
+      }
     }
   }
 }

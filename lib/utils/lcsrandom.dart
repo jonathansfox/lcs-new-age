@@ -53,6 +53,7 @@ extension IterableExtension<T> on Iterable<T> {
 extension ListExtension<T> on List<T> {
   T get random => this[_rng.nextInt(length)];
   T? get randomOrNull => isEmpty ? null : this[_rng.nextInt(length)];
+  T randomSeeded(int seed) => this[Random(seed).nextInt(length)];
 }
 
 T lcsRandomWeighted<T>(Map<T, num> cr) {

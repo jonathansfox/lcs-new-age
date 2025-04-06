@@ -19,7 +19,7 @@ enum Skill {
       Attribute.agility, "Driving", "Race cars without crashing. Do stunts.",
       classText: "Advanced vehicle handling and racing."),
   firstAid(Attribute.intelligence, "First Aid",
-      "Stauch bleeding, treat wounds at base.",
+      "Staunch bleeding, treat wounds at base.",
       classText: "Identify and treat injuries."),
   heavyWeapons(Attribute.strength, "Heavy Weapons",
       "Use machine guns and flamethrowers.",

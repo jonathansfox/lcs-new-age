@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:lcs_new_age/basemode/activities.dart';
 import 'package:lcs_new_age/creature/creature.dart';
@@ -19,9 +20,11 @@ class Squad {
   List<Creature>? _members;
   @JsonKey(includeFromJson: false, includeToJson: false)
   List<Creature> get members {
-    _members ??=
-        __memberIds?.map((id) => pool.firstWhere((e) => e.id == id)).toList() ??
-            [];
+    _members ??= __memberIds
+            ?.map((id) => pool.firstWhereOrNull((e) => e.id == id))
+            .nonNulls
+            .toList() ??
+        [];
     return _members!;
   }
 

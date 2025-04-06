@@ -1,181 +1,147 @@
 <shop name="PAWNSHOP">
     <only_sell_legal_items>true</only_sell_legal_items>
-    <fullscreen>false</fullscreen>
     <allow_selling>true</allow_selling>
     <exit>Leave</exit>
 
     <department>
-        <entry>Buy a Liberal Weapon</entry>
+        <entry>Conservative Guns</entry>
         <letter>g</letter>
-        <fullscreen>false</fullscreen>
-        <exit>Done buying Liberal weapons</exit>
+        <ui>weapons</ui>
         <item>
             <class>WEAPON</class>
-            <description>Buy a Combat Knife</description>
-            <type>WEAPON_COMBATKNIFE</type>
-            <letter>o</letter>
-            <price>30</price>
+            <type>WEAPON_22_REVOLVER</type>
         </item>
         <item>
             <class>WEAPON</class>
-            <description>Buy a Shotgun</description>
-            <type>WEAPON_SHOTGUN_PUMP</type>
-            <letter>g</letter>
-            <price>400</price>
+            <type>WEAPON_22_HANDGUN</type>
         </item>
         <item>
             <class>WEAPON</class>
-            <description>Buy a .38 Revolver</description>
-            <type>WEAPON_REVOLVER_38</type>
-            <letter>t</letter>
-            <price>150</price>
+            <type>WEAPON_22_SMG</type>
         </item>
         <item>
             <class>WEAPON</class>
-            <description>Buy a 9mm Semi-automatic</description>
-            <type>WEAPON_SEMIPISTOL_9MM</type>
-            <letter>n</letter>
-            <price>300</price>
+            <type>WEAPON_9MM_HANDGUN</type>
         </item>
         <item>
             <class>WEAPON</class>
-            <description>Buy a .45 Semi-automatic</description>
-            <type>WEAPON_SEMIPISTOL_45</type>
-            <letter>f</letter>
-            <price>300</price>
+            <type>WEAPON_MP5</type>
         </item>
         <item>
             <class>WEAPON</class>
-            <description>Buy a .44 Magnum</description>
-            <type>WEAPON_REVOLVER_44</type>
-            <letter>m</letter>
-            <price>300</price>
+            <type>WEAPON_45_HANDGUN</type>
         </item>
         <item>
             <class>WEAPON</class>
-            <description>Buy a Civilian AR-15</description>
-            <type>WEAPON_SEMIRIFLE_AR15</type>
-            <letter>r</letter>
-            <price>350</price>
+            <type>WEAPON_TOMMYGUN</type>
         </item>
         <item>
             <class>WEAPON</class>
-            <description>Buy a 9mm MP5 SMG</description>
-            <type>WEAPON_SMG_MP5</type>
-            <letter>s</letter>
-            <price>1200</price>
+            <type>WEAPON_44_REVOLVER</type>
         </item>
         <item>
             <class>WEAPON</class>
-            <description>Buy an M4 Carbine</description>
-            <type>WEAPON_CARBINE_M4</type>
-            <letter>c</letter>
-            <price>1400</price>
+            <type>WEAPON_DESERT_EAGLE</type>
         </item>
         <item>
             <class>WEAPON</class>
-            <description>Buy an M16</description>
-            <type>WEAPON_AUTORIFLE_M16</type>
-            <letter>a</letter>
-            <price>1500</price>
+            <type>WEAPON_PUMP_SHOTGUN</type>
         </item>
         <item>
             <class>WEAPON</class>
-            <description>Buy an AK47</description>
-            <type>WEAPON_AUTORIFLE_AK47</type>
-            <letter>k</letter>
-            <price>1500</price>
+            <type>WEAPON_AR15</type>
+        </item>
+        <item>
+            <class>WEAPON</class>
+            <type>WEAPON_M4</type>
+        </item>
+        <item>
+            <class>WEAPON</class>
+            <type>WEAPON_AK102</type>
+        </item>
+        <item>
+            <class>WEAPON</class>
+            <type>WEAPON_M7</type>
+        </item>
+        <item>
+            <class>WEAPON</class>
+            <type>WEAPON_M250_MACHINEGUN</type>
         </item>
     </department>
 
     <department>
-        <entry>Buy Liberal Clips</entry>
-        <letter>c</letter>
-        <fullscreen>false</fullscreen>
-        <exit>Done buying Liberal clips</exit>
+        <entry>Ammo Boxes</entry>
+        <letter>a</letter>
+        <ui>ammo</ui>
         <item>
-            <class>CLIP</class>
-            <description>Buy Shotgun Shells</description>
-            <type>CLIP_BUCKSHOT</type>
-            <letter>p</letter>
-            <price>20</price>
+            <class>AMMO</class>
+            <type>AMMO_BUCKSHOT</type>
         </item>
         <item>
-            <class>CLIP</class>
-            <description>Buy a .38 Speedloader</description>
-            <type>CLIP_38</type>
-            <letter>t</letter>
-            <price>15</price>
+            <class>AMMO</class>
+            <type>AMMO_22</type>
         </item>
         <item>
-            <class>CLIP</class>
-            <description>Buy a 9mm Pistol Magazine</description>
-            <type>CLIP_9</type>
-            <letter>n</letter>
-            <price>30</price>
+            <class>AMMO</class>
+            <type>AMMO_9MM</type>
         </item>
         <item>
-            <class>CLIP</class>
-            <description>Buy a .45 Pistol Magazine</description>
-            <type>CLIP_45</type>
-            <letter>f</letter>
-            <price>30</price>
+            <class>AMMO</class>
+            <type>AMMO_45</type>
         </item>
         <item>
-            <class>CLIP</class>
-            <description>Buy a .44 Speedloader</description>
-            <type>CLIP_44</type>
-            <letter>m</letter>
-            <price>20</price>
+            <class>AMMO</class>
+            <type>AMMO_44</type>
         </item>
         <item>
-            <class>CLIP</class>
-            <description>Buy a Rifle/Aslt.Rifle Mag</description>
-            <type>CLIP_ASSAULT</type>
-            <letter>r</letter>
-            <price>35</price>
+            <class>AMMO</class>
+            <type>AMMO_50AE</type>
         </item>
         <item>
-            <class>CLIP</class>
-            <description>Buy a 9mm SMG Magazine</description>
-            <type>CLIP_SMG</type>
-            <letter>s</letter>
-            <price>35</price>
+            <class>AMMO</class>
+            <type>AMMO_556</type>
+        </item>
+        <item>
+            <class>AMMO</class>
+            <type>AMMO_68</type>
         </item>
     </department>
 
     <department>
-        <entry>Buy Liberal Tools</entry>
+        <entry>Liberal Tools</entry>
         <letter>t</letter>
-        <fullscreen>false</fullscreen>
-        <exit>Done buying Liberal tools</exit>
+        <ui>weapons</ui>
         <item>
             <class>WEAPON</class>
-            <description>Buy a Crowbar</description>
+            <type>WEAPON_COMBATKNIFE</type>
+        </item>
+        <item>
+            <class>WEAPON</class>
+            <type>WEAPON_BASEBALLBAT</type>
+        </item>
+        <item>
+            <class>WEAPON</class>
+            <type>WEAPON_CHAIN</type>
+        </item>
+        <item>
+            <class>WEAPON</class>
+            <type>WEAPON_AXE</type>
+        </item>
+        <item>
+            <class>WEAPON</class>
             <type>WEAPON_CROWBAR</type>
-            <letter>c</letter>
-            <price>20</price>
         </item>
         <item>
             <class>WEAPON</class>
-            <description>Buy Spray Paint</description>
             <type>WEAPON_SPRAYCAN</type>
-            <letter>s</letter>
-            <price>20</price>
         </item>
         <item>
             <class>WEAPON</class>
-            <description>Buy a Guitar</description>
             <type>WEAPON_GUITAR</type>
-            <letter>g</letter>
-            <price>200</price>
         </item>
         <item>
             <class>WEAPON</class>
-            <description>Buy Bottle, Rag &amp; Gasoline</description>
             <type>WEAPON_MOLOTOV</type>
-            <letter>m</letter>
-            <price>40</price>
         </item>
     </department>
 

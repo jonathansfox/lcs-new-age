@@ -35,3 +35,17 @@ class VehicleType {
       lcsRandom(yearAddRandom) +
       yearAdd;
 }
+
+class VehicleTypeIds {
+  static const String bug = "BUG";
+  static const String humvee = "HMMWV";
+  static const String jeep = "JEEP";
+  static const String pickup = "PICKUP";
+  static const String policeCar = "POLICECAR";
+  static const String agentCar = "AGENTCAR";
+  static const String sportsCar = "SPORTSCAR";
+  static const String stationWagon = "STATIONWAGON";
+  static const String suv = "SUV";
+  static const String taxicab = "TAXICAB";
+  static const String van = "VAN";
+}

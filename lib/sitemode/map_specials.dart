@@ -15,7 +15,7 @@ import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/items/ammo.dart';
 import 'package:lcs_new_age/items/ammo_type.dart';
-import 'package:lcs_new_age/items/armor.dart';
+import 'package:lcs_new_age/items/clothing.dart';
 import 'package:lcs_new_age/items/item.dart';
 import 'package:lcs_new_age/items/loot.dart';
 import 'package:lcs_new_age/items/money.dart';
@@ -187,9 +187,9 @@ Future<void> specialBouncerAssessSquad() async {
         reject(REJECTED_DRESSCODE);
       }
       // Busted, cheap, bloody clothes? Gone
-      if (s.armor.bloody) reject(REJECTED_BLOODYCLOTHES);
-      if (s.armor.damaged) reject(REJECTED_DAMAGEDCLOTHES);
-      if (s.armor.quality != 1) reject(REJECTED_SECONDRATECLOTHES);
+      if (s.clothing.bloody) reject(REJECTED_BLOODYCLOTHES);
+      if (s.clothing.damaged) reject(REJECTED_DAMAGEDCLOTHES);
+      if (s.clothing.quality != 1) reject(REJECTED_SECONDRATECLOTHES);
       if (s.gender == Gender.female &&
           laws[Law.genderEquality] == DeepAlignment.archConservative) {
         reject(REJECTED_FEMALE);
@@ -202,7 +202,7 @@ Future<void> specialBouncerAssessSquad() async {
       if (s.age < 21) reject(REJECTED_UNDERAGE);
       // Must pass disguise check unless you're dressed as cops;
       // harder if you're trans at the Desert Eagle Bar & Grill
-      if (!s.armor.type.police) {
+      if (!s.clothing.type.police) {
         if (siteType == SiteType.barAndGrill &&
             s.genderAssignedAtBirth != s.gender &&
             laws[Law.lgbtRights] != DeepAlignment.eliteLiberal) {
@@ -226,7 +226,7 @@ Future<void> specialBouncerAssessSquad() async {
         rejected = REJECTED_CCS;
       }
     }
-    move(17, 1);
+    move(10, 1);
     switch (rejected) {
       case REJECTED_CCS:
         setColor(red);
@@ -394,29 +394,28 @@ Future<void> specialReadSign(TileSpecial sign) async {
     case TileSpecial.signOne:
       switch (activeSite!.type) {
         case SiteType.nuclearPlant:
-          mvaddstr(16, 1, "Welcome to the NPP Nuclear Plant. Please enjoy");
-          mvaddstr(17, 1, "the museum displays in the gift shop.");
+          mvaddstr(9, 1, "Welcome to the NPP Nuclear Plant. Please enjoy");
+          mvaddstr(10, 1, "the museum displays in the gift shop.");
         case SiteType.tenement:
         case SiteType.apartment:
         case SiteType.upscaleApartment:
-          mvaddstr(16, 1, "The landlord's office is the first door");
-          mvaddstr(17, 1, "on the left.");
+          mvaddstr(9, 1, "The landlord's office is the first door");
+          mvaddstr(10, 1, "on the left.");
         default:
-          mvaddstr(16, 1, "\"Keep Calm and Carry On\"");
+          mvaddstr(9, 1, "\"Keep Calm and Carry On\"");
       }
     case TileSpecial.signTwo:
       switch (activeSite!.type) {
         default:
-          mvaddstr(
-              16, 1, "\"Great work is done by people who do great work.\"");
+          mvaddstr(9, 1, "\"Great work is done by people who do great work.\"");
       }
     case TileSpecial.signThree:
       switch (activeSite!.type) {
         default:
-          mvaddstr(16, 1, "Employees Only");
+          mvaddstr(9, 1, "Employees Only");
       }
     default:
-      mvaddstr(16, 1, "\"The best way not to fail is to succeed.\"");
+      mvaddstr(9, 1, "\"The best way not to fail is to succeed.\"");
   }
 
   await getKey();
@@ -447,11 +446,11 @@ Future<void> specialNuclearOnOff() async {
   }
 
   if (maxs != null) {
-    mvaddstrc(16, 1, white, maxs.name);
+    mvaddstrc(9, 1, white, maxs.name);
     addstr(" presses the big red button!");
     await getKey();
 
-    mvaddstr(17, 1, ".");
+    mvaddstr(10, 1, ".");
     await getKey();
     addstr(".");
     await getKey();
@@ -459,9 +458,9 @@ Future<void> specialNuclearOnOff() async {
     await getKey();
 
     if (laws[Law.nuclearPower] == DeepAlignment.eliteLiberal) {
-      mvaddstr(16, 1, "Nuclear waste is released into the water!");
+      mvaddstr(9, 1, "Nuclear waste is released into the water!");
       await getKey();
-      mvaddstr(17, 1, "But why?  The squad feels a bit Conservative.");
+      mvaddstr(10, 1, "But why?  The squad feels a bit Conservative.");
       await getKey();
 
       changePublicOpinion(View.nuclearPower, 15);
@@ -642,14 +641,19 @@ Future<void> specialCourthouseJury() async {
       "homosexuality",
     ].random;
 
-    await encounterMessage(
-        "${maxp.name} works the room like in Twelve Angry Men, and the jury ",
-        line2: "concludes that $crime wasn't really wrong here.");
+    if (laws[Law.deathPenalty] == DeepAlignment.archConservative) {
+      await encounterMessage(
+          "${maxp.name} works the room like in Twelve Angry Men, and the jury ",
+          line2: "concludes that $crime isn't worth yet another execution.");
+      addjuice(maxp, 25, 1000);
+    } else {
+      await encounterMessage(
+          "${maxp.name} works the room like in Twelve Angry Men, and the jury ",
+          line2: "concludes that $crime wasn't really wrong here.");
+      addjuice(maxp, 25, 200);
+    }
 
     await noticeCheck();
-
-    //INSTANT JUICE BONUS
-    addjuice(maxp, 25, 200);
   } else {
     await encounterMessage("${maxp.name} wasn't quite convincing...");
 
@@ -741,10 +745,10 @@ Future<void> specialIntelSupercomputer() async {
   if (result == UnlockResult.unlocked) {
     clearMessageArea();
 
-    mvaddstrc(16, 1, white, "The Squad obtains sensitive information");
+    mvaddstrc(9, 1, white, "The Squad obtains sensitive information");
     if (ccsActive && ccsExposure == CCSExposure.none) {
       addstr(",");
-      mvaddstr(17, 1, "including a list of government backers of the CCS.");
+      mvaddstr(10, 1, "including a list of government backers of the CCS.");
 
       Item it = Loot("LOOT_CCS_BACKERLIST");
       activeSquad!.loot.add(it);
@@ -811,7 +815,7 @@ Future<void> specialGraffiti() async {
 Future<bool> sitemodePromptOneLine(String line) async {
   clearMessageArea();
 
-  mvaddstrc(16, 1, white, line);
+  mvaddstrc(9, 1, white, line);
 
   while (true) {
     int c = await getKey();
@@ -824,9 +828,9 @@ Future<bool> sitemodePromptOneLine(String line) async {
 Future<bool> sitemodePrompt(String line1, String line2) async {
   clearMessageArea();
 
-  mvaddstrc(16, 1, white, line1);
+  mvaddstrc(9, 1, white, line1);
 
-  mvaddstr(17, 1, line2);
+  mvaddstr(10, 1, line2);
 
   while (true) {
     int c = await getKey();
@@ -840,10 +844,10 @@ Future<void> encounterMessage(String message,
     {String? line2, Color color = white}) async {
   clearMessageArea();
 
-  mvaddstrc(16, 1, color, message);
+  mvaddstrc(9, 1, color, message);
 
   if (line2 != null) {
-    mvaddstr(17, 1, line2);
+    mvaddstr(10, 1, line2);
   }
 
   await getKey();
@@ -898,7 +902,7 @@ void _loot(Item item) => activeSquad!.loot.add(item);
 
 void _lootWeapon(String tag, int extraMags) {
   WeaponType weaponType = weaponTypes[tag]!;
-  AmmoType? ammoType = weaponType.ammoType;
+  AmmoType? ammoType = weaponType.acceptableAmmo.firstOrNull;
   _loot(Weapon.fromType(weaponType, fullammo: true));
   if (ammoType != null && extraMags > 0) {
     _loot(Ammo(ammoType.idName, stackSize: extraMags));
@@ -984,17 +988,17 @@ Future<void> specialArmory() async {
   setColor(white);
   bool empty = true;
   if (!lcsGotM249 && activeSite!.type == SiteType.armyBase) {
-    await encounterMessage("Jackpot! The squad found a M249 Machine Gun!");
-    _lootWeapon("WEAPON_M249_MACHINEGUN", 9);
+    await encounterMessage("Jackpot! The squad found an XM250 Machine Gun!");
+    _lootWeapon("WEAPON_M250_MACHINEGUN", 9);
     lcsGotM249 = true;
     empty = false;
   }
 
   if (oneIn(2)) {
-    await encounterMessage("The squad finds some M16 Assault Rifles.");
+    await encounterMessage("The squad finds some XM7 Assault Rifles.");
     int num = 0;
     do {
-      _lootWeapon("WEAPON_AUTORIFLE_M16", 5);
+      _lootWeapon("WEAPON_M7", 5);
       num++;
     } while (num < 2 || (oneIn(2) && num < 5));
     empty = false;
@@ -1004,7 +1008,7 @@ Future<void> specialArmory() async {
     await encounterMessage("The squad finds some M4 Carbines.");
     int num = 0;
     do {
-      _lootWeapon("WEAPON_CARBINE_M4", 5);
+      _lootWeapon("WEAPON_M4", 5);
       num++;
     } while (num < 2 || (oneIn(2) && num < 5));
     empty = false;
@@ -1015,9 +1019,9 @@ Future<void> specialArmory() async {
     int num = 0;
     do {
       if (activeSite!.type == SiteType.armyBase) {
-        _loot(Armor("ARMOR_ARMYARMOR"));
+        _loot(Clothing("CLOTHING_ARMYARMOR"));
       } else {
-        _loot(Armor("ARMOR_CIVILLIANARMOR"));
+        _loot(Clothing("CLOTHING_CIVILLIANARMOR"));
       }
       num++;
     } while (num < 2 || (oneIn(2) && num < 5));
@@ -1089,6 +1093,7 @@ Future<void> specialRadioBroadcastStudio() async {
 
   if (await radioBroadcast()) {
     sitestory?.claimed = 2;
+    addDramaToSiteStory(Drama.hijackedBroadcast);
     levelMap[locx][locy][locz].special = TileSpecial.none;
   }
 }
@@ -1108,6 +1113,7 @@ Future<void> specialCableBroadcastStudio() async {
 
   if (await tvBroadcast()) {
     sitestory?.claimed = 2;
+    addDramaToSiteStory(Drama.hijackedBroadcast);
     levelMap[locx][locy][locz].special = TileSpecial.none;
   }
 }
@@ -1170,25 +1176,27 @@ Future<void> specialSecurity(bool metaldetect) async {
 
   spawnSecurity();
 
-  if (encounter.isEmpty) {
-    await encounterMessage("The security checkpoint is abandoned.");
-    levelMap[locx][locy][locz].special = TileSpecial.none;
-    return;
-  }
-  for (Creature p in pool) {
-    if (p.base == activeSite) {
-      autoAdmit = true;
-      if (p.type == encounter[0].type) {
-        sleeper = p;
-        encounter[0] = sleeper;
-        encounter[0].isWillingToTalk = false;
-        break;
+  if (encounter.isNotEmpty) {
+    for (Creature p in pool) {
+      if (p.base == activeSite) {
+        autoAdmit = true;
+        if (p.type == encounter[0].type) {
+          sleeper = p;
+          encounter[0] = sleeper;
+          encounter[0].isWillingToTalk = false;
+          break;
+        }
       }
     }
   }
   setColor(white);
-  move(16, 1);
-  if (autoAdmit) {
+  move(9, 1);
+  if (siteAlarm) {
+    addstr("The security checkpoint is abandoned.");
+
+    levelMap[locx][locy][locz].special = TileSpecial.none;
+    return;
+  } else if (autoAdmit) {
     addstr("The squad flashes ID badges.");
     metaldetect = false;
 
@@ -1214,16 +1222,16 @@ Future<void> specialSecurity(bool metaldetect) async {
   // Size up the squad for entry
   for (Creature s in squad) {
     // Nudity gets blocked always
-    if (s.equippedArmor == null && s.type.animal) reject(REJECTED_NUDE);
+    if (s.equippedClothing == null && s.type.animal) reject(REJECTED_NUDE);
     if (!autoAdmit) {
       // Having an employee badge will bypass most checks even
       // if the security guard doesn't work for you
       if (disguiseQuality(s) == DisguiseQuality.trespassing) {
         reject(REJECTED_DRESSCODE);
       }
-      if (s.armor.bloody) reject(REJECTED_BLOODYCLOTHES);
-      if (s.armor.damaged) reject(REJECTED_DAMAGEDCLOTHES);
-      if (s.armor.quality != 1) reject(REJECTED_SECONDRATECLOTHES);
+      if (s.clothing.bloody) reject(REJECTED_BLOODYCLOTHES);
+      if (s.clothing.damaged) reject(REJECTED_DAMAGEDCLOTHES);
+      if (s.clothing.quality != 1) reject(REJECTED_SECONDRATECLOTHES);
       if (s.age < 16) reject(REJECTED_UNDERAGE);
     }
     if (sleeper == null) {
@@ -1235,7 +1243,7 @@ Future<void> specialSecurity(bool metaldetect) async {
       }
     }
   }
-  move(17, 1);
+  move(10, 1);
   setColor(rejectReason == NOT_REJECTED ? lightGreen : red);
   switch (rejectReason) {
     case REJECTED_NUDE:
@@ -1287,7 +1295,29 @@ Future<void> specialSecurity(bool metaldetect) async {
     case REJECTED_WEAPONS:
       if (metaldetect) {
         addstr("-BEEEP- -BEEEP- -BEEEP-");
-        siteAlarm = true;
+        if (politics.laws[Law.gunControl] == DeepAlignment.archConservative) {
+          await getKey();
+          clearMessageArea();
+          mvaddstrc(9, 1, white,
+              "The guard disables the alarm and doesn't even look up at the squad.");
+          await getKey();
+          mvaddstrc(
+              10,
+              1,
+              lightGreen,
+              [
+                "\"Anyone carrying a gun is welcome. Head on in.\"",
+                "\"Don't mind it, not sure why we even turn it on.\"",
+                "\"Ignore the noise. Keep your gun, just don't shoot nobody.\"",
+                "\"Don't mind Metal Mabel here, she's just here to impress Liberals.\"",
+                "\"It's a free country. Don't know why we even have this thing.\"",
+                "\"Constitution says you can carry guns anywhere you want.\"",
+                "\"You've a right to bear arms here or anywhere else.\"",
+              ].random);
+          rejectReason = NOT_REJECTED;
+        } else {
+          siteAlarm = true;
+        }
       } else {
         addstr([
           "\"Put that away!\"",
@@ -1472,7 +1502,7 @@ Future<void> specialBankMoney() async {
       oneIn(2) &&
       _specialBankMoneySWATCounter < 2) {
     setColor(red);
-    move(17, 1);
+    move(10, 1);
     if (_specialBankMoneySWATCounter > 0) {
       addstr("Another SWAT team moves in!!");
     } else {
@@ -1503,21 +1533,21 @@ Future<void> specialOvalOffice() async {
       }
     }
   }
-  printSiteMap(locx, locy, locz);
+  printSiteMapSmall(locx, locy, locz);
 
   encounter.clear();
 
   if (siteAlarm) {
     await encounterMessage("The President isn't here...");
 
-    mvaddstr(17, 1, "Secret Service agents ambush the squad!");
+    mvaddstr(10, 1, "Secret Service agents ambush the squad!");
     await getKey();
     for (int e = 0; e < 6; e++) {
       encounter.add(Creature.fromId(CreatureTypeIds.secretService));
     }
     printEncounter();
 
-    await enemyattack();
+    await enemyattack(encounter);
     await creatureadvance();
   } else {
     await encounterMessage("The President is in the Oval Office.");
@@ -1590,10 +1620,10 @@ Future<void> lootGroundSite() async {
   Item? item = lootItemForSite(siteType);
   if (item != null) {
     addLootToSquad(item);
-    String s = item.equipTitle();
     clearMessageArea();
-    mvaddstrc(16, 1, lightGray, "You find: ");
-    mvaddstr(17, 1, s);
+    mvaddstrc(9, 1, lightGray, "You find: ");
+    move(10, 1);
+    item.printEquipTitle();
 
     await getKey(); //wait for key press before clearing.
   }
@@ -1619,13 +1649,13 @@ Item? lootItemForSite(SiteType site) {
         newWeaponType = rndWeps.random;
       } else if (oneIn(20)) {
         List<String> rndArmors = [
-          "ARMOR_CHEAPDRESS",
-          "ARMOR_CHEAPSUIT",
-          "ARMOR_CLOTHES",
-          "ARMOR_TRENCHCOAT",
-          "ARMOR_WORKCLOTHES",
-          "ARMOR_TOGA",
-          "ARMOR_PRISONER"
+          "CLOTHING_CHEAPDRESS",
+          "CLOTHING_CHEAPSUIT",
+          "CLOTHING_CLOTHES",
+          "CLOTHING_TRENCHCOAT",
+          "CLOTHING_WORKCLOTHES",
+          "CLOTHING_TOGA",
+          "CLOTHING_PRISONER"
         ];
         newArmorType = rndArmors.random;
       } else if (oneIn(3)) {
@@ -1649,7 +1679,7 @@ Item? lootItemForSite(SiteType site) {
       if (oneIn(25)) {
         List<String> rndWeps = [
           "WEAPON_BASEBALLBAT",
-          "WEAPON_REVOLVER_38",
+          "WEAPON_REVOLVER_22",
           "WEAPON_REVOLVER_44",
           "WEAPON_NIGHTSTICK",
           "WEAPON_GUITAR"
@@ -1657,14 +1687,14 @@ Item? lootItemForSite(SiteType site) {
         newWeaponType = rndWeps.random;
       } else if (oneIn(20)) {
         List<String> rndArmors = [
-          "ARMOR_CHEAPDRESS",
-          "ARMOR_CHEAPSUIT",
-          "ARMOR_CLOTHES",
-          "ARMOR_TRENCHCOAT",
-          "ARMOR_WORKCLOTHES",
-          "ARMOR_CLOWNSUIT",
-          "ARMOR_ELEPHANTSUIT",
-          "ARMOR_DONKEYSUIT"
+          "CLOTHING_CHEAPDRESS",
+          "CLOTHING_CHEAPSUIT",
+          "CLOTHING_CLOTHES",
+          "CLOTHING_TRENCHCOAT",
+          "CLOTHING_WORKCLOTHES",
+          "CLOTHING_CLOWNSUIT",
+          "CLOTHING_ELEPHANTSUIT",
+          "CLOTHING_DONKEYSUIT"
         ];
         newArmorType = rndArmors.random;
       } else if (oneIn(5)) {
@@ -1694,14 +1724,14 @@ Item? lootItemForSite(SiteType site) {
         newWeaponType = rndWeps[lcsRandom(8 - laws[Law.gunControl]!.index)];
       } else if (oneIn(20)) {
         List<String> rndArmors = [
-          "ARMOR_EXPENSIVEDRESS",
-          "ARMOR_BLACKDRESS",
-          "ARMOR_EXPENSIVESUIT",
-          "ARMOR_BLACKSUIT",
-          "ARMOR_BONDAGEGEAR",
-          "ARMOR_CIVILLIANARMOR",
-          "ARMOR_BLACKROBE",
-          "ARMOR_LABCOAT"
+          "CLOTHING_EXPENSIVEDRESS",
+          "CLOTHING_BLACKDRESS",
+          "CLOTHING_EXPENSIVESUIT",
+          "CLOTHING_BLACKSUIT",
+          "CLOTHING_BONDAGEGEAR",
+          "CLOTHING_CIVILLIANARMOR",
+          "CLOTHING_BLACKROBE",
+          "CLOTHING_LABCOAT"
         ];
         newArmorType = rndArmors.random;
       } else if (oneIn(10)) {
@@ -1749,15 +1779,15 @@ Item? lootItemForSite(SiteType site) {
         newWeaponType = rndWeps[lcsRandom(4) + 4 - laws[Law.gunControl]!.index];
       } else if (oneIn(25)) {
         List<String> rndArmors = [
-          "ARMOR_POLICEUNIFORM",
-          "ARMOR_POLICEUNIFORM",
-          "ARMOR_POLICEARMOR",
-          "ARMOR_POLICEUNIFORM",
-          "ARMOR_SWATARMOR",
-          "ARMOR_POLICEUNIFORM",
-          "ARMOR_POLICEARMOR",
-          "ARMOR_DEATHSQUADUNIFORM",
-          "ARMOR_DEATHSQUADBODYARMOR"
+          "CLOTHING_POLICEUNIFORM",
+          "CLOTHING_POLICEUNIFORM",
+          "CLOTHING_POLICEARMOR",
+          "CLOTHING_POLICEUNIFORM",
+          "CLOTHING_SWATARMOR",
+          "CLOTHING_POLICEUNIFORM",
+          "CLOTHING_POLICEARMOR",
+          "CLOTHING_DEATHSQUADUNIFORM",
+          "CLOTHING_DEATHSQUADBODYARMOR"
         ];
         //make sure the number of types matches the random range...
         newArmorType =
@@ -1783,7 +1813,7 @@ Item? lootItemForSite(SiteType site) {
       }
     case SiteType.prison:
       if (oneIn(5)) {
-        newArmorType = "ARMOR_PRISONER";
+        newArmorType = "CLOTHING_PRISONER";
       } else {
         newWeaponType = "WEAPON_SHANK";
       }
@@ -1806,7 +1836,7 @@ Item? lootItemForSite(SiteType site) {
         ];
         newWeaponType = rndWeps.random;
       } else if (oneIn(2)) {
-        List<String> rndArmors = ["ARMOR_ARMYARMOR"];
+        List<String> rndArmors = ["CLOTHING_ARMYARMOR"];
         newArmorType = rndArmors.random;
       } else if (oneIn(20)) {
         newLootType = "LOOT_SECRETDOCUMENTS";
@@ -1828,7 +1858,7 @@ Item? lootItemForSite(SiteType site) {
         ];
         newWeaponType = rndWeps.random;
       } else if (oneIn(30)) {
-        List<String> rndArmors = ["ARMOR_HEAVYARMOR"];
+        List<String> rndArmors = ["CLOTHING_HEAVYARMOR"];
         newArmorType = rndArmors.random;
       } else if (oneIn(20)) {
         newLootType = "LOOT_SECRETDOCUMENTS";
@@ -1841,7 +1871,7 @@ Item? lootItemForSite(SiteType site) {
       }
     case SiteType.fireStation:
       if (oneIn(25)) {
-        newArmorType = "ARMOR_BUNKERGEAR";
+        newArmorType = "CLOTHING_BUNKERGEAR";
       } else if (oneIn(2)) {
         newLootType = "LOOT_TRINKET";
       } else {
@@ -1864,11 +1894,11 @@ Item? lootItemForSite(SiteType site) {
     case SiteType.ceoHouse:
       if (oneIn(50)) {
         List<String> rndArmors = [
-          "ARMOR_EXPENSIVEDRESS",
-          "ARMOR_EXPENSIVESUIT",
-          "ARMOR_EXPENSIVESUIT",
-          "ARMOR_EXPENSIVESUIT",
-          "ARMOR_BONDAGEGEAR"
+          "CLOTHING_EXPENSIVEDRESS",
+          "CLOTHING_EXPENSIVESUIT",
+          "CLOTHING_EXPENSIVESUIT",
+          "CLOTHING_EXPENSIVESUIT",
+          "CLOTHING_BONDAGEGEAR"
         ];
         newArmorType = rndArmors.random;
       }
@@ -1920,21 +1950,21 @@ Item? lootItemForSite(SiteType site) {
       List<String> rndWeps = [
         "WEAPON_SEMIPISTOL_9MM",
         "WEAPON_SEMIPISTOL_45",
-        "WEAPON_REVOLVER_38",
+        "WEAPON_REVOLVER_22",
         "WEAPON_REVOLVER_44",
         "WEAPON_SMG_MP5",
         "WEAPON_CARBINE_M4",
         "WEAPON_AUTORIFLE_M16"
       ];
       List<String> rndArmors = [
-        "ARMOR_CHEAPSUIT",
-        "ARMOR_CLOTHES",
-        "ARMOR_TRENCHCOAT",
-        "ARMOR_WORKCLOTHES",
-        "ARMOR_SECURITYUNIFORM",
-        "ARMOR_CIVILLIANARMOR",
-        "ARMOR_ARMYARMOR",
-        "ARMOR_HEAVYARMOR"
+        "CLOTHING_CHEAPSUIT",
+        "CLOTHING_CLOTHES",
+        "CLOTHING_TRENCHCOAT",
+        "CLOTHING_WORKCLOTHES",
+        "CLOTHING_SECURITYUNIFORM",
+        "CLOTHING_CIVILLIANARMOR",
+        "CLOTHING_ARMYARMOR",
+        "CLOTHING_HEAVYARMOR"
       ];
       switch (lcsRandom(3)) {
         case 0:
@@ -1962,7 +1992,7 @@ Item? lootItemForSite(SiteType site) {
     item = Loot(newLootType);
   }
   if (newArmorType.isNotEmpty) {
-    Armor a = Armor(newArmorType);
+    Clothing a = Clothing(newArmorType);
     if (oneIn(3)) a.damaged = true;
     item = a;
   }
@@ -1976,7 +2006,7 @@ Item? lootItemForSite(SiteType site) {
           w.type.idName == "WEAPON_FLAMETHROWER") //Make weapon property? -XML
       {
         w.ammo = w.type.ammoCapacity;
-        w.loadedAmmoType = w.type.ammoType;
+        w.loadedAmmoType = w.type.acceptableAmmo.firstOrNull;
       }
     }
     item = w;

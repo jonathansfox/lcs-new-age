@@ -26,6 +26,8 @@ class NewsStory {
   int positive = 0;
   SiegeType siegetype = SiegeType.none;
   int siegebodycount = 0;
+  bool legalGunUsed = false;
+  bool illegalGunUsed = false;
 }
 
 // For things not covered by the crimes list that are still newsworthy
@@ -57,6 +59,9 @@ enum Drama {
   bankVaultRobbery,
   bankTellerRobbery,
   bankStickup,
+  hijackedBroadcast,
+  legalGunUsed,
+  illegalGunUsed,
 }
 
 enum NewsStories {

@@ -46,15 +46,23 @@ void prepareEncounter(SiteType type, bool sec,
         weights.add(CreatureTypeIds.merc, 1000);
       case SiteType.amRadioStation:
       case SiteType.cableNewsStation:
-        weights.add(CreatureTypeIds.hick, 1000);
+        weights.add(CreatureTypeIds.angryRuralMob, 1000);
       case SiteType.policeStation:
         if (deathSquadsActive) {
           weights.add(CreatureTypeIds.deathSquad, 1000);
         } else {
           weights.add(CreatureTypeIds.swat, 1000);
         }
+      case SiteType.drugHouse:
+        weights.add(CreatureTypeIds.gangMember, 1000);
       default:
-        break;
+        if (activeSite!.controller == SiteController.ccs) {
+          weights.add(CreatureTypeIds.ccsVigilante, 1000);
+        } else if (deathSquadsActive) {
+          weights.add(CreatureTypeIds.deathSquad, 1000);
+        } else {
+          weights.add(CreatureTypeIds.swat, 1000);
+        }
     }
     if (siteOnFire && !noProfanity) {
       weights.add(CreatureTypeIds.firefighter, 1000);
@@ -68,6 +76,8 @@ void prepareEncounter(SiteType type, bool sec,
     weights.add(CreatureTypeIds.crackhead, 5);
     weights.add(CreatureTypeIds.priest, 5);
     weights.add(CreatureTypeIds.radioPersonality, 1);
+    weights.add(CreatureTypeIds.televangelist, 1);
+    weights.add(CreatureTypeIds.neoNazi, 5);
 
     for (int n = 0; n < lcsRandom(6) + 1; n++) {
       Creature cr =
@@ -89,6 +99,7 @@ void prepareEncounter(SiteType type, bool sec,
         weights.add(CreatureTypeIds.gangMember, 200);
         weights.add(CreatureTypeIds.crackhead, 200);
         weights.add(CreatureTypeIds.sexWorker, 200);
+        weights.add(CreatureTypeIds.punk, 5);
         weights.add(CreatureTypeIds.biker, 5);
         weights.add(CreatureTypeIds.painter, 1);
         weights.add(CreatureTypeIds.sculptor, 1);
@@ -120,6 +131,9 @@ void prepareEncounter(SiteType type, bool sec,
         weights.add(CreatureTypeIds.nurse, 1);
         weights.add(CreatureTypeIds.amateurMagician, 1);
         weights.add(CreatureTypeIds.hippie, 6);
+        weights.add(CreatureTypeIds.punk, 1);
+        weights.add(CreatureTypeIds.emo, 2);
+        weights.add(CreatureTypeIds.goth, 1);
         weights.add(CreatureTypeIds.artCritic, 1);
         weights.add(CreatureTypeIds.musicCritic, 1);
         weights.add(CreatureTypeIds.author, 1);
@@ -156,6 +170,7 @@ void prepareEncounter(SiteType type, bool sec,
         weights.add(CreatureTypeIds.conservativeJudge, 1);
         weights.add(CreatureTypeIds.radioPersonality, 1);
         weights.add(CreatureTypeIds.newsAnchor, 1);
+        weights.add(CreatureTypeIds.televangelist, 1);
         weights.add(CreatureTypeIds.lawyer, 15);
         weights.add(CreatureTypeIds.doctor, 10);
         weights.add(CreatureTypeIds.psychologist, 1);
@@ -179,6 +194,8 @@ void prepareEncounter(SiteType type, bool sec,
         weights.add(CreatureTypeIds.athlete, 1);
         weights.add(CreatureTypeIds.firefighter, 1);
         weights.add(CreatureTypeIds.locksmith, 1);
+        weights.add(CreatureTypeIds.neoNazi, 10);
+        weights.add(CreatureTypeIds.naziPunk, 1);
         if (ccsActive && activeSite?.controller != SiteController.lcs) {
           weights.add(CreatureTypeIds.ccsVigilante, 50);
         }
@@ -270,6 +287,9 @@ void prepareEncounter(SiteType type, bool sec,
           weights.add(CreatureTypeIds.prisonGuard, 1);
         }
         weights.add(CreatureTypeIds.hippie, 1);
+        weights.add(CreatureTypeIds.punk, 2);
+        weights.add(CreatureTypeIds.emo, 2);
+        weights.add(CreatureTypeIds.goth, 1);
         weights.add(CreatureTypeIds.artCritic, 1);
         weights.add(CreatureTypeIds.musicCritic, 1);
         weights.add(CreatureTypeIds.author, 1);
@@ -307,6 +327,9 @@ void prepareEncounter(SiteType type, bool sec,
         if (mutantsPossible) weights.add(CreatureTypeIds.mutant, 1);
         if (mutantsCommon) weights.add(CreatureTypeIds.mutant, 10);
         weights.add(CreatureTypeIds.hippie, 50);
+        weights.add(CreatureTypeIds.punk, 10);
+        weights.add(CreatureTypeIds.emo, 10);
+        weights.add(CreatureTypeIds.goth, 5);
         weights.add(CreatureTypeIds.artCritic, 1);
         weights.add(CreatureTypeIds.musicCritic, 1);
         weights.add(CreatureTypeIds.author, 1);
@@ -326,13 +349,16 @@ void prepareEncounter(SiteType type, bool sec,
         weights.add(CreatureTypeIds.musician, 2);
         weights.add(CreatureTypeIds.mathematician, 1);
         weights.add(CreatureTypeIds.teacher, 5);
-        weights.add(CreatureTypeIds.engineer, 15);
+        weights.add(CreatureTypeIds.engineer, 5);
         weights.add(CreatureTypeIds.doctor, 1);
         weights.add(CreatureTypeIds.barista, 10);
-        weights.add(CreatureTypeIds.carSalesman, 3);
+        weights.add(CreatureTypeIds.carSalesman, 2);
         weights.add(CreatureTypeIds.officeWorker, 15);
         weights.add(CreatureTypeIds.secretary, 5);
         weights.add(CreatureTypeIds.hippie, 1);
+        weights.add(CreatureTypeIds.punk, 3);
+        weights.add(CreatureTypeIds.emo, 3);
+        weights.add(CreatureTypeIds.goth, 3);
         weights.add(CreatureTypeIds.programmer, 15);
         weights.add(CreatureTypeIds.retiree, 5);
         weights.add(CreatureTypeIds.painter, 1);
@@ -361,6 +387,7 @@ void prepareEncounter(SiteType type, bool sec,
         if (mutantsCommon) weights.add(CreatureTypeIds.mutant, 5);
         weights.add(CreatureTypeIds.gangMember, 3);
         weights.add(CreatureTypeIds.crackhead, 3);
+        weights.add(CreatureTypeIds.punk, 1);
         weights.add(CreatureTypeIds.fastFoodWorker, 1);
         weights.add(CreatureTypeIds.barista, 1);
         weights.add(CreatureTypeIds.bartender, 1);
@@ -372,7 +399,7 @@ void prepareEncounter(SiteType type, bool sec,
         weights.add(CreatureTypeIds.garbageman, 1);
         weights.add(CreatureTypeIds.constructionWorker, 1);
         weights.add(CreatureTypeIds.amateurMagician, 1);
-        weights.add(CreatureTypeIds.hick, 1);
+        weights.add(CreatureTypeIds.angryRuralMob, 1);
         weights.add(CreatureTypeIds.soldier, 1);
         weights.add(CreatureTypeIds.veteran, 2);
         if (nineteenEightyFour) {
@@ -439,6 +466,9 @@ void prepareEncounter(SiteType type, bool sec,
           weights.add(CreatureTypeIds.prisonGuard, 1);
         }
         weights.add(CreatureTypeIds.hippie, 1);
+        weights.add(CreatureTypeIds.punk, 1);
+        weights.add(CreatureTypeIds.emo, 1);
+        weights.add(CreatureTypeIds.goth, 1);
         weights.add(CreatureTypeIds.artCritic, 1);
         weights.add(CreatureTypeIds.musicCritic, 1);
         weights.add(CreatureTypeIds.author, 1);
@@ -643,6 +673,10 @@ void prepareEncounter(SiteType type, bool sec,
         if (mutantsCommon) weights.add(CreatureTypeIds.mutant, 5);
         weights.add(CreatureTypeIds.gangMember, 10);
         weights.add(CreatureTypeIds.crackhead, 10);
+        weights.add(CreatureTypeIds.cheerleader, 1);
+        weights.add(CreatureTypeIds.punk, 5);
+        weights.add(CreatureTypeIds.goth, 2);
+        weights.add(CreatureTypeIds.emo, 2);
         weights.add(CreatureTypeIds.priest, 5);
         weights.add(CreatureTypeIds.engineer, 1);
         weights.add(CreatureTypeIds.fastFoodWorker, 1);
@@ -660,7 +694,7 @@ void prepareEncounter(SiteType type, bool sec,
         weights.add(CreatureTypeIds.chef, 1);
         weights.add(CreatureTypeIds.constructionWorker, 1);
         weights.add(CreatureTypeIds.amateurMagician, 1);
-        weights.add(CreatureTypeIds.hick, 1);
+        weights.add(CreatureTypeIds.angryRuralMob, 1);
         weights.add(CreatureTypeIds.soldier, 1);
         weights.add(CreatureTypeIds.veteran, 2);
         if (nineteenEightyFour) {
@@ -725,6 +759,10 @@ void prepareEncounter(SiteType type, bool sec,
         if (mutantsCommon) weights.add(CreatureTypeIds.mutant, 2);
         weights.add(CreatureTypeIds.gangMember, 1);
         weights.add(CreatureTypeIds.crackhead, 1);
+        weights.add(CreatureTypeIds.cheerleader, 1);
+        weights.add(CreatureTypeIds.punk, 1);
+        weights.add(CreatureTypeIds.goth, 1);
+        weights.add(CreatureTypeIds.emo, 1);
         weights.add(CreatureTypeIds.priest, 1);
         weights.add(CreatureTypeIds.engineer, 1);
         weights.add(CreatureTypeIds.fastFoodWorker, 1);
@@ -742,7 +780,7 @@ void prepareEncounter(SiteType type, bool sec,
         weights.add(CreatureTypeIds.chef, 1);
         weights.add(CreatureTypeIds.constructionWorker, 1);
         weights.add(CreatureTypeIds.amateurMagician, 1);
-        weights.add(CreatureTypeIds.hick, 1);
+        weights.add(CreatureTypeIds.angryRuralMob, 1);
         weights.add(CreatureTypeIds.soldier, 1);
         weights.add(CreatureTypeIds.veteran, 2);
         if (nineteenEightyFour) {
@@ -829,6 +867,7 @@ void prepareEncounter(SiteType type, bool sec,
         weights.add(CreatureTypeIds.corporateManager, 1);
         weights.add(CreatureTypeIds.janitor, 10);
         weights.add(CreatureTypeIds.secretary, 10);
+        weights.add(CreatureTypeIds.engineer, 10);
         if (laws[Law.labor] == DeepAlignment.archConservative) {
           weights.add(CreatureTypeIds.childLaborer, 160);
         } else if (laws[Law.labor] == DeepAlignment.conservative) {
@@ -869,7 +908,6 @@ void prepareEncounter(SiteType type, bool sec,
         weights.add(CreatureTypeIds.janitor, 10);
         weights.add(CreatureTypeIds.secretary, 10);
         weights.add(CreatureTypeIds.radioPersonality, 2);
-        weights.add(CreatureTypeIds.engineer, 20);
         weights.add(CreatureTypeIds.officeWorker, 40);
       case SiteType.cableNewsStation:
         weights.add(CreatureTypeIds.securityGuard, sec ? 100 : 10);
@@ -877,7 +915,6 @@ void prepareEncounter(SiteType type, bool sec,
         weights.add(CreatureTypeIds.janitor, 20);
         weights.add(CreatureTypeIds.secretary, 20);
         weights.add(CreatureTypeIds.newsAnchor, 2);
-        weights.add(CreatureTypeIds.engineer, 40);
         weights.add(CreatureTypeIds.officeWorker, 40);
         weights.add(CreatureTypeIds.photographer, 5);
         weights.add(CreatureTypeIds.cameraman, 5);
@@ -895,6 +932,9 @@ void prepareEncounter(SiteType type, bool sec,
         weights.add(CreatureTypeIds.sexWorker, 10);
         weights.add(CreatureTypeIds.amateurMagician, 1);
         weights.add(CreatureTypeIds.hippie, 1);
+        weights.add(CreatureTypeIds.punk, 1);
+        weights.add(CreatureTypeIds.goth, 1);
+        weights.add(CreatureTypeIds.emo, 1);
         weights.add(CreatureTypeIds.nurse, 5);
         weights.add(CreatureTypeIds.biker, 1);
         weights.add(CreatureTypeIds.painter, 1);
@@ -943,22 +983,14 @@ Future<bool> addsiegeencounter(int type) async {
               case SiegeType.cia:
                 e = Creature.fromId(CreatureTypeIds.agent);
                 ensureIsArmed(e);
-              case SiegeType.hicks:
-                e = Creature.fromId(CreatureTypeIds.hick);
+              case SiegeType.angryRuralMob:
+                e = Creature.fromId(CreatureTypeIds.angryRuralMob);
                 ensureIsArmed(e);
               case SiegeType.corporateMercs:
                 e = Creature.fromId(CreatureTypeIds.merc);
                 ensureIsArmed(e);
               case SiegeType.ccs:
-                if (oneIn(12)) {
-                  e = Creature.fromId(CreatureTypeIds.ccsArchConservative);
-                } else if (oneIn(11)) {
-                  e = Creature.fromId(CreatureTypeIds.ccsMolotov);
-                } else if (oneIn(10)) {
-                  e = Creature.fromId(CreatureTypeIds.ccsSniper);
-                } else {
-                  e = Creature.fromId(CreatureTypeIds.ccsVigilante);
-                }
+                e = Creature.fromId(CreatureTypeIds.ccsVigilante);
                 ensureIsArmed(e);
               default:
                 addstr("Siege type ");
@@ -982,7 +1014,7 @@ Future<bool> addsiegeencounter(int type) async {
                 e = Creature.fromId(CreatureTypeIds.merc);
               case SiteType.amRadioStation:
               case SiteType.cableNewsStation:
-                e = Creature.fromId(CreatureTypeIds.hick);
+                e = Creature.fromId(CreatureTypeIds.angryRuralMob);
               case SiteType.policeStation:
                 if (deathSquadsActive) {
                   e = Creature.fromId(CreatureTypeIds.deathSquad);
@@ -994,13 +1026,7 @@ Future<bool> addsiegeencounter(int type) async {
                 e.align = Alignment.conservative;
               default:
                 if (activeSite!.controller == SiteController.ccs) {
-                  if (oneIn(11)) {
-                    e = Creature.fromId(CreatureTypeIds.ccsMolotov);
-                  } else if (oneIn(10)) {
-                    e = Creature.fromId(CreatureTypeIds.ccsSniper);
-                  } else {
-                    e = Creature.fromId(CreatureTypeIds.ccsVigilante);
-                  }
+                  e = Creature.fromId(CreatureTypeIds.ccsVigilante);
                 } else if (deathSquadsActive) {
                   e = Creature.fromId(CreatureTypeIds.deathSquad);
                 } else {
@@ -1055,23 +1081,23 @@ void ensureIsArmed(Creature enemy) {
     randomint = lcsRandom(lightgun + mediumgun + heavygun);
     if (randomint < lightgun) {
       enemy.giveWeaponAndAmmo(
-          ["WEAPON_SEMIPISTOL_9MM", "WEAPON_REVOLVER_38"].random, 4);
+          ["WEAPON_9MM_HANDGUN", "WEAPON_22_REVOLVER"].random, 4);
     } else if (randomint < (lightgun + mediumgun)) {
       enemy.giveWeaponAndAmmo(
           [
-            "WEAPON_REVOLVER_44",
-            "WEAPON_SEMIPISTOL_45",
-            "WEAPON_SEMIRIFLE_AR15",
-            "WEAPON_SHOTGUN_PUMP",
+            "WEAPON_44_REVOLVER",
+            "WEAPON_45_HANDGUN",
+            "WEAPON_AR15",
+            "WEAPON_PUMP_SHOTGUN",
           ].random,
           4);
     } else {
       enemy.giveWeaponAndAmmo(
           [
-            "WEAPON_AUTORIFLE_AK47",
-            "WEAPON_CARBINE_M4",
-            "WEAPON_AUTORIFLE_M16",
-            "WEAPON_SMG_MP5",
+            "WEAPON_AK102",
+            "WEAPON_M4",
+            "WEAPON_M7",
+            "WEAPON_MP5",
           ].random,
           4);
     }

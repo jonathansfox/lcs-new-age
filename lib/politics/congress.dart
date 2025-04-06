@@ -273,8 +273,8 @@ Future<void> congress() async {
           mvaddstrc(c * 3 + 3, 78, white, "VP");
         }
 
-        if (sw.elapsedMilliseconds < 5 * (l + 1)) {
-          await pause(sw.elapsedMilliseconds - 5 * (l + 1));
+        if (sw.elapsedMilliseconds < 2 * (l + 1)) {
+          await pause(sw.elapsedMilliseconds - 2 * (l + 1));
         }
       }
     }

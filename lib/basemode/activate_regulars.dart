@@ -1,3 +1,6 @@
+import 'dart:ui';
+
+import 'package:collection/collection.dart';
 import 'package:lcs_new_age/basemode/activities.dart';
 import 'package:lcs_new_age/basemode/help_system.dart';
 import 'package:lcs_new_age/common_actions/equipment.dart';
@@ -12,7 +15,8 @@ import 'package:lcs_new_age/daily/activities/recruiting.dart';
 import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/gamestate/squad.dart';
-import 'package:lcs_new_age/items/armor_type.dart';
+import 'package:lcs_new_age/items/armor_upgrade.dart';
+import 'package:lcs_new_age/items/clothing_type.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
 import 'package:lcs_new_age/utils/colors.dart';
 import 'package:lcs_new_age/utils/interface_options.dart';
@@ -97,7 +101,7 @@ List<ActivityType> _illegal = [
 List<ActivityType> _acquisition = [
   ActivityType.recruiting,
   ActivityType.stealCars,
-  ActivityType.makeArmor,
+  ActivityType.makeClothing,
   ActivityType.wheelchair,
 ];
 
@@ -323,7 +327,7 @@ void _legalChoice(Creature c, int choice) {
 }
 
 void _legalDefault(Creature c) {
-  if (c.weapon.type.musicalAttack) {
+  if (c.weapon.type.instrument) {
     c.activity = Activity(ActivityType.sellMusic);
   } else if (c.rawSkill[Skill.art]! > 1) {
     c.activity = Activity(ActivityType.sellArt);
@@ -374,7 +378,7 @@ void _acquisitionSubmenu(Creature c) {
   _y = 10;
   _subActivity(ActivityType.recruiting, "1 - Recruiting");
   _subActivity(ActivityType.stealCars, "2 - Steal a Car");
-  _subActivity(ActivityType.makeArmor, "3 - Make Clothing");
+  _subActivity(ActivityType.makeClothing, "3 - Make Clothing");
   _subActivity(ActivityType.wheelchair, "4 - Procure a Wheelchair",
       greyOut: c.canWalk || c.hasWheelchair);
 }
@@ -382,7 +386,7 @@ void _acquisitionSubmenu(Creature c) {
 Future<void> _acquisitionChoice(Creature c, int choice) async {
   if (choice == 1) await _selectRecruitTarget(c);
   if (choice == 2) c.activity = Activity(ActivityType.stealCars);
-  if (choice == 3) await _selectArmorToMake(c);
+  if (choice == 3) await _selectClothingToMake(c);
   if (choice == 4 && !c.canWalk && !c.hasWheelchair) {
     c.activity = Activity(ActivityType.wheelchair);
   }
@@ -456,33 +460,182 @@ Future<void> _selectRecruitTarget(Creature cr) async {
       mvaddstrc(y, 0, lightGray, "$key - ${recruitableCreatures[index].name}");
       addDifficultyText(y, 49, recruitableCreatures[index].difficulty);
     },
-    onChoice: (index) => cr.activity = Activity(ActivityType.recruiting,
-        idString: recruitableCreatures[index].type.id),
+    onChoice: (index) async {
+      cr.activity = Activity(ActivityType.recruiting,
+          idString: recruitableCreatures[index].type.id);
+      return true;
+    },
   );
 }
 
-Future<void> _selectArmorToMake(Creature cr) async {
-  List<ArmorType> craftable = [];
-  for (ArmorType a in armorTypes.values) {
-    if (a.makeDifficulty == 0) continue;
-    if (a.deathsquadLegality && !deathSquadsActive) continue;
-    craftable.add(a);
+Future<void> _selectClothingToMake(Creature cr) async {
+  int minDifficulty(ClothingType c) =>
+      c.makeDifficulty +
+      c.allowedArmor.first.makeDifficulty -
+      cr.skill(Skill.tailoring);
+  List<ClothingType> craftable = clothingTypes.values
+      .where((c) =>
+          c.makeDifficulty >= 0 && (!c.deathsquadLegality || deathSquadsActive))
+      .sorted((a, b) => a.name.compareTo(b.name))
+      .sorted((a, b) => minDifficulty(a).compareTo(minDifficulty(b)));
+
+  int selectedClothingIndex = -1;
+  int selectedArmorIndex = 0;
+  ClothingType? getSelectedClothing() {
+    if (selectedClothingIndex == -1) return null;
+    return craftable.elementAtOrNull(selectedClothingIndex);
   }
+
+  ArmorUpgrade getSelectedArmor() =>
+      getSelectedClothing()?.allowedArmor.elementAtOrNull(selectedArmorIndex) ??
+      armorUpgrades.values.first;
+
+  void renderFooter() {
+    _clothingDetailFooter(
+        getSelectedClothing()!, getSelectedArmor(), cr.skill(Skill.tailoring));
+  }
+
   await pagedInterface(
     headerPrompt:
         "Which will ${cr.name} try to make?  (Note: Half Cost if you have cloth)",
     headerKey: {4: "NAME", 37: "DIFFICULTY", 60: "COST"},
     footerPrompt: "Press a Letter to select a Type of Clothing",
+    pageSize: 12,
     count: craftable.length,
     lineBuilder: (y, key, index) {
-      mvaddstrc(y, 0, lightGray, "$key - ${craftable[index].name}");
-      addDifficultyText(y, 37, craftable[index].makeDifficultyFor(cr));
-      String price = "\$${craftable[index].makePrice}";
+      int difficulty = minDifficulty(craftable[index]);
+      bool selected = selectedClothingIndex == index;
+      Color color = lightGray;
+      if (selected) color = white;
+      mvaddstrc(y, 0, color, "$key - ${craftable[index].name}");
+      addDifficultyText(y, 37, difficulty + 4);
+      String price =
+          "\$${craftable[index].makePrice + craftable[index].allowedArmor.first.makePrice}";
       mvaddstrc(y, 64 - price.length, lightGreen, price);
     },
-    onChoice: (index) => cr.activity =
-        Activity(ActivityType.makeArmor, idString: craftable[index].idName),
+    onChoice: (index) async {
+      selectedClothingIndex = index;
+      selectedArmorIndex = 0;
+      renderFooter();
+      return false;
+    },
+    onOtherKey: (key) {
+      ClothingType? clothing = getSelectedClothing();
+      if (key == Key.enter) {
+        return true;
+      }
+      if ((key == Key.rightArrow || key == Key.rightAngleBracket) &&
+          clothing != null) {
+        if (selectedArmorIndex < clothing.allowedArmor.length - 1) {
+          selectedArmorIndex++;
+          renderFooter();
+        }
+      } else if ((key == Key.leftArrow || key == Key.leftAngleBracket) &&
+          clothing != null) {
+        if (selectedArmorIndex > 0) {
+          selectedArmorIndex--;
+          renderFooter();
+        }
+      } else if (key == Key.upArrow && clothing != null) {
+        selectedClothingIndex = (selectedClothingIndex - 1) % craftable.length;
+        selectedArmorIndex = 0;
+        renderFooter();
+      } else if (key == Key.downArrow && clothing != null) {
+        selectedClothingIndex = (selectedClothingIndex + 1) % craftable.length;
+        selectedArmorIndex = 0;
+        renderFooter();
+      }
+      return false;
+    },
   );
+  if (selectedClothingIndex != -1) {
+    cr.activity = Activity(ActivityType.makeClothing,
+        idString:
+            "${craftable[selectedClothingIndex].idName}:ARMOR$selectedArmorIndex");
+  }
+}
+
+void _clothingDetailFooter(
+    ClothingType clothing, ArmorUpgrade armor, int skill) {
+  int armorIndex = clothing.allowedArmor.toList().indexOf(armor);
+  eraseArea(startY: 16);
+  makeDelimiter(y: 16);
+  move(17, 0);
+  bool alarming = clothing.alarming ||
+      (armor.visible &&
+          !clothing.allowVisibleArmor &&
+          clothing.intrinsicArmorId != armor.idName);
+  for (int i = 0; i < 2; i++) {
+    eraseLine(17);
+    if (armorIndex > 0) {
+      addstrc(white, "< ");
+    } else {
+      addstrc(darkGray, "< ");
+    }
+    addstrc(lightGray, "${clothing.name}, ");
+    addstrc(lightBlue, armor.name);
+    addstrc(lightGreen, " \$${clothing.makePrice + armor.makePrice}");
+
+    if (clothing.allowedArmor.length > 1) {
+      addstrc(
+          lightGray, " (${armorIndex + 1}/${clothing.allowedArmor.length})");
+    }
+    if (clothing.allowedArmor.length > armorIndex + 1) {
+      addstrc(white, " >");
+    } else {
+      addstrc(darkGray, " >");
+    }
+    move(console.y, (console.width - console.x) ~/ 2);
+  }
+
+  if (alarming) {
+    setColor(red);
+  } else {
+    setColor(lightBlue);
+  }
+  mvaddstrCenter(18, armor.description);
+
+  mvaddstrc(19, 20, lightGray, "Special Traits: ");
+  List<String> traits =
+      clothing.traitsList(false, specifiedArmorUpgrade: armor);
+  if (traits.isEmpty) {
+    if (alarming) {
+      addstrc(red, "Immediate Alarm");
+    } else {
+      addstrc(darkGray, "None");
+    }
+  } else {
+    addstrc(lightBlue, traits.join(", "));
+    if (alarming) {
+      addstr(", ");
+      addstrc(red, "Alarming");
+    }
+  }
+  mvaddstrc(20, 20, lightGray, "Head: ");
+  addstrc(lightBlue, "${armor.headArmor} Armor");
+  mvaddstrc(21, 20, lightGray, "Torso: ");
+  addstrc(lightBlue, "${armor.bodyArmor} Armor");
+  mvaddstrc(22, 20, lightGray, "Limbs: ");
+  addstrc(lightBlue, "${armor.limbArmor} Armor");
+  mvaddstrc(20, 40, lightGray, "Dodge: ");
+  if (armor.dodgePenalty > 0) {
+    addstrc(red, "-${armor.dodgePenalty}");
+  } else {
+    addstrc(lightGreen, "No Penalty");
+  }
+  mvaddstrc(21, 40, lightGray, "Accuracy: ");
+  if (armor.accuracyPenalty > 0) {
+    addstrc(red, "-${armor.accuracyPenalty}");
+  } else {
+    addstrc(lightGreen, "No Penalty");
+  }
+  mvaddstrc(22, 40, lightGray, "Complexity: ");
+  int difficulty = clothing.makeDifficulty + armor.makeDifficulty + 4 - skill;
+  addDifficultyText(console.y, console.x, difficulty);
+
+  setColor(white);
+  mvaddstrCenter(
+      24, "ENTER - Confirm Selection   ESC - Cancel Making Clothing");
 }
 
 Future<void> _selectSkillForEducation(
@@ -509,8 +662,10 @@ Future<void> _selectSkillForEducation(
               ? skill.classText
               : skill.description);
     },
-    onChoice: (index) =>
-        cr.activity = Activity(activityType, skill: skills[index]),
+    onChoice: (index) async {
+      cr.activity = Activity(activityType, skill: skills[index]);
+      return true;
+    },
   );
 }
 
@@ -530,7 +685,7 @@ void _activityFooter(Creature cr) {
       mvaddstr(23, 3, "Uses Street Smarts to avoid the police.");
     case ActivityType.ccfraud:
       addstr(" commit credit card fraud.");
-      mvaddstr(23, 3, "Uses Computers. Requires a Hacker Den.");
+      mvaddstr(23, 3, "Uses Computers.  Requires a Hacker Den.");
     case ActivityType.clinic:
       addstr(" go to the hospital.");
     case ActivityType.communityService:
@@ -539,17 +694,17 @@ void _activityFooter(Creature cr) {
           23, 3, "A tiny bit of juice.  It's not *real* though, you know?");
     case ActivityType.donations:
       addstr(" solicit donations.");
-      mvaddstr(23, 3, "Uses Persuasion and Business.");
+      mvaddstr(23, 3, "Uses Persuasion and Street Smarts.");
     case ActivityType.graffiti:
       addstr(" spray graffiti.");
       mvaddstr(23, 3, "Uses Art.");
     case ActivityType.hacking:
       addstr(" hack into private networks.");
-      mvaddstr(23, 3, "Uses Computers. Requires a Hacker Den.");
+      mvaddstr(23, 3, "Uses Computers.  Requires a Hacker Den.");
     case ActivityType.interrogation:
       addstr(" tend to hostages.");
       mvaddstr(23, 3, "Uses Psychology and other social skills.");
-    case ActivityType.makeArmor:
+    case ActivityType.makeClothing:
       addstr(" make clothing.");
       mvaddstr(23, 3, "Uses Tailoring.");
     case ActivityType.prostitution:
@@ -725,7 +880,7 @@ Future<void> _activateBulk() async {
         }
       }
     }
-    if (c >= Key.num2 && c <= Key.num6) {
+    if (c >= Key.num1 && c <= Key.num6) {
       selectedactivity = c - Key.num1;
     }
 
@@ -766,8 +921,11 @@ Future<void> _selectTendHostage(Creature cr) async {
       mvaddstr(y, 60,
           "${h.daysSinceJoined} Day${h.daysSinceJoined == 1 ? "" : "s"}");
     },
-    onChoice: (index) => cr.activity =
-        Activity(ActivityType.interrogation, idInt: hostages[index].id),
+    onChoice: (index) async {
+      cr.activity =
+          Activity(ActivityType.interrogation, idInt: hostages[index].id);
+      return true;
+    },
   );
 }
 

@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:collection/collection.dart';
 import 'package:lcs_new_age/common_display/common_display.dart';
@@ -8,7 +9,7 @@ import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/gamestate/squad.dart';
 import 'package:lcs_new_age/items/ammo.dart';
-import 'package:lcs_new_age/items/armor.dart';
+import 'package:lcs_new_age/items/clothing.dart';
 import 'package:lcs_new_age/items/item.dart';
 import 'package:lcs_new_age/items/weapon.dart';
 import 'package:lcs_new_age/items/weapon_type.dart';
@@ -41,14 +42,12 @@ Future<void> equip(List<Item>? loot) async {
 
     int x = 1, y = 10;
     for (int l = page * 18; l < loot.length && l < page * 18 + 18; l++) {
-      String s = loot[l].equipTitle();
-
-      if (loot[l].stackSize > 1 && !loot[l].type.isMoney) {
-        s += " x${loot[l].stackSize}";
-      }
       String let = letterAPlus(l - page * 18, capitalize: true);
-
-      mvaddstr(y, x, "$let - $s");
+      mvaddstrc(y, x, lightGray, "$let - ");
+      loot[l].printEquipTitle();
+      if (loot[l].stackSize > 1 && !loot[l].type.isMoney) {
+        addstrc(lightGray, " x${loot[l].stackSize}");
+      }
 
       x += 26;
       if (x > 53) {
@@ -98,7 +97,7 @@ Future<void> equip(List<Item>? loot) async {
         if (slot < 0 || slot >= loot.length) continue; // Out of range.
 
         bool isWeapon = loot[slot] is Weapon;
-        bool isArmor = loot[slot] is Armor;
+        bool isArmor = loot[slot] is Clothing;
         bool isAmmo =
             squad.any((m) => m.weapon.acceptableAmmo.contains(loot[slot].type));
         if (!isWeapon && !isArmor && !isAmmo) {
@@ -176,10 +175,10 @@ Future<void> equip(List<Item>? loot) async {
             squaddie.giveWeapon(w, loot);
 
             if (page * 18 >= loot.length && page != 0) page--;
-          } else if (loot[slot] is Armor) {
+          } else if (loot[slot] is Clothing) {
             debugPrint(
                 "Giving armor ${loot[slot].type.name} to ${squaddie.name}");
-            Armor a = loot[slot] as Armor;
+            Clothing a = loot[slot] as Clothing;
             squaddie.giveArmor(a, loot);
 
             if (loot[slot].stackSize == 0) loot.removeAt(slot);
@@ -187,7 +186,8 @@ Future<void> equip(List<Item>? loot) async {
             if (page * 18 >= loot.length && page != 0) page--;
           } else if (squaddie.weapon.acceptableAmmo.contains(loot[slot].type) &&
               armok > 0) {
-            int space = 9 - (squaddie.spareAmmo?.stackSize ?? 0);
+            int space = 9 * squaddie.weapon.type.ammoCapacity -
+                (squaddie.spareAmmo?.stackSize ?? 0);
 
             if (!squaddie.weapon.type.usesAmmo) {
               errmsg = "Can't carry ammo without a gun.";
@@ -260,7 +260,9 @@ Future<void> equip(List<Item>? loot) async {
     }
     //PAGE DOWN
     if ((isPageDown(c) || c == Key.downArrow || c == Key.rightArrow) &&
-        (page + 1) * 18 < loot.length) page++;
+        (page + 1) * 18 < loot.length) {
+      page++;
+    }
   }
 }
 
@@ -280,10 +282,13 @@ Future<void> moveLoot(List<Item> dest, List<Item> source) async {
     int x = 1, y = 10;
 
     for (int l = page * 18; l < source.length && l < page * 18 + 18; l++) {
-      setColor(selected[l] > 0 ? lightGreen : lightGray);
+      String str = letterAPlus(l - page * 18, capitalize: true);
+      mvaddstrc(y, x, lightGray, "$str - ");
 
-      String s = source[l].equipTitle();
+      Color baseColor = selected[l] > 0 ? lightGreen : lightGray;
+      source[l].printEquipTitle(baseColor: baseColor);
 
+      String s = "";
       if (source[l].stackSize > 1) {
         s += " ";
         if (selected[l] > 0) {
@@ -293,10 +298,7 @@ Future<void> moveLoot(List<Item> dest, List<Item> source) async {
         }
         s += source[l].stackSize.toString();
       }
-
-      String str = letterAPlus(l - page * 18, capitalize: true);
-
-      mvaddstr(y, x, "$str - $s");
+      addstrc(baseColor, s);
 
       x += 26;
       if (x > 53) {
@@ -342,7 +344,9 @@ Future<void> moveLoot(List<Item> dest, List<Item> source) async {
     }
     //PAGE DOWN
     if ((isPageDown(c) || c == Key.downArrow || c == Key.rightArrow) &&
-        (page + 1) * 18 < source.length) page++;
+        (page + 1) * 18 < source.length) {
+      page++;
+    }
   }
 
   for (int l = source.length - 1; l >= 0; l--) {
@@ -393,8 +397,8 @@ Future<void> equipmentBaseAssign() async {
     for (p = pageLoot * 19;
         p < items.length && p < pageLoot * 19 + 19;
         p++, y++) {
-      mvaddstrc(
-          y, 0, lightGray, "${letterAPlus(y - 2)} - ${items[p].equipTitle()}");
+      mvaddstrc(y, 0, lightGray, "${letterAPlus(y - 2)} - ");
+      items[p].printEquipTitle();
       mvaddstr(y, 25,
           siteFromItem[items[p]]!.getName(short: true, includeCity: true));
     }
@@ -439,7 +443,9 @@ Future<void> equipmentBaseAssign() async {
     }
     //PAGE DOWN (items)
     if ((isPageDown(c) || c == Key.downArrow || c == Key.rightArrow) &&
-        (pageLoot + 1) * 19 < items.length) pageLoot++;
+        (pageLoot + 1) * 19 < items.length) {
+      pageLoot++;
+    }
 
     //PAGE UP (locations)
     if (c == ','.codePoint && pageLoc > 0) pageLoc--;

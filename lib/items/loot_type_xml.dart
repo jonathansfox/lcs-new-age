@@ -1,3 +1,4 @@
+import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/items/loot_type.dart';
 import 'package:xml/xml.dart';
 
@@ -15,7 +16,9 @@ void parseLootType(LootType loot, XmlElement xml) {
       case 'cloth':
         loot.cloth = bool.tryParse(element.innerText) ?? loot.cloth;
       case 'fencevalue':
-        loot.fenceValue = int.tryParse(element.innerText) ?? loot.fenceValue;
+        loot.fenceValue = double.tryParse(element.innerText) ?? loot.fenceValue;
+      default:
+        debugPrint("Unknown loot type key: $key");
     }
   }
 }

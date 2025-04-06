@@ -1,3 +1,5 @@
+import 'package:lcs_new_age/politics/alignment.dart';
+
 bool? parseBool(String value) {
   bool? result = bool.tryParse(value);
   if (result != null) return result;
@@ -19,4 +21,15 @@ bool? parseBool(String value) {
     return (min, max);
   }
   return null;
+}
+
+DeepAlignment? parseAlignment(String value) {
+  return switch (value.toLowerCase()) {
+    "l+" || "elite liberal" => DeepAlignment.eliteLiberal,
+    "l" || "liberal" => DeepAlignment.liberal,
+    "m" || "moderate" => DeepAlignment.moderate,
+    "c" || "conservative" => DeepAlignment.conservative,
+    "c+" || "arch conservative" => DeepAlignment.archConservative,
+    _ => null
+  };
 }

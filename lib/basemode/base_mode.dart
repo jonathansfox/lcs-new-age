@@ -219,7 +219,7 @@ void printLocation(Site loc) {
           mvaddstr(2, 1, "The police are raiding");
         case SiegeType.cia:
           mvaddstr(2, 1, "The CIA is raiding");
-        case SiegeType.hicks:
+        case SiegeType.angryRuralMob:
           mvaddstr(2, 1, "An angry mob is storming");
         case SiegeType.corporateMercs:
           mvaddstr(2, 1, "Corporate mercs are attacking");
@@ -415,21 +415,21 @@ void printSafehouseSecurityBox(Site site) {
   int heatProtection = site.heatProtection;
 
   setColor(lightGray);
-  mvaddstr(10, 1, "┌────────────────┐");
+  mvaddstr(9, 1, "┌────────────────┐");
+  mvaddstr(10, 1, "│                │");
   mvaddstr(11, 1, "│                │");
-  mvaddstr(12, 1, "│                │");
-  mvaddstr(13, 1, "└────────────────┘");
+  mvaddstr(12, 1, "└────────────────┘");
 
-  mvaddstr(10, 2, site.getName(short: true, includeCity: true));
+  mvaddstr(9, 2, site.getName(short: true, includeCity: true));
   if (site.siege.underAttack) {
-    mvaddstrc(11, 3, red, "Under Attack");
+    mvaddstrc(10, 3, red, "Under Attack");
   } else if (site.siege.underSiege) {
-    mvaddstrc(11, 3, yellow, "Under Siege");
+    mvaddstrc(10, 3, yellow, "Under Siege");
   } else {
-    mvaddstrc(11, 2, lightGray, "Heat: ");
-    addstrc(heat > heatProtection ? red : darkGray, "$heat%");
-    mvaddstrc(12, 2, lightGray, "Secrecy: ");
-    addstrc(heat > heatProtection ? red : darkGray, "$heatProtection%");
+    mvaddstrc(10, 2, lightGray, "Heat: ");
+    addstrc(heat > heatProtection ? red : darkGray, "$heat");
+    mvaddstrc(11, 2, lightGray, "Secrecy: ");
+    addstrc(heat > heatProtection ? red : darkGray, "$heatProtection");
   }
 }
 

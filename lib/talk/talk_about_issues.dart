@@ -21,7 +21,9 @@ Future<bool> talkAboutIssues(Creature a, Creature tk) async {
   bool youAreStupid = false;
   bool issueTooLiberal = false;
 
-  if (!a.attributeCheck(Attribute.intelligence, Difficulty.easy)) {
+  if (a.attribute(Attribute.intelligence) < 5 ||
+      oneIn(a.attribute(Attribute.intelligence)) &&
+          a.attributeCheck(Attribute.intelligence, Difficulty.average)) {
     youAreStupid = true;
   } else if (laws[lw] == DeepAlignment.eliteLiberal) {
     issueTooLiberal = true;
@@ -177,41 +179,39 @@ class _DiscussionPoint {
 
 Map<Law, _DiscussionPoint> _discussionPoints = {
   Law.abortion: _DiscussionPoint(
-      "The government is systematically trying to rob women of the right",
-      "to control their own destinies.",
-      "Conservatives make women turn to coat hangers.",
-      "Conservatives don't like abortion.",
+      "Forced birth policies are about control, not life. After all, if it",
+      "were about life, they'd fund healthcare and childcare.",
+      "Conservatives think women should just hold it in for nine months.",
+      "If abortion is really legal, why aren't more women doing it?",
       "Abortion is murder."),
   Law.animalRights: _DiscussionPoint(
-      "Animals are routinely subjected to inhumane treatment in labs in this",
-      "country.",
-      "Richard Gere put a gerbil in his butt!",
-      "Animals are denied the right to vote.",
+      "Animals endure unimaginable suffering in labs, just so we can test",
+      "cheap products like shampoo and mascara.",
+      "Every time you eat chicken, a chicken ghost haunts your freezer.",
+      "We've come so far, but animals are still denied the right to vote!",
       "Don't pretend animals are human."),
   Law.policeReform: _DiscussionPoint(
-      "The police regularly torture minority suspects during interrogations.",
-      null,
-      "Fuck the police!",
-      "The police are still out there.",
-      "Only criminals have reason to fear police.")
-    ..noProfanityStupidPrompt =
-        "[The police are not doing their job very well!]",
+      "System racism and lack of accountability in policing disproportionately",
+      "harm marginalized communities.",
+      "Cops write speeding tickets just to fund their donut breaks!",
+      "Why the fuck haven't we abolished the police yet?",
+      "Only criminals have reason to fear police."),
   Law.privacy: _DiscussionPoint(
-      "Files are being kept on innocent citizens whose only crime is to",
-      "speak out against a system that is trying to farm them like beasts.",
-      "Better watch what you say.  They've got ears everywhere.",
-      "The government runs intelligence agencies.",
+      "The intelligence community monitors innocent citizens, treating your",
+      "private life like a library book they can check out at any time.",
+      "The NSA probably has notes on how many holes are in your underwear.",
+      "Do you really trust the government to have spy agencies?",
       "National security is important."),
   Law.deathPenalty: _DiscussionPoint(
-      "Over thirty innocent people have been executed over the past decade.",
-      null,
+      "The death penalty isn't justice, it's institutionalized revenge.",
+      "They're just punishing murder by committing more murder!",
       "They executed this one dude, and like, his head caught on fire.",
       "You can go to prison for life for serious crimes.",
       "Some people deserve to die."),
   Law.nuclearPower: _DiscussionPoint(
       "Radioactive waste is being stored all over the country, and it poses",
       "a serious threat to many families, even in this neighborhood.",
-      "Have you seen Godzilla?  Nuclear power is bad, yo.",
+      "Have you seen Godzilla?  Nuclear power is bad!",
       "Some people support legalizing nuclear power.",
       "Nuclear power is clean."),
   Law.pollution: _DiscussionPoint(
@@ -221,95 +221,95 @@ Map<Law, _DiscussionPoint> _discussionPoints = {
       "We're still polluting a little bit.",
       "It's not that bad."),
   Law.labor: _DiscussionPoint(
-      "Have you noticed how people are working more and more hours for less and",
-      "less money?  It's all part of a plan to keep you enslaved, man.",
-      "Conservatives want to make babies work!",
-      "Corporate bosses don't always give in to unions.",
+      "Corporate greed has turned full-time jobs into poverty traps, while",
+      "workers' rights are eroded daily.",
+      "Nobody gets paid a cent unless a union is involved!",
+      "Even with unions, corporate bosses still try to jerk us around.",
       "Trust the free market, it hasn't failed us yet."),
   Law.lgbtRights: _DiscussionPoint(
-      "Trans people are just like anyone else, and yet they are treated in this",
-      "country as if they are deviants fit only for cheap entertainment.",
-      "The man won't say trans rights!",
-      "Not everybody likes trans people.",
+      "Trans people are just like anyone else, yet they're still fighting",
+      "against laws that treat them as second-class citizens.",
+      "The man doesn't even know you is a pronoun.  That's messed up.",
+      "We still have work to do ensuring society treats trans people fairly.",
       "I hate trans people."),
   Law.corporate: _DiscussionPoint(
       "Corporate executives use giant corporations as a means to become parasites",
       "that suck wealth out of this country and put it into their pockets.",
       "The corporations are putting you down, dude.",
-      "There are corporations.",
-      "Corporations are part of capitalism."),
+      "How can we have come this far and still have corporate personhood?",
+      "Corporations are an important part of capitalism."),
   Law.freeSpeech: _DiscussionPoint(
       "Protests and demonstrations are regularly and often brutally suppressed in",
       "this country.  People have to watch what they write -- even what they read.",
       "The government won't let me fucking swear!",
-      "People get mad if you swear a lot in public.",
+      "Free speech is an eternal struggle.  We could easily slide back.",
       "Don't be offensive and you'll be fine.")
     ..noProfanityStupidPrompt = "The government won't let me [kindly] swear!",
   Law.flagBurning: _DiscussionPoint(
       "Burning a piece of cloth is actually stigmatized in this country.",
       "You can love freedom and still hate what our government stands for.",
       "The flag is stupid.",
-      "The flag code says you shouldn't make it into clothing.",
+      "The flag represents colonialism and oppression.  We should burn it.",
       "That flag is the sacred symbol of our country.")
     ..noProfanityStupidPrompt = "[I feel sad when I see our flag.]",
   Law.gunControl: _DiscussionPoint(
       "We live in such a backwards country right now that people think it's",
       "a right to walk around with the power to murder at any moment.",
       "Guns *kill* people.",
-      "We need to repeal the second amendment.",
+      "We can't finish banning guns until we repeal the second amendment.",
       "Without guns, we're slaves to the Government."),
   Law.taxes: _DiscussionPoint(
       "The tax code has been designed to perpetuate an unjust class",
       "structure that is keeping you oppressed.",
       "Rich people, like, have money, man.",
-      "There's still inequality in this country.",
+      "We should raise taxes even more.  There's so much more we can do.",
       "I want to pay lower taxes."),
   Law.genderEquality: _DiscussionPoint(
       "Sexism is still pervasive, in subtle ways, and women make much less",
       "than they deserve for their labor.",
       "We need more women!",
-      "Some people are sexist.",
+      "Despite our progress, there's more to be done for women's rights.",
       "Why don't you go burn a bra or something?"),
   Law.civilRights: _DiscussionPoint(
-      "Despite our progress, this society is still strangled by its continuing",
-      "legacy of racial discrimination and inequality.",
-      "Conservatives are all racists!",
-      "I knew some people that were pretty racist.",
+      "Racial discrimination isn't a relic of the past, it's woven into the",
+      "fabric of our institutions, holding back true equality.",
+      "Racism put on a suit and got a desk job.",
+      "Implicit bias is something we all need to struggle against.",
       "Reverse discrimination is still discrimination."),
   Law.drugs: _DiscussionPoint(
-      "The government's drug policy is a mess.  We need to stop filling",
-      "prisons with drug users, and only intervene when people really need help.",
+      "The government's drug policy is a mess.  We need to stop filling prisons",
+      "with drug users, and only intervene when people really need help.",
       "Dude, the government won't let you do drugs.",
-      "Drugs are expensive.",
+      "You can still be fired for using drugs, even without a performance issue.",
       "Drugs are a terrible influence on society."),
   Law.immigration: _DiscussionPoint(
-      "Millions of people are doing jobs most folks don't even want, and",
-      "saving their families from poverty, but we just try to kick them out.",
-      "They're all trying to keep people out of the country.",
+      "Millions of people are treated like criminals for living normal lives.",
+      "Immigration is an act of hope that deserves our respect, not rejection.",
+      "Borders are just lines on a map, man.",
       "All the immigrants, not everybody likes them.",
       "Immigration undermines our economy and culture."),
   Law.elections: _DiscussionPoint(
       "Political favors are bought and sold for campaign contributions,",
       "and the voting system enforces two party dominance.",
       "The politicians are just tools of the corporations!",
-      "Some of these politicians rub me the wrong way.",
+      "Politicians who self-finance their campaigns essentially buy their office.",
       "Unregulated campaigning is a matter of free speech."),
   Law.military: _DiscussionPoint(
-      "Take a breath and think about the world we live in, that we're spending",
-      "hundreds of billions on new ways to kill people.  This has to stop!",
-      "Patriots are idiots! Give peace a chance!",
-      "We still have a military.",
+      "We spend billions on weapons while schools and hospitals beg for funding.",
+      null,
+      "I bet the Pentagon has a secret budget for laser sharks.",
+      "Every penny we spend on the military could be better spent elsewhere.",
       "The military protects us and enables our way of life."),
   Law.torture: _DiscussionPoint(
       "In the name of national security, we've sacrificed our soul by letting",
-      "the government torture and abuse human beings on our behalf",
-      "Torture is bad!",
-      "Some conservatives support torture.",
+      "the government torture and abuse human beings on our behalf.",
+      "The government is wasting money on extreme sports like waterboarding!",
+      "We need to stay vigilant about respecting human rights at all times.",
       "The terrorists would do worse to us."),
   Law.prisons: _DiscussionPoint(
       "The prison system doesn't help criminals by providing rehabilitation, so",
       "when they get released, they mostly become criminals again.",
-      "Prisoners don't have freedom!",
-      "Prisons still exist.",
+      "They lock people in tiny rooms with no snacks.  That's messed up.",
+      "We need to keep moving and work to achieve a world without prisons.",
       "Criminals deserve what they get in prison."),
 };

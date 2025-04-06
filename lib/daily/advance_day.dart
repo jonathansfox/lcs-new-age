@@ -45,8 +45,8 @@ Future<void> advanceDay() async {
     _moveSquadlessToBases();
     await _tendHostages();
     await _advanceSquads();
-    await soloActivities();
   }
+  await soloActivities(disbanding);
   if (!disbanding) await _dailyHealing();
   await dispersalCheck();
   await _doRent();
@@ -429,13 +429,13 @@ Future<void> dispersalCheck() async {
         else if ((dispersalStatus[p] == DispersalTypes.bossSafe && inprison) ||
             dispersalStatus[p] == DispersalTypes.bossInPrison) {
           DispersalTypes dispersalval = DispersalTypes.safe;
-          if (p.seduced) {
-            if ((dispersalStatus[p] == DispersalTypes.bossInPrison &&
-                    !inprison) ||
-                (dispersalStatus[p] == DispersalTypes.bossSafe && inprison)) {
-              p.juice--; // Love slaves bleed juice when not in prison with their lover
-              if (p.juice < -50) dispersalval = DispersalTypes.abandonLCS;
-            }
+          if (p.seduced &&
+              (p.location != p.boss?.location) &&
+              (p.typeId != CreatureTypeIds.lawyer || !p.sleeperAgent)) {
+            // Recruited by seduction loses juice when not in prison
+            // with their lover
+            p.juice--;
+            if (p.juice < -50) dispersalval = DispersalTypes.abandonLCS;
           }
           dispersalStatus[p] = dispersalval; // Guaranteed contactable in prison
 
@@ -613,8 +613,11 @@ Future<void> _dailyHealing() async {
   for (Site site in sites) {
     medical[site] = 0;
     injuries[site] = 0;
-    // Clinic is equal to a skill 6 liberal
+    // Clinic and lockups are equal to a skill 6 liberal
     if (site.type == SiteType.clinic) medical[site] = 6;
+    if (site.type == SiteType.policeStation) medical[site] = 6;
+    if (site.type == SiteType.courthouse) medical[site] = 6;
+    if (site.type == SiteType.prison) medical[site] = 6;
     // Hospital is equal to a skill 12 liberal
     if (site.type == SiteType.universityHospital) medical[site] = 12;
   }
@@ -627,7 +630,7 @@ Future<void> _dailyHealing() async {
       // Don't let starving locations heal
       if (p.site!.foodDaysLeft < 1 && p.site!.siege.underSiege) continue;
       // Anyone present can help heal, but only the highest skill matters
-      if (medical[p.site]! < p.skill(Skill.firstAid)) {
+      if ((medical[p.site] ?? 0) < p.skill(Skill.firstAid)) {
         medical[p.site!] = p.skill(Skill.firstAid);
       }
     }
@@ -679,26 +682,23 @@ Future<void> _dailyHealing() async {
               transfer = true; // Impossible to stabilize
             }
           }
-        } else if (w.bleeding) {
+        } else if (w.bleeding > 0) {
           // Bleeding wounds
           // Chance to stabilize wound
           // Difficulty 8 (1 in 10 of happening naturally)
           if (p.site != null && medical[p.site]! + lcsRandom(10) > 8) {
-            w.bleeding = false;
+            w.bleeding = 0;
           } else {
             // Else take bleed damage (1)
             damage += 1;
+            w.bleeding = max(0, w.bleeding - 1);
           }
         }
         // Non-bleeding wounds
         else {
           // Erase wound if almost fully healed, but preserve loss of limbs.
           if (p.blood >= p.maxBlood - 5) {
-            w.bruised = false;
-            w.bleeding = false;
-            w.shot = false;
-            w.cut = false;
-            w.torn = false;
+            w.heal();
           }
         }
       }
@@ -797,10 +797,9 @@ Future<void> _dailyHealing() async {
     //If present, qualified to heal, and doing so
     if (p.site != null) {
       //Clear activity if their location doesn't have healing work to do
-      if (injuries[p.site]! > 0) {
+      if ((injuries[p.site] ?? 0) > 0) {
         //Give experience based on work done and current skill
-        p.train(Skill.firstAid,
-            max(0, injuries[p.site]! ~/ 5 - p.skill(Skill.firstAid) * 2));
+        p.train(Skill.firstAid, min(50, max(injuries[p.site]! ~/ 5, 1)));
       }
     }
   }

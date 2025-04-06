@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:lcs_new_age/basemode/base_actions.dart';
+import 'package:lcs_new_age/basemode/help_system.dart';
 import 'package:lcs_new_age/basemode/review_mode.dart';
 import 'package:lcs_new_age/common_actions/common_actions.dart';
 import 'package:lcs_new_age/common_actions/equipment.dart';
@@ -24,7 +25,6 @@ import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/newspaper/news_story.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
 import 'package:lcs_new_age/politics/laws.dart';
-import 'package:lcs_new_age/politics/politics.dart';
 import 'package:lcs_new_age/sitemode/advance.dart';
 import 'package:lcs_new_age/sitemode/chase_sequence.dart';
 import 'package:lcs_new_age/sitemode/fight.dart';
@@ -63,6 +63,10 @@ Future<void> siteMode(Site loc) async {
     locz = 0;
     // Second floor start of White House
     if (loc.type == SiteType.whiteHouse && currentTile.wall) locz++;
+
+    // Visit everything that can be found from the starting location without
+    // going through a wall or door
+    floodVisitAllTiles(locx, locy, locz);
 
     //check for sleeper infiltration or map knowledge
     for (int p = 0; p < pool.length; p++) {
@@ -125,9 +129,11 @@ Future<void> siteMode(Site loc) async {
 
     SiteTile tile;
     for (int l = 0; l < lootnum; l++) {
-      do {
-        tile = levelMap[lcsRandom(MAPX)][lcsRandom(MAPY)][0];
-      } while (tile.wall || tile.door || tile.exit || tile.outdoor);
+      Iterable<SiteTile> options = levelMap
+          .allOnFloor(0)
+          .where((t) => !t.wall && !t.door && !t.exit && !t.loot);
+      if (options.isEmpty) break;
+      tile = options.where((t) => !t.outdoor).randomOrNull ?? options.random;
       tile.loot = true;
     }
 
@@ -301,135 +307,99 @@ Future<void> _siteModeAux() async {
       } else {
         setColor(darkGray);
       }
-      mvaddstr(9, 1, "W,A,D,X - Move");
-      if (partysize > 1) {
-        setColor(lightGray);
-      } else {
-        setColor(darkGray);
-      }
-      mvaddstr(11, 1, "O - Change the squad's Liberal order");
-      if (partysize > 0 && (activeSquadMember == null || partysize > 1)) {
-        setColor(lightGray);
-      } else {
-        setColor(darkGray);
-      }
-      mvaddstr(12, 1, "# - Check the status of a squad Liberal");
-      if (activeSquadMember != null) {
-        setColor(lightGray);
-      } else {
-        setColor(darkGray);
-      }
-      mvaddstr(13, 1, "0 - Show the squad's Liberal status");
-
-      if (groundLoot.isNotEmpty || currentTile.loot) {
-        setColor(lightGray);
-      } else {
-        setColor(darkGray);
-      }
-      mvaddstr(9, 17, "G - Get Loot");
-
-      mvaddstrc(9, 32, lightGray, "M - Map");
-
-      mvaddstrc(10, 32, lightGray, "S - Wait");
-
-      if (!enemy || !siteAlarm) {
-        setColor(lightGray);
-      } else {
-        setColor(darkGray);
-      }
-      mvaddstr(10, 42, "L - Reload");
-
-      if (enemy) {
-        setColor(lightGray);
-      } else {
-        setColor(darkGray);
-      }
-      mvaddstr(13, 42, "K - Kidnap");
-
-      if (talkers > 0) {
-        setColor(lightGray);
-      } else {
-        setColor(darkGray);
-      }
-      mvaddstr(14, 17, "T - Talk");
-
+      mvaddstrc(23, 1, blue, "W");
+      addstrc(lightGray, ",");
+      addstrc(blue, "A");
+      addstrc(lightGray, ",");
+      addstrc(blue, "D");
+      addstrc(lightGray, ",");
+      addstrc(blue, "X");
+      addstrc(lightGray, "-Move, ");
+      addstrc(groundLoot.isNotEmpty || currentTile.loot ? blue : darkGray, "G");
+      addstrc(groundLoot.isNotEmpty || currentTile.loot ? lightGray : darkGray,
+          "et, ");
+      addstrc(blue, "M");
+      addstrc(lightGray, "ap, ");
+      addstrc(blue, "E");
+      addstrc(lightGray, "quip, ");
+      addstrc(blue, "S");
+      addstrc(lightGray, "tall, ");
+      addstrc(!enemy || !siteAlarm ? lightGray : darkGray, "re");
+      addstrc(!enemy || !siteAlarm ? blue : darkGray, "L");
+      addstrc(!enemy || !siteAlarm ? lightGray : darkGray, "oad, ");
+      addstrc(partysize > 1 ? blue : darkGray, "O");
+      addstrc(partysize > 1 ? lightGray : darkGray, "rder,");
       bool graffiti = false;
+      bool useColor;
       if (currentTile.special != TileSpecial.none &&
           currentTile.special != TileSpecial.clubBouncerSecondVisit) {
-        setColor(lightGray);
+        useColor = true;
       } else if (!(currentTile.graffitiLCS || currentTile.megaBloody)) {
         if (currentTile.right?.wall == true ||
             currentTile.left?.wall == true ||
             currentTile.down?.wall == true ||
             currentTile.up?.wall == true) {
           if (squad.any((c) => c.weapon.type.canGraffiti)) {
-            setColor(lightGray);
+            useColor = true;
             graffiti = true;
           } else {
-            setColor(darkGray);
+            useColor = false;
           }
         } else {
-          setColor(darkGray);
+          useColor = false;
         }
       } else {
-        setColor(darkGray);
+        useColor = false;
       }
-      move(11, 42);
-      if (graffiti) {
-        addstr("U - Graffiti");
-      } else {
-        addstr("U - Use");
-      }
-
-      move(12, 42);
+      mvaddstrc(24, 1, useColor ? blue : darkGray, "U");
+      addstrc(
+          useColor ? lightGray : darkGray, graffiti ? "-graffiti, " : "se, ");
       if (enemy && siteAlarm) {
-        bool evade = false;
-        setColor(lightGray);
+        bool canSneak = false;
         for (Creature e in encounter) {
           if (e.alive && e.noticedParty) {
             // You can't sneak past this person; they already know you're there
-            evade = true;
+            canSneak = true;
             break;
           }
         }
-        if (!evade) {
-          addstr("V - Sneak");
+        addstrc(blue, "V");
+        if (!canSneak) {
+          addstrc(lightGray, "-Sneak, ");
         } else {
-          addstr("V - Run");
+          addstrc(lightGray, "-Flee, ");
         }
       } else {
         setColor(darkGray);
-        addstr("V - Evade");
+        addstr("V-Flee, ");
       }
-
-      mvaddstrc(9, 42, lightGray, "E - Equip");
-
-      if (enemy) {
-        setColor(lightGray);
-      } else {
-        setColor(darkGray);
-      }
-      mvaddstr(14, 1, "F - Fight!");
-
+      addstrc(enemy ? blue : darkGray, "F");
+      addstrc(enemy ? lightGray : darkGray, "ight, ");
+      addstrc(enemy ? blue : darkGray, "K");
+      addstrc(enemy ? lightGray : darkGray, "idnap, ");
+      addstrc(talkers > 0 ? blue : darkGray, "T");
+      addstrc(talkers > 0 ? lightGray : darkGray, "alk, ");
       if (!activeSiteUnderSiege) {
         if (freeable > 0 && (!enemy || !siteAlarm)) {
-          mvaddstrc(14, 32, lightGray, "R - Release oppressed");
+          addstrc(blue, "R");
+          addstrc(lightGray, "escue, ");
         } else {
           if (hostages > 0) {
-            setColor(lightGray);
+            addstrc(blue, "R");
+            addstrc(lightGray, "elease, ");
           } else {
-            setColor(darkGray);
+            addstrc(darkGray, "Release, ");
           }
-          mvaddstr(14, 32, "R - Release hostage");
         }
       } else {
         if (libnum > 6) {
-          setColor(lightGray);
+          addstrc(blue, "R");
+          addstrc(lightGray, "eorganize, ");
         } else {
-          setColor(darkGray);
+          addstrc(darkGray, "Reorganize, ");
         }
-        mvaddstr(14, 32, "R - Reorganize");
       }
+      addstrc(blue, "?");
     } else {
       //DESTROY ALL CARS BROUGHT ALONG WITH PARTY
       if (!activeSiteUnderSiege) {
@@ -450,7 +420,7 @@ Future<void> _siteModeAux() async {
     }
 
     //PRINT SITE MAP
-    printSiteMap(locx, locy, locz);
+    printSiteMapSmall(locx, locy, locz);
 
     //CHECK IF YOU HAVE A SQUIRMING AMATEUR HOSTAGE
     //hostcheck SHOULD ONLY BE 1 WHEN A NEWENC IS CREATED
@@ -464,7 +434,7 @@ Future<void> _siteModeAux() async {
           if (p.prisoner!.squadId == null) {
             //They scream for help -- flag them kidnapped, cause alarm
             p.prisoner!.kidnapped = true;
-            if (p.type.preciousToHicks) offendedHicks = true;
+            if (p.type.preciousToAngryRuralMobs) offendedAngryRuralMobs = true;
             havehostage = true;
           }
         }
@@ -533,10 +503,14 @@ Future<void> _siteModeAux() async {
         }
       }
 
+      if (c == "?".codePoint) {
+        await helpOnSitemode();
+      }
+
       if (c == Key.v && enemy && siteAlarm) {
         clearMessageArea();
         mvaddstrc(
-            16, 1, white, "Which way?  (W,A,D, and X to move, ENTER to abort)");
+            9, 1, white, "Which way?  (W,A,D, and X to move, ENTER to abort)");
 
         while (true) {
           int c2 = await getKey();
@@ -600,7 +574,7 @@ Future<void> _siteModeAux() async {
               .any((c) => c.weapon.type.canGraffiti)) {
             await specialGraffiti();
             if (enemy && siteAlarm) {
-              await enemyattack();
+              await enemyattack(encounter);
             }
           }
         }
@@ -683,36 +657,20 @@ Future<void> _siteModeAux() async {
 
                 mvaddstrc(9, 1, white, "To whom?");
 
-                int x = 1, y = 11;
+                int x = 0, y = 12;
                 for (Creature t in encounter) {
                   int i = encounter.indexOf(t);
                   if (t.isWillingToTalk) {
                     setColor(white);
                     move(y, x);
                     addchar(letterAPlus(i));
-                    addstr(" - ");
-                    switch (t.align) {
-                      case Alignment.conservative:
-                        setColor(red);
-                      case Alignment.liberal:
-                        setColor(lightGreen);
-                      case Alignment.moderate:
-                        setColor(white);
-                    }
-                    addstr(t.name);
+                    addstr(" ");
+                    addstrc(t.align.color, t.name);
                     printCreatureAgeAndGender(t);
 
                     y++;
-                    if (y == 17) {
-                      y = 11;
-                      x += 30;
-                    }
                   } else {
                     y++;
-                    if (y == 17) {
-                      y = 11;
-                      x += 30;
-                    }
                   }
                 }
 
@@ -758,7 +716,7 @@ Future<void> _siteModeAux() async {
             if (tk != -1) {
               if (await talk(squad[sp], encounter[tk])) {
                 if (enemy && siteAlarm) {
-                  await enemyattack();
+                  await enemyattack(encounter);
                 } else if (enemy) {
                   await disguisecheck(encounterTimer);
                 }
@@ -786,157 +744,8 @@ Future<void> _siteModeAux() async {
 
       if (c == Key.m) {
         for (SiteTile tile in levelMap.allOnFloor(locz)) {
-          int x = tile.x;
-          int y = tile.y;
-          if (tile.known) {
-            move(y + 1, x + 5);
-            if (x == locx && y == locy) {
-              setColor(lightGreen);
-              addchar("@");
-            } else {
-              bool cameras = (activeSite!.compound.cameras) &&
-                  !activeSite!.siege.camerasOff;
-              setColor(lightGray);
-              if (tile.wall) {
-                if (tile.neighbors().any((t) => t.graffitiLCS)) {
-                  setColor(green, background: lightGray);
-                  addchar("℄");
-                } else if (tile.neighbors().any((t) => t.graffitiCCS)) {
-                  setColor(darkRed, background: lightGray);
-                  addchar("ℭ");
-                } else if (tile.neighbors().any((t) => t.graffitiOther)) {
-                  setColor(black, background: lightGray);
-                  // Gang graffiti
-                  addchar("Ω");
-                } else {
-                  setColor(lightGray, background: lightGray);
-                  addchar(' ');
-                }
-              } else if (tile.door) {
-                // Pick color
-                if (tile.metal) {
-                  setColor(white, background: white);
-                } else if (tile.cantUnlock && tile.locked) {
-                  setColor(red);
-                } else if (tile.knownLock && tile.locked) {
-                  setColor(darkGray);
-                } else {
-                  setColor(yellow);
-                }
-
-                if (tile.right?.wall == true || tile.left?.wall == true) {
-                  addchar("\u2550");
-                } else {
-                  addchar("\u2551");
-                }
-              } else if ((tile.siegeHeavyUnit) && cameras) {
-                setColor(red);
-                addchar("¥");
-              } else if ((tile.siegeUnit) &&
-                  (activeSite!.compound.cameras) &&
-                  !activeSite!.siege.camerasOff) {
-                setColor(red);
-                addchar("E");
-              } else if ((tile.siegeUnitDamaged) &&
-                  (activeSite!.compound.cameras) &&
-                  !activeSite!.siege.camerasOff) {
-                setColor(darkRed);
-                addchar("e");
-              } else if (tile.special == TileSpecial.stairsUp) {
-                setColor(yellow);
-                addchar("↑");
-              } else if (tile.special == TileSpecial.stairsDown) {
-                setColor(yellow);
-                addchar("↓");
-              } else if ([
-                TileSpecial.displayCase,
-                TileSpecial.cagedRabbits,
-                TileSpecial.cagedMonsters,
-                TileSpecial.polluterEquipment,
-                TileSpecial.sweatshopEquipment
-              ].contains(tile.special)) {
-                setColor(yellow);
-                addchar("*");
-              } else if (tile.special != TileSpecial.none) {
-                setColor(switch (tile.special) {
-                  TileSpecial.clubBouncer => red,
-                  TileSpecial.clubBouncerSecondVisit => red,
-                  TileSpecial.securityCheckpoint => red,
-                  TileSpecial.securityMetalDetectors => red,
-                  TileSpecial.ceoOffice => red,
-                  TileSpecial.ccsBoss => red,
-                  TileSpecial.ovalOfficeNW ||
-                  TileSpecial.ovalOfficeNE ||
-                  TileSpecial.ovalOfficeSW ||
-                  TileSpecial.ovalOfficeSE =>
-                    politics.exec[Exec.president]!.color,
-                  _ => yellow,
-                });
-                addchar(switch (tile.special) {
-                  TileSpecial.apartmentLandlord => "L",
-                  TileSpecial.armory => "A",
-                  TileSpecial.bankMoney => "\$",
-                  TileSpecial.bankTeller => "T",
-                  TileSpecial.bankVault => "V",
-                  TileSpecial.cableBroadcastStudio => "S",
-                  TileSpecial.cagedMonsters => "#",
-                  TileSpecial.cagedRabbits => "#",
-                  TileSpecial.ccsBoss => "!",
-                  TileSpecial.ceoOffice => "O",
-                  TileSpecial.ceoSafe => "\$",
-                  TileSpecial.clubBouncer => "B",
-                  TileSpecial.clubBouncerSecondVisit => "B",
-                  TileSpecial.computer => "c",
-                  TileSpecial.corporateFiles => "\$",
-                  TileSpecial.courthouseJuryRoom => "J",
-                  TileSpecial.courthouseLockup => "#",
-                  TileSpecial.displayCase => "d",
-                  TileSpecial.polluterEquipment => "P",
-                  TileSpecial.sweatshopEquipment => "S",
-                  TileSpecial.labEquipment => "L",
-                  TileSpecial.stairsDown => "↓",
-                  TileSpecial.stairsUp => "↑",
-                  TileSpecial.none => throw UnimplementedError(),
-                  TileSpecial.policeStationLockup => "#",
-                  TileSpecial.prisonControl => "#",
-                  TileSpecial.prisonControlLow => "#",
-                  TileSpecial.prisonControlMedium => "#",
-                  TileSpecial.prisonControlHigh => "#",
-                  TileSpecial.intelSupercomputer => "C",
-                  TileSpecial.nuclearControlRoom => "C",
-                  TileSpecial.radioBroadcastStudio => "S",
-                  TileSpecial.signOne => "?",
-                  TileSpecial.table => "t",
-                  TileSpecial.tent => "t",
-                  TileSpecial.parkBench => "b",
-                  TileSpecial.signTwo => "?",
-                  TileSpecial.signThree => "?",
-                  TileSpecial.securityCheckpoint => "S",
-                  TileSpecial.securityMetalDetectors => "S",
-                  TileSpecial.securitySecondVisit => "S",
-                  TileSpecial.ovalOfficeNW => "┌",
-                  TileSpecial.ovalOfficeNE => "┐",
-                  TileSpecial.ovalOfficeSW => "└",
-                  TileSpecial.ovalOfficeSE => "┘",
-                });
-              } else if (tile.siegeTrap) {
-                setColor(yellow);
-                addchar('%');
-              } else if (tile.loot) {
-                setColor(purple);
-                addchar('\$');
-              } else if (tile.grass) {
-                setColor(green, background: green);
-                addchar(' ');
-              } else {
-                addchar(' ');
-              }
-            }
-          } else {
-            setColor(darkGray, background: darkGray);
-            move(y + 1, x + 5);
-            addchar(' ');
-          }
+          move(tile.y + 1, tile.x + 5);
+          drawTileContent(tile);
         }
 
         await getKey();
@@ -965,8 +774,8 @@ Future<void> _siteModeAux() async {
         if (subdue) {
           await _fightSubdued();
         } else {
-          await youattack();
-          await enemyattack();
+          await youattack(encounter);
+          await enemyattack(encounter);
           await creatureadvance();
           encounterTimer++;
         }
@@ -1037,7 +846,7 @@ Future<void> _siteModeAux() async {
         if (followers > 0) {
           clearMessageArea();
 
-          mvaddstrc(16, 1, white, "You free ");
+          mvaddstrc(9, 1, white, "You free ");
           if (followers > 1) {
             addstr("some Oppressed Liberals");
           } else {
@@ -1051,7 +860,7 @@ Future<void> _siteModeAux() async {
             clearMessageArea();
 
             setColor(white);
-            move(16, 1);
+            move(9, 1);
             if (actgot == 0 && followers > 1) {
               addstr("They all leave");
             } else if (followers - actgot > 1) {
@@ -1090,7 +899,7 @@ Future<void> _siteModeAux() async {
         await equip(activeSquad!.loot);
 
         if (enemy && siteAlarm) {
-          await enemyattack();
+          await enemyattack(encounter);
         } else if (enemy) {
           await disguisecheck(encounterTimer);
         }
@@ -1117,7 +926,7 @@ Future<void> _siteModeAux() async {
         groundLoot.clear();
 
         if (enemy && siteAlarm) {
-          await enemyattack();
+          await enemyattack(encounter);
         } else if (enemy) {
           await disguisecheck(encounterTimer);
         }
@@ -1175,11 +984,11 @@ Future<void> _siteModeAux() async {
           if (!failed) {
             clearMessageArea();
             mvaddstrc(
-                16, 1, lightBlue, "The squad sneaks past the conservatives!");
+                9, 1, lightBlue, "The squad sneaks past the conservatives!");
 
             await getKey();
           } else {
-            await enemyattack();
+            await enemyattack(encounter);
           }
         } else if (enemy) {
           await disguisecheck(encounterTimer);
@@ -1336,7 +1145,7 @@ Future<void> _siteModeAux() async {
           //INFORM
           clearMessageArea();
 
-          mvaddstrc(16, 1, lightGreen, "The CCS has been broken!");
+          mvaddstrc(9, 1, lightGreen, "The CCS has been broken!");
 
           await getKey();
 
@@ -1630,8 +1439,8 @@ Future<void> _siteModeAux() async {
             clearMessageArea();
 
             mvaddstrc(
-                16, 1, lightGreen, "The Conservatives have shrunk back under ");
-            mvaddstr(17, 1, "the power of your Liberal Convictions!");
+                9, 1, lightGreen, "The Conservatives have shrunk back under ");
+            mvaddstr(10, 1, "the power of your Liberal Convictions!");
 
             await getKey();
 
@@ -1649,7 +1458,7 @@ Future<void> _siteModeAux() async {
             case TileSpecial.computer:
               clearMessageArea();
               setColor(white);
-              move(16, 1);
+              move(9, 1);
               currentTile.special = TileSpecial.none;
               if (siteAlarm || siteAlienated.alienated) {
                 addstr("The computer has been unplugged.");
@@ -1668,7 +1477,7 @@ Future<void> _siteModeAux() async {
             case TileSpecial.table:
               clearMessageArea();
               setColor(white);
-              move(16, 1);
+              move(9, 1);
               currentTile.special = TileSpecial.none;
               if (siteAlarm || siteAlienated.alienated) {
                 addstr("Some people are hiding under the table.");
@@ -1681,7 +1490,7 @@ Future<void> _siteModeAux() async {
             case TileSpecial.tent:
               clearMessageArea();
               setColor(white);
-              move(16, 1);
+              move(9, 1);
               currentTile.special = TileSpecial.none;
               if (siteAlarm || siteAlienated.alienated) {
                 addstr("Somebody is hiding in the tent.");
@@ -1694,7 +1503,7 @@ Future<void> _siteModeAux() async {
             case TileSpecial.parkBench:
               clearMessageArea();
               setColor(white);
-              move(16, 1);
+              move(9, 1);
               currentTile.special = TileSpecial.none;
               if (siteAlarm || siteAlienated.alienated) {
                 addstr("The bench is empty.");
@@ -1720,7 +1529,7 @@ Future<void> _siteModeAux() async {
             case TileSpecial.ceoOffice:
               clearMessageArea();
               setColor(white);
-              move(16, 1);
+              move(9, 1);
               currentTile.special = TileSpecial.none;
               if ((siteAlarm ||
                       siteAlienated.alienated ||
@@ -1752,7 +1561,7 @@ Future<void> _siteModeAux() async {
             case TileSpecial.apartmentLandlord:
               clearMessageArea();
               setColor(white);
-              move(16, 1);
+              move(9, 1);
               currentTile.special = TileSpecial.none;
               if (siteAlarm ||
                   siteAlienated.alienated ||
@@ -1907,16 +1716,16 @@ Future<void> _fightSubdued() async {
   squad.clear();
   for (p = 0; p < pool.length; p++) {
     for (var w in pool[p].body.parts) {
-      w.bleeding = false;
+      w.bleeding = 0;
     }
   }
 
   clearMessageArea();
   clearCommandArea();
-  mvaddstrc(16, 1, purple, "The police subdue and arrest the squad.");
+  mvaddstrc(9, 1, purple, "The police subdue and arrest the squad.");
 
   if (hostagefreed > 0) {
-    mvaddstr(17, 1, "Your hostage");
+    mvaddstr(10, 1, "Your hostage");
     if (hostagefreed > 1) {
       addstr("s are free.");
     } else {
@@ -1937,9 +1746,9 @@ Future<void> _openDoor(bool restricted) async {
 
   if (vaultDoor) {
     // Vault door, not usable by bumping
-    clearMessageArea(false);
+    clearMessageArea();
 
-    mvaddstrc(16, 1, white, "The vault door is impenetrable.");
+    mvaddstrc(9, 1, white, "The vault door is impenetrable.");
 
     await getKey();
 
@@ -1956,18 +1765,18 @@ Future<void> _openDoor(bool restricted) async {
 
   if (alarmed) {
     // Unlocked but alarmed door, clearly marked as such
-    clearMessageArea(false);
+    clearMessageArea();
 
     setColor(white);
-    move(16, 1);
+    move(9, 1);
     if (locked) {
       addstr("This door appears to be wired to an alarm.");
 
-      mvaddstr(17, 1, "Try the door anyway? (Yes or No)");
+      mvaddstr(10, 1, "Try the door anyway? (Yes or No)");
     } else {
       addstr("EMERGENCY EXIT ONLY. ALARM WILL SOUND.");
 
-      mvaddstr(17, 1, "Open the door anyway? (Yes or No)");
+      mvaddstr(10, 1, "Open the door anyway? (Yes or No)");
     }
 
     while (true) {
@@ -1985,11 +1794,11 @@ Future<void> _openDoor(bool restricted) async {
     currentTile.flag |= SITEBLOCK_KLOCK;
 
     while (true) {
-      clearMessageArea(false);
+      clearMessageArea();
 
-      mvaddstrc(16, 1, white, "You try the door, but it is locked.");
+      mvaddstrc(9, 1, white, "You try the door, but it is locked.");
 
-      move(17, 1);
+      move(10, 1);
       if (alarmed) {
         addstr("Try to disable the alarm and lock? (Yes or No)");
       } else {
@@ -1998,13 +1807,13 @@ Future<void> _openDoor(bool restricted) async {
 
       int c = await getKey();
 
-      clearMessageArea(false);
+      clearMessageArea();
 
       if (c == Key.y) {
         UnlockResult result = await unlock(UnlockTypes.door);
         // If the unlock was successful
 
-        if (result == UnlockResult.unlocked) {
+        if (result == UnlockResult.unlocked || result == UnlockResult.bashed) {
           // Unlock the door
           currentTile.flag &= ~(SITEBLOCK_LOCKED | SITEBLOCK_ALARMED);
           addDramaToSiteStory(Drama.unlockedDoor);
@@ -2015,7 +1824,7 @@ Future<void> _openDoor(bool restricted) async {
         else if (result == UnlockResult.failed) {
           currentTile.flag |= SITEBLOCK_CLOCK;
           if (currentTile.flag & SITEBLOCK_ALARMED > 0) {
-            mvaddstrc(17, 1, white, "Your tampering sets off the alarm!");
+            mvaddstrc(10, 1, white, "Your tampering sets off the alarm!");
 
             siteAlarm = true;
             await getKey();
@@ -2023,7 +1832,7 @@ Future<void> _openDoor(bool restricted) async {
         }
 
         // Check for people noticing you fiddling with the lock
-        if (result != UnlockResult.noAttempt) {
+        if (result == UnlockResult.bashed) {
           await noticeCheck();
         }
         return;
@@ -2033,10 +1842,10 @@ Future<void> _openDoor(bool restricted) async {
     }
   } else if (locked || (!restricted && alarmed)) {
     while (true) {
-      clearMessageArea(false);
+      clearMessageArea();
 
       setColor(white);
-      move(16, 1);
+      move(9, 1);
       if (locked) {
         addstr("You shake the handle but it is ");
         if (hasSecurity) addstr("still ");
@@ -2045,22 +1854,22 @@ Future<void> _openDoor(bool restricted) async {
         addstr("It's locked from the other side.");
       }
 
-      mvaddstr(17, 1, "Force it open? (Yes or No)");
+      mvaddstr(10, 1, "Force it open? (Yes or No)");
 
       int c = await getKey();
 
       if (c == Key.y) {
         UnlockResult result = await bash(BashTypes.door);
 
-        if (result == UnlockResult.unlocked) {
+        if (result == UnlockResult.unlocked || result == UnlockResult.bashed) {
           currentTile.flag &= ~SITEBLOCK_DOOR;
           int time = 0;
           if (siteAlarmTimer > time || siteAlarmTimer == -1) {
             siteAlarmTimer = time;
           }
           if (currentTile.flag & SITEBLOCK_ALARMED > 0) {
-            clearMessageArea(false);
-            mvaddstrc(16, 1, white, "The alarm goes off!");
+            clearMessageArea();
+            mvaddstrc(9, 1, white, "The alarm goes off!");
 
             siteAlarm = true;
 
@@ -2084,8 +1893,8 @@ Future<void> _openDoor(bool restricted) async {
     currentTile.flag &= ~SITEBLOCK_DOOR;
     if (alarmed) {
       // Opened an unlocked but clearly marked emergency exit door
-      clearMessageArea(false);
-      mvaddstrc(16, 1, white, "It opens easily. The alarm goes off!");
+      clearMessageArea();
+      mvaddstrc(9, 1, white, "It opens easily. The alarm goes off!");
 
       siteAlarm = true;
 
@@ -2118,7 +1927,7 @@ Future<void> squadCleanup() async {
   for (Creature p in pool) {
     p.justEscaped = false;
     for (var bp in p.body.parts) {
-      bp.bleeding = false;
+      bp.bleeding = 0;
     }
   }
 }

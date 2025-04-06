@@ -126,9 +126,11 @@ List<RecruitData> get recruitableCreatures {
       } else if (mutantsPossible) {
         recruitData[i].difficulty = 6;
       } else {
-        recruitData[i].difficulty = 9;
+        recruitData.removeAt(i--);
       }
     }
   }
+  recruitData.sort(
+      (a, b) => (a.difficulty - b.difficulty) * 2 + a.name.compareTo(b.name));
   return recruitData;
 }

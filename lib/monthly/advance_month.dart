@@ -9,7 +9,7 @@ import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/daily/advance_day.dart';
 import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
-import 'package:lcs_new_age/items/armor.dart';
+import 'package:lcs_new_age/items/clothing.dart';
 import 'package:lcs_new_age/items/loot_type.dart';
 import 'package:lcs_new_age/justice/crimes.dart';
 import 'package:lcs_new_age/justice/prison.dart';
@@ -142,11 +142,11 @@ Future<void> advanceMonth() async {
           }
         }
         if (align == Alignment.liberal) {
-          politics.backgroundInfluence.update(View.lcsKnown, (a) => a + power);
-          politics.backgroundInfluence.update(View.ccsHated, (a) => a + power);
+          politics.addBackgroundInfluence(View.lcsKnown, power);
+          politics.addBackgroundInfluence(View.ccsHated, power);
         } else if (align == Alignment.conservative) {
-          politics.backgroundInfluence.update(View.lcsKnown, (a) => a - power);
-          politics.backgroundInfluence.update(View.ccsHated, (a) => a - power);
+          politics.addBackgroundInfluence(View.lcsKnown, -power);
+          politics.addBackgroundInfluence(View.ccsHated, -power);
         }
       }
     }
@@ -186,17 +186,23 @@ Future<void> advanceMonth() async {
     // opinion over time -- if left unchecked, their subtle influence
     // on society will become a self-perpetuating Conservative nightmare!
     else if (v == View.amRadio || v == View.cableNews) {
-      if (politics.publicMood() - 10 < publicOpinion[v]!) {
-        changePublicOpinion(v, -1);
-      }
+      // If the public is much more liberal than the media, slowly shift
+      // away from watching Conservative media
       if (politics.publicMood() - 20 > publicOpinion[v]!) {
         changePublicOpinion(v, 1);
+      }
+      // When disbanding and public opinion is very liberal, don't allow
+      // the Conservative media to gain traction (it's just annoying)
+      if (politics.publicMood() > 90 && disbanding) continue;
+      // Otherwise, slowly shift in favor of Conservative media
+      if (politics.publicMood() - 10 < publicOpinion[v]!) {
+        changePublicOpinion(v, -1);
       }
     }
   }
 
   // Seduction monthly experience stipends for those liberals
-  // who have been getting it on with their love slaves/masters
+  // who have been getting it on with their romantic partners
   // in the background
   for (int s = 0; s < pool.length; s++) {
     int stipendsize = 0;
@@ -326,7 +332,7 @@ Future<void> advanceMonth() async {
         await showMessage("${p.name} is moved to the courthouse for trial.");
 
         p.location = findSiteInSameCity(p.site!.city, SiteType.courthouse);
-        Armor prisoner = Armor("ARMOR_PRISONER");
+        Clothing prisoner = Clothing("CLOTHING_PRISONER");
         p.giveArmor(prisoner, null);
       }
     } else if (p.site?.type == SiteType.courthouse) {

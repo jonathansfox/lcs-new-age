@@ -1,6 +1,4 @@
 /* handles end of round stuff for everyone */
-import 'dart:math';
-
 import 'package:lcs_new_age/creature/attributes.dart';
 import 'package:lcs_new_age/creature/body.dart';
 import 'package:lcs_new_age/creature/creature.dart';
@@ -32,7 +30,7 @@ Future<void> creatureadvance() async {
         if (p.prisoner!.align != Alignment.liberal) {
           clearMessageArea();
           setColor(white);
-          move(16, 1);
+          move(9, 1);
           addstr(p.name);
           addstr(" drops ");
           addstr(p.prisoner!.name);
@@ -92,7 +90,7 @@ Future<void> creatureadvance() async {
         clearMessageArea();
 
         setColor(yellow);
-        move(16, 1);
+        move(9, 1);
         addstr("The Squad smells Conservative panic.");
 
         printEncounter();
@@ -219,27 +217,28 @@ Future<void> advancecreature(Creature cr) async {
   }
 
   for (BodyPart w in cr.body.parts) {
-    if (w.bleeding) {
-      if (lcsRandom(500) < cr.attribute(Attribute.heart)) {
-        w.bleeding = false;
+    if (w.bleeding > 0) {
+      if (lcsRandom(300) < cr.attribute(Attribute.heart)) {
+        w.bleeding -= 1;
       } else if (cr.squadId != null &&
           topmedical != null &&
-          topmedical.skillCheck(Skill.firstAid, Difficulty.formidable)) {
+          topmedical.skillCheck(Skill.firstAid, Difficulty.hard)) {
         clearMessageArea();
         setColor(lightGreen);
-        move(16, 1);
+        move(9, 1);
         addstr(topmedical.name);
         addstr(" was able to slow the bleeding of");
-        move(17, 1);
+        move(10, 1);
         addstr(cr.name);
         addstr("'s wounds.");
 
-        topmedical.train(Skill.firstAid, max(50 - topmedicalskill * 2, 0));
-        w.bleeding = false;
+        topmedical.train(Skill.firstAid, 50);
+        w.bleeding = 0;
 
         await getKey();
       } else {
-        bleed++;
+        bleed += w.bleeding;
+        w.relativeHealth -= w.bleeding / cr.maxBlood;
       }
     }
   }
@@ -249,19 +248,19 @@ Future<void> advancecreature(Creature cr) async {
       (levelMap[locx][locy][locz].firePeak ||
           levelMap[locx][locy][locz].fireEnd)) {
     int burndamage =
-        (levelMap[locx][locy][locz].firePeak) ? lcsRandom(30) : lcsRandom(10);
+        (levelMap[locx][locy][locz].firePeak) ? lcsRandom(10) : lcsRandom(5);
     clearMessageArea();
 
     // Firefighter's bunker gear reduces burn damage
-    if (cr.armor.type.fireResistant) {
-      // Base effect is 3/4 damage reduction, the denominator
+    if (cr.clothing.fireResistant) {
+      // Base effect is 3/3 damage reduction, the denominator
       // increases with low quality or damaged gear
-      int denom = 4;
+      int denom = 3;
 
       // Damaged gear
-      if (cr.armor.damaged) denom += 2;
+      if (cr.clothing.damaged) denom += 1;
       // Shoddy quality gear
-      denom += cr.armor.quality - 1;
+      denom += cr.clothing.quality - 1;
 
       // Apply damage reduction
       burndamage = (burndamage * (1 - (3.0 / denom))).floor();
@@ -274,7 +273,7 @@ Future<void> advancecreature(Creature cr) async {
       await creatureDie(cr, true);
     } else if (burndamage > 0) {
       setColor(darkRed);
-      move(16, 1);
+      move(9, 1);
       addstr(cr.name);
       addstr(" is burned!");
 
@@ -289,7 +288,7 @@ Future<void> advancecreature(Creature cr) async {
 
     levelMap[locx][locy][locz].bloody = true;
 
-    cr.armor.bloody = true;
+    cr.clothing.bloody = true;
 
     if (cr.blood <= 0) {
       // Blame LCS for bleeding deaths unless they're liberal or moderate

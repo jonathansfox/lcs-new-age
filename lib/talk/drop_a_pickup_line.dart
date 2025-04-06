@@ -172,7 +172,7 @@ Future<bool> doYouComeHereOften(Creature a, Creature tk) async {
   }
 
   if (a.indecent) {
-    if (lcsRandom(5) > 0) {
+    if (!oneIn(5)) {
       difficulty += 10;
     } else {
       difficulty -= 10;
@@ -248,7 +248,7 @@ Future<bool> doYouComeHereOften(Creature a, Creature tk) async {
 
   a.train(Skill.seduction, 10);
 
-  if (a.armor.type.police && tk.type.id == CreatureTypeIds.sexWorker) {
+  if (a.clothing.type.police && tk.type.id == CreatureTypeIds.sexWorker) {
     mvaddstrc(y++, 1, white, "${tk.name} responds, ");
     setColor(red);
     move(y++, 1);

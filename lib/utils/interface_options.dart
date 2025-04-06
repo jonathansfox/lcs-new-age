@@ -71,6 +71,18 @@ String get pageStr {
   return "$str to view other Liberal pages";
 }
 
+String pageStrWithCurrentAndMax(int current, int max) {
+  String str;
+  if (interfacePgUp == "[") {
+    str = "[]";
+  } else if (interfacePgUp == ".") {
+    str = ";:";
+  } else {
+    str = "PGUP/PGDN";
+  }
+  return "$str to view other Liberal pages ($current/$max)";
+}
+
 String get pageStrShort {
   String str;
   if (interfacePgUp == "[") {

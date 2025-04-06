@@ -16,8 +16,8 @@ import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/gamestate/squad.dart';
 import 'package:lcs_new_age/items/ammo.dart';
 import 'package:lcs_new_age/items/ammo_type.dart';
-import 'package:lcs_new_age/items/armor.dart';
 import 'package:lcs_new_age/items/attack.dart';
+import 'package:lcs_new_age/items/clothing.dart';
 import 'package:lcs_new_age/items/item.dart';
 import 'package:lcs_new_age/items/weapon.dart';
 import 'package:lcs_new_age/items/weapon_type.dart';
@@ -27,6 +27,7 @@ import 'package:lcs_new_age/location/siege.dart';
 import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
 import 'package:lcs_new_age/sitemode/sitemap.dart';
+import 'package:lcs_new_age/sitemode/stealth.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 import 'package:lcs_new_age/vehicles/vehicle.dart';
 
@@ -107,7 +108,7 @@ class Creature {
 
   Body body = HumanoidBody();
   Weapon? equippedWeapon;
-  Armor? equippedArmor;
+  Clothing? equippedClothing;
   Item? spareAmmo;
 
   // Not saved
@@ -136,9 +137,9 @@ class Creature {
   @JsonKey(includeFromJson: false, includeToJson: false)
   Weapon get weapon => equippedWeapon ?? body.naturalWeapon;
   @JsonKey(includeFromJson: false, includeToJson: false)
-  Armor get armor => equippedArmor ?? body.naturalArmor;
+  Clothing get clothing => equippedClothing ?? body.naturalArmor;
   @JsonKey(includeFromJson: false, includeToJson: false)
-  bool get indecent => equippedArmor == null && !type.animal;
+  bool get indecent => equippedClothing == null && !type.animal;
   @JsonKey(includeFromJson: false, includeToJson: false)
   Creature? prisoner;
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -155,16 +156,17 @@ class Creature {
   bool justEscaped = false;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  Site? get site => location is Site ? location! as Site : null;
+  Site? get site {
+    Location? l = location;
+    return l is Site ? l : null;
+  }
+
   @JsonKey(includeFromJson: false, includeToJson: false)
-  Location? get location =>
-      allLocations.firstWhereOrNull((l) => l.idString == locationId);
+  Location? get location => locationMap[locationId];
   set location(Location? loc) => locationId = loc?.idString;
   @JsonKey(includeFromJson: false, includeToJson: false)
   Location get workLocation {
-    return sites.firstWhereOrNull((e) => e.idString == workLocationId) ??
-        location?.city ??
-        cities.first;
+    return siteMap[workLocationId] ?? location?.city ?? cities.first;
   }
 
   set workLocation(Location? loc) => workLocationId = loc?.idString;
@@ -219,7 +221,7 @@ class Creature {
   @JsonKey(includeFromJson: true, includeToJson: true, defaultValue: 1)
   double _blood = 1;
   @JsonKey(includeFromJson: false, includeToJson: false)
-  int get blood => (_blood * maxBlood).round().clamp(0, maxBlood);
+  int get blood => min((_blood * maxBlood).round(), maxBlood);
   set blood(int value) => _blood = value / maxBlood;
   @JsonKey(includeFromJson: false, includeToJson: false)
   int get maxBlood {
@@ -255,11 +257,11 @@ class Creature {
   int skillCap(Skill s) => attribute(s.attribute);
   @JsonKey(includeFromJson: false, includeToJson: false)
   bool get weaponIsConcealed =>
-      armor.type.concealWeaponSize >= weapon.type.size;
+      clothing.type.concealWeaponSize >= weapon.type.size;
   @JsonKey(includeFromJson: false, includeToJson: false)
   bool get weaponIsInCharacter =>
       equippedWeapon == null ||
-      armor.type.weaponsPermitted.contains(weapon.type);
+      clothing.type.weaponsPermitted.contains(weapon.type);
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   int get weaponSkill => rawSkill[weapon.skill] ?? 0;
@@ -316,7 +318,11 @@ class Creature {
 
   bool reload(bool wasteful) {
     Item? ammo = spareAmmo;
-    if (canReload() && (wasteful || weapon.ammo == 0) && ammo is Ammo) {
+    int capacity = weapon.type.ammoCapacity;
+    if (weapon.type.canKeepOneInTheChamber && weapon.ammo > 0) capacity++;
+    if (canReload() &&
+        (weapon.ammo < capacity / 4 || wasteful) &&
+        ammo is Ammo) {
       bool r = weapon.reload(ammo);
       if (ammo.stackSize == 0) spareAmmo = null;
       return r;
@@ -359,7 +365,7 @@ class Creature {
 
   void die() {
     alive = false;
-    blood = 0;
+    if (blood > 0) blood = 0;
     if (id == uniqueCreatures.ceo.id) {
       uniqueCreatures.newCEO();
     }
@@ -430,7 +436,7 @@ class Creature {
     if (skillMod < 1) roll = roll ~/ 2;
     if (healthMod) {
       roll -= (maxBlood - blood) * 4 ~/ maxBlood;
-      roll += body.combatRollModifier;
+      roll -= body.combatRollModifier;
     }
     roll = roll + attMod + skillMod;
     if (skill == Skill.stealth) {
@@ -440,17 +446,19 @@ class Creature {
   }
 
   int stealthMod(int value) {
-    double stealth = armor.type.stealthValue.toDouble();
-    for (int i = 1; i < armor.quality; i++) {
-      stealth *= 0.8;
-    }
-    if (armor.damaged) {
-      stealth *= 0.5;
+    double stealth = clothing.type.stealthValue.toDouble() - 2.0;
+    if (stealth > 0) {
+      for (int i = 1; i < clothing.quality; i++) {
+        stealth *= 0.8;
+      }
+      if (clothing.damaged) {
+        stealth *= 0.5;
+      }
     }
 
-    value = ((value * stealth) / 2).round();
+    value = value + (stealth * 5).round();
     // Shredded clothes get you no stealth.
-    if (armor.quality > armor.type.qualityLevels) {
+    if (clothing.quality > clothing.type.qualityLevels) {
       value = 0;
     }
     return value;
@@ -471,7 +479,7 @@ class Creature {
     int attMod = attribute(att) - 5;
     if (healthMod) {
       roll -= (maxBlood - blood) * 4 ~/ maxBlood;
-      roll += body.combatRollModifier;
+      roll -= body.combatRollModifier;
     }
     return roll + attMod;
   }
@@ -499,10 +507,10 @@ class Creature {
   }
 
   void strip({List<Item>? lootPile}) {
-    Armor? armor = equippedArmor;
-    if (armor != null && armor.type.idName != "ARMOR_NONE") {
+    Clothing? armor = equippedClothing;
+    if (armor != null && armor.type.idName != "CLOTHING_NONE") {
       if (lootPile != null) lootPile.add(armor);
-      equippedArmor = null;
+      equippedClothing = null;
     }
   }
 
@@ -628,13 +636,15 @@ class Creature {
     heat += crimeHeat(crime);
   }
 
-  void giveArmorType(String armorTypeString, {List<Item>? lootPile}) {
+  void giveClothingType(String clothingTypeString, {List<Item>? lootPile}) {
     strip(lootPile: lootPile);
-    if (armorTypeString == "ARMOR_NONE" || armorTypeString.isEmpty) return;
-    giveArmor(Armor(armorTypeString));
+    if (clothingTypeString == "CLOTHING_NONE" || clothingTypeString.isEmpty) {
+      return;
+    }
+    giveArmor(Clothing(clothingTypeString));
   }
 
-  void giveWeaponAndAmmo(String weaponTypeString, int ammo,
+  void giveWeaponAndAmmo(String weaponTypeString, int magsOfAmmo,
       {List<Item>? lootPile}) {
     dropWeaponAndAmmo(lootPile: lootPile);
     if (weaponTypeString == "WEAPON_NONE" || weaponTypeString.isEmpty) return;
@@ -645,12 +655,14 @@ class Creature {
       return;
     }
     giveWeapon(Weapon.fromType(weaponType, fullammo: true));
-    if (ammo > 1 && (weapon.type.usesAmmo || weapon.type.thrown)) {
-      AmmoType? ammoType = weaponType.ammoType;
+    if (magsOfAmmo > 1 && (weapon.type.usesAmmo || weapon.type.thrown)) {
+      AmmoType? ammoType = weaponType.acceptableAmmo.firstOrNull;
       if (ammoType != null) {
-        spareAmmo = Ammo(ammoType.idName, stackSize: ammo - 1);
+        spareAmmo = Ammo(ammoType.idName,
+            stackSize: magsOfAmmo * weaponType.ammoCapacity - 1);
       } else if (weaponType.thrown) {
-        spareAmmo = Weapon(weaponType.idName, stackSize: ammo - 1);
+        spareAmmo = Weapon(weaponType.idName,
+            stackSize: magsOfAmmo * weaponType.ammoCapacity - 1);
       }
     }
   }
@@ -688,23 +700,28 @@ class Creature {
     }
   }
 
-  void giveArmor(Armor armor, [List<Item>? lootPile]) {
-    if (equippedArmor != null) strip(lootPile: lootPile);
-    equippedArmor = armor.split(1) as Armor;
+  void giveArmor(Clothing armor, [List<Item>? lootPile]) {
+    if (equippedClothing != null) strip(lootPile: lootPile);
+    equippedClothing = armor.split(1) as Clothing;
   }
 
   void takeAmmo(Ammo ammo, List<Item>? lootPile, int count) {
     if (weapon.acceptableAmmo.contains(ammo.type)) {
       Item? spare = spareAmmo;
       if (spare != null && spare.type == ammo.type) {
-        int numToTake = min(count, 9 - spare.stackSize);
+        int numToTake =
+            min(count, 9 * weapon.type.ammoCapacity - spare.stackSize);
         if (numToTake > 0) {
           spare.stackSize += numToTake;
           ammo.stackSize -= numToTake;
         }
       } else {
         dropAmmo(lootPile: lootPile);
-        spareAmmo = ammo.split([9, ammo.stackSize, count].reduce(min)) as Ammo;
+        spareAmmo = ammo.split([
+          9 * weapon.type.ammoCapacity,
+          ammo.stackSize,
+          count
+        ].reduce(min)) as Ammo;
       }
     }
   }
@@ -719,12 +736,18 @@ class Creature {
         fire = 2;
       }
     }
-    bool armed =
-        activeSquad?.members.any((s) => s.equippedWeapon != null) ?? false;
+    int armedLiberals = activeSquad?.members
+            .where((s) =>
+                (siteAlarm && s.equippedWeapon != null) ||
+                (weaponCheck(s) != WeaponCheckResult.ok))
+            .length ??
+        0;
+    int armedConservatives =
+        encounter.where((e) => e.isEnemy && e.equippedWeapon != null).length;
     int fear = maxBlood - blood;
-    if (isEnemy && armed) fear += 100;
+    if (isEnemy) fear += armedLiberals * 50;
     if (blood < maxBlood * 0.45) fear += 100;
-    if (!armor.type.fireResistant) fear += fire * 100;
+    if (!clothing.fireResistant) fear += fire * 100;
     if (nonCombatant) fear += 1000;
     int courage = juice + lcsRandom(50);
     if (!isEnemy) {
@@ -734,14 +757,27 @@ class Creature {
         courage += 100;
       }
     }
+    if (isEnemy) courage += armedConservatives * 50;
+    if (!siteAlarm) courage += 100;
     if (type.canPerformArrests || type.lawEnforcement) courage += 200;
+    if (type.intimidationResistant) courage += 200;
     if (type.ccsMember) courage += 200;
-    if (equippedWeapon != null) courage += 100;
+    if (typeId == CreatureTypeIds.angryRuralMob) {
+      courage += 400 * (blood / maxBlood).round();
+    }
+    if (equippedWeapon != null || skill(Skill.martialArts) > 2) courage += 100;
     if (type.tank) courage += 2000;
     if (type.animal) courage += 200;
     if (type.freeable && !isEnemy) courage += 1000;
     if (type.majorEnemy) courage += 2000;
     if (justConverted) courage += 2000;
+    if (mode == GameMode.carChase) {
+      courage += 10000;
+    }
+
+    debugPrint("$name - Fear: $fear, Courage: $courage");
+
+    if (fear > courage) nonCombatant = true;
 
     return fear > courage;
   }

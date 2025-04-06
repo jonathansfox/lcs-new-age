@@ -6,6 +6,7 @@ import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_mode.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
+import 'package:lcs_new_age/politics/politics.dart';
 import 'package:lcs_new_age/sitemode/sitemap.dart';
 import 'package:lcs_new_age/utils/colors.dart';
 
@@ -16,9 +17,9 @@ int _diff(int a, int b) => a > b ? a - b : b - a;
 // away in any direction
 bool _lineOfSight(int x, int y, int z) {
   if (x < 0 || y < 0 || x >= MAPX || y >= MAPY) return false;
-  if (levelMapTile(x, y, z).known) {
-    return true; // already explored
-  }
+  //if (levelMapTile(x, y, z).known && !ignoreKnown) {
+  //  return true; // already explored
+  //}
   if (_diff(x, locx) > 2 || _diff(y, locy) > 2) return false; // too far away
 
   if (_diff(x, locx) <= 1 && _diff(y, locy) <= 1) {
@@ -154,7 +155,6 @@ void printSiteMap(int x, int y, int z) {
       str = "The Office of the President";
     default:
       str = "";
-      break;
   }
   if (levelMap[locx][locy][locz].special != TileSpecial.none) {
     mvaddstrc(24, 67 - (str.length >> 1), white, str);
@@ -189,6 +189,366 @@ void printSiteMap(int x, int y, int z) {
   if (groundLoot.isNotEmpty) {
     mvaddstrc(15, 64, purple, "LOOT!");
 
+    printEncounter();
+  }
+}
+
+void drawTileContent(SiteTile tile) {
+  if (!tile.known) {
+    setColor(darkGray, background: black);
+    addchar(' ');
+    return;
+  }
+  if (tile.x == locx && tile.y == locy) {
+    setColor(lightGreen);
+    addchar("@");
+  } else {
+    bool canSeeFoes =
+        ((activeSite!.compound.cameras) && !activeSite!.siege.camerasOff) ||
+            tile.inLOS;
+    setColor(lightGray);
+    if (tile.wall) {
+      Color bg = darkGray;
+      if (canSeeFoes) {
+        bg = lightGray;
+      }
+      if (tile.burning) {
+        setColor(orange, background: bg);
+        addchar("¤");
+      } else if (tile.neighbors().any((t) => t.megaBloody)) {
+        bg = darkRed;
+        setColor(bg, background: bg);
+        addchar(" ");
+      } else if (tile.neighbors().any((t) => t.graffitiLCS)) {
+        setColor(green, background: bg);
+        addchar("℄");
+      } else if (tile.neighbors().any((t) => t.graffitiCCS)) {
+        setColor(darkRed, background: bg);
+        addchar("ℭ");
+      } else if (tile.neighbors().any((t) => t.graffitiOther)) {
+        setColor(black, background: bg);
+        // Gang graffiti
+        addchar("g");
+      } else {
+        setColor(bg, background: bg);
+        addchar(' ');
+      }
+    } else if (tile.door) {
+      // Pick color
+      if (tile.metal) {
+        setColor(white, background: white);
+      } else if (tile.burning) {
+        setColor(orange);
+      } else if (tile.cantUnlock && tile.locked) {
+        setColor(red);
+      } else if (tile.knownLock && tile.locked) {
+        setColor(darkGray);
+      } else {
+        setColor(yellow);
+      }
+
+      if (tile.right?.wall == true || tile.left?.wall == true) {
+        addchar("\u2550");
+      } else {
+        addchar("\u2551");
+      }
+    } else if ((tile.siegeHeavyUnit) && canSeeFoes) {
+      setColor(red);
+      addchar("¥");
+    } else if ((tile.siegeUnit) && canSeeFoes) {
+      setColor(red);
+      addchar("E");
+    } else if ((tile.siegeUnitDamaged) && canSeeFoes) {
+      setColor(darkRed);
+      addchar("e");
+    } else if (tile.special == TileSpecial.stairsUp) {
+      setColor(yellow);
+      addchar("↑");
+    } else if (tile.special == TileSpecial.stairsDown) {
+      setColor(yellow);
+      addchar("↓");
+    } else if (tile.exit) {
+      setColor(yellow);
+      addchar("X");
+    } else if (tile.firePeak) {
+      setColor(orange);
+      addchar("₰");
+    } else if (tile.fireEnd) {
+      setColor(orange);
+      addchar("৵");
+    } else if (tile.fireStart) {
+      setColor(orange);
+      addchar("¤");
+    } else if ([
+      TileSpecial.displayCase,
+      TileSpecial.cagedRabbits,
+      TileSpecial.cagedMonsters,
+      TileSpecial.polluterEquipment,
+      TileSpecial.sweatshopEquipment
+    ].contains(tile.special)) {
+      setColor(yellow);
+      addchar("*");
+    } else if (tile.special != TileSpecial.none) {
+      setColor(switch (tile.special) {
+        TileSpecial.clubBouncer => red,
+        TileSpecial.clubBouncerSecondVisit => red,
+        TileSpecial.securityCheckpoint => red,
+        TileSpecial.securityMetalDetectors => red,
+        TileSpecial.ceoOffice => red,
+        TileSpecial.ccsBoss => red,
+        TileSpecial.ovalOfficeNW ||
+        TileSpecial.ovalOfficeNE ||
+        TileSpecial.ovalOfficeSW ||
+        TileSpecial.ovalOfficeSE =>
+          politics.exec[Exec.president]!.color,
+        _ => yellow,
+      });
+      addchar(switch (tile.special) {
+        TileSpecial.apartmentLandlord => "L",
+        TileSpecial.armory => "A",
+        TileSpecial.bankMoney => "\$",
+        TileSpecial.bankTeller => "T",
+        TileSpecial.bankVault => "V",
+        TileSpecial.cableBroadcastStudio => "S",
+        TileSpecial.cagedMonsters => "#",
+        TileSpecial.cagedRabbits => "#",
+        TileSpecial.ccsBoss => "!",
+        TileSpecial.ceoOffice => "O",
+        TileSpecial.ceoSafe => "\$",
+        TileSpecial.clubBouncer => "B",
+        TileSpecial.clubBouncerSecondVisit => "B",
+        TileSpecial.computer => "c",
+        TileSpecial.corporateFiles => "\$",
+        TileSpecial.courthouseJuryRoom => "J",
+        TileSpecial.courthouseLockup => "#",
+        TileSpecial.displayCase => "d",
+        TileSpecial.polluterEquipment => "P",
+        TileSpecial.sweatshopEquipment => "S",
+        TileSpecial.labEquipment => "L",
+        TileSpecial.stairsDown => "↓",
+        TileSpecial.stairsUp => "↑",
+        TileSpecial.none => throw UnimplementedError(),
+        TileSpecial.policeStationLockup => "#",
+        TileSpecial.prisonControl => "#",
+        TileSpecial.prisonControlLow => "#",
+        TileSpecial.prisonControlMedium => "#",
+        TileSpecial.prisonControlHigh => "#",
+        TileSpecial.intelSupercomputer => "C",
+        TileSpecial.nuclearControlRoom => "C",
+        TileSpecial.radioBroadcastStudio => "S",
+        TileSpecial.signOne => "?",
+        TileSpecial.table => "t",
+        TileSpecial.tent => "t",
+        TileSpecial.parkBench => "b",
+        TileSpecial.signTwo => "?",
+        TileSpecial.signThree => "?",
+        TileSpecial.securityCheckpoint => "S",
+        TileSpecial.securityMetalDetectors => "S",
+        TileSpecial.securitySecondVisit => "S",
+        TileSpecial.ovalOfficeNW => "┌",
+        TileSpecial.ovalOfficeNE => "┐",
+        TileSpecial.ovalOfficeSW => "└",
+        TileSpecial.ovalOfficeSE => "┘",
+      });
+    } else if (tile.siegeTrap) {
+      setColor(yellow);
+      addchar('%');
+    } else if (tile.loot) {
+      setColor(purple);
+      addchar('\$');
+    } else if (tile.megaBloody) {
+      setColor(canSeeFoes ? red : darkRed);
+      addchar(';');
+    } else if (tile.grass) {
+      setColor(canSeeFoes ? lightGreen : green);
+      if (tile.bloody) setColor(canSeeFoes ? red : darkRed);
+      addchar(',');
+    } else if (tile.debris) {
+      setColor(canSeeFoes ? lightGray : darkGray);
+      addchar('~');
+    } else {
+      if (tile.restricted) {
+        setColor(canSeeFoes ? blue : darkBlue);
+      } else {
+        setColor(canSeeFoes ? lightGray : darkGray);
+      }
+      if (tile.bloody) setColor(canSeeFoes ? red : darkRed);
+      addchar('.');
+    }
+  }
+}
+
+void printSiteMapSmall(int x, int y, int z) {
+  // Build the frame
+  // top, bottom
+  mvaddstrc(11, 55, lightGray, "\u250C${"".padRight(23, "\u2500")}\u2510");
+  mvaddstr(22, 55, "\u2514${"".padRight(23, "\u2500")}\u2518");
+  for (int y = 12; y < 22; y++) {
+    // left, right
+    mvaddstr(y, 55, "\u2502");
+    mvaddstr(y, 79, "\u2502");
+  }
+
+  // Do a preliminary Line of Sight iteration for better Line of Sight detection
+  for (var tile in levelMap.all) {
+    tile.inLOS = false;
+    if (tile.x >= x - 2 &&
+        tile.x <= x + 2 &&
+        tile.y >= y - 2 &&
+        tile.y <= y + 2 &&
+        tile.z == z) {
+      if (_lineOfSight(tile.x, tile.y, z)) {
+        tile.known = true;
+        tile.inLOS = true;
+      }
+    }
+  }
+
+  // Calculate range of tiles to display
+  int xstart = x - 11;
+  int xend = x + 11;
+  int ystart = y - 4;
+  int yend = y + 5;
+  if (xstart < 0) {
+    xend += -xstart;
+    xstart = 0;
+  }
+  if (xend >= MAPX) {
+    xstart -= xend - MAPX + 1;
+    xend = MAPX - 1;
+  }
+  if (ystart < 0) {
+    yend += -ystart;
+    ystart = 0;
+  }
+  if (yend >= MAPY) {
+    ystart -= yend - MAPY + 1;
+    yend = MAPY - 1;
+  }
+
+  // Display the map
+  for (int i = 0; i < 23; i++) {
+    for (int j = 0; j < 10; j++) {
+      int x = xstart + i;
+      int y = ystart + j;
+      move(12 + j, 56 + i);
+      if (x >= 0 && x < MAPX && y >= 0 && y < MAPY) {
+        drawTileContent(levelMap[x][y][z]);
+      } else {
+        setColor(darkGray, background: darkGray);
+        addchar(' ');
+      }
+    }
+  }
+
+  //PRINT SPECIAL
+  String str;
+  switch (levelMap[locx][locy][locz].special) {
+    case TileSpecial.cagedRabbits:
+      str = "Caged Animals";
+    case TileSpecial.nuclearControlRoom:
+      str = "Reactor Control Room";
+    case TileSpecial.cagedMonsters:
+      str = "Caged \"Animals\"";
+    case TileSpecial.policeStationLockup:
+      str = "Police Detention Room";
+    case TileSpecial.courthouseLockup:
+      str = "Courthouse Jail";
+    case TileSpecial.courthouseJuryRoom:
+      str = "Jury Room";
+    case TileSpecial.prisonControl:
+    case TileSpecial.prisonControlLow:
+    case TileSpecial.prisonControlMedium:
+    case TileSpecial.prisonControlHigh:
+      str = "Prison Control Room";
+    case TileSpecial.intelSupercomputer:
+      str = "Supercomputer";
+    case TileSpecial.sweatshopEquipment:
+      str = "Textile Equipment";
+    case TileSpecial.polluterEquipment:
+      str = "Factory Equipment";
+    case TileSpecial.labEquipment:
+      str = "Lab Equipment";
+    case TileSpecial.armory:
+      str = "Armory";
+    case TileSpecial.ceoOffice:
+      str = "CEO's Study";
+    case TileSpecial.ceoSafe:
+    case TileSpecial.corporateFiles:
+      str = "Safe";
+    case TileSpecial.radioBroadcastStudio:
+      str = "Radio Broadcast Room";
+    case TileSpecial.cableBroadcastStudio:
+      str = "News Broadcast Studio";
+    case TileSpecial.apartmentLandlord:
+      str = "Landlord's Office";
+    case TileSpecial.signOne:
+    case TileSpecial.signTwo:
+    case TileSpecial.signThree:
+      str = "Sign";
+    case TileSpecial.displayCase:
+      str = "Display Case";
+    case TileSpecial.stairsUp:
+      str = "Stairs Up";
+    case TileSpecial.stairsDown:
+      str = "Stairs Down";
+    case TileSpecial.table:
+      str = "Table";
+    case TileSpecial.tent:
+      str = "Tent";
+    case TileSpecial.computer:
+      str = "Computer";
+    case TileSpecial.parkBench:
+      str = "Bench";
+    case TileSpecial.bankVault:
+      str = "Bank Vault";
+    case TileSpecial.bankTeller:
+      str = "Bank Teller";
+    case TileSpecial.bankMoney:
+      str = "Oh Wow So Much Money";
+    case TileSpecial.ccsBoss:
+      str = "CCS Boss";
+    case TileSpecial.ovalOfficeNW:
+    case TileSpecial.ovalOfficeNE:
+    case TileSpecial.ovalOfficeSW:
+    case TileSpecial.ovalOfficeSE:
+      str = "President's Office";
+    default:
+      str = "";
+  }
+  move(23, 57);
+  if (str != "") {
+    addstrc(yellow, str);
+  }
+  if (levelMap[locx][locy][locz].burning) {
+    if (str != "") addstr(" ");
+    if (levelMap[locx][locy][locz].firePeak) {
+      addstrc(red, "!");
+      addstrc(orange, "!");
+      addstrc(yellow, "!");
+      addstrc(white, "FIRE");
+      addstrc(yellow, "!");
+      addstrc(orange, "!");
+      addstrc(red, "!");
+    } else if (levelMap[locx][locy][locz].fireEnd) {
+      addstrc(red, "!");
+      addstrc(orange, "!");
+      addstrc(yellow, "FIRE");
+      addstrc(orange, "!");
+      addstrc(red, "!");
+    } else if (levelMap[locx][locy][locz].fireStart) {
+      addstrc(red, "!FIRE!");
+    }
+  }
+
+  int encsize = encounter.length;
+  //PRINT ANY OPPOSING FORCE INFO
+  if (encsize > 0) {
+    printEncounter();
+  }
+
+  if (groundLoot.isNotEmpty || levelMap[locx][locy][locz].loot) {
+    mvaddstrc(24, 57, purple, "Loot on the ground!");
     printEncounter();
   }
 }
@@ -490,11 +850,17 @@ void printWall(int x, int y, int z, int px, int py) {
 
         // Corners are possible if walls nearby are blown away, although this is rare
         if ((dir == wallLeft && visible[wallUp]) ||
-            (dir == wallUp && visible[wallLeft])) mvaddstr(py, px, "+");
+            (dir == wallUp && visible[wallLeft])) {
+          mvaddstr(py, px, "+");
+        }
         if ((dir == wallRight && visible[wallUp]) ||
-            (dir == wallUp && visible[wallRight])) mvaddstr(py, px + 4, "+");
+            (dir == wallUp && visible[wallRight])) {
+          mvaddstr(py, px + 4, "+");
+        }
         if ((dir == wallLeft && visible[wallDown]) ||
-            (dir == wallDown && visible[wallLeft])) mvaddstr(py + 2, px, "+");
+            (dir == wallDown && visible[wallLeft])) {
+          mvaddstr(py + 2, px, "+");
+        }
         if ((dir == wallRight && visible[wallDown]) ||
             (dir == wallDown && visible[wallRight])) {
           mvaddstr(py + 2, px + 4, "+");
@@ -702,31 +1068,29 @@ void printBlock(int x, int y, int z, int px, int py) {
 void clearSceneAreas() {
   clearCommandArea();
   clearMessageArea();
+  clearEncounterArea();
   clearMapArea();
 }
 
 void clearCommandArea() {
-  eraseArea(startY: 9, endY: 16, startX: 0, endX: 53);
+  if (mode == GameMode.site) {
+    eraseArea(startY: 23, endY: 25, startX: 0, endX: 80);
+  } else {
+    eraseArea(startY: 9, endY: 16, startX: 0, endX: 53);
+  }
 }
 
-void clearMessageArea([bool? redrawMapArea]) {
-  redrawMapArea ??= true;
-  bool siteMode = mode == GameMode.site;
-  int endX = 80;
-  if (!redrawMapArea || siteMode) endX = 53;
-  eraseArea(startY: 16, endY: 18, startX: 0, endX: endX);
-  if (redrawMapArea && siteMode) printSiteMap(locx, locy, locz);
+void clearMessageArea() {
+  eraseArea(startY: 9, endY: 11, startX: 0, endX: 80);
 }
 
 void clearEncounterArea() {
-  eraseArea(startY: 19, endY: 25, startX: 0, endX: 53);
+  eraseArea(
+      startY: 11, endY: 23, startX: 0, endX: mode == GameMode.site ? 55 : 80);
 }
 
 void clearMapArea({bool lower = true, bool upper = true}) {
-  int startY = upper ? 8 : 18;
-  int endY = lower ? 25 : 15;
-  eraseArea(startY: startY, endY: endY, startX: 53, endX: 80);
-  makeDelimiter();
+  eraseArea(startY: 11, endY: 23, startX: 55, endX: 80);
 }
 
 /* prints the names of creatures you see */
@@ -741,44 +1105,49 @@ void printEncounter() {
 void printBasicEncounter() {
   clearEncounterArea();
 
-  int px = 1, py = 19;
-  for (Creature e in encounter) {
+  for (int i = 0; i < encounter.length; i++) {
+    Creature e = encounter[i];
+    //if (!e.alive) continue;
+    int y = 12 + i;
+    mvaddstrc(y, 0, darkGray, ((i + 1) % 10).toString());
     String name = e.name;
     if (!e.alive) {
       setColor(darkGray);
     } else {
       setColor(e.align.color);
-      if (e.align == Alignment.conservative && e.nonCombatant) {
+      if (e.align == Alignment.conservative && e.calculateWillRunAway()) {
         name = name.toLowerCase();
         setColor(darkRed);
       }
     }
-    mvaddstr(py, px, name);
-
-    px += 18;
-    if (px > 37) {
-      px = 1;
-      py++;
-    }
+    mvaddstr(y, 2, name);
+    mvaddstrc(y, 20, lightGray, e.clothing.shortName);
+    mvaddstrc(y, 36, lightGray, e.weapon.type.shortName);
+    printHealthStat(y, 47, e, small: true);
   }
 }
 
 /* prints the names of creatures you see in car chases */
 void printChaseEncounter() {
-  clearMapArea(upper: false);
-  clearEncounterArea();
-
   if (chaseSequence?.enemycar.isNotEmpty == true) {
-    List<int> carsy = [20, 20, 20, 20];
+    int startingY = 14;
+    eraseArea(startY: startingY - 1, endY: 21, startX: 0, endX: 80);
+    List<int> carsy = [
+      startingY + 1,
+      startingY + 1,
+      startingY + 1,
+      startingY + 1
+    ];
 
     for (int v = 0; v < chaseSequence!.enemycar.length; v++) {
-      mvaddstrc(19, v * 20 + 1, white, chaseSequence!.enemycar[v].fullName());
+      mvaddstrc(
+          startingY, v * 20 + 1, white, chaseSequence!.enemycar[v].fullName());
     }
 
     for (Creature e in encounter) {
       for (int v = 0; v < chaseSequence!.enemycar.length; v++) {
         if (chaseSequence!.enemycar[v].id == e.carId) {
-          mvaddstrc(carsy[v], v * 20 + 1, red, e.name);
+          mvaddstrc(carsy[v], v * 20 + 1, e.align.color, e.name);
           if (e.isDriver) addstr("-D");
           carsy[v]++;
         }

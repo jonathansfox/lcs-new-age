@@ -28,7 +28,6 @@ Future<void> sleeperEffect(Creature cr, Map<View, int> libpower) async {
   switch (cr.activity.type) {
     case ActivityType.sleeperLiberal:
       sleeperInfluence(cr, libpower);
-      cr.infiltration -= 0.02;
     case ActivityType.sleeperEmbezzle:
       await sleeperEmbezzle(cr, libpower);
     case ActivityType.sleeperSteal:
@@ -81,6 +80,7 @@ void sleeperInfluence(Creature cr, Map<View, int> libpower) {
       power += cr.skill(Skill.business);
     case CreatureTypeIds.priest:
     case CreatureTypeIds.nun:
+    case CreatureTypeIds.televangelist:
       power += cr.skill(Skill.religion) * 5;
     case CreatureTypeIds.educator:
       power += cr.skill(Skill.psychology);
@@ -104,11 +104,13 @@ void sleeperInfluence(Creature cr, Map<View, int> libpower) {
       power *= 20;
     case CreatureTypeIds.deathSquad:
     case CreatureTypeIds.educator:
+    case CreatureTypeIds.televangelist:
       power *= 6;
     case CreatureTypeIds.actor:
     case CreatureTypeIds.gangUnit:
     case CreatureTypeIds.militaryPolice:
     case CreatureTypeIds.seal:
+    case CreatureTypeIds.conservativeJudge:
       power *= 4;
     default:
       power *= 2;
@@ -134,6 +136,7 @@ void sleeperInfluence(Creature cr, Map<View, int> libpower) {
       addIssues(
           View.issues, power * (100 - publicOpinion[View.cableNews]!) ~/ 100);
     /* Cultural leaders block - influences cultural issues */
+    case CreatureTypeIds.televangelist:
     case CreatureTypeIds.priest:
     case CreatureTypeIds.nun:
     case CreatureTypeIds.painter:
@@ -220,18 +223,22 @@ void sleeperInfluence(Creature cr, Map<View, int> libpower) {
     case CreatureTypeIds.bum:
     case CreatureTypeIds.crackhead:
     case CreatureTypeIds.tank:
-    case CreatureTypeIds.hippie: // too liberal to be a proper sleeper
-    case CreatureTypeIds.unionWorker: // same
-    case CreatureTypeIds.liberalJudge: // more again
+    // too liberal to be a proper sleeper
+    case CreatureTypeIds.punk:
+    case CreatureTypeIds.goth:
+    case CreatureTypeIds.emo:
+    case CreatureTypeIds.hippie:
+    case CreatureTypeIds.unionWorker:
+    case CreatureTypeIds.liberalJudge:
       return;
     /* Miscellaneous block -- includes everyone else */
     case CreatureTypeIds.president:
       addIssues(
           [View.issues.random, View.issues.random, View.issues.random], power);
     case CreatureTypeIds.ccsArchConservative:
-    case CreatureTypeIds.ccsMolotov:
-    case CreatureTypeIds.ccsSniper:
     case CreatureTypeIds.ccsVigilante:
+    case CreatureTypeIds.neoNazi:
+    case CreatureTypeIds.naziPunk:
       addIssues([View.ccsHated, View.issues.random], power);
     default: // Affect a random issue
       addIssues([View.issues.random], power);
@@ -240,6 +247,7 @@ void sleeperInfluence(Creature cr, Map<View, int> libpower) {
   //Transfer the liberal power adjustment to background liberal power
   for (View v in View.issues) {
     libpower[v] = libpower[v]! + transferpower[v]!;
+    if (transferpower[v]! > 50) changePublicOpinion(v, transferpower[v]! ~/ 50);
   }
 }
 
@@ -251,8 +259,15 @@ Future<void> sleeperSpy(Creature cr, Map<View, int> libpower) async {
     cr.infiltration -= 0.05;
     if (cr.infiltration < 0) {
       erase();
-      mvaddstr(6, 1, "Sleeper ${cr.name} has been caught snooping around.");
-      mvaddstr(8, 1, "The Liberal is now homeless and jobless...");
+      if (cr == uniqueCreatures.president) {
+        mvaddstr(
+            6, 1, "President ${cr.name} has been impeached for corruption.");
+        mvaddstr(8, 1, "The Ex-President is in disgrace.");
+        politics.promoteVP();
+      } else {
+        mvaddstr(6, 1, "Sleeper ${cr.name} has been caught snooping around.");
+        mvaddstr(8, 1, "The Liberal is now homeless and jobless...");
+      }
       await getKey();
 
       cr.squad = null;
@@ -263,8 +278,14 @@ Future<void> sleeperSpy(Creature cr, Map<View, int> libpower) async {
       cr.sleeperAgent = false;
     } else {
       erase();
-      mvaddstr(6, 1, "Sleeper ${cr.name} has been caught snooping around.");
-      mvaddstr(8, 1, "The Liberal's infiltration score has taken a hit.");
+      if (cr == uniqueCreatures.president) {
+        mvaddstr(
+            6, 1, "President ${cr.name} is under too much pressure to leak.");
+        mvaddstr(8, 1, "A corruption scandal is brewing...");
+      } else {
+        mvaddstr(6, 1, "Sleeper ${cr.name} has been caught snooping around.");
+        mvaddstr(8, 1, "The Liberal's infiltration score has taken a hit.");
+      }
       await getKey();
     }
     return;
@@ -276,11 +297,19 @@ Future<void> sleeperSpy(Creature cr, Map<View, int> libpower) async {
     Item it = Loot(itemType);
     homes?.loot.add(it);
     erase();
-    mvaddstr(6, 1, "Sleeper ${cr.name} has leaked $description.");
+    if (cr == uniqueCreatures.president) {
+      mvaddstr(6, 1, "President ${cr.name} has leaked $description.");
+    } else {
+      mvaddstr(6, 1, "Sleeper ${cr.name} has leaked $description.");
+    }
     mvaddstr(7, 1, "The dead drop is at the homeless camp.");
 
     mvaddstr(9, 1, "An investigation is being launched to find the leaker.");
-    mvaddstr(10, 1, "The Liberal's infiltration score has taken a hit.");
+    if (cr == uniqueCreatures.president) {
+      mvaddstr(10, 1, "A corruption scandal is brewing...");
+    } else {
+      mvaddstr(10, 1, "The Liberal's infiltration score has taken a hit.");
+    }
 
     cr.infiltration -= 0.2;
     addjuice(cr, 50, 1000);
@@ -340,11 +369,20 @@ Future<void> sleeperEmbezzle(Creature cr, Map<View, int> libpower) async {
   if (lcsRandom(100) > 90 * cr.infiltration) {
     cr.infiltration -= 0.2;
     if (cr.infiltration < 0) {
-      await showMessage(
-          "Sleeper ${cr.name} has been arrested while embezzling funds.");
-      criminalize(cr, Crime.embezzlement);
-      await captureCreature(cr);
-      return;
+      if (cr == uniqueCreatures.president) {
+        await showMessage(
+            "President ${cr.name} has been impeached for corruption.");
+        criminalize(cr, Crime.embezzlement);
+        await captureCreature(cr);
+        politics.promoteVP();
+        return;
+      } else {
+        await showMessage(
+            "Sleeper ${cr.name} has been arrested while embezzling funds.");
+        criminalize(cr, Crime.embezzlement);
+        await captureCreature(cr);
+        return;
+      }
     } else {
       takingHeat = true;
     }
@@ -356,11 +394,11 @@ Future<void> sleeperEmbezzle(Creature cr, Map<View, int> libpower) async {
   int income;
   switch (cr.type.id) {
     case CreatureTypeIds.corporateCEO:
+    case CreatureTypeIds.president:
       income = (50000 * cr.infiltration).round();
     case CreatureTypeIds.eminentScientist:
     case CreatureTypeIds.corporateManager:
     case CreatureTypeIds.bankManager:
-    case CreatureTypeIds.president:
       income = (5000 * cr.infiltration).round();
     default:
       income = (500 * cr.infiltration).round();
@@ -372,9 +410,15 @@ Future<void> sleeperEmbezzle(Creature cr, Map<View, int> libpower) async {
 
   if (takingHeat) {
     erase();
-    mvaddstr(8, 1,
-        "Unfortunately, Conservatives have noticed funds are going missing.");
-    mvaddstr(9, 1, "The Liberal's infiltration score has taken a hit.");
+    if (cr == uniqueCreatures.president) {
+      mvaddstr(
+          8, 1, "Unfortunately, watchdogs have noticed the mislaid funds.");
+      mvaddstr(9, 1, "A corruption scandal is brewing...");
+    } else {
+      mvaddstr(8, 1,
+          "Unfortunately, Conservatives have noticed funds are going missing.");
+      mvaddstr(9, 1, "The Liberal's infiltration score has taken a hit.");
+    }
   }
 }
 
@@ -388,11 +432,20 @@ Future<void> sleeperSteal(Creature cr, Map<View, int> libpower) async {
   if (lcsRandom(100) > 95 * cr.infiltration) {
     cr.infiltration -= 0.2;
     if (cr.infiltration < 0) {
-      await showMessage(
-          "Sleeper ${cr.name} has been arrested while stealing things.");
-      criminalize(cr, Crime.theft);
-      await captureCreature(cr);
-      return;
+      if (cr == uniqueCreatures.president) {
+        await showMessage(
+            "President ${cr.name} has been impeached for corruption.");
+        criminalize(cr, Crime.theft);
+        await captureCreature(cr);
+        politics.promoteVP();
+        return;
+      } else {
+        await showMessage(
+            "Sleeper ${cr.name} has been arrested while stealing things.");
+        criminalize(cr, Crime.theft);
+        await captureCreature(cr);
+        return;
+      }
     } else {
       takingHeat = true;
       erase();
@@ -413,17 +466,28 @@ Future<void> sleeperSteal(Creature cr, Map<View, int> libpower) async {
   mvaddstrc(6, 1, lightGray,
       "Sleeper ${cr.name} has dropped a package off at the homeless camp.");
   if (takingHeat) {
-    mvaddstr(8, 1,
-        "Unfortunately, the Conservatives have noticed things are going missing.");
-    mvaddstr(9, 1, "The Liberal's infiltration score has taken a hit.");
+    if (cr == uniqueCreatures.president) {
+      mvaddstr(8, 1,
+          "Unfortunately, observers have noticed the President's actions.");
+      mvaddstr(9, 1, "A corruption scandal is brewing...");
+    } else {
+      mvaddstr(8, 1,
+          "Unfortunately, the Conservatives have noticed things are going missing.");
+      mvaddstr(9, 1, "The Liberal's infiltration score has taken a hit.");
+    }
   }
   await getKey();
 }
 
 Future<void> sleeperRecruit(Creature cr, Map<View, int> libpower) async {
-  if (cr.workSite == null) return;
   if (cr.subordinatesLeft > 0) {
-    prepareEncounter(cr.workSite!.type, false);
+    activeSite = cr.workSite;
+    activeSite ??=
+        findSiteInSameCity(cr.workLocation.city, SiteType.publicPark);
+    activeSite ??=
+        findSiteInSameCity(cr.workLocation.city, SiteType.homelessEncampment);
+    if (activeSite == null) return;
+    prepareEncounter(activeSite!.type, false);
     for (Creature e in encounter) {
       if (e.workLocation == cr.workLocation || oneIn(5)) {
         if (e.align != Alignment.liberal && !oneIn(5)) continue;

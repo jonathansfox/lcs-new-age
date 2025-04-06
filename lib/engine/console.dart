@@ -121,6 +121,10 @@ class Console {
         character = "Enter";
       case LogicalKeyboardKey.shift:
         character = "Shift";
+      case LogicalKeyboardKey.less:
+        character = "<";
+      case LogicalKeyboardKey.greater:
+        character = ">";
       default:
         character = lastKey?.character ?? '';
     }
