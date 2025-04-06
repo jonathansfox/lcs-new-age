@@ -600,6 +600,7 @@ Future<void> pagedInterface({
   Map<int, String> headerKey = const {},
   String footerPrompt = "",
   int pageSize = 20,
+  int linesPerOption = 1,
   int topY = 0,
   required int count,
   required void Function(int y, String key, int index) lineBuilder,
@@ -632,7 +633,7 @@ Future<void> pagedInterface({
     if (isPageUp(c) && page > 0) page--;
     if (isPageDown(c) && (page + 1) * pageSize < count) page++;
     if (c >= Key.a && c < Key.a + pageSize) {
-      int index = page * pageSize + c - Key.a;
+      int index = page * pageSize ~/ linesPerOption + c - Key.a;
       if (index < count) {
         if (await onChoice(index)) {
           return;

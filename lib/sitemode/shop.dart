@@ -367,6 +367,7 @@ class Shop extends ShopOption {
       count: availableOptions.length * 2,
       topY: fullscreen ? 0 : 9,
       pageSize: fullscreen ? 20 : 10,
+      linesPerOption: 2,
       lineBuilder: (y, key, index) {
         int i = index ~/ 2;
         bool descriptionLine = index % 2 == 1;
@@ -404,6 +405,8 @@ class Shop extends ShopOption {
         }
       },
       onChoice: (index) async {
+        debugPrint(
+            "index: $index, availableOptions.length: ${availableOptions.length}");
         if (index < availableOptions.length &&
             availableOptions[index].isAvailable()) {
           await availableOptions[index].choose(customers, buyer!, false);
