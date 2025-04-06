@@ -2,7 +2,6 @@
 import 'dart:math';
 
 import 'package:lcs_new_age/common_actions/common_actions.dart';
-import 'package:lcs_new_age/creature/attributes.dart';
 import 'package:lcs_new_age/creature/creature.dart';
 import 'package:lcs_new_age/creature/creature_type.dart';
 import 'package:lcs_new_age/creature/skills.dart';
@@ -43,7 +42,13 @@ Future<void> trial(Creature g) async {
 
   setColor(lightGray);
 
-  if (!g.isCriminal) criminalize(g, Crime.loitering);
+  if (!g.isCriminal) {
+    if (oneIn(5)) {
+      criminalize(g, Crime.drugDistribution);
+    } else {
+      criminalize(g, Crime.loitering);
+    }
+  }
 
   int typenum = 0, scarefactor = 0;
   // *JDS* Scarefactor is the severity of the case against you; if you're a really
@@ -52,7 +57,7 @@ Future<void> trial(Creature g) async {
 
   for (var c in g.wantedForCrimes.entries.where((e) => e.value > 0)) {
     typenum++;
-    scarefactor += crimeHeat(c.key) * c.value;
+    scarefactor += sqrt(crimeHeat(c.key) * c.value).round();
   }
 
   //CHECK FOR SLEEPERS
@@ -111,10 +116,22 @@ Future<void> trial(Creature g) async {
   if (g.confessions > 0) {
     move(y += 2, 1);
     if (g.confessions > 1) {
-      addstr(
-          "${g.confessions} former LCS members will testify against ${g.name}");
+      if (sleeperjudge != null) {
+        addstr(
+            "The judge has blocked ${g.confessions} ex-LCS members from testifying against ${g.name}.");
+        g.confessions = 0;
+      } else {
+        addstr(
+            "${g.confessions} former LCS members will testify against ${g.name}");
+      }
     } else {
-      addstr("A former LCS member will testify against ${g.name}.");
+      if (sleeperjudge != null) {
+        addstr(
+            "The judge has blocked an ex-LCS member from testifying against ${g.name}.");
+        g.confessions = 0;
+      } else {
+        addstr("A former LCS member will testify against ${g.name}.");
+      }
     }
 
     await getKey();
@@ -133,11 +150,14 @@ Future<void> trial(Creature g) async {
     mvaddstrc(y++, 1, lightGray,
         "E - Accept sleeper ${sleeperlawyer.name}'s offer to assist pro bono.");
   }
-  mvaddstrc(++y, 5, lightGray, "Your attributes if you defend yourself: ");
-  mvaddstr(++y, 5, "Charisma: ${g.attribute(Attribute.charisma)}");
+  mvaddstrc(++y, 5, lightGray, "Your relevant skills if you defend yourself: ");
+  mvaddstr(++y, 5, "Law: ${g.skill(Skill.law)}");
   mvaddstr(y, 25, "Persuasion: ${g.skill(Skill.persuasion)}");
-  mvaddstr(++y, 5, "Intelligence: ${g.attribute(Attribute.intelligence)}");
-  mvaddstr(y++, 25, "Law: ${g.skill(Skill.law)}");
+  if (sleeperlawyer != null) {
+    mvaddstr(++y, 5, "${sleeperlawyer.name}'s relevant skills: ");
+    mvaddstr(++y, 5, "Law: ${sleeperlawyer.skill(Skill.law)}");
+    mvaddstr(y, 25, "Persuasion: ${sleeperlawyer.skill(Skill.persuasion)}");
+  }
 
   int defense;
   int c;
@@ -273,9 +293,14 @@ Future<void> trial(Creature g) async {
     int defensepower = 0;
     if (defense == 0 || defense == 3 || defense == 4) {
       if (defense == 0) {
-        defensepower = lcsRandom(71); // Court-appointed attorney
+        // Court-appointed attorney
+        Creature attorney = Creature.fromId(CreatureTypeIds.lawyer);
+        defensepower = lcsRandom(71) +
+            attorney.skill(Skill.law) +
+            attorney.skill(Skill.persuasion);
       } else if (defense == 3) {
-        defensepower = lcsRandom(71) + 80; // Ace Liberal attorney
+        // Ace Liberal attorney
+        defensepower = lcsRandom(71) + 80;
       } else if (defense == 4) {
         // Sleeper attorney
         defensepower = lcsRandom(71) +
@@ -318,20 +343,17 @@ Future<void> trial(Creature g) async {
       }
     }
     if (defense == 1) {
-      // LEGAL SELF-REPRESENTATION: To succeed here, you really need to have two skills be
-      // high: persuasion and law, with law being especially important. You can't have
-      // just one or just the other. Even if you're a very persuasive person, the court will eat
-      // you alive if you can't sound intelligent when talking about the relevant charges, and you
-      // won't be able to fool the jury into letting you go if you aren't persuasive, as no
-      // matter how encyclopedic your legal knowledge is, it's all in the pitch.
-      //
-      // If either your persuasion or your law roll is too low, you'll end up getting a negative
-      // result that will drag down your defense. So try not to suck in either area.
-      defensepower = sqrt(max(g.skillRoll(Skill.persuasion) - 5, 0)).round() *
-          sqrt(max(g.skillRoll(Skill.law) - 10, 0)).round() *
-          5;
-      g.train(Skill.persuasion, 50);
-      g.train(Skill.law, 50);
+      // Self-defense; generally worse than a lawyer, but if you're a rockstar
+      // maybe you can pull it off
+      defensepower = (g.skill(Skill.persuasion)) * 2 +
+          (g.skill(Skill.law)) * 2 +
+          lcsRandom(51);
+
+      // Persuasion alone won't save you if you legally bungled it
+      if (g.skill(Skill.law) < 2) defensepower -= 40;
+
+      g.train(Skill.persuasion, prosecution);
+      g.train(Skill.law, prosecution);
 
       addstr(g.name);
       if (defensepower <= 0) {
