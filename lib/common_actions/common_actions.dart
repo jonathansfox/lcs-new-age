@@ -5,7 +5,6 @@ import 'package:lcs_new_age/creature/creature.dart';
 import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/gamestate/squad.dart';
-import 'package:lcs_new_age/justice/crimes.dart';
 import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/utils/colors.dart';
 import 'package:lcs_new_age/utils/interface_options.dart';
@@ -20,10 +19,6 @@ void locatesquad(Squad squad, Site loc) {
 /* common - gives juice to everyone in the active party */
 void juiceparty(int juice, int cap) {
   activeSquad?.livingMembers.forEach((c) => addjuice(c, juice, cap));
-}
-
-void criminalizeparty(Crime crime) {
-  activeSquad?.livingMembers.forEach((c) => criminalize(c, crime));
 }
 
 /* common - gives juice to a given creature */

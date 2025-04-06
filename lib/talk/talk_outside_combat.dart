@@ -1,5 +1,4 @@
 import 'package:collection/collection.dart';
-import 'package:lcs_new_age/common_actions/common_actions.dart';
 import 'package:lcs_new_age/common_display/print_creature_info.dart';
 import 'package:lcs_new_age/creature/creature.dart';
 import 'package:lcs_new_age/creature/creature_type.dart';
@@ -290,7 +289,7 @@ Future<bool> heyIWantToRentARoom(Creature a, Creature tk) async {
 
           // Either he calls the cops or it's yours for free
           if (roll < difficulty) {
-            criminalizeparty(Crime.extortion);
+            addPotentialCrime(squad, Crime.extortion);
             activeSite!.siege.timeUntilCops = 2;
             rent = 100000000000000; // 100 trillion to guarantee eviction
           } else {
@@ -491,7 +490,7 @@ Future<bool> talkToBankTeller(Creature a, Creature tk) async {
         await getKey();
 
         siteAlarm = true;
-        criminalizeparty(Crime.bankRobbery);
+        addPotentialCrime(squad, Crime.bankRobbery);
         addDramaToSiteStory(Drama.bankTellerRobbery);
         siteCrime += 30;
         encounter.add(Creature.fromId("CREATURE_MERC"));
@@ -517,7 +516,7 @@ Future<bool> talkToBankTeller(Creature a, Creature tk) async {
 
         await getKey();
 
-        criminalizeparty(Crime.bankRobbery);
+        addPotentialCrime(squad, Crime.bankRobbery);
         addDramaToSiteStory(Drama.bankTellerRobbery);
         siteCrime += 30;
         siteAlarmTimer = 0;
@@ -566,7 +565,7 @@ Future<bool> talkToBankTeller(Creature a, Creature tk) async {
 
         siteAlarm = true;
         siteAlienated = SiteAlienation.alienatedEveryone;
-        criminalizeparty(Crime.bankRobbery);
+        addPotentialCrime(squad, Crime.bankRobbery);
         addDramaToSiteStory(Drama.bankStickup);
         siteCrime += 50;
         String guard = CreatureTypeIds.securityGuard;
@@ -580,7 +579,7 @@ Future<bool> talkToBankTeller(Creature a, Creature tk) async {
         mvaddstr(10, 1, "The vault is open!");
         await getKey();
 
-        criminalizeparty(Crime.bankRobbery);
+        addPotentialCrime(squad, Crime.bankRobbery);
         addDramaToSiteStory(Drama.bankStickup);
         siteCrime += 50;
         siteAlarm = true;

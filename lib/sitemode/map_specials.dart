@@ -666,7 +666,7 @@ Future<void> specialCourthouseJury() async {
     siteAlienated = SiteAlienation.alienatedEveryone;
     siteCrime += 10;
     addDramaToSiteStory(Drama.juryTampering);
-    criminalizeparty(Crime.juryTampering);
+    addPotentialCrime(squad, Crime.juryTampering);
   }
 }
 
@@ -806,7 +806,7 @@ Future<void> specialGraffiti() async {
   siteCrime++;
   juiceparty(1, 50);
 
-  criminalizeparty(Crime.vandalism);
+  addPotentialCrime(squad, Crime.vandalism);
   addDramaToSiteStory(Drama.tagging);
 
   return;
@@ -895,7 +895,7 @@ Future<void> _vandalizeTile() async {
   siteCrime += 2;
   juiceparty(5, 200);
   addDramaToSiteStory(Drama.vandalism);
-  criminalizeparty(Crime.vandalism);
+  addPotentialCrime(squad, Crime.vandalism);
 }
 
 void _loot(Item item) => activeSquad!.loot.add(item);
@@ -969,7 +969,7 @@ Future<void> specialCEOSafe() async {
       juiceparty(50, 1000);
       siteCrime += 40;
       addDramaToSiteStory(Drama.openedCEOSafe);
-      criminalizeparty(Crime.theft);
+      addPotentialCrime(squad, Crime.theft);
     }
   }
 
@@ -1030,15 +1030,15 @@ Future<void> specialArmory() async {
 
   int numleft;
   if (empty) {
-    criminalizeparty(Crime.treason);
+    addPotentialCrime(squad, Crime.treason);
     await encounterMessage("It's a trap!  The armory is empty.");
     numleft = lcsRandom(6) + 4;
   } else {
     juiceparty(50, 1000);
     siteCrime += 40;
     addDramaToSiteStory(Drama.openedArmory);
-    criminalizeparty(Crime.theft);
-    criminalizeparty(Crime.treason);
+    addPotentialCrime(squad, Crime.theft);
+    addPotentialCrime(squad, Crime.treason);
     await encounterMessage("The guards are coming!");
     numleft = lcsRandom(4) + 2;
   }
@@ -1075,7 +1075,7 @@ Future<void> specialCorporateSafe() async {
     levelMap[locx][locy][locz].special = TileSpecial.none;
     siteCrime += 3;
     addDramaToSiteStory(Drama.stoleCorpFiles);
-    criminalizeparty(Crime.theft);
+    addPotentialCrime(squad, Crime.theft);
   }
 }
 
@@ -1446,7 +1446,7 @@ Future<void> specialBankVault() async {
   }
 
   if (canbreakin) {
-    criminalizeparty(Crime.bankRobbery);
+    addPotentialCrime(squad, Crime.bankRobbery);
     siteCrime += 20;
     addDramaToSiteStory(Drama.bankVaultRobbery);
     levelMap[locx + 1][locy][locz].flag &= ~SITEBLOCK_DOOR;

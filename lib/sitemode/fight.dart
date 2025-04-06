@@ -125,10 +125,6 @@ Future<void> squadMemberAttacks(
     mistake = true;
   }
 
-  // Record target health before attack to compare later when determining
-  // whether to charge with assault
-  int beforeblood = target.blood;
-
   // Resolve attack on target
   bool attacked = await attack(p, target, mistake);
 
@@ -148,14 +144,7 @@ Future<void> squadMemberAttacks(
       addDramaToSiteStory(Drama.illegalGunUsed);
     }
     // Charge with assault if first strike
-    if (siteAlarm &&
-        (!wasAlarm ||
-            (beforeblood > target.blood && beforeblood == target.maxBlood)) &&
-        activeSite?.siege.underSiege == false) {
-      if (p.equippedWeapon == null) {
-        criminalize(p, Crime.assault);
-      }
-    }
+    addPotentialCrime([p], Crime.assault, reasonKey: target.id.toString());
   }
 
   // Dead foes drop loot, removed from encounter, grant bonus juice
@@ -560,7 +549,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
         siteCrime += 3;
         addjuice(a, 5, 500);
         if (!activeSiteUnderSiege && squad.contains(a)) {
-          criminalizeparty(Crime.arson);
+          addPotentialCrime(squad, Crime.arson, reasonKey: "fire");
           addDramaToSiteStory(Drama.arson);
         }
       }
@@ -975,7 +964,7 @@ Future<void> hit(Creature a, Creature t, Attack attackUsed, BodyPart hitPart,
           }
           if (a.squad == activeSquad) {
             addDramaToSiteStory(Drama.killedSomebody);
-            criminalizeparty(Crime.murder);
+            addPotentialCrime(squad, Crime.murder);
           }
         }
       }

@@ -15,6 +15,7 @@ import 'package:lcs_new_age/gamestate/ledger.dart';
 import 'package:lcs_new_age/gamestate/squad.dart';
 import 'package:lcs_new_age/gamestate/stats.dart';
 import 'package:lcs_new_age/items/item.dart';
+import 'package:lcs_new_age/justice/crimes.dart';
 import 'package:lcs_new_age/location/city.dart';
 import 'package:lcs_new_age/location/district.dart';
 import 'package:lcs_new_age/location/location.dart';
@@ -147,6 +148,9 @@ class GameState {
     };
     return _locationMap!;
   }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  List<CrimeData> potentialCrimes = [];
 }
 
 enum CCSStrength {

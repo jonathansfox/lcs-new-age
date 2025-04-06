@@ -89,7 +89,8 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
     }
 
     siteCrime += 5;
-    criminalizeAll(squad, Crime.kidnapping);
+    addPotentialCrime(squad, Crime.terrorism,
+        reasonKey: "threatening hostages");
 
     await getKey();
 
@@ -220,7 +221,7 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
           executer.heartDamage++;
           siteCrime += 10;
           addDramaToSiteStory(Drama.killedSomebody);
-          criminalizeparty(Crime.murder);
+          addPotentialCrime(squad, Crime.murder);
 
           if (executer.prisoner!.type.preciousToAngryRuralMobs) {
             siteCrime += 30;

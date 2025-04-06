@@ -936,9 +936,7 @@ Future<void> _siteModeAux() async {
           await noticeCheck();
           siteCrime++;
           addDramaToSiteStory(Drama.stoleSomething);
-          if (enemy && siteAlarm) {
-            criminalizeAll(squad, Crime.theft);
-          }
+          addPotentialCrime(squad, Crime.theft);
         }
 
         await creatureadvance();
@@ -1637,6 +1635,11 @@ Future<void> _siteModeAux() async {
 
 /* site - determines spin on site news story, "too hot" timer */
 Future<void> _resolveSite() async {
+  if (siteAlarm) {
+    commitPotentialCrimes();
+  } else {
+    clearPotentialCrimes();
+  }
   if (sitestory!.drama.any((d) => d == Drama.killedSomebody)) {
     sitestory!.positive = -1;
   } else {
@@ -1818,7 +1821,18 @@ Future<void> _openDoor(bool restricted) async {
           currentTile.flag &= ~(SITEBLOCK_LOCKED | SITEBLOCK_ALARMED);
           addDramaToSiteStory(Drama.unlockedDoor);
           if (siteAlarmTimer < 0 || siteAlarmTimer > 50) siteAlarmTimer = 50;
-          //criminalizeparty(LAWFLAG_BREAKING);
+
+          if ([SiteType.apartment, SiteType.tenement, SiteType.upscaleApartment]
+              .contains(activeSite?.type)) {
+            // If you're at an apartment building, charge with breaking
+            // and entering every time you break into another apartment
+            addPotentialCrime(squad, Crime.breakingAndEntering);
+          } else {
+            // Otherwise, charge with breaking and entering only once per
+            // building by supplying a reasonKey
+            addPotentialCrime(squad, Crime.breakingAndEntering,
+                reasonKey: "door");
+          }
         }
         // Else perma-lock it if an attempt was made
         else if (result == UnlockResult.failed) {
@@ -1877,7 +1891,17 @@ Future<void> _openDoor(bool restricted) async {
           }
           siteCrime++;
           addDramaToSiteStory(Drama.brokeDownDoor);
-          criminalizeparty(Crime.breakingAndEntering);
+          if ([SiteType.apartment, SiteType.tenement, SiteType.upscaleApartment]
+              .contains(activeSite?.type)) {
+            // If you're at an apartment building, charge with breaking
+            // and entering every time you break into another apartment
+            addPotentialCrime(squad, Crime.breakingAndEntering);
+          } else {
+            // Otherwise, charge with breaking and entering only once per
+            // building by supplying a reasonKey
+            addPotentialCrime(squad, Crime.breakingAndEntering,
+                reasonKey: "door");
+          }
         }
 
         if (result != UnlockResult.noAttempt) {

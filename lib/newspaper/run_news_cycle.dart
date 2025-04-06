@@ -269,13 +269,13 @@ void handlePublicOpinionImpact(NewsStory ns) {
         View.freeSpeech,
         View.lgbtRights,
         View.womensRights,
-        View.civilRights
+        View.civilRights,
       ],
     SiteType.prison => [
         View.deathPenalty,
         View.drugs,
         View.torture,
-        View.prisons
+        View.prisons,
       ],
     SiteType.armyBase => [View.torture, View.military],
     SiteType.intelligenceHQ => [View.intelligence, View.torture, View.prisons],
@@ -285,7 +285,7 @@ void handlePublicOpinionImpact(NewsStory ns) {
     SiteType.corporateHQ => [
         View.taxes,
         View.corporateCulture,
-        View.womensRights
+        View.womensRights,
       ],
     SiteType.ceoHouse => [View.taxes, View.ceoSalary],
     SiteType.amRadioStation => [

@@ -175,7 +175,7 @@ Future<void> kidnapattempt() async {
         await alienationCheck(false);
         siteAlarm = true;
         siteCrime += 5;
-        criminalizeAll(squad, Crime.kidnapping);
+        addPotentialCrime(squad, Crime.kidnapping);
         if (target.type.preciousToAngryRuralMobs) offendedAngryRuralMobs = true;
       }
     }

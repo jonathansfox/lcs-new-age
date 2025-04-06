@@ -4,7 +4,6 @@ import 'dart:ui';
 import 'package:collection/collection.dart';
 import 'package:lcs_new_age/basemode/activities.dart';
 import 'package:lcs_new_age/basemode/base_actions.dart';
-import 'package:lcs_new_age/common_actions/common_actions.dart';
 import 'package:lcs_new_age/common_actions/equipment.dart';
 import 'package:lcs_new_age/common_display/print_creature_info.dart';
 import 'package:lcs_new_age/common_display/print_party.dart';
@@ -390,7 +389,7 @@ Future<ChaseOutcome> carChaseSequence() async {
       if (actionTaken) {
         if (encounter.any((e) => e.type.lawEnforcement)) {
           sitestory?.drama.add(Drama.carChase);
-          criminalizeparty(Crime.resistingArrest);
+          criminalizeAll(squad, Crime.resistingArrest);
         }
         if (c == Key.d) {
           chase.turn++;
@@ -579,7 +578,7 @@ Future<ChaseOutcome> footChaseSequence({
       if (c == Key.d || c == Key.f) {
         if (encounter.any((e) => e.type.lawEnforcement)) {
           sitestory?.drama.add(Drama.footChase);
-          criminalizeparty(Crime.resistingArrest);
+          criminalizeAll(squad, Crime.resistingArrest);
           if (encounter.any((e) => e.type.id == CreatureTypeIds.deathSquad)) {
             // Death squads: Resist arrest and now they just want to kill you
             chaseSequence!.canpullover = false;
@@ -1220,7 +1219,7 @@ Future<bool> obstacledrive(
         if (oneIn(5)) {
           mvaddstrc(10, 1, red, "A fruit seller is squashed!");
           await getKey();
-          criminalizeparty(Crime.murder);
+          criminalizeAll(squad, Crime.murder);
           addDramaToSiteStory(Drama.killedSomebody);
           sitestory?.positive = 0;
         }
