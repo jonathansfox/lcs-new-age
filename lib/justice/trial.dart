@@ -291,7 +291,7 @@ Future<void> trial(Creature g) async {
         addstr(
             "The defense attorney accidentally said \"My client is GUILTY!\" during closing.");
       } else if (defensepower <= 25) {
-        addstr("The defense is totally lame.");
+        addstr("The defense is pathetic.");
       } else if (defensepower <= 50) {
         addstr("The defense was lackluster.");
       } else if (defensepower <= 75) {
