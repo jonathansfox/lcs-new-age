@@ -1677,10 +1677,10 @@ Item? lootItemForSite(SiteType site) {
       if (oneIn(25)) {
         List<String> rndWeps = [
           "WEAPON_BASEBALLBAT",
-          "WEAPON_REVOLVER_22",
-          "WEAPON_REVOLVER_44",
+          "WEAPON_22_REVOLVER",
+          "WEAPON_44_REVOLVER",
           "WEAPON_NIGHTSTICK",
-          "WEAPON_GUITAR"
+          "WEAPON_GUITAR",
         ];
         newWeaponType = rndWeps.random;
       } else if (oneIn(20)) {
@@ -1691,8 +1691,7 @@ Item? lootItemForSite(SiteType site) {
           "CLOTHING_TRENCHCOAT",
           "CLOTHING_WORKCLOTHES",
           "CLOTHING_CLOWNSUIT",
-          "CLOTHING_ELEPHANTSUIT",
-          "CLOTHING_DONKEYSUIT"
+          "CLOTHING_FURSUIT",
         ];
         newArmorType = rndArmors.random;
       } else if (oneIn(5)) {
@@ -1712,11 +1711,11 @@ Item? lootItemForSite(SiteType site) {
           "WEAPON_BASEBALLBAT",
           "WEAPON_COMBATKNIFE",
           "WEAPON_DAISHO",
-          "WEAPON_SHOTGUN_PUMP",
-          "WEAPON_REVOLVER_44",
-          "WEAPON_SEMIPISTOL_45",
-          "WEAPON_SEMIRIFLE_AR15",
-          "WEAPON_AUTORIFLE_M16"
+          "WEAPON_PUMP_SHOTGUN",
+          "WEAPON_44_REVOLVER",
+          "WEAPON_45_HANDGUN",
+          "WEAPON_AR15",
+          "WEAPON_M4",
         ];
         //make sure the number of types matches the random range...
         newWeaponType = rndWeps[lcsRandom(8 - laws[Law.gunControl]!.index)];
@@ -1727,9 +1726,9 @@ Item? lootItemForSite(SiteType site) {
           "CLOTHING_EXPENSIVESUIT",
           "CLOTHING_BLACKSUIT",
           "CLOTHING_BONDAGEGEAR",
-          "CLOTHING_CIVILLIANARMOR",
+          "CLOTHING_CAMOSUIT",
           "CLOTHING_BLACKROBE",
-          "CLOTHING_LABCOAT"
+          "CLOTHING_LABCOAT",
         ];
         newArmorType = rndArmors.random;
       } else if (oneIn(10)) {
@@ -1766,15 +1765,12 @@ Item? lootItemForSite(SiteType site) {
         List<String> rndWeps = [
           "WEAPON_NIGHTSTICK",
           "WEAPON_NIGHTSTICK",
-          "WEAPON_SHOTGUN_PUMP",
-          "WEAPON_SEMIPISTOL_9MM",
-          "WEAPON_SMG_MP5",
-          "WEAPON_CARBINE_M4",
-          "WEAPON_AUTORIFLE_M16",
-          "WEAPON_AUTORIFLE_M16"
+          "WEAPON_PUMP_SHOTGUN",
+          "WEAPON_9MM_HANDGUN",
+          "WEAPON_MP5",
+          "WEAPON_M4",
         ];
-        //make sure the number of types matches the random range...
-        newWeaponType = rndWeps[lcsRandom(4) + 4 - laws[Law.gunControl]!.index];
+        newWeaponType = rndWeps.random;
       } else if (oneIn(25)) {
         List<String> rndArmors = [
           "CLOTHING_POLICEUNIFORM",
@@ -1784,12 +1780,8 @@ Item? lootItemForSite(SiteType site) {
           "CLOTHING_SWATARMOR",
           "CLOTHING_POLICEUNIFORM",
           "CLOTHING_POLICEARMOR",
-          "CLOTHING_DEATHSQUADUNIFORM",
-          "CLOTHING_DEATHSQUADBODYARMOR"
         ];
-        //make sure the number of types matches the random range...
-        newArmorType =
-            rndArmors[lcsRandom(4) + 4 - laws[Law.gunControl]!.index];
+        newArmorType = rndArmors.random;
       } else if (oneIn(20)) {
         newLootType = "LOOT_POLICERECORDS";
       } else if (oneIn(3)) {
@@ -1828,9 +1820,9 @@ Item? lootItemForSite(SiteType site) {
     case SiteType.armyBase:
       if (oneIn(3)) {
         List<String> rndWeps = [
-          "WEAPON_SEMIPISTOL_9MM",
-          "WEAPON_CARBINE_M4",
-          "WEAPON_AUTORIFLE_M16"
+          "WEAPON_9MM_HANDGUN",
+          "WEAPON_M4",
+          "WEAPON_M7",
         ];
         newWeaponType = rndWeps.random;
       } else if (oneIn(2)) {
@@ -1849,15 +1841,12 @@ Item? lootItemForSite(SiteType site) {
       if (oneIn(24)) {
         List<String> rndWeps = [
           "WEAPON_FLAMETHROWER",
-          "WEAPON_SEMIPISTOL_45",
-          "WEAPON_SMG_MP5",
-          "WEAPON_CARBINE_M4",
-          "WEAPON_AUTORIFLE_M16"
+          "WEAPON_45_HANDGUN",
+          "WEAPON_MP5",
+          "WEAPON_M4",
+          "WEAPON_M7",
         ];
         newWeaponType = rndWeps.random;
-      } else if (oneIn(30)) {
-        List<String> rndArmors = ["CLOTHING_HEAVYARMOR"];
-        newArmorType = rndArmors.random;
       } else if (oneIn(20)) {
         newLootType = "LOOT_SECRETDOCUMENTS";
       } else if (oneIn(3)) {
@@ -1896,7 +1885,7 @@ Item? lootItemForSite(SiteType site) {
           "CLOTHING_EXPENSIVESUIT",
           "CLOTHING_EXPENSIVESUIT",
           "CLOTHING_EXPENSIVESUIT",
-          "CLOTHING_BONDAGEGEAR"
+          "CLOTHING_BONDAGEGEAR",
         ];
         newArmorType = rndArmors.random;
       }
@@ -1946,23 +1935,23 @@ Item? lootItemForSite(SiteType site) {
     case SiteType.bombShelter:
       //storming a CCS stronghold. Logically you ought to get all the leftover stuff if you win...
       List<String> rndWeps = [
-        "WEAPON_SEMIPISTOL_9MM",
-        "WEAPON_SEMIPISTOL_45",
-        "WEAPON_REVOLVER_22",
-        "WEAPON_REVOLVER_44",
-        "WEAPON_SMG_MP5",
-        "WEAPON_CARBINE_M4",
-        "WEAPON_AUTORIFLE_M16"
+        "WEAPON_9MM_HANDGUN",
+        "WEAPON_45_HANDGUN",
+        "WEAPON_22_REVOLVER",
+        "WEAPON_44_REVOLVER",
+        "WEAPON_MP5",
+        "WEAPON_M4",
       ];
       List<String> rndArmors = [
         "CLOTHING_CHEAPSUIT",
         "CLOTHING_CLOTHES",
         "CLOTHING_TRENCHCOAT",
+        "CLOTHING_DUSTER",
         "CLOTHING_WORKCLOTHES",
-        "CLOTHING_SECURITYUNIFORM",
-        "CLOTHING_CIVILLIANARMOR",
-        "CLOTHING_ARMYARMOR",
-        "CLOTHING_HEAVYARMOR"
+        "CLOTHING_PMC",
+        "CLOTHING_CAMOSUIT",
+        "CLOTHING_TACHARNESS",
+        "CLOTHING_HEAVYARMOR",
       ];
       switch (lcsRandom(3)) {
         case 0:
