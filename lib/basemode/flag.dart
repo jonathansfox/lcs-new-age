@@ -139,7 +139,7 @@ enum BurnState {
       case unburned:
         return Colors.transparent;
       case ignition:
-        return yellow.withOpacity(0.5);
+        return yellow.withValues(alpha: 0.5);
       case ignition2:
         return yellow;
       case burning:

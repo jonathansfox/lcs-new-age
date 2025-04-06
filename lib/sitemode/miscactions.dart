@@ -26,7 +26,7 @@ enum UnlockTypes { door, cage, cageHard, cell, safe, armory, vault }
 
 enum BashTypes { door }
 
-enum UnlockResult { unlocked, failed, noAttempt }
+enum UnlockResult { unlocked, failed, noAttempt, bashed }
 
 enum HackTypes { supercomputer, vault }
 
@@ -61,8 +61,8 @@ Future<UnlockResult> unlock(UnlockTypes type) async {
       if (maxattack <= difficulty) {
         p.train(Skill.security, 6 * difficulty);
       }
-      clearMessageArea(false);
-      mvaddstrc(16, 1, white, "${p.name} ");
+      clearMessageArea();
+      mvaddstrc(9, 1, white, "${p.name} ");
       switch (type) {
         case UnlockTypes.door:
           addstr("unlocks the door!");
@@ -90,9 +90,9 @@ Future<UnlockResult> unlock(UnlockTypes type) async {
 
       return UnlockResult.unlocked;
     } else {
-      clearMessageArea(false);
+      clearMessageArea();
       setColor(white);
-      move(16, 1);
+      move(9, 1);
 
       int i;
       //gain some experience for failing only if you could have succeeded.
@@ -114,7 +114,7 @@ Future<UnlockResult> unlock(UnlockTypes type) async {
     }
   } else {
     clearMessageArea();
-    mvaddstrc(16, 1, white, "You can't find anyone to do the job.");
+    mvaddstrc(9, 1, white, "You can't find anyone to do the job.");
 
     await getKey();
   }
@@ -186,8 +186,8 @@ Future<UnlockResult> bash(BashTypes type) async {
   difficulty = (difficulty / maxp!.weapon.type.bashStrengthModifier).floor();
 
   if (crowable || maxp.attributeCheck(Attribute.strength, difficulty)) {
-    clearMessageArea(false);
-    mvaddstrc(16, 1, white, maxp.name);
+    clearMessageArea();
+    mvaddstrc(9, 1, white, maxp.name);
     addstr(" ");
     switch (type) {
       case BashTypes.door:
@@ -219,17 +219,17 @@ Future<UnlockResult> bash(BashTypes type) async {
             activeSite!.type == SiteType.intelligenceHQ) &&
         !siteAlarm) {
       siteAlarm = true;
-      move(17, 1);
+      move(10, 1);
       setColor(red);
       addstr("Alarms go off!");
 
       await getKey();
     }
 
-    return UnlockResult.unlocked;
+    return UnlockResult.bashed;
   } else {
-    clearMessageArea(false);
-    mvaddstrc(16, 1, white, maxp.name);
+    clearMessageArea();
+    mvaddstrc(9, 1, white, maxp.name);
     switch (type) {
       case BashTypes.door:
         if (maxp.hasWheelchair) {
@@ -274,7 +274,7 @@ Future<UnlockResult> hack(HackTypes type) async {
 
     if (maxattack > difficulty) {
       clearMessageArea();
-      mvaddstrc(16, 1, white, hacker.name);
+      mvaddstrc(9, 1, white, hacker.name);
       if (!blind) addstr(" has");
       switch (type) {
         case HackTypes.supercomputer:
@@ -290,7 +290,7 @@ Future<UnlockResult> hack(HackTypes type) async {
       return UnlockResult.unlocked;
     } else {
       clearMessageArea();
-      mvaddstrc(16, 1, white, hacker.name);
+      mvaddstrc(9, 1, white, hacker.name);
       addstr(" couldn't");
       if (blind) addstr(" see how to");
       switch (type) {
@@ -306,7 +306,7 @@ Future<UnlockResult> hack(HackTypes type) async {
     }
   } else {
     clearMessageArea();
-    mvaddstrc(16, 1, white, "You can't find anyone to do the job.");
+    mvaddstrc(9, 1, white, "You can't find anyone to do the job.");
 
     await getKey();
   }
@@ -446,10 +446,12 @@ Future<bool> _mediaBroadcast(String takeover, View mediaView, String medium,
 
   //CHECK PUBLIC OPINION
   changePublicOpinion(View.lcsKnown, 10);
-  changePublicOpinion(View.lcsLiked,
-      ((segmentpower - 50) * (publicOpinion[View.amRadio]! / 200)).round());
+  changePublicOpinion(
+      View.lcsLiked,
+      ((segmentpower - 50) * ((100 - publicOpinion[mediaView]!) / 200))
+          .round());
   changePublicOpinion(viewhit,
-      ((segmentpower - 50) * (publicOpinion[View.amRadio]! / 100)).round(),
+      ((segmentpower - 50) * ((100 - publicOpinion[mediaView]!) / 100)).round(),
       coloredByLcsOpinions: true);
 
   if (siteAlienated.index >= SiteAlienation.alienatedModerates.index &&
@@ -552,18 +554,18 @@ Future<bool> reloadparty(bool wasteful, {bool showText = false}) async {
     String message = "";
     if (p.hasThrownWeapon) {
       pReloaded = p.readyAnotherThrowingWeapon();
-      message = "${p.name} readies another ${p.weapon.getName()}.";
+      //message = "${p.name} readies another ${p.weapon.getName()}.";
     } else if (p.canReload()) {
       pReloaded = p.reload(wasteful);
-      message = "${p.name} reloads.";
+      //message = "${p.name} reloads.";
     }
     if (pReloaded) {
       didReload = true;
       if (showText && message.isNotEmpty) {
         clearMessageArea();
         printParty();
-        mvaddstrc(16, 1, white, message);
-        await getKey();
+        //mvaddstrc(9, 1, white, message);
+        //await getKey();
       }
     }
   }

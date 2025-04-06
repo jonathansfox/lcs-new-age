@@ -14,8 +14,8 @@ import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_mode.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
-import 'package:lcs_new_age/items/armor.dart';
 import 'package:lcs_new_age/items/attack.dart';
+import 'package:lcs_new_age/items/clothing.dart';
 import 'package:lcs_new_age/items/item.dart';
 import 'package:lcs_new_age/items/money.dart';
 import 'package:lcs_new_age/justice/crimes.dart';
@@ -33,101 +33,22 @@ import 'package:lcs_new_age/utils/colors.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 
 /* attack handling for each side as a whole */
-Future<void> youattack() async {
-  bool wasalarm = siteAlarm;
+Future<void> youattack(List<Creature> validTargets) async {
+  bool wasAlarm = siteAlarm;
 
   for (Creature p in activeSquad!.livingMembers) {
-    List<Creature> superEnemies = [];
-    List<Creature> dangerousEnemies = [];
-    List<Creature> enemies = [];
-    List<Creature> nonEnemies = [];
-
-    for (Creature e in encounter) {
-      if (e.alive) {
-        if (e.isEnemy && !e.nonCombatant) {
-          if (e.type.tank && e.stunned == 0) {
-            superEnemies.add(e);
-          } else if ((e.attack.socialDamage || e.attack.averageDamage > 20) &&
-              e.blood >= e.maxBlood * 0.4 &&
-              e.stunned == 0) {
-            dangerousEnemies.add(e);
-          } else {
-            enemies.add(e);
-          }
-        } else {
-          nonEnemies.add(e);
-        }
-      }
-    }
-
-    if (superEnemies.isEmpty && dangerousEnemies.isEmpty && enemies.isEmpty) {
-      if (encounter.any((e) => e.isEnemy && e.alive)) {
-        await intimidate(p);
-      }
-      return;
-    }
-
-    Creature target;
-    if (superEnemies.isNotEmpty && !p.attack.socialDamage) {
-      target = superEnemies.random;
-    } else if (dangerousEnemies.isNotEmpty) {
-      target = dangerousEnemies.random;
-    } else if (enemies.isNotEmpty) {
-      target = enemies.random;
-    } else {
-      target = superEnemies.random;
-    }
-
-    bool mistake = false;
-    // 1% chance to accidentally hit bystanders
-    if (nonEnemies.isNotEmpty && oneIn(100)) {
-      target = nonEnemies.random;
-      mistake = true;
-    }
-
-    int beforeblood = target.blood;
-
-    bool attacked = await attack(p, target, mistake);
-
-    if (attacked) {
-      if (mistake) {
-        await alienationCheck(mistake);
-        siteCrime += 10;
-      } else {
-        siteCrime += 3;
-        addjuice(p, 1, 200);
-      }
-      addDramaToSiteStory(Drama.attacked);
-      // Charge with assault if first strike
-      if (siteAlarm &&
-          (!wasalarm ||
-              (beforeblood > target.blood && beforeblood == target.maxBlood)) &&
-          activeSite?.siege.underSiege == false) {
-        if (p.equippedWeapon == null) {
-          criminalize(p, Crime.assault);
-        }
-      }
-    }
-
-    if (!target.alive) {
-      if (mode == GameMode.site) makeLoot(target, groundLoot);
-      encounter.remove(target);
-      if (!mistake) {
-        for (Creature p in squad) {
-          addjuice(p, 5, 500);
-        }
-      }
-    }
+    await squadMemberAttacks(p, wasAlarm, validTargets);
   }
 
-  for (Creature e in encounter) {
+  // Alarm enemies
+  for (Creature e in validTargets) {
     if (e.alive && e.isEnemy) {
       siteAlarm = true;
       break;
     }
   }
 
-  //COVER FIRE
+  // Cover fire from allies when defending/escaping from a crowded safehouse
   if (activeSiteUnderSiege) {
     for (Creature p in pool) {
       if (!p.alive) continue;
@@ -137,116 +58,187 @@ Future<void> youattack() async {
 
       Attack? chosenAttack = p.getAttack(true, false, false);
       if (chosenAttack != null) {
-        List<Creature> goodtarg = [];
-        List<Creature> badtarg = [];
-
-        for (Creature e in encounter) {
-          if (e.alive) {
-            if (e.isEnemy) {
-              goodtarg.add(e);
-            } else {
-              badtarg.add(e);
-            }
-          }
-        }
-
-        if (goodtarg.isEmpty) return;
-
-        Creature target = goodtarg.random;
-
-        bool mistake = false;
-
-        if (badtarg.isNotEmpty && oneIn(100)) {
-          target = badtarg.random;
-          mistake = true;
-        }
-
-        bool fired = await attack(p, target, mistake);
-
-        if (fired) {
-          if (mistake) {
-            await alienationCheck(mistake);
-            siteCrime += 10;
-          }
-
-          criminalize(p, Crime.assault);
-        }
-
-        if (!target.alive) {
-          if (mode == GameMode.site) makeLoot(target, groundLoot);
-          encounter.remove(target);
-        }
+        await squadMemberAttacks(p, wasAlarm, validTargets);
       }
     }
   }
 }
 
-Future<void> enemyattack() async {
-  const List<String> escapeCrawling = [
-    " crawls off moaning...",
-    " crawls off whimpering...",
-    " crawls off trailing blood...",
-    " crawls off screaming...",
-    " crawls off crying...",
-    " crawls off sobbing...",
-    " crawls off whispering...",
-    " crawls off praying...",
-    " crawls off cursing..."
-  ];
+Future<void> squadMemberAttacks(
+    Creature p, bool wasAlarm, List<Creature> validTargets) async {
+  // Categorize npcs into danger levels
+  List<Creature> superEnemies = [];
+  List<Creature> dangerousEnemies = [];
+  List<Creature> enemies = [];
+  List<Creature> nonEnemies = [];
+  for (Creature e in validTargets) {
+    if (e.alive) {
+      if (e.isEnemy &&
+          ((!e.nonCombatant && !e.calculateWillRunAway()) ||
+              e.type.majorEnemy)) {
+        if (e.type.tank && e.stunned == 0) {
+          superEnemies.add(e);
+        } else if ((e.attack.socialDamage || e.attack.damage > 20) &&
+            e.blood >= e.maxBlood * 0.4 &&
+            e.stunned == 0) {
+          dangerousEnemies.add(e);
+        } else {
+          enemies.add(e);
+        }
+      } else {
+        nonEnemies.add(e);
+      }
+    }
+  }
 
-  const List<String> escapeRunning = [
-    " makes a break for it!",
-    " escapes crying!",
-    " runs away!",
-    " gets out of there!",
-    " runs hollering!",
-    " bolts out of there!",
-    " runs away screaming!",
-  ];
+  // Intimidate if no enemies present who aren't fleeing
+  if (superEnemies.isEmpty &&
+      dangerousEnemies.isEmpty &&
+      enemies.isEmpty &&
+      mode != GameMode.carChase) {
+    if (validTargets.any((e) => e.isEnemy && e.alive)) {
+      await intimidate(p);
+    }
+    return;
+  }
 
-  for (int i = encounter.length - 1; i >= 0; i--) {
-    Creature e = encounter[i];
+  // Select one of the most dangerous enemies to attack
+  Creature target;
+  if (superEnemies.isNotEmpty && !p.attack.socialDamage) {
+    target = superEnemies.random;
+  } else if (dangerousEnemies.isNotEmpty) {
+    target = dangerousEnemies.random;
+  } else if (enemies.isNotEmpty) {
+    target = enemies.random;
+  } else if (superEnemies.isNotEmpty) {
+    target = superEnemies.random;
+  } else if (validTargets.isNotEmpty) {
+    target = validTargets.random;
+  } else {
+    return; // No valid targets to attack
+  }
+
+  // <1% chance for the LCS to accidentally hit bystanders
+  bool mistake = false;
+  if (nonEnemies.isNotEmpty && oneIn(100 + p.skill(p.attack.skill) * 10)) {
+    target = nonEnemies.random;
+    mistake = true;
+  }
+
+  // Record target health before attack to compare later when determining
+  // whether to charge with assault
+  int beforeblood = target.blood;
+
+  // Resolve attack on target
+  bool attacked = await attack(p, target, mistake);
+
+  if (attacked) {
+    // Add juice, drama, size crime
+    if (mistake) {
+      await alienationCheck(mistake);
+      siteCrime += 10;
+    } else {
+      siteCrime += 3;
+      addjuice(p, 1, 200);
+    }
+    addDramaToSiteStory(Drama.attacked);
+    if (p.weapon.isCurrentlyLegal && p.weapon.isAGun) {
+      addDramaToSiteStory(Drama.legalGunUsed);
+    } else if (p.weapon.isAGun) {
+      addDramaToSiteStory(Drama.illegalGunUsed);
+    }
+    // Charge with assault if first strike
+    if (siteAlarm &&
+        (!wasAlarm ||
+            (beforeblood > target.blood && beforeblood == target.maxBlood)) &&
+        activeSite?.siege.underSiege == false) {
+      if (p.equippedWeapon == null) {
+        criminalize(p, Crime.assault);
+      }
+    }
+  }
+
+  // Dead foes drop loot, removed from encounter, grant bonus juice
+  if (!target.alive) {
+    if (mode == GameMode.site) makeLoot(target, groundLoot);
+    encounter.remove(target);
+    validTargets.remove(target);
+    if (!mistake) {
+      for (Creature p in squad) {
+        addjuice(p, 5, 500);
+      }
+    }
+  }
+}
+
+const List<String> escapeCrawling = [
+  " crawls off moaning...",
+  " crawls off whimpering...",
+  " crawls off trailing blood...",
+  " crawls off screaming...",
+  " crawls off crying...",
+  " crawls off sobbing...",
+  " crawls off whispering...",
+  " crawls off praying...",
+  " crawls off cursing..."
+];
+const List<String> escapeRunning = [
+  " makes a break for it!",
+  " escapes crying!",
+  " runs away!",
+  " gets out of there!",
+  " runs hollering!",
+  " bolts out of there!",
+  " runs away screaming!",
+];
+
+Future<void> enemyattack(List<Creature> possibleEnemies) async {
+  for (int i = possibleEnemies.length - 1; i >= 0; i--) {
+    Creature e = possibleEnemies[i];
     if (!e.alive) continue;
 
+    // Moderate bouncers are converted to conservatives
     if (siteAlarm &&
         e.type.id == CreatureTypeIds.bouncer &&
         e.align != Alignment.liberal) {
       conservatize(e);
     }
+    // Enemies notice you and become unwilling to talk
     if (e.isEnemy) {
       e.noticedParty = true;
       e.isWillingToTalk = false;
     }
 
+    // Fleeing npcs escape
     if (mode != GameMode.carChase) {
-      bool runsAway = e.calculateWillRunAway();
+      bool runsAway = e.calculateWillRunAway() || e.nonCombatant;
+      if (mode == GameMode.carChase) runsAway = false;
 
       if (runsAway && e.body is HumanoidBody) {
-        if (!await incapacitated(e, false)) {
-          clearMessageArea();
+        clearMessageArea();
 
-          mvaddstrc(16, 1, white, e.name);
-          if (e.body.legok < 2 || e.blood < e.maxBlood * 0.45) {
-            addstr(escapeCrawling.random);
-          } else {
-            addstr(escapeRunning.random);
-          }
-
-          encounter.remove(e);
-
-          printParty();
-          printEncounter();
-
-          await getKey();
+        mvaddstrc(9, 1, white, e.name);
+        if (e.body.legok < 2 || e.blood < e.maxBlood * 0.45) {
+          addstr(escapeCrawling.random);
+        } else {
+          addstr(escapeRunning.random);
         }
+
+        encounter.remove(e);
+        possibleEnemies.remove(e);
+
+        printParty();
+        printEncounter();
+
+        await getKey();
 
         continue;
       }
     }
 
+    // Categorize targets into good and bad buckets
     List<Creature> goodtarg = [];
     List<Creature> badtarg = [];
-
     if (e.isEnemy) {
       for (Creature p in squad) {
         if (p.alive) goodtarg.add(p);
@@ -265,7 +257,7 @@ Future<void> enemyattack() async {
         }
       }
     } else {
-      for (Creature e2 in encounter) {
+      for (Creature e2 in possibleEnemies) {
         if (e2.alive && e2.isEnemy) {
           goodtarg.add(e2);
         } else if (e2.alive && e2 != e) {
@@ -274,15 +266,18 @@ Future<void> enemyattack() async {
       }
     }
 
+    // Take no action if nobody they want to attack is present
     if (goodtarg.isEmpty) return;
 
     Creature target = goodtarg.random;
 
+    // If the attack will be a social attack, it can't have friendly fire
     bool canmistake = true;
-
     if (e.attack.socialDamage && encounter.length < ENCMAX) canmistake = false;
+    if (mode == GameMode.carChase) canmistake = false;
 
     if (canmistake) {
+      // Resolve hits on hostages and hauled liberals
       if (e.isEnemy && target.prisoner != null && oneIn(2)) {
         await attack(e, target.prisoner!, true);
         if (!target.prisoner!.alive) {
@@ -307,6 +302,7 @@ Future<void> enemyattack() async {
         continue;
       }
 
+      // Resolve friendly fire and neutrals caught in the crossfire
       if (oneIn(10 * e.weaponSkill + 10) && badtarg.isNotEmpty) {
         target = badtarg.random;
         if (target.justConverted) {
@@ -317,15 +313,18 @@ Future<void> enemyattack() async {
         if (!target.alive) {
           if (mode == GameMode.site) makeLoot(target, groundLoot);
           encounter.remove(target);
+          possibleEnemies.remove(target);
         }
         continue;
       }
     }
 
+    // Resolve attack on the intended target
     await attack(e, target, false);
     if (!target.alive && encounter.contains(target)) {
       if (mode == GameMode.site) makeLoot(target, groundLoot);
       encounter.remove(target);
+      possibleEnemies.remove(target);
     }
   }
 }
@@ -351,7 +350,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
   if ((a.willReload(mode == GameMode.carChase, forceMelee) ||
           a.hasThrownWeapon) &&
       !forceMelee) {
-    move(16, 1);
+    move(9, 1);
     if (a.hasThrownWeapon) {
       a.readyAnotherThrowingWeapon();
       addstr("${a.name} readies another ${a.weapon.getName()}.");
@@ -382,28 +381,69 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
     }
   }
 
-  bool melee = !attackUsed.ranged;
+  bool melee = !attackUsed.ranged && !attackUsed.socialDamage;
   bool sneakAttack = false;
   bool addNastyOff = false;
+  int maxNumberOfAttacks = attackUsed.numberOfAttacks;
+  double damageMultiplier = 1;
 
-  mvaddstr(16, 1, "${a.name} ");
+  mvaddstr(9, 1, "${a.name} ");
   if (mistake) addstr("MISTAKENLY ");
   if (a.weapon.type.idName == "WEAPON_NONE") {
-    if (oneIn(a.skill(Skill.martialArts) + 1)) {
-      addstr("punches");
-    } else if (oneIn(a.skill(Skill.martialArts))) {
-      addstr("swings at");
-    } else if (oneIn(a.skill(Skill.martialArts) - 1)) {
-      addstr("kicks");
-    } else if (oneIn(a.skill(Skill.martialArts) - 2)) {
-      addstr("pummels");
-    } else if (oneIn(a.skill(Skill.martialArts) - 3)) {
-      addstr("strikes");
-    } else if (oneIn(a.skill(Skill.martialArts) - 4)) {
-      addstr("jump kicks");
+    int result = a.skillRoll(Skill.martialArts);
+    if (a.body is HumanoidBody) {
+      if (result < 15) {
+        addstr("flails at");
+        maxNumberOfAttacks = 1;
+        damageMultiplier = 0.5;
+      } else if (result < 20) {
+        addstr("punches");
+        maxNumberOfAttacks = 1;
+        damageMultiplier = 1;
+      } else if (result < 25) {
+        addstr("kicks");
+        maxNumberOfAttacks = 1;
+        damageMultiplier = 1;
+      } else if (result < 45) {
+        switch (lcsRandom(3)) {
+          case 0:
+            addstr("pummels");
+            maxNumberOfAttacks = 6;
+            damageMultiplier = 1;
+          case 1:
+            addstr("combos");
+            maxNumberOfAttacks = 4;
+            damageMultiplier = 2;
+          case 2:
+            addstr("jump kicks");
+            maxNumberOfAttacks = 1;
+            damageMultiplier = 5;
+        }
+      } else {
+        switch (lcsRandom(3)) {
+          case 0:
+            addstr("unleashes ${a.gender.hisHer} Stand on");
+            maxNumberOfAttacks = 12;
+            damageMultiplier = 1;
+          case 1:
+            addstr("launches a flurry of blows at");
+            maxNumberOfAttacks = 6;
+            damageMultiplier = 2;
+          case 2:
+            addstr("slows time and touches");
+            addNastyOff = true;
+            maxNumberOfAttacks = 1;
+            damageMultiplier = 10;
+        }
+      }
+    } else if (a.weapon.typeName == "WEAPON_BITE") {
+      addstr("lunges with fangs out at");
+      maxNumberOfAttacks = 1;
+      damageMultiplier = 1;
     } else {
-      addstr("slows time and touches");
-      addNastyOff = true;
+      addstr("attacks");
+      maxNumberOfAttacks = 1;
+      damageMultiplier = 1;
     }
   } else {
     if (attackUsed.canBackstab && a.align == Alignment.liberal && !mistake) {
@@ -425,7 +465,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
   addstr(" ${t.name}");
 
   if (a.equippedWeapon != null && !attackUsed.thrown) {
-    addstr(" with a ${a.weapon.getName()}");
+    addstr(" with a ${a.weapon.getName(primary: true)}");
   }
   addstr("!");
 
@@ -439,17 +479,28 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
 
   // Basic roll
   int aroll = a.skillRoll(wsk);
-  int droll = (t.skillRoll(Skill.dodge) / 2).round();
-  //Founders are better dodgers
-  if (targetIsLeader) droll = t.skillRoll(Skill.dodge);
-  if (sneakAttack) {
-    droll = (t.attributeRoll(Attribute.wisdom) / 2).round();
-    aroll += a.skillRoll(Skill.stealth);
-    a.train(Skill.stealth, 10);
-    a.train(wsk, 10);
+  int droll = t.skillRoll(Skill.dodge);
+  if (mode == GameMode.carChase) {
+    droll = 0;
+    if (t.car != null && a.car != null) {
+      int tDistance = chaseSequence?.enemyCarDistance[t.car!] ?? 0;
+      int aDistance = chaseSequence?.enemyCarDistance[a.car!] ?? 0;
+      int difference = (tDistance - aDistance).abs();
+      droll = difference + lcsRandom(difference) + 5;
+    }
+    a.train(wsk, droll + 5);
   } else {
-    t.train(Skill.dodge, aroll * 2);
-    a.train(wsk, droll * 2 + 5);
+    //Founders are better dodgers
+    if (targetIsLeader) droll = max(droll, t.skillRoll(Skill.dodge));
+    if (sneakAttack) {
+      droll = (t.attributeRoll(Attribute.wisdom) / 2).round();
+      aroll += a.skillRoll(Skill.stealth);
+      a.train(Skill.stealth, 10);
+      a.train(wsk, 10);
+    } else {
+      t.train(Skill.dodge, aroll * 2);
+      a.train(wsk, droll * 2 + 5);
+    }
   }
 
   // Hostages interfere with attack
@@ -458,7 +509,9 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
 
   //Injured people suck at attacking, are like fish in a barrel to attackers
   aroll = healthmodroll(aroll, a);
-  droll = healthmodroll(droll, t);
+  if (mode != GameMode.carChase) {
+    droll = healthmodroll(droll, t);
+  }
 
   // If in a foot chance, double the debilitating effect of injuries
   if (mode == GameMode.footChase) {
@@ -479,11 +532,16 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
   int thrownweapons =
       0; // Used by thrown weapons to remove the weapons at the end of the turn if needed
 
-  if (a.equippedWeapon == null) //Move into WEAPON_NONE -XML
+  if (a.weapon.typeName == "WEAPON_NONE") //Move into WEAPON_NONE -XML
   {
     // Martial arts multi-strikes
-    bursthits = 1 + lcsRandom(a.skill(Skill.martialArts) ~/ 3 + 1);
-    if (bursthits > 5) bursthits = 5;
+    if (maxNumberOfAttacks == 1) {
+      bursthits = 1;
+    } else {
+      bursthits = maxNumberOfAttacks ~/ 2 +
+          lcsRandom((a.skill(Skill.martialArts) - maxNumberOfAttacks) ~/ 3 + 1);
+    }
+    if (bursthits > maxNumberOfAttacks) bursthits = maxNumberOfAttacks;
     if (!a.human) {
       bursthits = 1; // Whoops, must be human to use martial arts fanciness
     }
@@ -508,7 +566,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
       }
     }
 
-    for (int i = 0; i < attackUsed.numberOfAttacks; i++) {
+    for (int i = 0; i < maxNumberOfAttacks; i++) {
       if (attackUsed.usesAmmo) {
         if (a.weapon.ammo > 0) {
           a.weapon.ammo -= 1;
@@ -528,14 +586,19 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
         break;
       }
       // Each shot in a burst is increasingly less likely to hit
-      if (aroll + bonus - i * attackUsed.successiveAttacksDifficulty > droll) {
+      int recoil = attackUsed.successiveAttacksDifficulty * i;
+      if (attackUsed.usesAmmo) {
+        recoil += (a.weapon.loadedAmmoType?.recoil ?? 0) * i;
+      }
+      if (aroll + bonus - recoil > droll &&
+          a.skill(wsk) >= attackUsed.successiveAttacksDifficulty * i) {
         bursthits++;
       }
     }
   }
 
   if (aroll + bonus > droll &&
-      attackUsed.averageDamage > t.blood &&
+      attackUsed.damage > t.blood &&
       targetIsLeader &&
       mode != GameMode.carChase) {
     // If the attack has a high chance of killing the target, and the target
@@ -545,7 +608,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
       if (alternate.attribute(Attribute.heart) > 8 &&
           alternate.attribute(Attribute.agility) > 4) {
         clearMessageArea();
-        mvaddstrc(16, 1, lightGreen, alternate.name);
+        mvaddstrc(9, 1, lightGreen, alternate.name);
         if (!t.alive) {
           addstr(" misguidedly");
         } else {
@@ -565,45 +628,52 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
     }
   }
 
-  move(17, 1);
+  move(10, 1);
   debugPrint("${a.name} rolls $aroll + $bonus, ${t.name} rolls $droll");
-  Map<BodyPart, int> weights = {};
-  for (BodyPart p in t.body.parts) {
-    if (p.missing) continue;
-    if (p.immuneInCar && mode == GameMode.carChase) {
-      continue;
-    }
-    int size = p.size;
-    if (sneakAttack) {
-      if (p.weakSpot) size *= 4;
-      if (!p.critical) continue;
-    }
-    if (aroll + bonus > droll + 10) {
-      if (p.weakSpot) size *= 2;
-      if (p.critical) size *= 2;
-    } else if (aroll + bonus > droll + 5) {
-      if (p.critical) size *= 2;
-    }
-    weights[p] = size;
-  }
   BodyPart? hitPart;
-  if (weights.isNotEmpty) hitPart = lcsRandomWeighted(weights);
+  BodyPart? rollHitLocation() {
+    Map<BodyPart, int> weights = {};
+    for (BodyPart p in t.body.parts) {
+      if (p.missing) continue;
+      if (p.immuneInCar && mode == GameMode.carChase) {
+        continue;
+      }
+      int size = p.size;
+      if (sneakAttack) {
+        if (p.weakSpot) size *= 4;
+        if (!p.critical) continue;
+      }
+      if (aroll + bonus > droll + 10) {
+        if (p.weakSpot) size *= 2;
+        if (p.critical) size *= 2;
+      } else if (aroll + bonus > droll + 5) {
+        if (p.critical) size *= 2;
+      }
+      weights[p] = size;
+    }
+    if (weights.isNotEmpty) return lcsRandomWeighted(weights);
+    return null;
+  }
+
+  hitPart = rollHitLocation();
 
   if (hitPart != null && aroll + bonus > droll) {
     //HIT!
     String str = a.name;
     if (sneakAttack) {
       str += " stabs the ";
-    } else {
+    } else if (bursthits == 1 || attackUsed.ranged) {
       str += " hits the ";
     }
 
-    if (t.armor.covers(hitPart)) {
-      if (hitPart.weakSpot && t.armor.type.headArmor > 4) {
+    if (bursthits > 1 && !attackUsed.ranged) {
+      str += " strikes true";
+    } else if (t.clothing.covers(hitPart)) {
+      if (hitPart.weakSpot && t.clothing.headArmor > 4 && t.human) {
         str += "helmet";
-      } else if (hitPart.critical && t.armor.type.bodyArmor > 4) {
-        str += "body armor";
-      } else if (t.armor.type.limbArmor > 4) {
+      } else if (hitPart.critical && t.clothing.bodyArmor > 4 && t.human) {
+        str += t.clothing.armor?.name.toLowerCase() ?? "armor";
+      } else if (t.clothing.getLimbArmor(hitPart) > 4) {
         str += "${hitPart.name.toLowerCase()} armor";
       } else {
         str += hitPart.name.toLowerCase();
@@ -613,8 +683,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
     }
 
     // show multiple hits
-    if ((attackUsed.alwaysDescribeHit || bursthits > 1) &&
-        a.weapon.type.idName != "WEAPON_NONE") {
+    if (attackUsed.alwaysDescribeHit || bursthits > 1) {
       String multiHit = switch (bursthits) {
         1 => "",
         2 => " twice",
@@ -625,603 +694,21 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
       };
       str += ", ${attackUsed.hitDescription}$multiHit";
     }
+    addstr("$str.");
+    await getKey();
 
-    int damamount = 0;
-    int strengthmin = attackUsed.ranged ? 0 : attackUsed.strengthMin;
-    int strengthmax = attackUsed.ranged ? 0 : attackUsed.strengthMax;
-    SeverType severtype = attackUsed.severType;
-
-    bool damagearmor = false;
-    int armorpiercing = 0;
-
-    severtype = attackUsed.severType;
-    if (addNastyOff) severtype = SeverType.nasty;
-    int random = attackUsed.randomDamage + a.skill(wsk);
-    int fixed = attackUsed.fixedDamage + a.skill(wsk);
-    if (sneakAttack) fixed += 100;
-    if (bursthits >= (attackUsed.critical?.hitsRequired ?? 999) &&
-        lcsRandom(100) < (attackUsed.critical?.chance ?? 0)) {
-      random = attackUsed.critical?.randomDamage ?? random;
-      fixed = attackUsed.critical?.fixedDamage ?? fixed;
-      severtype = attackUsed.critical?.severType ?? severtype;
-      //debugPrint("Critical hit!");
-    }
-    //debugPrint("Random: $random, fixed: $fixed, hits: $bursthits");
-    while (bursthits > 0) {
-      damamount += lcsRandom(random) + fixed;
-      bursthits--;
-    }
-    damagearmor = attackUsed.damagesArmor;
-    armorpiercing = attackUsed.armorPenetration;
-    //debugPrint("Initial damage roll: $damamount");
-
-    int mod = 0;
-
-    if (strengthmax > strengthmin) {
-      // Melee attacks: Maximum strength bonus, minimum
-      // strength to deliver full damage
-      int strength = a.attribute(Attribute.strength);
-      if (strength > strengthmax) strength = strengthmax;
-      mod += strength - strengthmin;
-      armorpiercing += (strength - strengthmin) ~/ 2;
+    bool aliveBefore = t.alive;
+    for (int i = 0; i < bursthits; i++) {
+      await hit(a, t, attackUsed, hitPart!, sneakAttack, addNastyOff,
+          damageMultiplier);
+      if (!attackUsed.ranged) hitPart = rollHitLocation();
+      if (hitPart == null) break;
     }
 
-    // DAMAGE BONUS FROM HIGH SKILL
-    mod += a.skill(wsk);
-
-    int predamamount = damamount;
-    bool bruiseOnly = false;
-    damamount =
-        damagemod(t, attackUsed, damamount, hitPart, armorpiercing, mod);
-    if (damamount < predamamount / 4 &&
-        damamount < 20 &&
-        damamount > 0 &&
-        damamount < t.blood / 4) {
-      bruiseOnly = true;
-      str += " to little effect";
-    }
-    //debugPrint("Damage after mod: $damamount");
-
-    if (damamount > 0) {
-      Creature target = t;
-
-      if (bruiseOnly) {
-        hitPart.bruised = true;
-      } else {
-        hitPart.bleeding = attackUsed.bleeds;
-        hitPart.cut = attackUsed.cuts;
-        hitPart.torn = attackUsed.tears;
-        hitPart.shot = attackUsed.shoots;
-        hitPart.burned = attackUsed.burns;
-        hitPart.bruised = attackUsed.bruises;
-      }
-
-      int severamount = 200;
-      if (hitPart.weakSpot) {
-        severamount = (severamount / 2).round();
-      } else if (hitPart.critical) {
-        severamount *= 4;
-      }
-
-      if (severtype != SeverType.none &&
-          damamount >= severamount &&
-          !bruiseOnly) {
-        if (severtype == SeverType.clean) {
-          hitPart.cleanOff = true;
-          if (hitPart.critical && !hitPart.weakSpot) {
-            str += " CUTTING IT IN HALF!";
-          } else {
-            str += " CUTTING IT OFF!";
-          }
-        } else if (severtype == SeverType.nasty) {
-          hitPart.nastyOff = true;
-          str += " BLOWING IT APART!";
-        }
-      } else {
-        str += ".";
-      }
-
-      if (!hitPart.critical && target.alive) {
-        if (lcsRandom(100) >= attackUsed.noDamageReductionForLimbsChance) {
-          damamount = min(damamount, (target.blood / 2).round());
-        }
-      }
-
-      if (damagearmor && target.equippedArmor != null) {
-        armordamage(target.armor, hitPart, damamount);
-      }
-
-      //debugPrint("Target blood before hit: ${target.blood}/${target.maxBlood}");
-      target.blood -= damamount;
-      //debugPrint("Target blood after hit: ${target.blood}/${target.maxBlood}");
-
-      levelMap[locx][locy][locz].bloody = true;
-
-      mvaddstrc(17, 1, a.align.color, str);
-
-      if ((hitPart.critical && hitPart.missing) || target.blood <= 0) {
-        bool alreadydead = !target.alive;
-        bool alienate = false;
-
-        if (!alreadydead) {
-          target.die();
-
-          int killjuice = 5 + (t.juice / 20).round();
-          if ((t.align.index - a.align.index).abs() == 2) {
-            if (t.type.majorEnemy || t.type.tank) {
-              killjuice += 50;
-            }
-            if (activeSite?.siege.underSiege == false &&
-                mode == GameMode.site) {
-              if (!t.type.majorEnemy &&
-                  !t.type.canPerformArrests &&
-                  !t.type.lawEnforcement &&
-                  !t.type.edgelord &&
-                  !t.type.ccsMember &&
-                  !t.type.tank &&
-                  t.calculateWillRunAway()) {
-                killjuice = 0;
-              }
-            }
-            addjuice(a, killjuice, 1000); // Instant juice
-          } else {
-            addjuice(a, -killjuice, -50);
-          }
-
-          if (target.isEnemy && (!t.type.animal || animalsArePeopleToo)) {
-            if (activeSiteUnderSiege) activeSite!.siege.kills++;
-            if (activeSiteUnderSiege && t.type.tank) {
-              activeSite!.siege.tanks--;
-            }
-            if (activeSite?.controller == SiteController.ccs) {
-              if (target.type.id == CreatureTypeIds.ccsArchConservative) {
-                ccsBossKills++;
-              }
-              ccsSiegeKills++;
-            }
-          }
-          if (target.squadId == null &&
-              (!target.type.animal || animalsArePeopleToo) &&
-              !sneakAttack) {
-            siteCrime += 10;
-            if (t.type.majorEnemy) {
-              siteCrime += 90;
-            }
-            if (a.squad == activeSquad) {
-              if (mode == GameMode.site && !activeSiteUnderSiege) {
-                alienate = true;
-              }
-              addDramaToSiteStory(Drama.killedSomebody);
-              criminalizeparty(Crime.murder);
-            }
-          }
-        }
-
-        await getKey();
-
-        if (severtype == SeverType.nasty) bloodblast(t.armor);
-
-        if (!alreadydead) {
-          await severloot(t, groundLoot);
-          clearMessageArea();
-          addDeathMessage(target);
-
-          printParty();
-          printEncounter();
-
-          if (alienate) alienate = await alienationCheck(true);
-
-          if (!alienate) await getKey();
-
-          if (target.prisoner != null) {
-            await freehostage(t, FreeHostageMessage.newLine);
-          }
-        }
-      } else {
-        printParty();
-        printEncounter();
-
-        await getKey();
-
-        if (severtype == SeverType.nasty) bloodblast(t.armor);
-
-        //SPECIAL WOUNDS
-        if (!hitPart.missing && target.body is HumanoidBody) {
-          bool heavydam = false;
-          bool breakdam = false;
-          bool pokedam = false;
-          HumanoidBody body = target.body as HumanoidBody;
-          if (damamount >= 12) {
-            if (attackUsed.shoots ||
-                attackUsed.burns ||
-                attackUsed.tears ||
-                attackUsed.cuts) {
-              heavydam = true;
-            }
-          }
-
-          if (damamount >= 10) {
-            if (attackUsed.cuts || attackUsed.tears || attackUsed.shoots) {
-              pokedam = true;
-            }
-          }
-
-          if (damamount >= 50) {
-            if (attackUsed.cuts ||
-                attackUsed.shoots ||
-                attackUsed.tears ||
-                attackUsed.bruises) {
-              breakdam = true;
-            }
-          }
-
-          void maxBlood(double proportion) {
-            if (target.blood > target.maxBlood * proportion) {
-              target.blood = (target.maxBlood * proportion).round();
-            }
-          }
-
-          if (hitPart == body.head) {
-            clearMessageArea();
-            setColor(a.align.color);
-
-            switch (lcsRandom(7)) {
-              case 0:
-                if ((!body.missingLeftEye ||
-                        !body.missingRightEye ||
-                        !body.missingNose) &&
-                    heavydam) {
-                  mvaddstr(16, 1, target.name);
-                  if (attackUsed.shoots) {
-                    addstr("'s face is blasted off!");
-                  } else if (attackUsed.burns) {
-                    addstr("'s face is burned away!");
-                  } else if (attackUsed.tears) {
-                    addstr("'s face is torn off!");
-                  } else if (attackUsed.cuts) {
-                    addstr("'s face is cut away!");
-                  } else {
-                    addstr("'s face is removed!");
-                  }
-
-                  await getKey();
-
-                  body.missingLeftEye = true;
-                  body.missingRightEye = true;
-                  body.missingNose = true;
-                  maxBlood(0.2);
-                }
-              case 1:
-                if (body.teeth > 0) {
-                  int teethminus = lcsRandom(body.teeth) + 1;
-
-                  move(16, 1);
-                  if (teethminus > 1) {
-                    if (teethminus == body.teeth) {
-                      addstr("All ");
-                    }
-                    addstr("$teethminus of ${target.name}'s teeth are ");
-                  } else if (body.teeth > 1) {
-                    addstr("One of ${target.name}'s teeth is ");
-                  } else {
-                    addstr("${target.name}'s last tooth is ");
-                  }
-
-                  if (attackUsed.shoots) {
-                    addstr("shot out!");
-                  } else if (attackUsed.burns) {
-                    addstr("burned away!");
-                  } else if (attackUsed.tears) {
-                    addstr("gouged out!");
-                  } else if (attackUsed.cuts) {
-                    addstr("cut out!");
-                  } else {
-                    addstr("knocked out!");
-                  }
-
-                  await getKey();
-
-                  body.teeth -= teethminus;
-                }
-              case 2:
-                if (!body.missingRightEye && heavydam) {
-                  mvaddstr(16, 1, target.name);
-                  if (attackUsed.shoots) {
-                    addstr("'s right eye is blasted out!");
-                  } else if (attackUsed.burns) {
-                    addstr("'s right eye is burned away!");
-                  } else if (attackUsed.tears) {
-                    addstr("'s right eye is torn out!");
-                  } else if (attackUsed.cuts) {
-                    addstr("'s right eye is poked out!");
-                  } else {
-                    addstr("'s right eye is removed!");
-                  }
-
-                  await getKey();
-
-                  body.missingRightEye = true;
-                  maxBlood(0.5);
-                }
-              case 3:
-                if (!body.missingLeftEye && heavydam) {
-                  mvaddstr(16, 1, target.name);
-                  if (attackUsed.shoots) {
-                    addstr("'s left eye is blasted out!");
-                  } else if (attackUsed.burns) {
-                    addstr("'s left eye is burned away!");
-                  } else if (attackUsed.tears) {
-                    addstr("'s left eye is torn out!");
-                  } else if (attackUsed.cuts) {
-                    addstr("'s left eye is poked out!");
-                  } else {
-                    addstr("'s left eye is removed!");
-                  }
-
-                  await getKey();
-
-                  body.missingLeftEye = true;
-                  maxBlood(0.5);
-                }
-              case 4:
-                if (!body.missingTongue && heavydam) {
-                  mvaddstr(16, 1, target.name);
-                  if (attackUsed.shoots) {
-                    addstr("'s tongue is blasted off!");
-                  } else if (attackUsed.burns) {
-                    addstr("'s tongue is burned away!");
-                  } else if (attackUsed.tears) {
-                    addstr("'s tongue is torn out!");
-                  } else if (attackUsed.cuts) {
-                    addstr("'s tongue is cut off!");
-                  } else {
-                    addstr("'s tongue is removed!");
-                  }
-
-                  await getKey();
-
-                  body.missingTongue = true;
-                  maxBlood(0.5);
-                }
-              case 5:
-                if (!body.missingNose && heavydam) {
-                  mvaddstr(16, 1, target.name);
-                  if (attackUsed.shoots) {
-                    addstr("'s nose is blasted off!");
-                  } else if (attackUsed.burns) {
-                    addstr("'s nose is burned away!");
-                  } else if (attackUsed.tears) {
-                    addstr("'s nose is torn off!");
-                  } else if (attackUsed.cuts) {
-                    addstr("'s nose is cut off!");
-                  } else {
-                    addstr("'s nose is removed!");
-                  }
-
-                  await getKey();
-
-                  body.missingNose = true;
-                  maxBlood(0.5);
-                }
-              case 6:
-                if (!body.brokenNeck && breakdam) {
-                  mvaddstr(16, 1, target.name);
-                  if (attackUsed.shoots) {
-                    addstr("'s neck bones are shattered!");
-                  } else {
-                    addstr("'s neck is broken!");
-                  }
-
-                  await getKey();
-
-                  body.neck = InjuryState.untreated;
-                  maxBlood(0.2);
-                }
-            }
-          }
-          if (hitPart == body.torso) {
-            clearMessageArea();
-            setColor(a.align.color);
-
-            switch (lcsRandom(11)) {
-              case 0:
-                if (!body.brokenUpperSpine && breakdam) {
-                  mvaddstr(16, 1, target.name);
-                  if (attackUsed.shoots) {
-                    addstr("'s upper spine is shattered!");
-                  } else {
-                    addstr("'s upper spine is broken!");
-                  }
-
-                  await getKey();
-
-                  body.upperSpine = InjuryState.untreated;
-                  maxBlood(0.2);
-                }
-              case 1:
-                if (!body.brokenLowerSpine && breakdam) {
-                  mvaddstr(16, 1, target.name);
-                  if (attackUsed.shoots) {
-                    addstr("'s lower spine is shattered!");
-                  } else {
-                    addstr("'s lower spine is broken!");
-                  }
-
-                  await getKey();
-
-                  body.lowerSpine = InjuryState.untreated;
-                  maxBlood(0.2);
-                }
-              case 2:
-                if (body.puncturedRightLung && pokedam) {
-                  mvaddstr(16, 1, target.name);
-                  if (attackUsed.shoots) {
-                    addstr("'s right lung is blasted!");
-                  } else if (attackUsed.tears) {
-                    addstr("'s right lung is torn!");
-                  } else {
-                    addstr("'s right lung is punctured!");
-                  }
-
-                  await getKey();
-
-                  body.puncturedRightLung = true;
-                  maxBlood(0.2);
-                }
-              case 3:
-                if (body.puncturedLeftLung && pokedam) {
-                  mvaddstr(16, 1, target.name);
-                  if (attackUsed.shoots) {
-                    addstr("'s left lung is blasted!");
-                  } else if (attackUsed.tears) {
-                    addstr("'s left lung is torn!");
-                  } else {
-                    addstr("'s left lung is punctured!");
-                  }
-
-                  await getKey();
-
-                  body.puncturedLeftLung = true;
-                  maxBlood(0.2);
-                }
-              case 4:
-                if (body.puncturedHeart && pokedam) {
-                  mvaddstr(16, 1, target.name);
-                  if (attackUsed.shoots) {
-                    addstr("'s heart is blasted!");
-                  } else if (attackUsed.tears) {
-                    addstr("'s heart is torn!");
-                  } else {
-                    addstr("'s heart is punctured!");
-                  }
-
-                  await getKey();
-
-                  body.puncturedHeart = true;
-                  if (target.blood > 3) {
-                    target.blood = 3;
-                  }
-                }
-              case 5:
-                if (body.puncturedLiver && pokedam) {
-                  mvaddstr(16, 1, target.name);
-                  if (attackUsed.shoots) {
-                    addstr("'s liver is blasted!");
-                  } else if (attackUsed.tears) {
-                    addstr("'s liver is torn!");
-                  } else {
-                    addstr("'s liver is punctured!");
-                  }
-
-                  await getKey();
-
-                  body.puncturedLiver = true;
-                  maxBlood(0.5);
-                }
-              case 6:
-                if (body.puncturedStomach && pokedam) {
-                  mvaddstr(16, 1, target.name);
-                  if (attackUsed.shoots) {
-                    addstr("'s stomach is blasted!");
-                  } else if (attackUsed.tears) {
-                    addstr("'s stomach is torn!");
-                  } else {
-                    addstr("'s stomach is punctured!");
-                  }
-
-                  await getKey();
-
-                  body.puncturedStomach = true;
-                  maxBlood(0.5);
-                }
-              case 7:
-                if (body.puncturedRightKidney && pokedam) {
-                  mvaddstr(16, 1, target.name);
-                  if (attackUsed.shoots) {
-                    addstr("'s right kidney is blasted!");
-                  } else if (attackUsed.tears) {
-                    addstr("'s right kidney is torn!");
-                  } else {
-                    addstr("'s right kidney is punctured!");
-                  }
-
-                  await getKey();
-
-                  body.puncturedRightKidney = true;
-                  maxBlood(0.5);
-                }
-              case 8:
-                if (body.puncturedLeftKidney && pokedam) {
-                  mvaddstr(16, 1, target.name);
-                  if (attackUsed.shoots) {
-                    addstr("'s left kidney is blasted!");
-                  } else if (attackUsed.tears) {
-                    addstr("'s left kidney is torn!");
-                  } else {
-                    addstr("'s left kidney is punctured!");
-                  }
-
-                  await getKey();
-
-                  body.puncturedLeftKidney = true;
-                  maxBlood(0.5);
-                }
-              case 9:
-                if (body.puncturedSpleen && pokedam) {
-                  mvaddstr(16, 1, target.name);
-                  if (attackUsed.shoots) {
-                    addstr("'s spleen is blasted!");
-                  } else if (attackUsed.tears) {
-                    addstr("'s spleen is torn!");
-                  } else {
-                    addstr("'s spleen is punctured!");
-                  }
-
-                  await getKey();
-
-                  body.puncturedSpleen = true;
-                  maxBlood(0.5);
-                }
-              case 10:
-                if (body.ribs > 0 && breakdam) {
-                  int ribminus = lcsRandom(body.ribs) + 1;
-
-                  move(16, 1);
-                  if (ribminus > 1) {
-                    if (ribminus == body.ribs) {
-                      addstr("All ");
-                    }
-                    addstr("$ribminus  of ${target.name}'s ribs are ");
-                  } else if (body.ribs > 1) {
-                    addstr("One of ${target.name}'s ribs is ");
-                  } else {
-                    addstr("${target.name}'s last unbroken rib is ");
-                  }
-
-                  if (attackUsed.shoots) {
-                    addstr("shot apart!");
-                  } else {
-                    addstr("broken!");
-                  }
-
-                  await getKey();
-
-                  body.ribs -= ribminus;
-                }
-            }
-          }
-
-          await severloot(target, groundLoot);
-        }
-
-        //setColor(white);
-      }
-    } else {
-      addstr(" to no effect.");
-
+    if (aliveBefore && !t.alive && t.squad == null) {
       printParty();
       printEncounter();
-
+      addDeathMessage(t);
       await getKey();
     }
   } else {
@@ -1232,11 +719,11 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
         t.blood > 70 &&
         t.human &&
         t.getAttack(false, true, true) != null) {
-      mvaddstr(17, 1, "${t.name} knocks the blow aside and counters!");
+      mvaddstr(10, 1, "${t.name} knocks the blow aside and counters!");
       await getKey();
       await attack(t, a, false, forceMelee: true);
     } else {
-      move(17, 1);
+      move(10, 1);
       if (sneakAttack) {
         addstr(t.name);
         addstr([
@@ -1246,6 +733,20 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
           " jumps back and cries out in alarm!",
         ].random);
         siteAlarm = true;
+      } else if (mode == GameMode.carChase) {
+        addstr("${a.name}'s shot ${[
+          "misses!",
+          "goes wide!",
+          "hits the car!",
+          "hits the road!",
+          "hits the sidewalk!",
+          "hits a building!",
+          "hits a tree!",
+          "hits a parked car!",
+          "ricochets off the car!",
+          "ricochets off the road!",
+          "is too high!",
+        ].random}");
       } else if (t.skillCheck(
           Skill.dodge, Difficulty.average)) //Awesome dodge or regular one?
       {
@@ -1283,48 +784,10 @@ int healthmodroll(int aroll, Creature a) {
 
 /* adjusts attack damage based on armor, other factors */
 int damagemod(Creature t, Attack attackUsed, int damamount,
-    BodyPart hitlocation, int armorpenetration, int mod) {
-  int armor = 0;
-  if (hitlocation.weakSpot) {
-    armor = t.armor.type.headArmor;
-  } else if (hitlocation.critical) {
-    armor = t.armor.type.bodyArmor;
-  } else {
-    armor = t.armor.type.limbArmor;
-  }
-  if (!t.armor.covers(hitlocation)) {
-    armor = 0;
-  }
-  int naturalArmor = hitlocation.naturalArmor;
-  if (attackUsed.burns) {
-    naturalArmor = (naturalArmor / 2).round();
-    if (t.armor.type.fireResistant) {
-      if (t.armor.damaged) {
-        armorpenetration = (armorpenetration / 2).round();
-      } else {
-        armorpenetration = 0;
-      }
-      armor += 2;
-    }
-  }
-  armor += naturalArmor;
+    BodyPart hitlocation, double mod) {
+  debugPrint("Damage mod: $mod, damage before application: $damamount");
 
-  armor -= t.armor.quality - 1;
-  if (t.armor.damaged) armor -= 1;
-  debugPrint(
-      "Armor: $armor, $armorpenetration penetration, pre-armor mod: $mod");
-
-  armor = armor - armorpenetration;
-  if (armor > 0) mod = mod - armor * max(2, armor);
-
-  debugPrint(
-      "Damage mod: $mod, damage before application: $damamount, final armor $armor");
-
-  if (mod > 10) {
-    mod = 10; // Cap damage multiplier (every 5 points adds 1x damage)
-  }
-
-  if (mod <= -1) {
+  if (mod < 0) {
     damamount = (damamount / (1.0 - 1.0 * mod)).round();
     debugPrint("Damage reduced to $damamount");
   } else if (mod >= 0) {
@@ -1334,18 +797,612 @@ int damagemod(Creature t, Attack attackUsed, int damamount,
 
   if (damamount < 0) damamount = 0;
 
-  if (hitlocation.weakSpot) damamount = damamount * 2;
-  if (!hitlocation.critical) damamount = (damamount / 2).round();
-  debugPrint("Final damage after hit location effects: $damamount");
-
   return damamount;
+}
+
+Future<void> hit(Creature a, Creature t, Attack attackUsed, BodyPart hitPart,
+    bool sneakAttack, bool addNastyOff, double damageMultiplier) async {
+  if (hitPart.missing) return;
+  String str = "";
+  int damamount = 0;
+  SeverType severtype = attackUsed.severType;
+
+  severtype = attackUsed.severType;
+  if (addNastyOff) severtype = SeverType.nasty;
+  int random = (attackUsed.damage * 0.8).round();
+  int fixed = (attackUsed.damage * 0.2).round();
+  if (sneakAttack) fixed += 100;
+  //debugPrint("Random: $random, fixed: $fixed, hits: $bursthits");
+  //debugPrint("Initial damage roll: $damamount");
+
+  // Damage bonus from high skill, strength
+  double mod = 0;
+  if (!attackUsed.ranged) {
+    double strength = a.attribute(Attribute.strength).toDouble();
+    mod += strength;
+  }
+
+  int bursthits = a.weapon.loadedAmmoType?.multihit ?? 1;
+  if (attackUsed.cartridge != a.weapon.loadedAmmoType?.cartridge) bursthits = 1;
+  bool bruiseOnly = true;
+  for (int i = 0; i < bursthits; i++) {
+    int hitDamage = lcsRandom(random) + fixed;
+    hitDamage = (hitDamage * damageMultiplier).round();
+    hitDamage = damagemod(t, attackUsed, hitDamage, hitPart, mod);
+
+    // Armor
+    int externalArmor = t.clothing.getArmorForLocation(hitPart);
+    int internalArmor = hitPart.naturalArmor;
+    int totalArmor = internalArmor + externalArmor;
+    if (totalArmor > 0) {
+      int armorDamage = max((hitDamage * 0.3).round(), 1);
+      int blocked = min(totalArmor, hitDamage);
+      if (totalArmor < hitDamage) {
+        bruiseOnly = false;
+      }
+      if (attackUsed.bruises && !attackUsed.bleeds) {
+        hitDamage -= (blocked * 0.5).floor();
+      } else {
+        hitDamage -= (blocked * 0.8).floor();
+      }
+      if (armorDamage > 0) {
+        int externalDamage = min(armorDamage, externalArmor);
+        int internalDamage = min(armorDamage - externalDamage, internalArmor);
+        t.clothing.damageArmorInLocation(hitPart, externalDamage);
+        hitPart.naturalArmor -= internalDamage;
+      }
+    } else {
+      bruiseOnly = false;
+    }
+    damamount += hitDamage;
+  }
+
+  if (damamount > 0) {
+    Creature target = t;
+
+    if (bruiseOnly) {
+      hitPart.bruised = true;
+    } else {
+      if (attackUsed.bleeds) {
+        hitPart.bleeding += 1;
+      }
+      hitPart.cut = attackUsed.cuts;
+      hitPart.torn = attackUsed.tears;
+      hitPart.shot = attackUsed.shoots;
+      hitPart.burned = attackUsed.burns;
+      hitPart.bruised = attackUsed.bruises;
+    }
+
+    int severamount =
+        (hitPart.relativeHealth * t.maxBlood + t.maxBlood).round();
+    if (hitPart.critical) {
+      severamount += t.maxBlood * 2;
+    }
+
+    if (severtype != SeverType.none &&
+        damamount >= severamount &&
+        !bruiseOnly) {
+      String NAME = // ignore: non_constant_identifier_names
+          t.name.toUpperCase();
+      String PART = // ignore: non_constant_identifier_names
+          hitPart.name.toUpperCase();
+      if (severtype == SeverType.clean) {
+        hitPart.cleanOff = true;
+        if (hitPart.critical && !hitPart.weakSpot) {
+          str += "$NAME'S $PART IS SLICED IN HALF!";
+        } else {
+          str += "$NAME'S $PART IS SLICED OFF!";
+        }
+      } else if (severtype == SeverType.nasty) {
+        hitPart.nastyOff = true;
+        str += "$NAME'S $PART IS BLOWN APART!";
+      }
+    }
+
+    hitPart.relativeHealth -= damamount / target.maxBlood;
+
+    if (hitPart.weakSpot) damamount = damamount * 2;
+    if (!hitPart.critical) damamount = (damamount / 2).round();
+    debugPrint("Final damage after hit location effects: $damamount");
+
+    if (!hitPart.critical && target.alive) {
+      if (lcsRandom(100) >= attackUsed.noDamageReductionForLimbsChance) {
+        damamount = min(damamount, (target.blood / 2).round());
+      }
+    }
+
+    //debugPrint("Target blood before hit: ${target.blood}/${target.maxBlood}");
+    target.blood -= damamount;
+    //debugPrint("Target blood after hit: ${target.blood}/${target.maxBlood}");
+
+    levelMap[locx][locy][locz].bloody = true;
+
+    if (severtype == SeverType.nasty) bloodblast(t.clothing);
+
+    if (str != "") {
+      clearMessageArea();
+      mvaddstrc(9, 1, a.align.color, str);
+      printParty();
+      printEncounter();
+      await getKey();
+    }
+
+    if ((hitPart.critical && hitPart.missing) || target.blood <= 0) {
+      bool alreadydead = !target.alive;
+
+      if (!alreadydead) {
+        target.die();
+
+        int killjuice = 5 + (t.juice / 20).round();
+        if ((t.align.index - a.align.index).abs() == 2) {
+          if (t.type.majorEnemy || t.type.tank) {
+            killjuice += 50;
+          }
+          if (activeSite?.siege.underSiege == false && mode == GameMode.site) {
+            if (!t.type.majorEnemy &&
+                !t.type.canPerformArrests &&
+                !t.type.lawEnforcement &&
+                !t.type.edgelord &&
+                !t.type.ccsMember &&
+                !t.type.tank &&
+                t.calculateWillRunAway()) {
+              killjuice = 0;
+            }
+          }
+          addjuice(a, killjuice, 1000); // Instant juice
+        } else {
+          addjuice(a, -killjuice, -50);
+        }
+
+        if (target.isEnemy && (!t.type.animal || animalsArePeopleToo)) {
+          if (activeSiteUnderSiege) activeSite!.siege.kills++;
+          if (activeSiteUnderSiege && t.type.tank) {
+            activeSite!.siege.tanks--;
+          }
+          if (activeSite?.controller == SiteController.ccs) {
+            if (target.type.id == CreatureTypeIds.ccsArchConservative) {
+              ccsBossKills++;
+            }
+            ccsSiegeKills++;
+          }
+        }
+        if (target.squadId == null &&
+            (!target.type.animal || animalsArePeopleToo) &&
+            !sneakAttack) {
+          siteCrime += 10;
+          if (t.type.majorEnemy) {
+            siteCrime += 90;
+          }
+          if (a.squad == activeSquad) {
+            addDramaToSiteStory(Drama.killedSomebody);
+            criminalizeparty(Crime.murder);
+          }
+        }
+      }
+
+      if (!alreadydead) {
+        await severloot(t, groundLoot);
+        printParty();
+        printEncounter();
+        clearMessageArea();
+
+        if (target.prisoner != null) {
+          await freehostage(t, FreeHostageMessage.newLine);
+        }
+      }
+    }
+
+    printParty();
+    printEncounter();
+
+    //SPECIAL WOUNDS
+    if (!hitPart.missing && target.body is HumanoidBody) {
+      bool heavydam = false;
+      bool breakdam = false;
+      bool pokedam = false;
+      HumanoidBody body = target.body as HumanoidBody;
+      if (damamount >= 12) {
+        if ((attackUsed.shoots ||
+                attackUsed.burns ||
+                attackUsed.tears ||
+                attackUsed.cuts) &&
+            !bruiseOnly) {
+          heavydam = true;
+        }
+      }
+
+      if (damamount >= 10) {
+        if ((attackUsed.cuts || attackUsed.tears || attackUsed.shoots) &&
+            !bruiseOnly) {
+          pokedam = true;
+        }
+      }
+
+      if (damamount >= 40 || (damamount >= 20 && attackUsed.bruises)) {
+        if (attackUsed.cuts ||
+            attackUsed.shoots ||
+            attackUsed.tears ||
+            attackUsed.bruises) {
+          breakdam = true;
+        }
+      }
+
+      void maxBlood(double proportion) {
+        if (target.blood > target.maxBlood * proportion) {
+          target.blood = (target.maxBlood * proportion).round();
+        }
+      }
+
+      if (hitPart == body.head) {
+        clearMessageArea();
+        setColor(a.align.color);
+
+        int roll = lcsRandom(7);
+
+        switch (roll) {
+          case 0:
+            if ((!body.missingLeftEye ||
+                    !body.missingRightEye ||
+                    !body.missingNose) &&
+                heavydam) {
+              mvaddstr(9, 1, target.name);
+              if (attackUsed.shoots) {
+                addstr("'s face is blasted off!");
+              } else if (attackUsed.burns) {
+                addstr("'s face is burned away!");
+              } else if (attackUsed.tears) {
+                addstr("'s face is torn off!");
+              } else if (attackUsed.cuts) {
+                addstr("'s face is cut away!");
+              } else {
+                addstr("'s face is removed!");
+              }
+
+              await getKey();
+
+              body.missingLeftEye = true;
+              body.missingRightEye = true;
+              body.missingNose = true;
+              maxBlood(0.2);
+            }
+          case 1:
+            if (body.teeth > 0) {
+              int teethminus = lcsRandom(body.teeth) + 1;
+
+              move(9, 1);
+              if (teethminus > 1) {
+                if (teethminus == body.teeth) {
+                  addstr("All ");
+                }
+                addstr("$teethminus of ${target.name}'s teeth are ");
+              } else if (body.teeth > 1) {
+                addstr("One of ${target.name}'s teeth is ");
+              } else {
+                addstr("${target.name}'s last tooth is ");
+              }
+
+              if (attackUsed.shoots) {
+                addstr("shot out!");
+              } else if (attackUsed.burns) {
+                addstr("burned away!");
+              } else if (attackUsed.tears) {
+                addstr("gouged out!");
+              } else if (attackUsed.cuts) {
+                addstr("cut out!");
+              } else {
+                addstr("knocked out!");
+              }
+
+              await getKey();
+
+              body.teeth -= teethminus;
+            }
+          case 2:
+            if (!body.missingRightEye && heavydam) {
+              mvaddstr(9, 1, target.name);
+              if (attackUsed.shoots) {
+                addstr("'s right eye is shot out!");
+              } else if (attackUsed.burns) {
+                addstr("'s right eye is burned away!");
+              } else if (attackUsed.tears) {
+                addstr("'s right eye is torn out!");
+              } else if (attackUsed.cuts) {
+                addstr("'s right eye is cut open!");
+              } else {
+                addstr("'s right eye is removed!");
+              }
+
+              await getKey();
+
+              body.missingRightEye = true;
+              maxBlood(0.5);
+            }
+          case 3:
+            if (!body.missingLeftEye && heavydam) {
+              mvaddstr(9, 1, target.name);
+              if (attackUsed.shoots) {
+                addstr("'s left eye is shot out!");
+              } else if (attackUsed.burns) {
+                addstr("'s left eye is burned away!");
+              } else if (attackUsed.tears) {
+                addstr("'s left eye is torn out!");
+              } else if (attackUsed.cuts) {
+                addstr("'s left eye is cut open!");
+              } else {
+                addstr("'s left eye is removed!");
+              }
+
+              await getKey();
+
+              body.missingLeftEye = true;
+              maxBlood(0.5);
+            }
+          case 4:
+            if (!body.missingTongue && heavydam) {
+              mvaddstr(9, 1, target.name);
+              if (attackUsed.shoots) {
+                addstr("'s tongue is blown off!");
+              } else if (attackUsed.burns) {
+                addstr("'s tongue is burned away!");
+              } else if (attackUsed.tears) {
+                addstr("'s tongue is torn out!");
+              } else if (attackUsed.cuts) {
+                addstr("'s tongue is cut off!");
+              } else {
+                addstr("'s tongue is removed!");
+              }
+
+              await getKey();
+
+              body.missingTongue = true;
+              maxBlood(0.5);
+            }
+          case 5:
+            if (!body.missingNose && heavydam) {
+              mvaddstr(9, 1, target.name);
+              if (attackUsed.shoots) {
+                addstr("'s nose is blown off!");
+              } else if (attackUsed.burns) {
+                addstr("'s nose is burned away!");
+              } else if (attackUsed.tears) {
+                addstr("'s nose is torn off!");
+              } else if (attackUsed.cuts) {
+                addstr("'s nose is cut off!");
+              } else {
+                addstr("'s nose is removed!");
+              }
+
+              await getKey();
+
+              body.missingNose = true;
+              maxBlood(0.5);
+            }
+          case 6:
+            if (!body.brokenNeck && breakdam) {
+              mvaddstr(9, 1, target.name);
+              if (attackUsed.shoots) {
+                addstr("'s neck bones are shattered!");
+              } else {
+                addstr("'s neck is broken!");
+              }
+
+              await getKey();
+
+              body.neck = InjuryState.untreated;
+              maxBlood(0.2);
+            }
+        }
+      }
+      if (hitPart == body.torso) {
+        clearMessageArea();
+        setColor(a.align.color);
+
+        int roll = lcsRandom(10 + body.ribs > 0 ? 4 : 0);
+        if (bruiseOnly) roll = 11;
+
+        switch (roll) {
+          case 0:
+            if (!body.brokenUpperSpine && breakdam) {
+              mvaddstr(9, 1, target.name);
+              if (attackUsed.shoots) {
+                addstr("'s upper spine is shattered!");
+              } else {
+                addstr("'s upper spine is broken!");
+              }
+
+              await getKey();
+
+              body.upperSpine = InjuryState.untreated;
+              maxBlood(0.2);
+            }
+          case 1:
+            if (!body.brokenLowerSpine && breakdam) {
+              mvaddstr(9, 1, target.name);
+              if (attackUsed.shoots) {
+                addstr("'s lower spine is shattered!");
+              } else {
+                addstr("'s lower spine is broken!");
+              }
+
+              await getKey();
+
+              body.lowerSpine = InjuryState.untreated;
+              maxBlood(0.2);
+            }
+          case 2:
+            if (!body.puncturedRightLung && pokedam) {
+              mvaddstr(9, 1, target.name);
+              if (attackUsed.shoots) {
+                addstr("'s right lung is blasted!");
+              } else if (attackUsed.tears) {
+                addstr("'s right lung is torn!");
+              } else {
+                addstr("'s right lung is punctured!");
+              }
+
+              await getKey();
+
+              body.puncturedRightLung = true;
+              maxBlood(0.2);
+            }
+          case 3:
+            if (!body.puncturedLeftLung && pokedam) {
+              mvaddstr(9, 1, target.name);
+              if (attackUsed.shoots) {
+                addstr("'s left lung is blasted!");
+              } else if (attackUsed.tears) {
+                addstr("'s left lung is torn!");
+              } else {
+                addstr("'s left lung is punctured!");
+              }
+
+              await getKey();
+
+              body.puncturedLeftLung = true;
+              maxBlood(0.2);
+            }
+          case 4:
+            if (!body.puncturedHeart && pokedam) {
+              mvaddstr(9, 1, target.name);
+              if (attackUsed.shoots) {
+                addstr("'s heart is blasted!");
+              } else if (attackUsed.tears) {
+                addstr("'s heart is torn!");
+              } else {
+                addstr("'s heart is punctured!");
+              }
+
+              await getKey();
+
+              body.puncturedHeart = true;
+              if (target.blood > 3) {
+                target.blood = 3;
+              }
+            }
+          case 5:
+            if (!body.puncturedLiver && pokedam) {
+              mvaddstr(9, 1, target.name);
+              if (attackUsed.shoots) {
+                addstr("'s liver is blasted!");
+              } else if (attackUsed.tears) {
+                addstr("'s liver is torn!");
+              } else {
+                addstr("'s liver is punctured!");
+              }
+
+              await getKey();
+
+              body.puncturedLiver = true;
+              maxBlood(0.5);
+            }
+          case 6:
+            if (!body.puncturedStomach && pokedam) {
+              mvaddstr(9, 1, target.name);
+              if (attackUsed.shoots) {
+                addstr("'s stomach is blasted!");
+              } else if (attackUsed.tears) {
+                addstr("'s stomach is torn!");
+              } else {
+                addstr("'s stomach is punctured!");
+              }
+
+              await getKey();
+
+              body.puncturedStomach = true;
+              maxBlood(0.5);
+            }
+          case 7:
+            if (!body.puncturedRightKidney && pokedam) {
+              mvaddstr(9, 1, target.name);
+              if (attackUsed.shoots) {
+                addstr("'s right kidney is blasted!");
+              } else if (attackUsed.tears) {
+                addstr("'s right kidney is torn!");
+              } else {
+                addstr("'s right kidney is punctured!");
+              }
+
+              await getKey();
+
+              body.puncturedRightKidney = true;
+              maxBlood(0.5);
+            }
+          case 8:
+            if (!body.puncturedLeftKidney && pokedam) {
+              mvaddstr(9, 1, target.name);
+              if (attackUsed.shoots) {
+                addstr("'s left kidney is blasted!");
+              } else if (attackUsed.tears) {
+                addstr("'s left kidney is torn!");
+              } else {
+                addstr("'s left kidney is punctured!");
+              }
+
+              await getKey();
+
+              body.puncturedLeftKidney = true;
+              maxBlood(0.5);
+            }
+          case 9:
+            if (!body.puncturedSpleen && pokedam) {
+              mvaddstr(9, 1, target.name);
+              if (attackUsed.shoots) {
+                addstr("'s spleen is blasted!");
+              } else if (attackUsed.tears) {
+                addstr("'s spleen is torn!");
+              } else {
+                addstr("'s spleen is punctured!");
+              }
+
+              await getKey();
+
+              body.puncturedSpleen = true;
+              maxBlood(0.5);
+            }
+          case 10:
+          case 11:
+          case 12:
+          case 13:
+            if (body.ribs > 0 && breakdam) {
+              int ribminus = lcsRandom(min(body.ribs, damamount ~/ 20)) + 1;
+
+              move(9, 1);
+              if (ribminus > 1) {
+                if (ribminus == body.ribs) {
+                  addstr("All ");
+                }
+                addstr("$ribminus of ${target.name}'s ribs are ");
+              } else if (body.ribs > 1) {
+                addstr("One of ${target.name}'s ribs is ");
+              } else {
+                addstr("${target.name}'s last unbroken rib is ");
+              }
+
+              if (attackUsed.shoots) {
+                addstr("shattered!");
+              } else {
+                addstr("broken!");
+              }
+
+              await getKey();
+
+              body.ribs -= ribminus;
+            }
+        }
+      }
+
+      await severloot(target, groundLoot);
+    }
+
+    //setColor(white);
+  }
 }
 
 Future<bool> socialAttack(Creature a, Creature t, Attack attackUsed) async {
   int resist = 0;
 
   clearMessageArea();
-  mvaddstrc(16, 1, white,
+  mvaddstrc(9, 1, white,
       "${a.name} ${attackUsed.attackDescription.random} ${t.name}!");
 
   int attack = a.skillRoll(attackUsed.skill);
@@ -1362,33 +1419,33 @@ Future<bool> socialAttack(Creature a, Creature t, Attack attackUsed) async {
   }
 
   if (t.type.tank || (a.isEnemy && t.brainwashed)) {
-    mvaddstr(17, 1, "${t.name} is immune to the attack!");
+    mvaddstr(10, 1, "${t.name} is immune to the attack!");
   } else if (a.align == t.align) {
-    mvaddstr(17, 1, "${t.name} already agrees with ${a.name}.");
+    mvaddstr(10, 1, "${t.name} already agrees with ${a.name}.");
   } else if (attack > resist) {
     if (attackUsed.stuns) {
       t.stunned += (attack - resist) ~/ 4;
     }
     if (a.isEnemy) {
       if (t.juice > 100) {
-        mvaddstr(17, 1, "${t.name} loses juice!");
+        mvaddstr(10, 1, "${t.name} loses juice!");
         addjuice(t, -50, 100);
       } else if (lcsRandom(15) > t.attribute(Attribute.wisdom) ||
           t.attribute(Attribute.wisdom) < t.attribute(Attribute.heart)) {
-        mvaddstr(17, 1, "${t.name} is tainted with Wisdom!");
+        mvaddstr(10, 1, "${t.name} is tainted with Wisdom!");
         t.adjustAttribute(Attribute.wisdom, 1);
       } else if (t.align == Alignment.liberal && t.seduced) {
-        mvaddstr(17, 1, "${t.name} can't bear to leave!");
+        mvaddstr(10, 1, "${t.name} can't bear to leave!");
       } else {
         if (a.align == Alignment.conservative) {
-          mvaddstr(17, 1, "${t.name} is turned Conservative");
+          mvaddstr(10, 1, "${t.name} is turned Conservative");
           t.stunned = 0;
           if (t.prisoner != null) {
             await freehostage(t, FreeHostageMessage.continueLine);
           }
           addstr("!");
         } else {
-          mvaddstr(17, 1, "${t.name} doesn't want to fight anymore");
+          mvaddstr(10, 1, "${t.name} doesn't want to fight anymore");
           t.stunned = 0;
           if (t.prisoner != null) {
             await freehostage(t, FreeHostageMessage.continueLine);
@@ -1420,11 +1477,11 @@ Future<bool> socialAttack(Creature a, Creature t, Attack attackUsed) async {
       }
     } else {
       if (t.juice >= 1) {
-        mvaddstr(17, 1, "${t.name} seems less badass!");
+        mvaddstr(10, 1, "${t.name} seems less badass!");
         addjuice(t, -100, 0);
       } else if (!t.attributeCheck(Attribute.heart, Difficulty.average) ||
           t.attribute(Attribute.heart) < t.attribute(Attribute.wisdom)) {
-        mvaddstr(17, 1, "${t.name}'s Heart swells!");
+        mvaddstr(10, 1, "${t.name}'s Heart swells!");
         t.adjustAttribute(Attribute.heart, 1);
       } else {
         if (t.align == Alignment.conservative) {
@@ -1436,7 +1493,7 @@ Future<bool> socialAttack(Creature a, Creature t, Attack attackUsed) async {
           }
         }
 
-        mvaddstr(17, 1, "${t.name} has turned Liberal!");
+        mvaddstr(10, 1, "${t.name} has turned Liberal!");
         t.stunned = 0;
 
         liberalize(t);
@@ -1446,7 +1503,7 @@ Future<bool> socialAttack(Creature a, Creature t, Attack attackUsed) async {
       }
     }
   } else {
-    mvaddstr(17, 1, "${t.name} remains strong.");
+    mvaddstr(10, 1, "${t.name} remains strong.");
   }
 
   printParty();
@@ -1466,10 +1523,10 @@ Future<void> severloot(Creature cr, List<Item> loot) async {
 
   if (cr.equippedWeapon != null && armok == 0) {
     clearMessageArea();
-    mvaddstrc(16, 1, yellow, "The ");
-    addstr(cr.weapon.getName(sidearm: true));
+    mvaddstrc(9, 1, yellow, "The ");
+    addstr(cr.weapon.getName());
     addstr(" slips from");
-    mvaddstr(17, 1, cr.name);
+    mvaddstr(10, 1, cr.name);
     addstr("'s grasp.");
 
     await getKey();
@@ -1487,12 +1544,12 @@ Future<void> severloot(Creature cr, List<Item> loot) async {
   }
 
   if (body?.torso.missing == true &&
-          cr.equippedArmor?.covers(body!.torso) == true ||
-      (body?.head.missing == true && cr.equippedArmor?.type.mask == true)) {
+          cr.equippedClothing?.covers(body!.torso) == true ||
+      (body?.head.missing == true && cr.equippedClothing?.type.mask == true)) {
     clearMessageArea();
-    mvaddstrc(16, 1, yellow, cr.name);
+    mvaddstrc(9, 1, yellow, cr.name);
     addstr("'s ");
-    addstr(cr.armor.shortName);
+    addstr(cr.clothing.shortName);
     addstr(" has been destroyed.");
 
     await getKey();
@@ -1501,22 +1558,8 @@ Future<void> severloot(Creature cr, List<Item> loot) async {
   }
 }
 
-/* damages the selected armor if it covers the body part specified */
-void armordamage(Armor armor, BodyPart bp, int damamount) {
-  int d2 = armor.type.durability ~/ 2;
-  if (armor.covers(bp) && lcsRandom(d2) + d2 < damamount) {
-    if (armor.damaged) {
-      if (lcsRandom(damamount * armor.quality) > lcsRandom(d2 * 2) + d2 * 2) {
-        armor.quality += 1;
-      }
-    } else {
-      armor.damaged = true;
-    }
-  }
-}
-
 /* blood explosions */
-void bloodblast(Armor armor) {
+void bloodblast(Clothing armor) {
   //GENERAL
   armor.bloody = true;
 
@@ -1527,18 +1570,18 @@ void bloodblast(Armor armor) {
   //HIT EVERYTHING
   for (Creature p in squad) {
     if (oneIn(2)) {
-      p.equippedArmor?.bloody = true;
+      p.equippedClothing?.bloody = true;
     }
   }
 
   for (Creature e in encounter) {
     if (oneIn(2)) {
-      e.equippedArmor?.bloody = true;
+      e.equippedClothing?.bloody = true;
     }
   }
 
   //REFRESH THE SCREEN
-  printSiteMap(locx, locy, locz);
+  printSiteMapSmall(locx, locy, locz);
   refresh();
 }
 
@@ -1564,7 +1607,7 @@ Future<bool> incapacitated(Creature a, bool noncombat) async {
       if (noncombat) {
         clearMessageArea();
 
-        mvaddstrc(16, 1, white, "The ");
+        mvaddstrc(9, 1, white, "The ");
         addstr(a.name);
         switch (lcsRandom(3)) {
           case 0:
@@ -1581,7 +1624,7 @@ Future<bool> incapacitated(Creature a, bool noncombat) async {
       a.incapacitatedThisRound = false;
       if (noncombat) {
         clearMessageArea();
-        mvaddstrc(16, 1, white, "The ");
+        mvaddstrc(9, 1, white, "The ");
         addstr(a.name);
         switch (lcsRandom(3)) {
           case 0:
@@ -1602,7 +1645,8 @@ Future<bool> incapacitated(Creature a, bool noncombat) async {
       a.incapacitatedThisRound = false;
       if (noncombat) {
         clearMessageArea();
-        mvaddstrc(16, 1, white, a.name);
+        mvaddstrc(9, 1, white, a.name);
+        if (a.squad == null && !a.type.majorEnemy) a.nonCombatant = true;
         switch (lcsRandom(54)) {
           case 0:
             addstr(" desperately cries out to Jesus.");
@@ -1759,7 +1803,7 @@ Future<bool> incapacitated(Creature a, bool noncombat) async {
     if (noncombat) {
       a.stunned--;
       clearMessageArea();
-      mvaddstrc(16, 1, white, a.name);
+      mvaddstrc(9, 1, white, a.name);
       switch (lcsRandom(11)) {
         case 0:
           addstr(" seems hesitant.");
@@ -1791,7 +1835,7 @@ Future<bool> incapacitated(Creature a, bool noncombat) async {
   } else if (!incapacitated && a.body.fullParalysis) {
     if (!noncombat) {
       clearMessageArea();
-      mvaddstrc(16, 1, white, a.name);
+      mvaddstrc(9, 1, white, a.name);
       switch (lcsRandom(5)) {
         case 0:
           addstr(" looks on with authority.");
@@ -1824,16 +1868,16 @@ Future<bool> incapacitated(Creature a, bool noncombat) async {
 Future<void> captureCreature(Creature t) async {
   t.activity = Activity.none();
   t.dropWeaponAndAmmo();
-  Armor clothes = Armor("ARMOR_CLOTHES");
-  t.equippedArmor = clothes;
+  Clothing clothes = Clothing("CLOTHING_CLOTHES");
+  t.equippedClothing = clothes;
   t.sleeperAgent = false;
 
   await freehostage(t, FreeHostageMessage.none);
   if (t.justEscaped) {
     t.location = activeSite;
     if (activeSite!.isPartOfTheJusticeSystem) {
-      Armor prisoner = Armor("ARMOR_PRISONER");
-      t.equippedArmor = prisoner;
+      Clothing prisoner = Clothing("CLOTHING_PRISONER");
+      t.equippedClothing = prisoner;
     }
     if (activeSite!.type == SiteType.prison) {
       t.heat = 0;
@@ -1849,9 +1893,10 @@ Future<void> captureCreature(Creature t) async {
 
 /* describes a character's death */
 void addDeathMessage(Creature cr) {
+  clearMessageArea();
   setColor(yellow);
 
-  move(16, 1);
+  move(9, 1);
   String str = "";
 
   BodyPart? head = cr.body.parts.firstWhereOrNull((bp) => bp.name == "Head");
@@ -1863,7 +1908,7 @@ void addDeathMessage(Creature cr) {
       case 0:
         str += " reaches once where there ";
         addstr(str);
-        move(17, 1);
+        move(10, 1);
         if (mode != GameMode.carChase) {
           addstr("is no head, and falls.");
         } else {
@@ -1876,7 +1921,7 @@ void addDeathMessage(Creature cr) {
           str += " sits headless for a ";
         }
         addstr(str);
-        mvaddstr(17, 1, "moment then crumples over.");
+        mvaddstr(10, 1, "moment then crumples over.");
       case 2:
         str += " squirts ";
         if (noProfanity) {
@@ -1886,7 +1931,7 @@ void addDeathMessage(Creature cr) {
         }
         str += " out of the ";
         addstr(str);
-        move(17, 1);
+        move(10, 1);
         if (mode != GameMode.carChase) {
           addstr("neck and runs down the hall.");
         } else {
@@ -1895,7 +1940,7 @@ void addDeathMessage(Creature cr) {
       case 3:
         str += " sucks a last breath through ";
         addstr(str);
-        mvaddstr(17, 1, "the neck hole, then is quiet.");
+        mvaddstr(10, 1, "the neck hole, then is quiet.");
     }
   } else if (body?.missing == true) {
     str = cr.name;
@@ -1906,46 +1951,74 @@ void addDeathMessage(Creature cr) {
         str += " falls apart and is dead.";
     }
     addstr(str);
+  } else if (cr.blood < cr.maxBlood * -2) {
+    str = cr.name;
+    switch (lcsRandom(2)) {
+      case 0:
+        str += " is dead before ${cr.gender.hisHer} body hits the ground.";
+        addstr(str);
+      case 1:
+        str += " collapses lifelessly.";
+        addstr(str);
+      case 2:
+        str += " doesn't even make sound.";
+        addstr(str);
+      case 3:
+        str += " is very much dead.";
+        addstr(str);
+      case 4:
+        str += " didn't even know what hit ${cr.gender.himHer}.";
+        addstr(str);
+      case 5:
+        str += " dies instantly.";
+        addstr(str);
+      case 6:
+        str += "'s body slumps to the floor.";
+        addstr(str);
+      case 7:
+        str += "'s body hits the ground with a dull thump.";
+        addstr(str);
+    }
   } else {
     str = cr.name;
     switch (lcsRandom(11)) {
       case 0:
         str += " cries out one last time ";
         addstr(str);
-        mvaddstr(17, 1, "then is quiet.");
+        mvaddstr(10, 1, "then is quiet.");
       case 1:
         str += " gasps a last breath and ";
         addstr(str);
-        move(17, 1);
+        move(10, 1);
         if (noProfanity) {
           addstr("[makes a mess].");
         } else {
           addstr("soils the floor.");
         }
       case 2:
-        str += " murmurs quietly, breathing softly. ";
+        str += " murmurs quietly, breathing softly.";
         addstr(str);
-        mvaddstr(17, 1, "Then all is silent.");
+        mvaddstr(10, 1, "Then all is silent.");
       case 3:
         str += " shouts \"FATHER!  Why have you ";
         addstr(str);
-        mvaddstr(17, 1, "forsaken me?\" and dies in a heap.");
+        mvaddstr(10, 1, "forsaken me?\" and dies in a heap.");
       case 4:
         str += " cries silently for mother, ";
         addstr(str);
-        mvaddstr(17, 1, "breathing slowly, then not at all.");
+        mvaddstr(10, 1, "breathing slowly, then not at all.");
       case 5:
         str += " breathes heavily, coughing up ";
         addstr(str);
-        mvaddstr(17, 1, "blood...  then is quiet.");
+        mvaddstr(10, 1, "blood...  then is quiet.");
       case 6:
         str += " silently drifts away, and ";
         addstr(str);
-        mvaddstr(17, 1, "is gone.");
+        mvaddstr(10, 1, "is gone.");
       case 7:
         str += " sweats profusely, murmurs ";
         addstr(str);
-        move(17, 1);
+        move(10, 1);
         if (noProfanity) {
           addstr("something [good] about Jesus, and dies.");
         } else {
@@ -1954,15 +2027,15 @@ void addDeathMessage(Creature cr) {
       case 8:
         str += " whines loudly, voice crackling, ";
         addstr(str);
-        mvaddstr(17, 1, "then curls into a ball, unmoving.");
+        mvaddstr(10, 1, "then curls into a ball, unmoving.");
       case 9:
         str += " shivers silently, whispering ";
         addstr(str);
-        mvaddstr(17, 1, "a prayer, then all is still.");
+        mvaddstr(10, 1, "a prayer, then all is still.");
       case 10:
         str += " speaks these final words: ";
         addstr(str);
-        move(17, 1);
+        move(10, 1);
         switch (cr.align) {
           case Alignment.liberal:
             addstr(slogan);
@@ -1970,7 +2043,6 @@ void addDeathMessage(Creature cr) {
             addstr("\"A plague on both your houses...\"");
           default:
             addstr("\"Better dead than liberal...\"");
-            break;
         }
     }
   }

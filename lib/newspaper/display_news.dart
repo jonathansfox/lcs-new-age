@@ -201,6 +201,8 @@ Future<void> displayStory(
                     Drama.carCrash,
                     Drama.footChase,
                     Drama.hijackedBroadcast,
+                    Drama.legalGunUsed,
+                    Drama.illegalGunUsed,
                   ].contains(entry.key))
               .length;
 
@@ -387,7 +389,7 @@ Future<void> displayStory(
                 story += ", ";
               } else if (typesum == 2) {
                 if (drama.contains(" and ") || (liberalguardian && !ccs)) {
-                  story += ", and";
+                  story += ", and ";
                 } else {
                   story += " and ";
                 }
@@ -427,6 +429,7 @@ Future<void> displayStory(
             if (did(Drama.unlockedDoor)) {
               addDrama("unlawful entry", "picked locks");
             }
+
             story += "."
                 "&r";
           }
@@ -488,7 +491,6 @@ Future<void> displayStory(
               story += "&r";
             }
           }
-          break;
       }
 
       story += generateFiller(200);
@@ -586,7 +588,7 @@ Future<void> displayStory(
                 "this kind of government-condoned violence is stopped.  We will not be "
                 "intimidated, and we will not be silenced";
           }
-        case SiegeType.hicks:
+        case SiegeType.angryRuralMob:
           if (!liberalguardian) {
             story +=
                 "Burned...  stabbed with, maybe, pitchforks.  There may have "
@@ -744,6 +746,7 @@ void displayCenteredNewsFont(String str, int y) {
           }
         }
       }
+      refresh();
       x += lim;
     } else {
       setColor(lightGray, background: lightGray);

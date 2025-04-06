@@ -4,7 +4,7 @@ import 'package:lcs_new_age/creature/creature.dart';
 import 'package:lcs_new_age/creature/difficulty.dart';
 import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/daily/activities/arrest.dart';
-import 'package:lcs_new_age/daily/activities/redneck_fight.dart';
+import 'package:lcs_new_age/daily/activities/hardliner_fight.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/justice/crimes.dart';
 import 'package:lcs_new_age/newspaper/news_story.dart';
@@ -115,22 +115,23 @@ Future<void> doActivityTrouble(List<Creature> trouble) async {
 
   changePublicOpinion(View.lcsKnown, mod);
   changePublicOpinion(View.lcsLiked, mod ~/ 2);
-  politics.publicInterest.update(issue, (v) => v + mod);
-  politics.backgroundInfluence.update(issue, (v) => v + mod);
+  politics.addBackgroundInfluence(issue, mod);
 
-  await showMessage(message);
-  message = "";
+  if (!disbanding) {
+    await showMessage(message);
+    message = "";
 
-  if (crime != null) {
-    for (int t = 0; t < trouble.length; t++) {
-      if (oneIn(30) &&
-          !trouble[t].skillCheck(Skill.streetSmarts, Difficulty.average)) {
-        if (oneIn(4)) {
-          criminalize(trouble[t], crime);
-          sitestory = NewsStory.prepare(NewsStories.arrestGoneWrong);
-          await attemptArrest(trouble[t], "causing trouble");
-        } else {
-          await redneckFight(trouble[t]);
+    if (crime != null) {
+      for (int t = 0; t < trouble.length; t++) {
+        if (oneIn(30) &&
+            !trouble[t].skillCheck(Skill.streetSmarts, Difficulty.average)) {
+          if (oneIn(4)) {
+            criminalize(trouble[t], crime);
+            sitestory = NewsStory.prepare(NewsStories.arrestGoneWrong);
+            await attemptArrest(trouble[t], "causing trouble");
+          } else {
+            await hardlinerFight(trouble[t]);
+          }
         }
       }
     }

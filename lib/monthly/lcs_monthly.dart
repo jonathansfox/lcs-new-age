@@ -10,7 +10,7 @@ import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/gamestate/ledger.dart';
 import 'package:lcs_new_age/items/ammo_type.dart';
-import 'package:lcs_new_age/items/armor_type.dart';
+import 'package:lcs_new_age/items/clothing_type.dart';
 import 'package:lcs_new_age/items/item.dart';
 import 'package:lcs_new_age/items/loot.dart';
 import 'package:lcs_new_age/items/loot_type.dart';
@@ -95,8 +95,6 @@ Future<void> fundReport(bool disbanding) async {
               mvaddstr(y, 0, "Thievery");
             case Income.tshirts:
               mvaddstr(y, 0, "T-Shirt Sales");
-            default:
-              mvaddstr(y, 0, "Other Income");
           }
         }
         totalmoney += ledger.income[inc] ?? 0;
@@ -156,8 +154,6 @@ Future<void> fundReport(bool disbanding) async {
               mvaddstr(y, 0, "Training");
             case Expense.travel:
               mvaddstr(y, 0, "Travel");
-            default:
-              mvaddstr(y, 0, "Other Expenses");
           }
         }
         totalmoney -= ledger.expense[exp] ?? 0;
@@ -210,13 +206,13 @@ Future<void> fundReport(bool disbanding) async {
       numpages++;
     }
     // tally up liquid assets
-    int weaponValue = 0, armorValue = 0, clipValue = 0, lootValue = 0;
+    double weaponValue = 0, armorValue = 0, clipValue = 0, lootValue = 0;
     for (Site j in sites.where((s) => s.isSafehouse)) {
       for (Item item in j.loot) {
         if (item.type is WeaponType) {
           weaponValue += item.type.fenceValue * item.stackSize;
         }
-        if (item.type is ArmorType) {
+        if (item.type is ClothingType) {
           armorValue += item.type.fenceValue * item.stackSize;
         }
         if (item.type is AmmoType) {
@@ -241,16 +237,18 @@ Future<void> fundReport(bool disbanding) async {
     }
 
     liquidAssetLine("Cash", ledger.funds);
-    liquidAssetLine("Tools and Weapons", weaponValue);
-    liquidAssetLine("Clothing and Armor", armorValue);
-    liquidAssetLine("Ammunition", clipValue);
-    liquidAssetLine("Miscellaneous Loot", lootValue);
+    liquidAssetLine("Tools and Weapons", weaponValue.round());
+    liquidAssetLine("Clothing and Armor", armorValue.round());
+    liquidAssetLine("Ammunition", clipValue.round());
+    liquidAssetLine("Miscellaneous Loot", lootValue.round());
 
     if (page == numpages - 1) makeDelimiter(y: y);
     nextY();
 
-    liquidAssetLine("Total Liquid Assets",
-        ledger.funds + weaponValue + armorValue + clipValue + lootValue);
+    liquidAssetLine(
+        "Total Liquid Assets",
+        (ledger.funds + weaponValue + armorValue + clipValue + lootValue)
+            .round());
 
     setColor(lightGray);
     if (numpages > 1) {
@@ -335,7 +333,7 @@ Future<LootType?> chooseSpecialEdition() async {
     lineBuilder: (y, key, index) {
       mvaddstr(y, 0, "$key - ${lootTypesAvailable[index].name}");
     },
-    onChoice: (index) {
+    onChoice: (index) async {
       for (Site loc in sites.where((s) => s.controller == SiteController.lcs)) {
         Loot? l = loc.loot.whereType<Loot>().firstWhereOrNull(
             (l) => l.type.idName == lootTypesAvailable[index].idName);
@@ -345,6 +343,7 @@ Future<LootType?> chooseSpecialEdition() async {
         break;
       }
       lootTypeChosen = lootTypesAvailable[index];
+      return true;
     },
   );
   return lootTypeChosen;
@@ -737,7 +736,7 @@ Future<void> printNews(LootType li, Iterable<Creature> publishers) async {
         issues.add(View.womensRights);
     }
     issues.add(View.cableNews);
-    offendedHicks = true;
+    offendedAngryRuralMobs = true;
     potency = reception(50);
     mvaddstr(console.y + 2, 1,
         "This is bound to get the Conservative masses a little riled up...");
@@ -761,7 +760,7 @@ Future<void> printNews(LootType li, Iterable<Creature> publishers) async {
     }
     issues.add(View.amRadio);
     potency = reception(50);
-    offendedHicks = true;
+    offendedAngryRuralMobs = true;
     mvaddstr(console.y + 2, 1,
         "This is bound to get the Conservative masses a little riled up...");
     for (Creature c in publishers) {

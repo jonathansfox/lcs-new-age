@@ -10,8 +10,20 @@ void parseShop(Shop shop, XmlElement xml) {
       case "only_sell_legal_items":
         shop.onlySellLegalItems =
             parseBool(element.innerText) ?? shop.onlySellLegalItems;
-      case "fullscreen":
-        shop.fullscreen = parseBool(element.innerText) ?? shop.fullscreen;
+      case "ui":
+        switch (element.innerText.toLowerCase()) {
+          case "standard":
+            shop.ui = ShopUI.standard;
+          case "fullscreen":
+            shop.ui = ShopUI.fullscreen;
+          case "weapons":
+            shop.ui = ShopUI.weapons;
+          case "ammo":
+            shop.ui = ShopUI.ammo;
+          case "clothing":
+          case "clothes":
+            shop.ui = ShopUI.clothes;
+        }
       case "allow_selling":
         shop.allowSelling = parseBool(element.innerText) ?? shop.allowSelling;
       case "increase_prices_with_illegality":
@@ -34,8 +46,6 @@ void parseShop(Shop shop, XmlElement xml) {
         if (item != null) {
           shop.items.add(item);
         }
-      case "sell_masks":
-        shop.sellMasks = parseBool(element.innerText) ?? shop.sellMasks;
     }
   }
 }
@@ -60,6 +70,10 @@ ShopItem? parseShopItem(XmlElement xml, Shop shop) {
       case "letter":
         letter = element.innerText;
     }
+  }
+  // Item types that can set their own price
+  if (itemClass == "WEAPON" || itemClass == "AMMO") {
+    price ??= 0;
   }
   if (itemClass != null && itemId != null && price != null) {
     return ShopItem(itemClass, itemId, price, shop)

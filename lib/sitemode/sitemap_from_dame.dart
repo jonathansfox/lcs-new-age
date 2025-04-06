@@ -212,6 +212,5 @@ void readMapCBTiles(int x, int y, int z, int i) {
       makeDoor(x, y, z, flags: SITEBLOCK_LOCKED | SITEBLOCK_METAL);
     default:
       levelMap[x][y][z].flag = 0;
-      break;
   }
 }

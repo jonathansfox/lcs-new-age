@@ -1,5 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:lcs_new_age/creature/creature_type_xml.dart';
+import 'package:lcs_new_age/creature/skills.dart';
+import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/items/attack.dart';
 import 'package:lcs_new_age/items/weapon_type.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
@@ -14,10 +16,31 @@ void parseWeaponType(WeaponType weapon, XmlElement xml) {
         weapon.name = element.innerText;
       case "name_future":
         weapon.nameFuture = element.innerText;
+      case "name_large_subtype":
+        weapon.largeSubtypeName = element.innerText;
+      case "name_small_subtype":
+        weapon.smallSubtypeName = element.innerText;
+      case "name_large_subtype_future":
+        weapon.futureLargeSubtypeName = element.innerText;
+      case "name_small_subtype_future":
+        weapon.futureSmallSubtypeName = element.innerText;
       case "shortname":
         weapon.shortName = element.innerText;
       case "shortname_future":
         weapon.futureShortName = element.innerText;
+      case "description":
+        weapon.description = element.innerText;
+      case "looks_dangerous":
+        bool? looksDangerous = parseBool(element.innerText);
+        if (looksDangerous != null) {
+          weapon.threatening = looksDangerous;
+          weapon.canThreatenHostages = looksDangerous;
+          weapon.canTakeHostages = looksDangerous;
+          weapon.protectsAgainstKidnapping = looksDangerous;
+          weapon.suspicious = looksDangerous;
+        }
+      case "suspicious":
+        weapon.suspicious = parseBool(element.innerText) ?? weapon.suspicious;
       case "can_take_hostages":
         weapon.canTakeHostages =
             parseBool(element.innerText) ?? weapon.canTakeHostages;
@@ -33,30 +56,62 @@ void parseWeaponType(WeaponType weapon, XmlElement xml) {
         weapon.instrument = parseBool(element.innerText) ?? weapon.instrument;
       case "graffiti":
         weapon.canGraffiti = parseBool(element.innerText) ?? weapon.canGraffiti;
-      case "legality":
-        weapon.legality = int.tryParse(element.innerText) ?? weapon.legality;
+      case "banned_at_gun_control":
+        weapon.bannedAtGunControl =
+            parseAlignment(element.innerText) ?? weapon.bannedAtGunControl;
+      case "price":
+        weapon.price = int.tryParse(element.innerText) ?? weapon.price;
+        if (weapon.fenceValue == 0) weapon.fenceValue = weapon.price * 0.25;
       case "fencevalue":
         weapon.fenceValue =
-            int.tryParse(element.innerText) ?? weapon.fenceValue;
-      case "bashstrengthmod":
-        weapon.bashStrengthModifier = (int.tryParse(element.innerText) ??
-                weapon.bashStrengthModifier * 100) /
-            100;
+            double.tryParse(element.innerText) ?? weapon.fenceValue;
       case "auto_break_locks":
         weapon.autoBreakLock =
             parseBool(element.innerText) ?? weapon.autoBreakLock;
-      case "suspicious":
-        weapon.suspicious = parseBool(element.innerText) ?? weapon.suspicious;
       case "size":
         weapon.size = int.tryParse(element.innerText) ?? weapon.size;
       case "attack":
         weapon.attacks.add(parseAttack(element));
+      case "magazine_size":
+        weapon.ammoCapacity =
+            int.tryParse(element.innerText) ?? weapon.ammoCapacity;
+      case "ammo_plus_one":
+        weapon.canKeepOneInTheChamber =
+            parseBool(element.innerText) ?? weapon.canKeepOneInTheChamber;
+      default:
+        debugPrint("Unknown key $key in weapon type ${weapon.name}");
     }
   }
 }
 
 Attack parseAttack(XmlElement element) {
   Attack attack = Attack();
+  for (XmlAttribute a in element.attributes) {
+    switch (a.name.local) {
+      case "preset":
+        switch (a.value) {
+          case "FIRE_GUN":
+            attack.priority = 1;
+            attack.ranged = true;
+            attack.attackDescription.add("shoots at");
+            attack.skill = Skill.firearms;
+            attack.shoots = true;
+            attack.bleeds = true;
+          case "PISTOL_WHIP":
+            attack.priority = 2;
+            attack.attackDescription.add("swings at");
+            attack.skill = Skill.martialArts;
+            attack.bruises = true;
+            attack.damage = 15;
+          case "BUTT_STROKE":
+            attack.priority = 2;
+            attack.attackDescription.add("swings at");
+            attack.skill = Skill.martialArts;
+            attack.bruises = true;
+            attack.damage = 25;
+        }
+    }
+  }
   for (XmlElement e in element.childElements) {
     switch (e.name.local) {
       case "priority":
@@ -65,8 +120,10 @@ Attack parseAttack(XmlElement element) {
         attack.ranged = parseBool(e.innerText) ?? attack.ranged;
       case "thrown":
         attack.thrown = parseBool(e.innerText) ?? attack.thrown;
-      case "ammotype":
-        attack.ammoTypeId = e.innerText;
+      case "cartridge":
+        attack.cartridge = e.innerText;
+      case "initiative":
+        attack.initiative = int.tryParse(e.innerText) ?? attack.initiative;
       case "attack_description":
         attack.attackDescription.add(e.innerText);
       case "hit_description":
@@ -94,10 +151,8 @@ Attack parseAttack(XmlElement element) {
         attack.strengthMin = int.tryParse(e.innerText) ?? attack.strengthMin;
       case "strength_max":
         attack.strengthMax = int.tryParse(e.innerText) ?? attack.strengthMax;
-      case "random_damage":
-        attack.randomDamage = int.tryParse(e.innerText) ?? attack.randomDamage;
-      case "fixed_damage":
-        attack.fixedDamage = int.tryParse(e.innerText) ?? attack.fixedDamage;
+      case "damage":
+        attack.damage = int.tryParse(e.innerText) ?? attack.damage;
       case "bruises":
         attack.bruises = parseBool(e.innerText) ?? attack.bruises;
       case "tears":
@@ -120,38 +175,11 @@ Attack parseAttack(XmlElement element) {
         attack.severType = SeverType.values
                 .firstWhereOrNull((v) => v.name == e.innerText.toLowerCase()) ??
             attack.severType;
-      case "damages_armor":
-        attack.damagesArmor = parseBool(e.innerText) ?? attack.damagesArmor;
-      case "armorpiercing":
-        attack.armorPenetration =
-            int.tryParse(e.innerText) ?? attack.armorPenetration;
       case "social_damage":
         attack.socialDamage = parseBool(e.innerText) ?? attack.socialDamage;
       case "no_damage_reduction_for_limbs_chance":
         attack.noDamageReductionForLimbsChance =
             int.tryParse(e.innerText) ?? attack.noDamageReductionForLimbsChance;
-      case "critical":
-        Critical critical = Critical();
-        for (XmlElement c in e.childElements) {
-          switch (c.name.local) {
-            case "chance":
-              critical.chance = int.tryParse(c.innerText) ?? critical.chance;
-            case "hits_required":
-              critical.hitsRequired =
-                  int.tryParse(c.innerText) ?? critical.hitsRequired;
-            case "random_damage":
-              critical.randomDamage =
-                  int.tryParse(c.innerText) ?? critical.randomDamage;
-            case "fixed_damage":
-              critical.fixedDamage =
-                  int.tryParse(c.innerText) ?? critical.fixedDamage;
-            case "severtype":
-              critical.severType = SeverType.values.firstWhereOrNull(
-                      (v) => v.name == c.innerText.toLowerCase()) ??
-                  critical.severType;
-          }
-        }
-        attack.critical = critical;
       case "fire":
         Fire fire = Fire();
         for (XmlElement c in e.childElements) {
@@ -164,6 +192,8 @@ Attack parseAttack(XmlElement element) {
           }
         }
         attack.fire = fire;
+      default:
+        debugPrint("Unknown key ${e.name.local} in attack");
     }
   }
   return attack;

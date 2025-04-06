@@ -147,7 +147,7 @@ class Site extends Location {
   }
 
   Iterable<Creature> get creaturesPresent =>
-      pool.where((element) => element.location == this);
+      pool.where((element) => element.locationId == idString);
 
   int get numberEating => creaturesPresent
       .where((e) => e.alive && e.align == Alignment.liberal)

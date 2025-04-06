@@ -4,8 +4,8 @@ import 'package:lcs_new_age/creature/gender.dart';
 import 'package:lcs_new_age/creature/hardcoded_creature_type_stuff.dart';
 import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
-import 'package:lcs_new_age/items/armor_type.dart';
 import 'package:lcs_new_age/items/attack.dart';
+import 'package:lcs_new_age/items/clothing_type.dart';
 import 'package:lcs_new_age/items/weapon_type.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
 import 'package:lcs_new_age/politics/laws.dart';
@@ -53,8 +53,8 @@ class CreatureType {
   Gender gender = Gender.nonbinary;
 
   List<String> armorTypeIds = [];
-  ArmorType? get randomArmor =>
-      armorTypeIds.map((s) => armorTypes[s]).nonNulls.toList().randomOrNull;
+  ClothingType? get randomArmor =>
+      armorTypeIds.map((s) => clothingTypes[s]).nonNulls.toList().randomOrNull;
 
   List<String> weaponTypeIds = [];
   WeaponType? randomWeaponFor(Creature cr) {
@@ -102,9 +102,10 @@ class CreatureType {
       id == CreatureTypeIds.eminentScientist ||
       id == CreatureTypeIds.conservativeJudge ||
       id == CreatureTypeIds.ccsArchConservative ||
-      id == CreatureTypeIds.policeChief;
+      id == CreatureTypeIds.policeChief ||
+      id == CreatureTypeIds.televangelist;
 
-  bool get preciousToHicks =>
+  bool get preciousToAngryRuralMobs =>
       id == CreatureTypeIds.radioPersonality ||
       id == CreatureTypeIds.newsAnchor;
 
@@ -120,8 +121,6 @@ class CreatureType {
 
   bool get ccsMember =>
       id == CreatureTypeIds.ccsArchConservative ||
-      id == CreatureTypeIds.ccsMolotov ||
-      id == CreatureTypeIds.ccsSniper ||
       id == CreatureTypeIds.ccsVigilante;
 
   void applyOnDeathPublicOpinionEffects() {
@@ -132,6 +131,7 @@ class CreatureType {
       case CreatureTypeIds.radioPersonality:
         changePublicOpinion(View.amRadio, 5);
       case CreatureTypeIds.newsAnchor:
+      case CreatureTypeIds.televangelist:
         changePublicOpinion(View.cableNews, 5);
       case CreatureTypeIds.eminentScientist:
         changePublicOpinion(View.genetics, 3);
@@ -189,8 +189,6 @@ class CreatureTypeIds {
   static const String psychologist = "CREATURE_PSYCHOLOGIST";
   static const String nurse = "CREATURE_NURSE";
   static const String ccsArchConservative = "CREATURE_CCS_ARCHCONSERVATIVE";
-  static const String ccsMolotov = "CREATURE_CCS_MOLOTOV";
-  static const String ccsSniper = "CREATURE_CCS_SNIPER";
   static const String ccsVigilante = "CREATURE_CCS_VIGILANTE";
   static const String sewerWorker = "CREATURE_SEWERWORKER";
   static const String collegeStudent = "CREATURE_COLLEGESTUDENT";
@@ -220,7 +218,7 @@ class CreatureTypeIds {
   static const String amateurMagician = "CREATURE_AMATEURMAGICIAN";
   static const String tank = "CREATURE_TANK";
   static const String merc = "CREATURE_MERC";
-  static const String hick = "CREATURE_HICK";
+  static const String angryRuralMob = "CREATURE_HICK";
   static const String veteran = "CREATURE_VETERAN";
   static const String hardenedVeteran = "CREATURE_HARDENED_VETERAN";
   static const String soldier = "CREATURE_SOLDIER";
@@ -256,4 +254,10 @@ class CreatureTypeIds {
   static const String politicalActivist = "CREATURE_POLITICALACTIVIST";
   static const String prisonGuard = "CREATURE_PRISONGUARD";
   static const String mutant = "CREATURE_MUTANT";
+  static const String punk = "CREATURE_PUNK";
+  static const String goth = "CREATURE_GOTH";
+  static const String emo = "CREATURE_EMO";
+  static const String naziPunk = "CREATURE_NAZIPUNK";
+  static const String neoNazi = "CREATURE_NEONAZI";
+  static const String televangelist = "CREATURE_TELEVANGELIST";
 }

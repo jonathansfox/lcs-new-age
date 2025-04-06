@@ -262,10 +262,18 @@ Future<bool> completeRecruitMeeting(RecruitmentSession r, Creature p) async {
       if (c == Key.a) ledger.subtractFunds(50, Expense.recruitment);
 
       p.train(Skill.persuasion, 25);
-      p.train(Skill.science, r.recruit.skill(Skill.science));
-      p.train(Skill.religion, r.recruit.skill(Skill.religion));
-      p.train(Skill.law, r.recruit.skill(Skill.law));
-      p.train(Skill.business, r.recruit.skill(Skill.business));
+      if (r.recruit.skill(Skill.science) > p.skill(Skill.science)) {
+        p.train(Skill.science, r.recruit.skill(Skill.science));
+      }
+      if (r.recruit.skill(Skill.religion) > p.skill(Skill.religion)) {
+        p.train(Skill.religion, r.recruit.skill(Skill.religion));
+      }
+      if (r.recruit.skill(Skill.law) > p.skill(Skill.law)) {
+        p.train(Skill.law, r.recruit.skill(Skill.law));
+      }
+      if (r.recruit.skill(Skill.business) > p.skill(Skill.business)) {
+        p.train(Skill.business, r.recruit.skill(Skill.business));
+      }
 
       int libPersuasiveness = p.skill(Skill.business) +
           p.skill(Skill.science) +

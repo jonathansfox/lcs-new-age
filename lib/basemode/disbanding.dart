@@ -120,7 +120,7 @@ List<int> summarizePoliticalBody(List<DeepAlignment> body) {
 }
 
 void setPoliticalBodyColor(List<int> body) {
-  int majority = (body.fold(0, (a, b) => a + b) / 2).round();
+  int majority = (body.fold(0, (a, b) => a + b) / 2).floor() + 1;
   DeepAlignment align;
   if (body[0] >= majority) {
     align = DeepAlignment.archConservative;

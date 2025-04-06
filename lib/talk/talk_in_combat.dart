@@ -22,9 +22,7 @@ import 'package:lcs_new_age/utils/colors.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 
 Future<bool> talkInCombat(Creature liberal, Creature target) async {
-  clearCommandArea();
-  clearMessageArea();
-  clearMapArea();
+  clearSceneAreas();
 
   mvaddstrc(9, 1, white, "${liberal.name} talks to ");
   addstrc(target.align.color, target.name);
@@ -68,9 +66,9 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
   if (c == 'a'.codePoint) {
     await intimidate(liberal);
   } else if (c == 'b'.codePoint) {
-    mvaddstrc(16, 1, white, "${liberal.name}: ");
+    mvaddstrc(9, 1, white, "${liberal.name}: ");
     setColor(lightGreen);
-    move(17, 1);
+    move(10, 1);
     switch (lcsRandom(6)) {
       case 0:
         addstr("\"Back off or the hostage dies!\"");
@@ -104,8 +102,8 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
           e.blood > 70 &&
           (e.type.canPerformArrests || e.type.edgelord));
       if (e != null) {
-        mvaddstrc(16, 1, white, "${e.name}:");
-        move(17, 1);
+        mvaddstrc(9, 1, white, "${e.name}:");
+        move(10, 1);
         if (e.align != Alignment.conservative ||
             (e.type.id == CreatureTypeIds.secretService &&
                 exec[Exec.president]! > DeepAlignment.conservative)) {
@@ -163,7 +161,7 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
       }
       if (!noretreat || e == null) {
         clearMessageArea();
-        mvaddstrc(16, 1, white, "The ploy works! The Conservatives back off.");
+        mvaddstrc(9, 1, white, "The ploy works! The Conservatives back off.");
         for (int i = encounter.length - 1; i >= 0; i--) {
           if (encounter[i].alive && encounter[i].isEnemy) {
             encounter.removeAt(i);
@@ -171,9 +169,7 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
         }
         await getKey();
       } else {
-        clearCommandArea();
-        clearMessageArea();
-        clearMapArea();
+        clearSceneAreas();
         mvaddstrc(9, 1, lightGray, "How should ${liberal.name} respond?");
         move(11, 1);
         if (hostages > 1) {
@@ -207,7 +203,7 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
             }
           }
 
-          move(16, 1);
+          move(9, 1);
           setColor(red);
           if (executer.weapon.type.rangedAttack?.usesAmmo == true &&
               executer.weapon.ammo > 0) {
@@ -219,16 +215,16 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
 
           await getKey();
 
-          mvaddstrc(17, 1, white,
+          mvaddstrc(10, 1, white,
               "${executer.name} Heartlessly drops ${executer.prisoner!.name}'s body.");
           executer.heartDamage++;
           siteCrime += 10;
           addDramaToSiteStory(Drama.killedSomebody);
           criminalizeparty(Crime.murder);
 
-          if (executer.prisoner!.type.preciousToHicks) {
+          if (executer.prisoner!.type.preciousToAngryRuralMobs) {
             siteCrime += 30;
-            offendedHicks = true;
+            offendedAngryRuralMobs = true;
           }
           makeLoot(executer.prisoner!, groundLoot);
           await getKey();
@@ -237,9 +233,9 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
 
           if (hostages > 1 && !e.type.edgelord) {
             clearMessageArea();
-            mvaddstrc(16, 1, white, "${e.name}: ");
+            mvaddstrc(9, 1, white, "${e.name}: ");
             setColor(red);
-            move(17, 1);
+            move(10, 1);
             if (noProfanity) {
               addstr("\"Fuck! ");
             } else {
@@ -267,10 +263,10 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
             await getKey();
           }
         } else if (c == 'b'.codePoint) {
-          move(16, 1);
-          mvaddstrc(16, 1, white, "${liberal.name}: ");
+          move(9, 1);
+          mvaddstrc(9, 1, white, "${liberal.name}: ");
           setColor(lightGreen);
-          move(17, 1);
+          move(10, 1);
           switch (lcsRandom(5)) {
             case 0:
               if (hostages > 1) {
@@ -292,9 +288,9 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
 
           if (e.type.edgelord) {
             clearMessageArea();
-            mvaddstrc(16, 1, white, "${e.name}: ");
+            mvaddstrc(9, 1, white, "${e.name}: ");
             setColor(red);
-            move(17, 1);
+            move(10, 1);
             switch (lcsRandom(5)) {
               case 0:
                 addstr("\"Do I look like a loving person?\"");
@@ -311,9 +307,9 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
             await getKey();
           } else {
             clearMessageArea();
-            mvaddstrc(16, 1, white, "${e.name}: ");
+            mvaddstrc(9, 1, white, "${e.name}: ");
             setColor(red);
-            move(17, 1);
+            move(10, 1);
             switch (lcsRandom(4)) {
               case 0:
                 addstr("\"Yes. Nice and easy.\"");
@@ -335,7 +331,7 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
 
             clearMessageArea();
             setColor(white);
-            move(16, 1);
+            move(9, 1);
             for (Creature squaddie in squad) {
               // Instant juice for successful hostage negotiation
               addjuice(squaddie, 15, 1000);
@@ -357,14 +353,14 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
     } else {
       setColor(white);
       clearMessageArea();
-      move(16, 1);
+      move(9, 1);
       addstr("${target.name} isn't interested in your pathetic threats.");
 
       await getKey();
     }
   } else if (c == 'c'.codePoint) {
     setColor(white);
-    move(16, 1);
+    move(9, 1);
     if (activeSiteUnderSiege) {
       addstr("${liberal.name} ");
       switch (activeSite!.siege.activeSiegeType) {
@@ -372,24 +368,27 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
           addstr("pretends to be part of a police raid.");
         case SiegeType.cia:
           addstr("pretends to be a Secret Agent.");
-        case SiegeType.hicks:
-          switch (lcsRandom(2)) {
-            case 0:
-              addstr("pretends to be Mountain ");
-              mvaddstr(17, 1, "like Patrick Swayze in Next of Kin.");
-            case 1:
-              addstr("squeals like Ned Beatty ");
-              mvaddstr(17, 1, "in Deliverance.");
-          }
+        case SiegeType.angryRuralMob:
+          addstr([
+            "complains loudly about John Deere contracts.",
+            "mutters about city folks messing things up.",
+            "grumbles about the 'good old days'.",
+            "blusters about the rising cost of feed.",
+            "yells \"I think they went that-a-way!\"",
+            "says \"They're hidin' here somewhere!\"",
+            "asks \"Y'all seen 'em anywheres?\"",
+            "says \"I reckon they's in the barn.\"",
+            "says \"Doubt they coulda gone far!\"",
+            "shouts \"They went 'round that way!\"",
+          ].random);
         case SiegeType.ccs:
-          switch (lcsRandom(3)) {
-            case 0:
-              addstr("makes a neo-Nazi hand gesture.");
-            case 1:
-              addstr("mutters something racist.");
-            case 2:
-              addstr("just starts growling slurs.");
-          }
+          addstr([
+            "makes a neo-Nazi hand gesture.",
+            "mutters something racist.",
+            "just starts growling slurs.",
+            "parrots a hateful slogan.",
+            "mutters a vague insult about minorities.",
+          ].random);
         case SiegeType.corporateMercs:
           addstr("pretends to be a mercenary.");
         case SiegeType.none:
@@ -398,21 +397,21 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
     } else {
       //Special bluff messages for various uniforms
       setColor(lightGreen);
-      if (target.armor.typeName == "ARMOR_POLICEUNIFORM" ||
-          target.armor.typeName == "ARMOR_POLICEARMOR" ||
-          target.armor.typeName == "ARMOR_SWATARMOR") {
+      if (target.clothing.typeName == "CLOTHING_POLICEUNIFORM" ||
+          target.clothing.typeName == "CLOTHING_POLICEARMOR" ||
+          target.clothing.typeName == "CLOTHING_SWATARMOR") {
         addstr("\"The situation is under control.\"");
-      } else if (target.armor.typeName == "ARMOR_BUNKERGEAR") {
+      } else if (target.clothing.typeName == "CLOTHING_BUNKERGEAR") {
         if (siteOnFire) {
           addstr("\"Fire! Evacuate immediately!\"");
         } else {
           addstr("\"Everything's in check.\"");
         }
-      } else if (target.armor.typeName == "ARMOR_LABCOAT") {
+      } else if (target.clothing.typeName == "CLOTHING_LABCOAT") {
         addstr("\"Make way, I'm a doctor!\"");
-      } else if (target.armor.typeName == "ARMOR_DEATHSQUADBODYARMOR") {
+      } else if (target.clothing.typeName == "CLOTHING_DEATHSQUADBODYARMOR") {
         addstr("\"Non-targets please leave the site.\"");
-      } else if (target.armor.typeName == "ARMOR_MITHRIL") {
+      } else if (target.clothing.typeName == "CLOTHING_MITHRIL") {
         addstr("${liberal.name} engraves ");
         addstrc(RainbowFlag.red, "E");
         addstrc(RainbowFlag.orange, "l");
@@ -425,7 +424,7 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
         addstrc(lightGreen, " on the floor.");
       } else {
         addstr("${liberal.name} talks like a Conservative ");
-        mvaddstr(17, 1, "and pretends to belong here.");
+        mvaddstr(10, 1, "and pretends to belong here.");
       }
     }
 
@@ -452,8 +451,8 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
       clearMessageArea();
 
       setColor(red);
-      move(16, 1);
-      if (target.type.id == CreatureTypeIds.hick) {
+      move(9, 1);
+      if (target.type.id == CreatureTypeIds.angryRuralMob) {
         addstr("But ${target.name} weren't born yesterday.");
       } else {
         addstr(target.name);
@@ -467,7 +466,7 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
       await getKey();
     } else {
       clearMessageArea();
-      mvaddstrc(16, 1, lightGreen, "The Enemy is fooled and departs.");
+      mvaddstrc(9, 1, lightGreen, "The Enemy is fooled and departs.");
       await getKey();
 
       for (int i = encounter.length - 1; i >= 0; i--) {
@@ -478,7 +477,7 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
     }
   } else {
     clearMessageArea();
-    mvaddstrc(14, 1, white, "The Squad surrenders and is arrested.");
+    mvaddstrc(9, 1, white, "The Squad surrenders and is arrested.");
     await getKey();
 
     int stolen = 0;
@@ -502,55 +501,82 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
 
 Future<void> intimidate(Creature liberal) async {
   clearMessageArea();
-  mvaddstrc(16, 1, white, "${liberal.name}: ");
-  move(17, 1);
+  mvaddstrc(9, 1, white, "${liberal.name}: ");
+  move(10, 1);
   setColor(lightGreen);
 
-  switch (lcsRandom(15)) {
-    case 0:
-      // Formatting the slogan so that it always has quotes around it and punctuation
-      if (slogan[0] != '"') addchar('"');
-      addstr(slogan);
-      int last = slogan.length;
-      if (last > 0 &&
-          slogan[last - 1] != '"' &&
-          slogan[last - 1] != '!' &&
-          slogan[last - 1] != '.' &&
-          slogan[last - 1] != '?') {
-        addchar('!');
-      }
-      if (last > 0 && slogan[last - 1] != '"') addchar('"');
-
-    case 1:
-      addstr("Run, you Conservative swine!");
-    case 2:
-      addstr("We're the Liberal Crime Squad!");
-    case 3:
-      addstr("Praying won't help you now!");
-    case 4:
-      addstr("You fight like a dairy farmer!");
-    case 5:
-      addstr("You're in the wrong place!");
-    case 6:
-      addstr("Don't mess with the LCS!");
-    case 7:
-      addstr("You're in for it now!");
-    case 8:
-      addstr("I'll kill you!");
-    case 9:
-      addstr("Run away, and never return!");
-    case 10:
-      addstr(noProfanity ? "[Please leave!]" : "Get the fuck out of here!");
-    case 11:
-      addstr("I swear to Darwin I'll end you!");
-    case 12:
-      addstr("Don't make me ${noProfanity ? "[be mean]" : "fuck you up"}!");
-    case 13:
-      addstr("I pity the fool who stands against me!");
-    case 14:
-      addstr("Anybody feel like dying a hero?");
+  bool enemyPresent = false;
+  for (Creature e in encounter) {
+    if (e.alive && e.isEnemy && !e.calculateWillRunAway()) {
+      enemyPresent = true;
+      break;
+    }
   }
 
+  String formattedSlogan = "";
+  if (slogan[0] != '"') formattedSlogan += '"';
+  formattedSlogan += slogan;
+  int last = slogan.length;
+  if (last > 0 &&
+      slogan[last - 1] != '"' &&
+      slogan[last - 1] != '!' &&
+      slogan[last - 1] != '.' &&
+      slogan[last - 1] != '?') {
+    formattedSlogan += "!";
+  }
+  if (last > 0 && slogan[last - 1] != '"') formattedSlogan += '"';
+
+  if (enemyPresent) {
+    addstr([
+      formattedSlogan,
+      "Run, you Conservative swine!",
+      "We're the Liberal Crime Squad!",
+      "Praying won't help you now!",
+      "You fight like a dairy farmer!",
+      "You're in the wrong place!",
+      "Don't mess with the LCS!",
+      "You're in for it now!",
+      "Go now or I'll kill you!",
+      "Run away, and never return!",
+      if (noProfanity) "[Please leave!]" else "Get the fuck out of here!",
+      "I swear to Darwin I'll end you!",
+      "Don't make me ${noProfanity ? "[be mean]" : "fuck you up"}!",
+      "I pity the fool who stands against the LCS!",
+      "Anybody feel like dying a hero?",
+    ].random);
+  } else {
+    if (encounter.any(
+        (e) => e.equippedWeapon != null && e.align == Alignment.conservative)) {
+      addstr([
+        "Hands in the air and you can walk!",
+        "Step back, drop your weapons, and walk out.",
+        "Drop it now!  I won't ask twice!",
+        "If you're giving up, show me your hands.",
+        "Put your weapons down and walk away.",
+        "Drop it before I drop you!",
+        "Lose the weapon and get out of here!",
+        "Drop your weapons and back off!",
+      ].random);
+    } else {
+      addstr([
+        formattedSlogan,
+        "Don't push your luck.",
+        "Walk away. Now!",
+        "If you don't want more trouble, then go.",
+        "I'm giving you chance to run.",
+        "Go on, get out of here.",
+        "You better leave.",
+        "You don't want to be here.",
+        "Back off and live to see another day.",
+        "You don't have to die today.",
+        "You can walk away from this.",
+        "Turn around and walk away.",
+        "Get moving. Now.",
+        "I don't want to see you again.",
+        "Out! Go, before I change my mind.",
+      ].random);
+    }
+  }
   await getKey();
 
   for (int i = encounter.length - 1; i >= 0; i--) {
@@ -563,28 +589,17 @@ Future<void> intimidate(Creature liberal) async {
 
       if (attack > defense || e.nonCombatant) {
         clearMessageArea();
-        mvaddstrc(16, 1, white, e.name);
-        switch (lcsRandom(10)) {
-          case 0:
-            addstr(" chickens out!");
-          case 1:
-            addstr(" backs off!");
-          case 2:
-            addstr(" doesn't want to die!");
-          case 3:
-            addstr(" is out of there!");
-          case 4:
-            addstr(" has a family!");
-          case 5:
-            addstr(" is too young to die!");
-          case 6:
-            addstr(" scatters!");
-          case 7:
-            addstr(" runs away!");
-          case 8:
-            addstr(" flees!");
-          case 9:
-            addstr(" is gone!");
+        mvaddstrc(9, 1, white, e.name);
+
+        if (e.equippedWeapon != null) {
+          addstr(" drops the ${e.equippedWeapon!.getName()} and");
+          e.dropWeapon(lootPile: groundLoot);
+        }
+
+        if (e.body.legok < 2 || e.blood < e.maxBlood * 0.45) {
+          addstr(escapeCrawling.random);
+        } else {
+          addstr(escapeRunning.random);
         }
         encounter.removeAt(i);
         addjuice(liberal, 2, 1000); // Instant juice!

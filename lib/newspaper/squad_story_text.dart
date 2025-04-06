@@ -62,7 +62,6 @@ String squadStoryTextLocation(NewsStory ns, bool liberalguardian, bool ccs) {
     default:
       story += "at the ";
       if (liberalguardian && !ccs) story += "notorious ";
-      break;
   }
   if (ccs) {
     switch (ns.loc!.type) {
@@ -105,7 +104,6 @@ String squadStoryTextLocation(NewsStory ns, bool liberalguardian, bool ccs) {
       default:
         story += placename;
         story += ".  ";
-        break;
     }
   } else {
     story += placename;
@@ -154,7 +152,6 @@ String squadStoryTextLocation(NewsStory ns, bool liberalguardian, bool ccs) {
         story += ", the very symbol of economic inequality.  ";
       default:
         story += ".  ";
-        break;
     }
   } else if (!ccs) {
     story += ".  ";

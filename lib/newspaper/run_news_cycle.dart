@@ -163,21 +163,24 @@ void assignPageNumbersToNewspaperStories() {
       }
     }
     if (maxn != -1) {
-      if (newsStories[maxn].priority < 30 && curpage == 1) curpage = 2;
-      if (newsStories[maxn].priority < 25 && curpage < 3) {
-        curpage = 3 + lcsRandom(2);
+      if (newsStories[maxn].priority <= 90 && curpage == 1) curpage = 2;
+      if (newsStories[maxn].priority <= 80 && curpage <= 2) curpage = 3;
+      if (newsStories[maxn].priority < 70 && curpage <= 3) curpage = 4;
+      if (newsStories[maxn].priority < 60 && curpage <= 4) curpage = 5;
+      if (newsStories[maxn].priority < 50 && curpage <= 5) {
+        curpage = 6 + lcsRandom(4);
       }
-      if (newsStories[maxn].priority < 20 && curpage < 5) {
-        curpage = 5 + lcsRandom(5);
-      }
-      if (newsStories[maxn].priority < 15 && curpage < 10) {
+      if (newsStories[maxn].priority < 40 && curpage <= 10) {
         curpage = 10 + lcsRandom(10);
       }
-      if (newsStories[maxn].priority < 10 && curpage < 20) {
+      if (newsStories[maxn].priority < 30 && curpage <= 20) {
         curpage = 20 + lcsRandom(10);
       }
-      if (newsStories[maxn].priority < 5 && curpage < 30) {
-        curpage = 30 + lcsRandom(20);
+      if (newsStories[maxn].priority < 20 && curpage <= 30) {
+        curpage = 30 + lcsRandom(10);
+      }
+      if (newsStories[maxn].priority < 10 && curpage <= 40) {
+        curpage = 40 + lcsRandom(10);
       }
 
       newsStories[maxn].page = curpage;
@@ -211,16 +214,9 @@ void handlePublicOpinionImpact(NewsStory ns) {
 
   int impact = ns.priority;
 
-  // Magnitude of impact will be affected by which page of the newspaper the story appears on
-  impact *= switch (ns.page) {
-    1 => 5,
-    2 => 3,
-    3 => 2,
-    _ => 1,
-  };
-
+  // Magnitude of impact will be limited based on which page of the newspaper the story appears on
   int maxpower = switch (ns.page) {
-    1 => 100,
+    1 => 150,
     < 5 => 100 - 10 * ns.page,
     < 10 => 40,
     < 20 => 20,
@@ -229,8 +225,14 @@ void handlePublicOpinionImpact(NewsStory ns) {
     _ => 1,
   };
 
-  // Five times effectiveness with the Liberal Guardian
-  if (ns.positive == 2) impact *= 5;
+  // Increase cap if claimed
+  if (ns.claimed == 2) maxpower *= 2;
+
+  // Double effectiveness with the Liberal Guardian
+  if (ns.positive == 2) {
+    impact *= 2;
+    maxpower *= 2;
+  }
   // Cap power
   if (impact > maxpower) impact = maxpower;
 
@@ -413,6 +415,9 @@ void setpriority(NewsStory ns) {
       ns.priority += drama[Drama.attacked]! * 2;
       ns.priority += drama[Drama.carChase]! * 2;
       ns.priority += drama[Drama.footChase]! * 2;
+
+      ns.legalGunUsed = drama[Drama.legalGunUsed]! > 0;
+      ns.illegalGunUsed = drama[Drama.illegalGunUsed]! > 0;
 
       // Add additional priority based on the type of news story
       // and how high profile the LCS is

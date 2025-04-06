@@ -9,7 +9,7 @@ class ItemType {
   String name = "Buggy Item";
   String? nameFuture;
   String idName;
-  int fenceValue = 0;
+  double fenceValue = 0;
   bool isMoney = false;
 
   static ItemType fromJson(String id) => itemTypes[id]!;

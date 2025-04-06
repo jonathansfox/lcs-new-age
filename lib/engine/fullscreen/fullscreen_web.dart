@@ -1,9 +1,8 @@
-import 'dart:async';
 // ignore: avoid_web_libraries_in_flutter
-import 'dart:html';
+import 'package:web/web.dart';
 
 void enterFullscreen() {
-  unawaited(document.documentElement?.requestFullscreen());
+  document.documentElement?.requestFullscreen();
 }
 
 void exitFullscreen() {

@@ -24,9 +24,7 @@ Future<bool> heyMisterAnimal(List<(String, String)> goodTalk,
     (pitch, response) = badTalk.random;
   }
 
-  clearCommandArea();
-  clearMessageArea();
-  clearMapArea();
+  clearSceneAreas();
 
   mvaddstrc(10, 1, white, "${liberal.name} says, ");
   mvaddstrc(11, 1, lightGreen, pitch);

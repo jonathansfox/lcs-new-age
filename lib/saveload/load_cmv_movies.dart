@@ -82,7 +82,9 @@ class CursesMovie {
             for (int fy = 0; fy < movie.dimy && fy + y < 25; fy++) {
               if ((movie.picture[f.frame][fx][fy][0] == ' '.codePoint ||
                       movie.picture[f.frame][fx][fy][0] == 0) &&
-                  f.flag & CM_FRAMEFLAG_OVERLAY > 0) continue;
+                  f.flag & CM_FRAMEFLAG_OVERLAY > 0) {
+                continue;
+              }
 
               move(fy + y, fx + x);
               drawCPCGlyph(movie.picture[f.frame][fx][fy],

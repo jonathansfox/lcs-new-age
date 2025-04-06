@@ -10,7 +10,9 @@ Future<bool> checkForDefeat(
   if (pool.any((p) =>
       p.alive &&
       p.align == Alignment.liberal &&
-      !(p.sleeperAgent && p.hireId != null))) return false;
+      !(p.sleeperAgent && p.hireId != null))) {
+    return false;
+  }
 
   HighScore yourScore;
   if (possibleEnding != Ending.unspecified) {
@@ -19,7 +21,7 @@ Future<bool> checkForDefeat(
     yourScore = await saveHighScore(switch (activeSite?.siege.activeSiegeType) {
       SiegeType.police => Ending.policeSiege,
       SiegeType.cia => Ending.ciaSiege,
-      SiegeType.hicks => Ending.hicksSiege,
+      SiegeType.angryRuralMob => Ending.hicksSiege,
       SiegeType.corporateMercs => Ending.corporateSiege,
       SiegeType.ccs => Ending.ccsSiege,
       _ => Ending.dead,

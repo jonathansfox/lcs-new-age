@@ -6,7 +6,7 @@ import 'package:lcs_new_age/creature/difficulty.dart';
 import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
-import 'package:lcs_new_age/items/armor.dart';
+import 'package:lcs_new_age/items/clothing.dart';
 import 'package:lcs_new_age/justice/crimes.dart';
 import 'package:lcs_new_age/location/location.dart';
 import 'package:lcs_new_age/location/location_type.dart';
@@ -133,7 +133,7 @@ Future<void> prison(Creature g) async {
 
         await getKey();
 
-        Armor clothes = Armor("ARMOR_CLOTHES");
+        Clothing clothes = Clothing("CLOTHING_CLOTHES");
         g.giveArmor(clothes, null);
         // If their old base is no longer under LCS control, wander back to the
         // homeless camp instead.
@@ -242,7 +242,7 @@ Future<void> laborCamp(Creature g) async {
     escaped = 1;
     experience = " wears an electrician's outfit...";
     experience2 = " rides away with some contractors!";
-    g.giveArmorType("ARMOR_WORKCLOTHES");
+    g.giveClothingType("CLOTHING_WORKCLOTHES");
   } else if (g.skillCheck(Skill.security, Difficulty.challenging) &&
       g.skillCheck(Skill.stealth, Difficulty.hard) &&
       oneIn(10)) {
@@ -326,7 +326,7 @@ Future<void> prisonScene(Creature g) async {
       escaped = 1;
       experience =
           " puts on smuggled street clothes and calmly walks out of prison.";
-      g.giveArmor(Armor("ARMOR_CLOTHES"), null);
+      g.giveArmor(Clothing("CLOTHING_CLOTHES"), null);
     } else if (g.skillCheck(Skill.security, Difficulty.hard) &&
         g.skillCheck(Skill.stealth, Difficulty.hard) &&
         oneIn(5)) {

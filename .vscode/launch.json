@@ -5,10 +5,16 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Windows",
+            "type": "dart",
+            "request": "launch",
+            "args": ["-d", "windows"],
+        },
+        {
             "name": "Chrome",
             "type": "dart",
             "request": "launch",
-            "args": ["-d", "chrome", "--web-renderer", "html"],
+            "args": ["-d", "chrome"],
         }
     ]
 }

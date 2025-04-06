@@ -107,12 +107,10 @@ Future<void> doActivityGraffiti(List<Creature> graffiti) async {
     if (issue == View.lcsKnown) {
       changePublicOpinion(View.lcsKnown, lcsRandom(2));
       changePublicOpinion(View.lcsLiked, oneIn(8) ? 1 : 0);
-      politics.publicInterest.update(issue, (a) => a + power);
     } else {
       changePublicOpinion(View.lcsKnown, 1);
       changePublicOpinion(View.lcsLiked, 1);
-      politics.publicInterest.update(issue, (a) => a + power);
-      politics.backgroundInfluence.update(issue, (a) => a + power);
+      politics.addBackgroundInfluence(issue, power);
     }
   }
 }

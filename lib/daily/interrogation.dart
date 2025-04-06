@@ -48,7 +48,6 @@ enum Technique {
 
 Future<void> tendHostage(InterrogationSession intr) async {
   Creature cr = intr.hostage;
-  int druguse = intr.daysOfDrugUse;
   var rapport = intr.rapport;
   var techniques = intr.techniques;
   List<Creature> tenders = [];
@@ -134,7 +133,7 @@ Future<void> tendHostage(InterrogationSession intr) async {
         tempp.attribute(Attribute.wisdom) +
         tempp.skill(Skill.psychology) * 2;
 
-    tenderAttack[p] += tempp.armor.type.interrogationBasePower;
+    tenderAttack[p] += tempp.clothing.type.interrogationBasePower;
 
     if (tenderAttack[p] < 0) tenderAttack[p] = 0;
     if (tenderAttack[p] > attack) attack = tenderAttack[p];
@@ -162,7 +161,7 @@ Future<void> tendHostage(InterrogationSession intr) async {
   attack += business - cr.skill(Skill.business);
   attack += religion - cr.skill(Skill.religion);
   attack += science - cr.skill(Skill.science);
-  attack += lead.skillRoll(Skill.psychology) - cr.skillRoll(Skill.psychology);
+  attack -= cr.skillRoll(Skill.psychology);
 
   attack += cr.attributeRoll(Attribute.heart);
   attack -= cr.attributeRoll(Attribute.wisdom) * 2;
@@ -334,10 +333,11 @@ Future<void> tendHostage(InterrogationSession intr) async {
   {
     mvaddstr(++y, 0, "It is subjected to dangerous hallucinogens.");
 
-    int drugbonus = 10 +
-        lead.armor.type.interrogationDrugBonus; // we won't apply this JUST yet
+    // we won't apply the drug bonus JUST yet
+    int drugbonus = 10 + lead.clothing.type.interrogationDrugBonus;
     //Possible permanent health damage
-    if (lcsRandom(50) < ++druguse) {
+    if (lcsRandom(50) < ++intr.daysOfDrugUse) {
+      bool lowHealth = cr.health == 1;
       cr.permanentHealthDamage += 1;
       move(++y, 0);
 
@@ -359,7 +359,7 @@ Future<void> tendHostage(InterrogationSession intr) async {
           maxskill = doctor.skill(Skill.firstAid); // we found a doctor
         }
       }
-      if (cr.health <= 0 || maxskill == 0) // he's dead, Jim
+      if (lowHealth || maxskill == 0) // he's dead, Jim
       {
         if (maxskill > 0) {
           // we have a real doctor but the patient is still dead anyway
@@ -410,6 +410,8 @@ Future<void> tendHostage(InterrogationSession intr) async {
                 "${doctor.name} swiftly intervenes and takes control of the interrogation.");
             y++;
             lead = doctor;
+          } else {
+            addstr("${doctor.name} immediately switches to doctor mode.");
           }
           mvaddstr(y++, 0,
               "${doctor.gender.heSheCap} applies aggressive treatment to flush the drugs from ${cr.name}'s system.");
@@ -422,7 +424,7 @@ Future<void> tendHostage(InterrogationSession intr) async {
               "${doctor.name} strikes the drug regimen from the schedule for the day.");
           cr.permanentHealthDamage -= 1; // no permanent health damage
           // drugs eliminated from the system
-          druguse = 0;
+          intr.daysOfDrugUse = 0;
           drugbonus = 0;
           techniques[Technique.drugs] = false;
         } else {
@@ -440,8 +442,8 @@ Future<void> tendHostage(InterrogationSession intr) async {
           } else {
             addstr(" had a near-death experience and met John Lennon.");
           }
-          drugbonus *=
-              2; // the near-death experience doubles the drug bonus, since the hostage is spaced out afterwards
+          // the near-death experience doubles the drug bonus
+          drugbonus *= 2;
         }
         // rapport bonus for having life saved by doctor
         addRapport(doctor, 0.5);
@@ -945,7 +947,7 @@ Future<void> tendHostage(InterrogationSession intr) async {
     }
     //Failure to break religious convictions
     else if (cr.skill(Skill.religion) >
-            lead.skill(Skill.religion) + lead.skill(Skill.psychology) &&
+            religion + lead.skill(Skill.psychology) &&
         techniques[Technique.drugs] != true) {
       move(y++, 0);
       addstr([
@@ -958,7 +960,7 @@ Future<void> tendHostage(InterrogationSession intr) async {
     }
     //Failure to persuade entrenched capitalists
     else if (cr.skill(Skill.business) >
-            lead.skill(Skill.business) + lead.skill(Skill.psychology) &&
+            business + lead.skill(Skill.psychology) &&
         techniques[Technique.drugs] != true) {
       move(y++, 0);
       addstr([
@@ -970,8 +972,7 @@ Future<void> tendHostage(InterrogationSession intr) async {
       lead.train(Skill.business, cr.skill(Skill.business) * 4);
     }
     //Failure to persuade scientific minds
-    else if (cr.skill(Skill.science) >
-            lead.skill(Skill.science) + lead.skill(Skill.psychology) &&
+    else if (cr.skill(Skill.science) > science + lead.skill(Skill.psychology) &&
         techniques[Technique.drugs] != true) {
       move(y++, 0);
       addstr([
@@ -992,6 +993,8 @@ Future<void> tendHostage(InterrogationSession intr) async {
 
       if (cr.attribute(Attribute.heart) < 10) {
         cr.adjustAttribute(Attribute.heart, 1);
+      } else {
+        cr.adjustAttribute(Attribute.wisdom, -1);
       }
       //Improve rapport with interrogator
       addRapport(lead, 1.5);
@@ -1185,6 +1188,8 @@ Future<int> traumatize(Creature lead, String action, int y) async {
   } else if (oneIn(3)) {
     mvaddstrc(y++, 0, lightBlue, "${lead.name} grows colder.");
     lead.adjustAttribute(Attribute.wisdom, 1);
+  } else {
+    mvaddstrc(y++, 0, lightGray, "${lead.name} seems to be okay afterward.");
   }
   await getKey();
   return y;
@@ -1246,7 +1251,7 @@ void showInterrogationSidebar(InterrogationSession intr, Creature a) {
   setColor(lightGray);
   addstr("Heart: ${a.attribute(Attribute.heart)}");
   mvaddstr(++y, 40, "Wisdom: ${a.attribute(Attribute.wisdom)}");
-  mvaddstr(++y, 40, "Outfit: ${a.armor.longName}");
+  mvaddstr(++y, 40, "Outfit: ${a.clothing.longName}");
   move(y += 2, 40);
 
   if ((rapport[a.id] ?? 0) > 3) {

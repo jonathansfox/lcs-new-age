@@ -1,0 +1,117 @@
+<ammos>
+    <!-- Clarification
+    <ammotype idname="(string)"> idname is used internally by the game to identify the ammo type.
+                                 No two item types should have the same idname.
+        <name> (string) The name of the round.
+            Default: UNDEFINED
+        <name_future> (string) The name of the round after the year 2100.
+            Defaults to normal name.
+        <energy> (integer) Ballistic performance of the round.
+            Default: 1
+        <fencevalue> (float) Money received when selling at the pawn shop.
+            Default: 0
+        <boxsize> (integer) Number of rounds in a box.
+            Default: 20
+        <boxprice> (integer) Price of a box of rounds.
+            Default: 10
+    </ammotype>
+    -->
+
+    <ammotype idname="AMMO_22">
+        <name>.22 LR Ammo</name>
+        <name_future>.22 LR Ammo</name_future>
+        <cartridge>CARTRIDGE_22</cartridge>
+        <damage>45</damage>
+        <recoil>1</recoil>
+        <fencevalue>0.05</fencevalue>
+        <boxsize>500</boxsize>
+        <boxprice>50</boxprice>
+    </ammotype>
+
+    <ammotype idname="AMMO_44">
+        <name>.44 Magnum Ammo</name>
+        <name_future>.44 Slug</name_future>
+        <cartridge>CARTRIDGE_44</cartridge>
+        <damage>90</damage>
+        <recoil>4</recoil>
+        <fencevalue>0.7</fencevalue>
+        <boxsize>50</boxsize>
+        <boxprice>45</boxprice>
+    </ammotype>
+
+    <ammotype idname="AMMO_45">
+        <name>.45 ACP Ammo</name>
+        <name_future>.45 Powerpack</name_future>
+        <cartridge>CARTRIDGE_45</cartridge>
+        <damage>70</damage>
+        <recoil>3</recoil>
+        <fencevalue>0.4</fencevalue>
+        <boxsize>100</boxsize>
+        <boxprice>40</boxprice>
+    </ammotype>
+
+    <ammotype idname="AMMO_50AE">
+        <name>.50 AE Ammo</name>
+        <name_future>.50 AE Ammo</name_future>
+        <cartridge>CARTRIDGE_50AE</cartridge>
+        <damage>180</damage>
+        <recoil>5</recoil>
+        <fencevalue>1.5</fencevalue>
+        <boxsize>20</boxsize>
+        <boxprice>55</boxprice>
+    </ammotype>
+
+    <ammotype idname="AMMO_9MM">
+        <name>9mm Ammo</name>
+        <name_future>9mm Powerpack</name_future>
+        <cartridge>CARTRIDGE_9MM</cartridge>
+        <damage>60</damage>
+        <recoil>2</recoil>
+        <fencevalue>0.2</fencevalue>
+        <boxsize>100</boxsize>
+        <boxprice>30</boxprice>
+    </ammotype>
+
+    <ammotype idname="AMMO_556">
+        <name>5.56 NATO Ammo</name>
+        <name_future>5.56 Powerpack</name_future>
+        <cartridge>CARTRIDGE_556</cartridge>
+        <damage>160</damage>
+        <recoil>3</recoil>
+        <fencevalue>0.6</fencevalue>
+        <boxsize>100</boxsize>
+        <boxprice>100</boxprice>
+    </ammotype>
+
+    <ammotype idname="AMMO_68">
+        <name>6.8mm Army Ammo</name>
+        <name_future>6.8mm Powerpack</name_future>
+        <cartridge>CARTRIDGE_68</cartridge>
+        <damage>200</damage>
+        <recoil>4</recoil>
+        <fencevalue>0.6</fencevalue>
+        <boxsize>100</boxsize>
+        <boxprice>400</boxprice>
+    </ammotype>
+
+    <ammotype idname="AMMO_BUCKSHOT">
+        <name>12ga 00 Buckshot</name>
+        <name_future>12ga Plasma</name_future>
+        <cartridge>CARTRIDGE_12GA</cartridge>
+        <damage>25</damage>
+        <multihit>8</multihit>
+        <recoil>5</recoil>
+        <fencevalue>0.3</fencevalue>
+        <boxsize>25</boxsize>
+        <boxprice>15</boxprice>
+    </ammotype>
+
+    <ammotype idname="AMMO_GASOLINE">
+        <name>Gasoline</name>
+        <cartridge>CARTRIDGE_GASOLINE</cartridge>
+        <fencevalue>10</fencevalue>
+        <boxsize>4</boxsize>
+        <boxprice>100</boxprice>
+    </ammotype>
+
+</ammos>
