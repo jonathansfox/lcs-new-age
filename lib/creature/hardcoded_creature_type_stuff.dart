@@ -99,11 +99,6 @@ void applyHardcodedCreatureTypeStuff(Creature cr, CreatureType type) {
       }
     case CreatureTypeIds.sweatshopWorker:
       criminalize(cr, Crime.illegalEntry);
-      if (cr.gender == Gender.male || oneIn(2)) {
-        cr.giveClothingType("CLOTHING_CHEAPSUIT");
-      } else {
-        cr.giveClothingType("CLOTHING_CHEAPDRESS");
-      }
     case CreatureTypeIds.tank:
       cr.body = TankBody();
     case CreatureTypeIds.angryRuralMob:
