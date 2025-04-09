@@ -41,13 +41,17 @@ Future<void> trial(Creature g) async {
   await getKey();
 
   setColor(lightGray);
+  int weakEvidencePenalty = 0;
 
   if (!g.isCriminal) {
-    if (oneIn(5)) {
-      criminalize(g, Crime.drugDistribution);
-    } else {
-      criminalize(g, Crime.loitering);
-    }
+    // Some token nothing charge
+    Crime crime = [
+      Crime.resistingArrest,
+      Crime.loitering,
+      Crime.disturbingThePeace,
+    ].random;
+    criminalize(g, crime);
+    weakEvidencePenalty = 60;
   }
 
   int typenum = 0, scarefactor = 0;
@@ -263,15 +267,23 @@ Future<void> trial(Creature g) async {
 
     //PROSECUTION MESSAGE
     // *JDS* The bigger your record, the stronger the evidence
-    prosecution += 40 + lcsRandom(101) + scarefactor + (20 * g.confessions);
+    prosecution += 40 +
+        lcsRandom(101) +
+        scarefactor +
+        (20 * g.confessions) -
+        weakEvidencePenalty;
     if (sleeperjudge != null) prosecution >>= 1;
     if (defense == 3) prosecution -= 60;
 
     setColor(lightGray);
     move(7, 1);
 
-    if (prosecution <= 50) {
-      addstr("The prosecution's presentation is terrible.");
+    if (prosecution <= 0) {
+      addstr("The police seem to have confused ${g.name} with someone else.");
+    } else if (prosecution <= 25) {
+      addstr("The accusations against ${g.name} are largely baseless.");
+    } else if (prosecution <= 50) {
+      addstr("The prosecution's case seems pretty fragile.");
     } else if (prosecution <= 75) {
       addstr("The prosecution gives a standard presentation.");
     } else if (prosecution <= 125) {
@@ -296,33 +308,30 @@ Future<void> trial(Creature g) async {
         // Court-appointed attorney
         Creature attorney = Creature.fromId(CreatureTypeIds.lawyer);
         defensepower = lcsRandom(71) +
-            attorney.skill(Skill.law) +
-            attorney.skill(Skill.persuasion);
+            attorney.skill(Skill.law) * 2 +
+            attorney.skill(Skill.persuasion) * 2;
       } else if (defense == 3) {
         // Ace Liberal attorney
         defensepower = lcsRandom(71) + 80;
       } else if (defense == 4) {
         // Sleeper attorney
         defensepower = lcsRandom(71) +
-            sleeperlawyer!.skill(Skill.law) * 2 +
-            sleeperlawyer.skill(Skill.persuasion) * 2;
+            sleeperlawyer!.skill(Skill.law) * 4 +
+            sleeperlawyer.skill(Skill.persuasion) * 4;
         sleeperlawyer.train(Skill.law, prosecution);
         sleeperlawyer.train(Skill.persuasion, prosecution);
       }
 
-      if (defensepower <= 5) {
+      if (defensepower <= 15) {
         addstr("The defense attorney rarely showed up.");
-      } else if (defensepower <= 15) {
-        addstr(
-            "The defense attorney accidentally said \"My client is GUILTY!\" during closing.");
       } else if (defensepower <= 25) {
         addstr("The defense is pathetic.");
       } else if (defensepower <= 50) {
-        addstr("The defense was lackluster.");
+        addstr("The defense is lackluster.");
       } else if (defensepower <= 75) {
-        addstr("Defense arguments were pretty good.");
+        addstr("Defense arguments are pretty good.");
       } else if (defensepower <= 100) {
-        addstr("The defense was really slick.");
+        addstr("The defense is really slick.");
       } else if (defensepower <= 145) {
         if (prosecution < 100) {
           addstr("The defense makes the prosecution look like amateurs.");
@@ -332,7 +341,7 @@ Future<void> trial(Creature g) async {
       } else {
         if (prosecution < 100) {
           addstr(
-              "$attorneyname's arguments made several of the jurors stand up ");
+              "$attorneyname's arguments make several of the jurors stand up ");
           mvaddstr(10, 1,
               "and shout \"NOT GUILTY!\" before deliberations even began.");
           if (defense == 4) addjuice(sleeperlawyer!, 50, 1000); // Bow please
@@ -345,8 +354,8 @@ Future<void> trial(Creature g) async {
     if (defense == 1) {
       // Self-defense; generally worse than a lawyer, but if you're a rockstar
       // maybe you can pull it off
-      defensepower = (g.skill(Skill.persuasion)) * 2 +
-          (g.skill(Skill.law)) * 2 +
+      defensepower = (g.skill(Skill.persuasion)) * 4 +
+          (g.skill(Skill.law)) * 4 +
           lcsRandom(51);
 
       // Persuasion alone won't save you if you legally bungled it
@@ -357,19 +366,19 @@ Future<void> trial(Creature g) async {
 
       addstr(g.name);
       if (defensepower <= 0) {
-        addstr(" just made ${g.gender.himselfHerself} look guilty.");
+        addstr(" just makes ${g.gender.himselfHerself} look guilty.");
       } else if (defensepower <= 25) {
-        addstr("'s case really sucked.");
+        addstr("'s case really sucks.");
       } else if (defensepower <= 50) {
-        addstr(" did all right, but made some mistakes.");
+        addstr(" does all right, but makes some mistakes.");
       } else if (defensepower <= 75) {
-        addstr("'s arguments were pretty good.");
+        addstr("'s arguments are pretty good.");
       } else if (defensepower <= 100) {
-        addstr(" worked the jury very well.");
+        addstr(" works the jury very well.");
       } else if (defensepower <= 150) {
-        addstr(" made a very powerful case.");
+        addstr(" makes a very powerful case.");
       } else {
-        addstr(" had the jury, judge, and prosecution crying for freedom.");
+        addstr(" has the jury, judge, and prosecution crying for freedom.");
         addjuice(g, 50, 1000); // That shit is legend
       }
     }
@@ -411,9 +420,9 @@ Future<void> trial(Creature g) async {
       trialOutcome = TrialOutcome.acquittal;
 
       // Juice sleeper
-      if (defense == 4) addjuice(sleeperlawyer!, 10, 100);
+      if (defense == 4) addjuice(sleeperlawyer!, 25, 1000);
       // Juice for self-defense
-      if (defense == 1) addjuice(g, 10, 100);
+      if (defense == 1) addjuice(g, 25, 1000);
     }
     //LENIENCE
     else //Guilty
