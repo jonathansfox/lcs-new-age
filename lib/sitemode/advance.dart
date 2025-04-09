@@ -288,7 +288,7 @@ Future<void> advancecreature(Creature cr) async {
 
     levelMap[locx][locy][locz].bloody = true;
 
-    cr.clothing.bloody = true;
+    cr.equippedClothing?.bloody = true;
 
     if (cr.blood <= 0) {
       // Blame LCS for bleeding deaths unless they're liberal or moderate

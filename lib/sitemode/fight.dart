@@ -1550,7 +1550,7 @@ Future<void> severloot(Creature cr, List<Item> loot) async {
 /* blood explosions */
 void bloodblast(Clothing armor) {
   //GENERAL
-  armor.bloody = true;
+  if (armor.type.canGetBloody) armor.bloody = true;
 
   if (mode != GameMode.site) return;
 
