@@ -221,10 +221,10 @@ void drawTileContent(SiteTile tile) {
         addchar(" ");
       } else if (tile.neighbors().any((t) => t.graffitiLCS)) {
         setColor(green, background: bg);
-        addchar("℄");
+        addchar("L");
       } else if (tile.neighbors().any((t) => t.graffitiCCS)) {
         setColor(darkRed, background: bg);
-        addchar("ℭ");
+        addchar("C");
       } else if (tile.neighbors().any((t) => t.graffitiOther)) {
         setColor(black, background: bg);
         // Gang graffiti
