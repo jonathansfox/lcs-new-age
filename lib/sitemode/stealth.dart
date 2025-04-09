@@ -113,7 +113,7 @@ Future<bool> alienationCheck(bool evenIfNoWitnesses) async {
       for (Creature e in encounter) {
         if (e.align != Alignment.conservative) {
           if (e.align == Alignment.moderate || alienatebig) {
-            e.align = Alignment.conservative;
+            conservatize(e);
           }
         }
       }
