@@ -335,7 +335,10 @@ Future<void> characterCreationQuestions(Creature founder, bool choose) async {
         founder.adjustSkill(Skill.disguise, 1);
         founder.giveClothingType("CLOTHING_SECURITYUNIFORM",
             lootPile: founder.base?.loot);
-        for (Site site in founder.base?.city.districts.first.sites ?? []) {
+        Iterable<Site> downtownSites = founder.base?.city.districts[1].sites
+                .where((s) => s.type != SiteType.oubliette) ??
+            [];
+        for (Site site in downtownSites) {
           site.mapped = true;
         }
       }),
