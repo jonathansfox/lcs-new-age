@@ -752,6 +752,9 @@ Future<void> assembleSquad(Squad? cursquad) async {
       .where((p) => p.isActiveLiberal && (p.site == culloc || culloc == null))
       .toList();
 
+  Map<Creature, Squad?> oldSquads =
+      Map.fromEntries(temppool.map((p) => MapEntry(p, p.squad)));
+
   int page = 0, partysize;
 
   while (true) {
@@ -863,7 +866,7 @@ Future<void> assembleSquad(Squad? cursquad) async {
         }
         if (conf) {
           if (tempp.squadId == cursquad.id) {
-            tempp.squad = null;
+            tempp.squad = oldSquads[tempp];
             cursquad.members.remove(tempp);
           } else if (partysize < 6) {
             tempp.squad = cursquad;
@@ -897,7 +900,8 @@ Future<void> assembleSquad(Squad? cursquad) async {
     }
     if (c == '9'.codePoint) {
       for (int p = cursquad.members.length - 1; p >= 0; p--) {
-        cursquad.members[p].squad = null;
+        cursquad.members[p].squad = oldSquads[cursquad.members[p]];
+        cursquad.members.removeAt(p);
       }
     }
   }
