@@ -31,6 +31,14 @@ Future<void> soloActivities(bool disbanding) async {
     if (p.vacationDaysLeft > 0) continue;
     if (p.hidingDaysLeft != 0) continue;
     p.location ??= p.base;
+    if (p.activity.type == ActivityType.streamGuardian &&
+        p.base?.compound.videoRoom != true) {
+      p.activity = Activity.none();
+    }
+    if (p.activity.type == ActivityType.hacking &&
+        p.base?.compound.hackerDen != true) {
+      p.activity = Activity.none();
+    }
     // Clear actions for people under siege
     if (p.site?.siege.underSiege == true) {
       switch (p.activity.type) {
