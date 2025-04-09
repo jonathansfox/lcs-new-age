@@ -1285,12 +1285,12 @@ Future<void> specialSecurity(bool metaldetect) async {
     case REJECTED_DAMAGEDCLOTHES:
       addstr([
         "\"Good God! What is wrong with your clothes?\"",
-        "\"Is that a damaged halloween costume?\"",
+        "\"Are you okay? Why are your clothes ripped?\"",
       ].random);
     case REJECTED_SECONDRATECLOTHES:
       addstr([
-        "\"That looks like you sewed it yourself.\"",
-        "\"That's a poor excuse for a uniform. Who are you?\"",
+        "\"Did you make that outfit yourself?\"",
+        "\"Is that a halloween costume? Who are you?\"",
       ].random);
     case REJECTED_WEAPONS:
       if (metaldetect) {
