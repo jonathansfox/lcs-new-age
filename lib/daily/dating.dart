@@ -752,23 +752,12 @@ Future<DateResult> dateResult(int aroll, int troll, DatingSession d, Creature e,
       else if (e.workSite?.mapped == false &&
           lcsRandom(e.attribute(Attribute.wisdom)) == 0) {
         y++;
-        move(y++, 0);
-        addstr(
+        mvaddstr(y++, 0,
             "${e.name} turns the topic of discussion to the ${e.workSite!.name}.");
-
-        move(y++, 0);
-        if (e.workSite!.mapped) {
-          addstr(p.name);
-          addstr(
-              " was able to create a map of the site with this information.");
-
-          y++;
-        } else {
-          addstr("${p.name} doesn't learn anything new.");
-
-          y++;
-        }
-        e.workSite!.mapped = false;
+        mvaddstr(y++, 0,
+            "${p.name} is able to create a map of the site from this information.");
+        y++;
+        e.workSite!.mapped = true;
         e.workSite!.hidden = false;
       }
 
