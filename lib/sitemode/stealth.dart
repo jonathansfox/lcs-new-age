@@ -149,6 +149,8 @@ Future<void> disguisecheck(int timer) async {
 
   // Nothing suspicious going on here
   if (!siteAlarm &&
+      siteAlarmTimer != 0 &&
+      timer == 0 &&
       weapon == WeaponCheckResult.ok &&
       disguise != DisguiseQuality.alarming &&
       disguise != DisguiseQuality.disturbing &&
@@ -157,6 +159,12 @@ Future<void> disguisecheck(int timer) async {
     if ((!disguisesite(activeSite!.type) &&
             !levelMap[locx][locy][locz].restricted) ||
         disguise == DisguiseQuality.inconspicuous) {
+      if (disguisesite(activeSite!.type) ||
+          levelMap[locx][locy][locz].restricted) {
+        for (Creature c in squad) {
+          c.train(Skill.disguise, 10);
+        }
+      }
       return;
     }
   }
