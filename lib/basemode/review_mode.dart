@@ -624,40 +624,10 @@ Future<void> reviewMode(ReviewMode mode) async {
               }
 
               await getKey();
-
-              move(22, 0);
-              if (lcsRandom(boss.rawAttributes[Attribute.heart]!) >
-                  lcsRandom(3)) {
-                eraseLine(22);
-                setColor(lightGreen);
-                addstr(boss.name);
-                addstr(" feels sick to the stomach afterward and");
-                boss.heartDamage++;
-                move(23, 0);
-                switch (lcsRandom(4)) {
-                  case 0:
-                    addstr("throws up in a trash can.");
-                  case 1:
-                    addstr("gets drunk, eventually falling asleep.");
-                  case 2:
-                    addstr("curls up in a ball, crying softly.");
-                  case 3:
-                    addstr("shoots up and collapses in a heap on the floor.");
-                }
-                move(24, 0);
-                addstr(boss.name);
-                addstr(" has lost heart.");
-                await getKey();
-              } else if (lcsRandom(3) == 0) {
-                setColor(lightBlue);
-                addstr(boss.name);
-                addstr(" grows colder.");
-                boss.adjustAttribute(Attribute.wisdom, 1);
-                move(24, 0);
-                addstr(boss.name);
-                addstr(" has gained wisdom.");
-                await getKey();
-              }
+              eraseArea(startY: 22);
+              await traumatize(boss, "execution", 22);
+              await dispersalCheck();
+              buildTempPool();
             }
           } else {
             break;
