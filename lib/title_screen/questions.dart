@@ -164,7 +164,7 @@ Future<void> characterCreationQuestions(Creature founder, bool choose) async {
     ]),
     _Question("In middle school...", [
       _Option("I broke into lockers and was into punk rock.",
-          "+2 Security, +1 Agility, Black Leather Jacket", () {
+          "+2 Security, +1 Agility, Punk Jacket", () {
         founder.adjustSkill(Skill.security, 2);
         founder.adjustSkill(Skill.music, 1);
         founder.adjustAttribute(Attribute.agility, 1);
@@ -228,14 +228,12 @@ Future<void> characterCreationQuestions(Creature founder, bool choose) async {
           "+2 Tailoring, +1 Disguise, Black Formalwear", () {
         founder.adjustSkill(Skill.tailoring, 2);
         founder.adjustSkill(Skill.disguise, 1);
-        if (founder.clothing.type.idName == "CLOTHING_CLOTHES") {
-          if (founder.gender != Gender.male) {
-            founder.giveClothingType("CLOTHING_BLACKDRESS",
-                lootPile: founder.base?.loot);
-          } else {
-            founder.giveClothingType("CLOTHING_BLACKSUIT",
-                lootPile: founder.base?.loot);
-          }
+        if (founder.gender != Gender.male) {
+          founder.giveClothingType("CLOTHING_BLACKDRESS",
+              lootPile: founder.base?.loot);
+        } else {
+          founder.giveClothingType("CLOTHING_BLACKSUIT",
+              lootPile: founder.base?.loot);
         }
       }),
     ]),
@@ -414,6 +412,10 @@ Future<void> characterCreationQuestions(Creature founder, bool choose) async {
         founder.adjustSkill(Skill.computers, 2);
         founder.adjustSkill(Skill.disguise, 2);
         founder.type = creatureTypes[CreatureTypeIds.thief]!;
+        if (founder.clothing.type.idName == "CLOTHING_CLOTHES") {
+          founder.giveClothingType("CLOTHING_BLACKCLOTHES",
+              lootPile: founder.base?.loot);
+        }
       }),
       _Option(
           "a violent gang leader.  Nothing can change me, or stand in my way.",
@@ -426,6 +428,9 @@ Future<void> characterCreationQuestions(Creature founder, bool choose) async {
         founder.adjustSkill(Skill.firstAid, 1);
         founder.type = creatureTypes[CreatureTypeIds.gangMember]!;
         recruits = Recruits.gang;
+        if (founder.clothing.type.idName == "CLOTHING_CLOTHES") {
+          founder.giveClothingType("CLOTHING_STREETWEAR");
+        }
       }),
       _Option(
           "taking college courses.  I'm starting to understand what needs to be done.",
