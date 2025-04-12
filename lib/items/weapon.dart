@@ -58,6 +58,18 @@ class Weapon extends Item {
   }
 
   String getName({bool sidearm = false, bool primary = false}) {
+    if (year >= 2100) {
+      if (primary) {
+        return type.futureLargeSubtypeName ??
+            type.largeSubtypeName ??
+            type.name;
+      }
+      if (sidearm) {
+        return type.futureSmallSubtypeShortName ??
+            type.smallSubtypeShortName ??
+            type.shortName;
+      }
+    }
     if (primary) return type.largeSubtypeName ?? type.name;
     if (sidearm) return type.smallSubtypeShortName ?? type.shortName;
     return type.name;
