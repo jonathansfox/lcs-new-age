@@ -1136,7 +1136,9 @@ Future<void> tendHostage(InterrogationSession intr) async {
     await getKey();
 
     y += 2;
+    String oldName = cr.name;
     liberalize(cr);
+    cr.name = oldName;
     cr.hireId = lead.id;
     stats.recruits++;
 
