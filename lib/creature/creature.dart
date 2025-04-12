@@ -71,7 +71,20 @@ class Creature {
   int money = 0;
   int heartDamage = 0;
   int permanentHealthDamage = 0;
-  int heat = 0;
+  @JsonKey(name: "heat")
+  int _heat = 0;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  int get heat => max(
+      sqrt(wantedForCrimes.entries
+          .fold(0, (val, b) => val + crimeHeat(b.key) * b.value)).ceil(),
+      _heat);
+  set heat(int value) => _heat = value;
+  @JsonKey(defaultValue: 0)
+  int offendedAngryRuralMobs = 0;
+  @JsonKey(defaultValue: 0)
+  int offendedCorps = 0;
+  @JsonKey(defaultValue: 0)
+  int offendedCIA = 0;
   double infiltration = 0;
   int meetings = 0;
   bool hasWheelchair = false;

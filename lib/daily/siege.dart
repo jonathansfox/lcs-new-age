@@ -110,13 +110,28 @@ Future<void> siegeCheck() async {
         // Accumulate heat from liberals who have it,
         // but let them bleed it off in the process
         if (p.heat > 0) {
-          crimes += (p.heat / 10).ceil();
+          debugPrint(
+              "Heat from ${p.name}: ${p.heat} -> ${sqrt(p.heat).ceil()}");
+          crimes += sqrt(p.heat).ceil();
           p.heat -= min(max(1, p.heat ~/ 100), p.heat);
         }
       }
 
       // Update location heat
-      l.heat += ((crimes - l.heat - l.heatProtection) / 10).ceil();
+      int beforeCrimes = crimes;
+      crimes = max(0, crimes - l.heatProtection) +
+          max(0, pow(min(crimes, l.heatProtection), 0.75).ceil());
+      int beforeHeat = l.heat;
+      double delta = (crimes - l.heat) / 10;
+      if (delta > 0) {
+        l.heat += delta.ceil();
+      } else if (delta < 0) {
+        l.heat += delta.floor();
+      }
+      if (l.heat > 0) {
+        debugPrint(
+            "Heat for ${l.getName()}: $beforeHeat -> ${l.heat} ($beforeCrimes -> $crimes)");
+      }
       if (l.heat < 0) l.heat = 0;
 
       int huntingSpeed = 0;
@@ -282,11 +297,18 @@ Future<void> siegeCheck() async {
 
       //OTHER OFFENDABLE ENTITIES
       //CORPS
-      if (l.heat > l.heatProtection &&
+      int targetHeatFromCorps =
+          l.creaturesPresent.fold(0, (t, c) => t + c.offendedCorps);
+      if (l.extraHeatFromCorps < targetHeatFromCorps) {
+        l.extraHeatFromCorps++;
+      } else if (l.extraHeatFromCorps > targetHeatFromCorps) {
+        l.extraHeatFromCorps--;
+      }
+      if (l.heat + l.extraHeatFromCorps > l.heatProtection &&
           l.siege.timeuntilcorps == -1 &&
           !l.siege.underSiege &&
           offendedCorps &&
-          oneIn(60) &&
+          oneIn(30) &&
           numpres > 0) {
         l.siege.timeuntilcorps = lcsRandom(3) + 1;
 
@@ -317,8 +339,22 @@ Future<void> siegeCheck() async {
           numpres > 0) {
         // Corps raid!
         erase();
-        mvaddstrc(8, 1, white,
-            "Corporate mercenaries are raiding the ${l.getName()}!");
+        setColor(white);
+        addparagraph(
+            8,
+            1,
+            13,
+            78,
+            "A convoy of gray SUVs marked with the logo of a notorious "
+            "private military company pulls up to the ${l.getName()}.");
+        await getKey();
+        addparagraph(
+            console.y,
+            1,
+            13,
+            78,
+            "PMC contractors pour out of the vehicles, armed to the teeth with "
+            "automatic weapons, and move to surround the building!");
         await getKey();
 
         l.siege.activeSiegeType = SiegeType.corporateMercs;
@@ -327,14 +363,23 @@ Future<void> siegeCheck() async {
         l.siege.camerasOff = false;
         offendedCorps = false;
         l.siege.timeuntilcorps = -1;
+        l.extraHeatFromCorps = 0;
+        for (Creature p in pool) {
+          p.offendedCorps = 0;
+        }
       } else if (l.siege.timeuntilcorps == 0) {
         // Silently call off foiled corp raids
         l.siege.timeuntilcorps = -1;
       }
 
       //CONSERVATIVE CRIME SQUAD
-      if (ccsActive && ccsState.index >= CCSStrength.sieges.index) {
-        if (l.heat > l.heatProtection &&
+      if (ccsActive) {
+        if (l.extraHeatFromCCS < l.extraHeatFromCCSTarget) {
+          l.extraHeatFromCCS++;
+        } else if (l.extraHeatFromCCS > l.extraHeatFromCCSTarget) {
+          l.extraHeatFromCCS--;
+        }
+        if (l.heat + l.extraHeatFromCCS > l.heatProtection &&
             l.siege.timeuntilccs == -1 &&
             !l.siege.underSiege &&
             oneIn(60) &&
@@ -356,6 +401,7 @@ Future<void> siegeCheck() async {
         } else if (l.siege.timeuntilccs == 0 &&
             !l.siege.underSiege &&
             numpres > 0) {
+          l.extraHeatFromCCS = 0;
           l.siege.timeuntilccs = -1;
           // CCS raid!
           erase();
@@ -432,11 +478,18 @@ Future<void> siegeCheck() async {
       }
 
       //CIA
-      if (l.heat > l.heatProtection / 2 &&
+      int targetHeatFromCIA =
+          l.creaturesPresent.fold(0, (t, c) => t + c.offendedCIA);
+      if (l.extraHeatFromCIA < targetHeatFromCIA) {
+        l.extraHeatFromCIA++;
+      } else if (l.extraHeatFromCIA > targetHeatFromCIA) {
+        l.extraHeatFromCIA--;
+      }
+      if (l.heat + l.extraHeatFromCIA > l.heatProtection / 2 &&
           l.siege.timeuntilcia == -1 &&
           !l.siege.underSiege &&
           offendedCia &&
-          oneIn(60) &&
+          oneIn(30) &&
           numpres > 0) {
         l.siege.timeuntilcia = lcsRandom(3) + 1;
         Creature? agentsleeper = pool.firstWhereOrNull(
@@ -483,27 +536,59 @@ Future<void> siegeCheck() async {
         l.siege.underAttack = true;
         l.siege.lightsOff = true;
         l.siege.camerasOff = true;
+        l.extraHeatFromCIA = 0;
+        offendedCia = false;
+        for (Creature p in pool) {
+          p.offendedCIA = 0;
+        }
       } else if (l.siege.timeuntilcia == 0) {
         l.siege.timeuntilcia = -1; // Silently call off foiled cia raids
       }
 
       //RURAL MOB
-      if (l.heat > l.heatProtection &&
+      int targetHeatFromRuralMobs =
+          l.creaturesPresent.fold(0, (t, c) => t + c.offendedAngryRuralMobs);
+      if (l.extraHeatFromRuralMobs < targetHeatFromRuralMobs) {
+        l.extraHeatFromRuralMobs++;
+      } else if (l.extraHeatFromRuralMobs > targetHeatFromRuralMobs) {
+        l.extraHeatFromRuralMobs--;
+      }
+      if (l.heat + l.extraHeatFromRuralMobs > l.heatProtection &&
           !l.siege.underSiege &&
           offendedAngryRuralMobs &&
-          oneIn(120) &&
+          oneIn(30) &&
           numpres > 0) {
         erase();
-        mvaddstrc(8, 1, white,
-            "Masses dissatisfied with your lack of respect for right-wing media");
-        mvaddstr(9, 1, "are storming the ${l.getName()}!");
+        setColor(white);
+        addparagraph(
+            8,
+            1,
+            13,
+            78,
+            "Overnight, a fringe far-right social media account publishes a "
+            "conspiracy theory about a building where an enclave of hundreds "
+            "of elites are generating forgeries, deepfakes, and committing "
+            "unspeakable crimes against innocent children.");
+        await getKey();
+        addparagraph(
+            console.y,
+            1,
+            13,
+            78,
+            "Rallied by calls to violence that sweep through social media, a "
+            "loosely organized column of pickup trucks sporting gun racks and "
+            "Confederate flags is descending on the ${l.getName()}!");
         await getKey();
 
         l.siege.activeSiegeType = SiegeType.angryRuralMob;
         l.siege.underAttack = true;
         l.siege.lightsOff = false;
         l.siege.camerasOff = false;
+        l.extraHeatFromRuralMobs = 0;
         offendedAngryRuralMobs = false;
+        for (Creature p in pool) {
+          p.offendedAngryRuralMobs = 0;
+        }
       }
     }
   }
@@ -1423,18 +1508,18 @@ Future<void> conquerText() async {
   erase();
   mvaddstrc(1, 26, lightGreen, "* * * * *   VICTORY   * * * * *");
 
+  String text;
   if (activeSite!.siege.activeSiegeType == SiegeType.police) {
-    mvaddstrc(3, 16, lightGray,
-        "The Conservative automatons have been driven back —— for ");
-    mvaddstr(4, 11,
-        "the time being.  While they are regrouping, you might consider ");
-    mvaddstr(5, 11, "abandoning this safe house for a safer location.");
+    text =
+        "The authorities have been driven back——for now.  While they are regrouping, "
+        "you might consider abandoning this safe house for a safer location.";
   } else {
-    mvaddstrc(3, 16, lightGray,
-        "The Conservative automatons have been driven back.  ");
-    mvaddstr(4, 11, "Unfortunately, you will never truly be safe from ");
-    mvaddstr(5, 11, "this filth until the Liberal Agenda is realized.");
+    text = "The Conservative automatons have been driven back.  Unfortunately, "
+        "you will never truly be safe from these extremists until the "
+        "Liberal Agenda is realized.";
   }
+  setColor(lightGray);
+  addparagraph(3, 11, 5, 59, text);
 
   mvaddstr(7, 19, "Press C to Continue Liberally.");
 
@@ -1447,75 +1532,68 @@ Future<void> conquerTextCCS() async {
   erase();
   mvaddstrc(1, 26, lightGreen, "* * * * *   VICTORY   * * * * *");
 
+  String text = "";
   if (ccsBaseKills < 3) {
-    setColor(lightGray);
-    move(3, 16);
     if (ccsSiegeConverts > 10) {
-      addstr("Music still ringing in their ears, the squad revels in ");
-      mvaddstr(4, 11, "their victory.  ");
+      text += "Music still ringing in their ears, the squad revels in "
+          "their victory.\n\n";
     } else if (ccsBossConverts > 0) {
-      addstr("The CCS Lieutenant lost in self-realization, the squad ");
-      mvaddstr(4, 11, "slips away.  ");
+      text += "The CCS Lieutenant lost in self-realization, the squad "
+          "slips away.\n\n";
     } else if (ccsSiegeKills > 10) {
-      addstr("Gunfire still ringing in their ears, the squad revels in ");
-      mvaddstr(4, 11, "their victory.  ");
+      text += "Gunfire still ringing in their ears, the squad revels in "
+          "their victory.\n\n";
     } else {
-      addstr("The CCS Lieutenant lying dead at their feet, the squad ");
-      mvaddstr(4, 11, "slips away.  ");
+      text += "The CCS Lieutenant lying dead at their feet, the squad "
+          "slips away.\n\n";
     }
-    addstr("The CCS Founder wasn't here, but for now, their ");
-    mvaddstr(5, 11,
-        "power has been severely weakened.  Once the safehouse cools off, ");
-    mvaddstr(
-        6, 11, "this will make a fine base for future Liberal operations.");
+    text += "The CCS Founder wasn't here, but for now, their power has been "
+        "severely weakened.  Once the safehouse cools off, this will make a "
+        "fine base for our future Liberal operations.";
   } else {
-    move(3, 16);
     bool pacifist = false;
     if (ccsSiegeConverts > 10) {
-      addstr("Music still ringing in their ears, the squad revels in ");
-      mvaddstr(4, 11, "their final victory.  ");
-
-      mvaddstr(6, 16,
-          "As your Liberals speak to the former CCS members, it is increasingly ");
-      mvaddstr(7, 11, "clear that this was the CCS's last safehouse.");
+      text += "Music still ringing in their ears, the squad revels in "
+          "their final victory.\n\n"
+          "As your Liberals speak to the former CCS members, it is increasingly "
+          "clear that this was the CCS's last safehouse.\n\n";
       pacifist = true;
     } else if (ccsBossConverts > 0) {
-      addstr("The CCS Founder lost in self-realization, the squad ");
-      mvaddstr(4, 11, "slips away.");
-
-      mvaddstr(6, 16,
-          "With even its Founder swearing off Conservatism forever, the last ");
-      mvaddstr(4, 11, "of the CCS's morale and confidence is shattered.");
+      text += "The CCS Founder lost in self-realization, the squad "
+          "slips away.\n\n"
+          "With even its Founder swearing off Conservatism forever, the last "
+          "of the CCS's morale and confidence is shattered.\n\n";
       pacifist = true;
     } else if (ccsSiegeKills > 10) {
-      addstr("Gunfire still ringing in their ears, the squad revels in ");
-      mvaddstr(4, 11, "their final victory.");
-
-      mvaddstr(6, 16,
-          "As your Liberals pick through the remains of the safehouse, ");
-      mvaddstr(7, 11,
-          "it is increasingly clear that this was the CCS's last safehouse.");
+      text += "Gunfire still ringing in their ears, the squad revels in their "
+          "final victory.\n\n"
+          "As your Liberals pick through the remains of the safehouse, it is "
+          "increasingly clear that this was the CCS's last safehouse.\n\n";
     } else {
-      addstr("The CCS Founder lying dead at their feet, the squad ");
-      mvaddstr(4, 11, "slips away.");
-
-      mvaddstr(
-          6, 16, "With its Founder killed in the heart of their own base, ");
-      mvaddstr(
-          7, 11, "the last of the enemy's morale and confidence is shattered.");
+      text += "The CCS Lieutenant lying dead at their feet, the squad "
+          "slips away.\n\n"
+          "With even its Lieutenant swearing off Conservatism forever, the last "
+          "of the CCS's morale and confidence is shattered.\n\n";
     }
 
-    mvaddstr(9, 16,
-        "The CCS has been completely ${pacifist ? "neutralized" : "destroyed"}.  Now wasn't there a ");
-    mvaddstr(10, 16, "revolution to attend to?");
-
-    mvaddstr(12, 5,
-        "+200 JUICE TO EVERYONE FOR ${pacifist ? "CONVERTING" : "ERADICATING"} THE CONSERVATIVE CRIME SQUAD");
+    text +=
+        "The CCS has been completely ${pacifist ? "neutralized" : "destroyed"}.  Now wasn't there a "
+        "revolution to attend to?\n\n";
+    text +=
+        "+200 JUICE TO EVERYONE FOR ${pacifist ? "CONVERTING" : "ERADICATING"} THE CONSERVATIVE CRIME SQUAD";
 
     for (Creature p in pool) {
       addjuice(p, 200, 1000);
     }
+    for (Site s in sites) {
+      if (s.controller == SiteController.ccs) {
+        s.controller = SiteController.lcs;
+      }
+    }
   }
+
+  setColor(lightGray);
+  addparagraph(3, 11, 13, 59, text);
 
   mvaddstr(15, 19, "Press C to Continue Liberally.");
 
