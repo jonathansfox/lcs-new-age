@@ -8,6 +8,8 @@ void conservatize(Creature cr) {
   cr.align = Alignment.conservative;
   if (cr.hireId == null) {
     switch (cr.type.id) {
+      case CreatureTypeIds.cop:
+        cr.name = "Police Officer";
       case CreatureTypeIds.unionWorker:
         cr.name = "Ex-Union Worker";
       case CreatureTypeIds.liberalJudge:
