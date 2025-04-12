@@ -112,15 +112,10 @@ void applyHardcodedCreatureTypeStuff(Creature cr, CreatureType type) {
         cr.rawSkill[Skill.persuasion] = lcsRandom(4) + 3;
         cr.rawSkill[Skill.firearms] = lcsRandom(3) + 1;
       } else {
-        if (laws[Law.gunControl] == DeepAlignment.archConservative &&
-            oneIn(3)) {
-          cr.giveWeaponAndAmmo("WEAPON_MP5", 4);
+        if (oneIn(10)) {
+          cr.giveWeaponAndAmmo("WEAPON_PUMP_SHOTGUN", 4);
         } else {
-          if (oneIn(10)) {
-            cr.giveWeaponAndAmmo("WEAPON_PUMP_SHOTGUN", 4);
-          } else {
-            cr.giveWeaponAndAmmo("WEAPON_9MM_HANDGUN", 4);
-          }
+          cr.giveWeaponAndAmmo("WEAPON_9MM_HANDGUN", 4);
         }
         cr.reload(false);
         cr.equippedClothing = Clothing("CLOTHING_POLICEUNIFORM",
