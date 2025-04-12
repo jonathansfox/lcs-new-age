@@ -681,101 +681,106 @@ void _activityFooter(Creature cr) {
       addstr(" lay low and stay out of trouble.");
     case ActivityType.visit:
       addstr(" act with ${cr.gender.hisHer} squad.");
-      mvaddstr(23, 3, "Squad activities always take precedence even if you");
+      mvaddstrc(23, 3, midGray,
+          "Squad activities always take precedence even if you");
       mvaddstr(24, 3, "assign a different individual activity.");
     case ActivityType.augment:
       addstr(" undergo surgery.");
     case ActivityType.bury:
       addstr(" bury the dead.");
-      mvaddstr(23, 3, "Uses Street Smarts to avoid the police.");
+      mvaddstrc(23, 3, midGray, "Uses Street Smarts to avoid the police.");
     case ActivityType.ccfraud:
       addstr(" commit credit card fraud.");
-      mvaddstr(23, 3, "Uses Computers.  Requires a Hacker Den.");
+      mvaddstrc(23, 3, midGray, "Uses Computers.  Requires a Hacker Den.");
     case ActivityType.clinic:
       addstr(" go to the hospital.");
     case ActivityType.communityService:
       addstr(" volunteer for a local nonprofit.");
-      mvaddstr(
-          23, 3, "A tiny bit of juice.  It's not *real* though, you know?");
+      mvaddstrc(23, 3, midGray,
+          "A tiny bit of juice.  It's not *real* though, you know?");
     case ActivityType.donations:
       addstr(" solicit donations.");
-      mvaddstr(23, 3, "Uses Persuasion and Street Smarts.");
+      mvaddstrc(23, 3, midGray, "Uses Persuasion and Street Smarts.");
     case ActivityType.graffiti:
       addstr(" spray graffiti.");
-      mvaddstr(23, 3, "Uses Art.");
+      mvaddstrc(23, 3, midGray, "Uses Art.");
     case ActivityType.hacking:
       addstr(" hack into private networks.");
-      mvaddstr(23, 3, "Uses Computers.  Requires a Hacker Den.");
+      mvaddstrc(23, 3, midGray, "Uses Computers.  Requires a Hacker Den.");
     case ActivityType.interrogation:
       addstr(" tend to hostages.");
-      mvaddstr(23, 3, "Uses Psychology and other social skills.");
+      mvaddstrc(23, 3, midGray, "Uses Psychology and other social skills.");
     case ActivityType.makeClothing:
       addstr(" make clothing.");
-      mvaddstr(23, 3, "Uses Tailoring.");
+      mvaddstrc(23, 3, midGray, "Uses Tailoring.");
     case ActivityType.prostitution:
       addstr(" have sex for money.");
-      mvaddstr(23, 3, "Uses Seduction.");
+      mvaddstrc(23, 3, midGray, "Uses Seduction.");
     case ActivityType.recruiting:
       addstr(" recruit new members.");
-      mvaddstr(23, 3, "Uses Street Smarts to find likely recruits.");
+      mvaddstrc(23, 3, midGray, "Uses Street Smarts to find likely recruits.");
       mvaddstr(
           24, 3, "Persuasion or Seduction is used to convince them to join.");
     case ActivityType.sellArt:
       addstr(" make and sell art.");
-      mvaddstr(23, 3, "Uses Art and Business.");
+      mvaddstrc(23, 3, midGray, "Uses Art and Business.");
     case ActivityType.sellDrugs:
       addstr(" bake and sell weed brownies.");
-      mvaddstr(23, 3, "Uses Street Smarts and Business.");
+      mvaddstrc(23, 3, midGray, "Uses Street Smarts and Business.");
     case ActivityType.sellMusic:
       addstr(" perform live music for money.");
-      mvaddstr(23, 3, "Uses Music and Business.");
+      mvaddstrc(23, 3, midGray, "Uses Music and Business.");
     case ActivityType.sellTshirts:
       addstr(" make and sell clothing.");
-      mvaddstr(23, 3, "Uses Tailoring and Business.");
+      mvaddstrc(23, 3, midGray, "Uses Tailoring and Business.");
     case ActivityType.stealCars:
       addstr(" steal a car.");
-      mvaddstr(23, 3, "Uses Security and Street Smarts.");
+      mvaddstrc(23, 3, midGray, "Uses Security and Street Smarts.");
     case ActivityType.streamGuardian:
       addstr(" stream for the Liberal Guardian.");
-      mvaddstr(23, 3, "Uses Persuasion and various knowledge skills.");
+      mvaddstrc(
+          23, 3, midGray, "Uses Persuasion and various knowledge skills.");
     case ActivityType.study:
       addstr(" independently study ${cr.activity.skill?.displayName}.");
-      mvaddstr(23, 3, "Slowly and safely gains experience for free.");
+      mvaddstrc(23, 3, midGray, "Slowly and safely gains experience for free.");
       mvaddstr(24, 3, "The only limit is your own potential.");
     case ActivityType.takeClass:
       addstr(" take classes in ${cr.activity.skill?.displayName}.");
-      mvaddstr(23, 3, "Quickly and safely gains experience for \$10/day.");
+      mvaddstrc(
+          23, 3, midGray, "Quickly and safely gains experience for \$10/day.");
       mvaddstr(
           24, 3, "Classes have a maximum level and not all skills are taught.");
     case ActivityType.teachCovert:
-      mvaddstr(22, 3,
+      mvaddstrc(22, 3, midGray,
           "Trains: Computers, Security, Stealth, Disguise, Tailoring, Seduction,");
       mvaddstr(23, 3, "        Driving, and Street Smarts");
       mvaddstr(24, 3,
           "Classes cost up to \$60/day to conduct. All Liberals able will attend.");
     case ActivityType.teachFighting:
-      mvaddstr(22, 3,
-          "Trains: Martial Arts, Firearms, Throwing, Knife, Martial Arts,");
-      mvaddstr(23, 3, "        Dodge, First Aid");
+      mvaddstrc(22, 3, midGray,
+          "Trains: Martial Arts, Firearms, Throwing, Heavy Weapons, Dodge,");
+      mvaddstrc(23, 3, midGray, "        and First Aid");
       mvaddstr(24, 3,
           "Classes cost up to \$100/day to conduct. All Liberals able will attend.");
     case ActivityType.teachLiberalArts:
-      mvaddstr(22, 3, "Trains: Writing, Persuasion, Law, Religion, Science,");
+      mvaddstrc(22, 3, midGray,
+          "Trains: Writing, Persuasion, Law, Religion, Science,");
       mvaddstr(23, 3, "        Business, Psychology, Music, and Art");
       mvaddstr(24, 3,
           "Classes cost up to \$20/day to conduct. All Liberals able will attend.");
     case ActivityType.trouble:
       addstr(" hit the streets and cause trouble.");
-      mvaddstr(23, 3, "Uses Street Smarts to avoid trouble of your own.");
+      mvaddstrc(
+          23, 3, midGray, "Uses Street Smarts to avoid trouble of your own.");
     case ActivityType.wheelchair:
       addstr(" procure a wheelchair.");
     case ActivityType.writeGuardian:
       addstr(" write articles for the Liberal Guardian.");
-      mvaddstr(23, 3, "Uses Writing and various knowledge skills.");
+      mvaddstrc(23, 3, midGray, "Uses Writing and various knowledge skills.");
     default:
       addstr(" report a bug to the developers: ${cr.activity.type.name}.");
   }
-  mvaddstrc(20, 40, lightGray, "Enter - Confirm Selection");
+  mvaddstrx(20, 40, "&BEnter&w - Confirm Selection");
 }
 
 Future<void> _activateBulk() async {
