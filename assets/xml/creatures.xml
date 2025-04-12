@@ -550,7 +550,7 @@ Elements marked as hardcoded may have their values overridden by the game.
     </creaturetype>
     <creaturetype idname="CREATURE_DEATHSQUAD">
         <type_name>DethSquad Officer</type_name>
-        <weapon>WEAPON_M7</weapon>
+        <weapon>WEAPON_M4</weapon>
         <armor>CLOTHING_DEATHSQUADUNIFORM</armor>
         <age>YOUNGADULT</age>
         <alignment>CONSERVATIVE</alignment>
@@ -621,8 +621,6 @@ Elements marked as hardcoded may have their values overridden by the game.
     </creaturetype>
     <creaturetype idname="CREATURE_GANGUNIT">
         <type_name>Police Gang Unit</type_name>
-        <weapon>WEAPON_MP5</weapon>
-        <weapon>WEAPON_PUMP_SHOTGUN</weapon>
         <weapon>WEAPON_9MM_HANDGUN</weapon>
         <armor>CLOTHING_POLICEARMOR</armor>
         <age>YOUNGADULT</age>
