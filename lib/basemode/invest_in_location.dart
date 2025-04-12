@@ -7,7 +7,6 @@ import 'package:lcs_new_age/location/location_type.dart';
 import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
 import 'package:lcs_new_age/politics/laws.dart';
-import 'package:lcs_new_age/utils/colors.dart';
 import 'package:lcs_new_age/utils/interface_options.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 
@@ -33,71 +32,72 @@ Future<void> investInLocation(Site loc) async {
     printLocation(loc);
     if (loc.upgradable) {
       if (!loc.compound.fortified) {
-        setColor(ledger.funds >= 2000 ? lightGray : darkGray);
+        String fortifyText = "Fortify the compound for a siege";
         if (loc.type == SiteType.bunker) {
-          mvaddstr(8, 1, "W - Repair the bunker fortifications (\$2000)");
+          fortifyText = "Repair the bunker fortifications";
         } else if (loc.type == SiteType.bombShelter) {
-          mvaddstr(8, 1, "W - Fortify the bomb shelter entrances (\$2000)");
-        } else {
-          mvaddstr(8, 1, "W - Fortify the compound for a siege (\$2000)");
+          fortifyText = "Fortify the bomb shelter entrances";
         }
+        addOptionText(8, 1, "W", "W - $fortifyText (\$2000)",
+            enabledWhen: ledger.funds >= 2000);
       }
       if (!loc.compound.cameras) {
-        setColor(ledger.funds >= 2000 ? lightGray : darkGray);
-        mvaddstr(
-            9, 1, "C - Place Security Cameras around the compound (\$2000)");
+        addOptionText(9, 1, "C",
+            "C - Place Security Cameras around the compound (\$2000)",
+            enabledWhen: ledger.funds >= 2000);
       }
       if (!loc.compound.boobyTraps) {
-        setColor(ledger.funds >= 3000 ? lightGray : darkGray);
-        mvaddstr(
-            10, 1, "T - Place Booby Traps throughout the compound (\$3000)");
+        addOptionText(10, 1, "T",
+            "T - Place Booby Traps throughout the compound (\$3000)",
+            enabledWhen: ledger.funds >= 3000);
       }
       if (!loc.compound.bollards) {
-        setColor(ledger.funds >= 3000 ? lightGray : darkGray);
-        mvaddstr(
-            11, 1, "B - Install heavy Bollards to keep vehicles away (\$3000)");
+        addOptionText(11, 1, "B",
+            "B - Install heavy Bollards to keep vehicles away (\$3000)",
+            enabledWhen: ledger.funds >= 3000);
       }
       if (!loc.compound.generator) {
-        setColor(ledger.funds >= 3000 ? lightGray : darkGray);
-        mvaddstr(12, 1,
-            "G - Install a backup diesel generator for the compound (\$3000)");
+        addOptionText(12, 1, "G",
+            "G - Install a backup diesel generator for the compound (\$3000)",
+            enabledWhen: ledger.funds >= 3000);
       }
       if (!loc.compound.aaGun && !loc.compound.solarPanels) {
-        setColor(ledger.funds >= solarCost ? lightGray : darkGray);
-        mvaddstr(13, 1,
-            "P - Install a battery and Solar Panel array on the roof (\$${solarCost ~/ 1000},000)");
+        addOptionText(13, 1, "P",
+            "P - Install a battery and Solar Panel array on the roof (\$${solarCost ~/ 1000},000)",
+            enabledWhen: ledger.funds >= solarCost);
         if (laws[Law.gunControl] == DeepAlignment.archConservative) {
-          setColor(ledger.funds >= 35000 ? lightGray : darkGray);
-          mvaddstr(14, 1,
-              "A - Install a perfectly legal Anti-Aircraft gun on the roof (\$35,000)");
+          addOptionText(14, 1, "A",
+              "A - Install a perfectly legal Anti-Aircraft gun on the roof (\$35,000)",
+              enabledWhen: ledger.funds >= 35000);
         } else {
-          setColor(ledger.funds >= 200000 ? lightGray : darkGray);
-          mvaddstr(14, 1,
-              "A - Install and conceal an illegal Anti-Aircraft gun on the roof (\$200,000)");
+          addOptionText(14, 1, "A",
+              "A - Install and conceal an illegal Anti-Aircraft gun on the roof (\$200,000)",
+              enabledWhen: ledger.funds >= 200000);
         }
       }
       if (!loc.compound.videoRoom) {
-        setColor(ledger.funds >= 2000 ? lightGray : darkGray);
-        mvaddstr(15, 1, "V - Prepare a room as a Video Studio (\$2000)");
+        addOptionText(
+            15, 1, "V", "V - Prepare a room as a Video Studio (\$2000)",
+            enabledWhen: ledger.funds >= 2000);
       }
       if (!loc.compound.hackerDen) {
-        setColor(ledger.funds >= 4000 ? lightGray : darkGray);
-        mvaddstr(16, 1, "H - Prepare a room as a Hacker Den (\$4000)");
+        addOptionText(16, 1, "H", "H - Prepare a room as a Hacker Den (\$4000)",
+            enabledWhen: ledger.funds >= 4000);
       }
       if (!loc.businessFront && !loc.discreet) {
-        setColor(ledger.funds >= 3000 ? lightGray : darkGray);
-        mvaddstr(17, 1,
-            "F - Set up a Business Front to ward off suspicion (\$3000)");
+        addOptionText(17, 1, "F",
+            "F - Set up a Business Front to ward off suspicion (\$3000)",
+            enabledWhen: ledger.funds >= 3000);
       }
     }
     if (loc.compound.generator) {
-      setColor(ledger.funds >= dieselCost ? lightGray : darkGray);
-      mvaddstr(18, 1,
-          "D - Stockpile 5 days of diesel for the generator (\$$dieselCost)");
+      addOptionText(18, 1, "D",
+          "D - Stockpile 5 days of diesel for the generator (\$$dieselCost)",
+          enabledWhen: ledger.funds >= dieselCost);
     }
-    setColor(ledger.funds >= 150 ? lightGray : darkGray);
-    mvaddstr(19, 1, "R - Stockpile 20 daily rations of food (\$150)");
-    mvaddstr(20, 1, "Enter - Done");
+    addOptionText(19, 1, "R", "R - Stockpile 20 daily rations of food (\$150)",
+        enabledWhen: ledger.funds >= 150);
+    addOptionText(20, 1, "Enter", "Enter - Done");
     int c = await getKey();
     if (isBackKey(c)) break;
     if (loc.upgradable) {

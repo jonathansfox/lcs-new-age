@@ -508,7 +508,6 @@ class BodyPart {
   Map<String, dynamic> toJson() => _$BodyPartToJson(this);
   String name;
   int size;
-  @JsonKey(defaultValue: 0)
   int naturalArmor;
   bool critical;
   bool weakSpot;

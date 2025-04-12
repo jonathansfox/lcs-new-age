@@ -120,7 +120,7 @@ Future<bool> loadGameMenu() async {
             inGameDate = "Error";
             founder = "Error - Crash Expected";
           }
-          mvaddstr(y, 0, "$key - ");
+          addOptionText(y, 0, key, "$key - ");
           mvaddstr(y, 4, inGameDate);
           mvaddstr(y, 20, founder);
           mvaddstr(y, 50, lastPlayedStr);
@@ -178,10 +178,10 @@ Future<bool> loadGame(SaveFile selectedSave) async {
     y++;
   }
   mvaddstrc(1, 1, lightGray, "Manage ${brokenText}Saved Game");
-  mvaddstr(y++, 1,
+  addOptionText(y++, 1, "L",
       "L - ${selectedSave.gameState != null ? "Load Game" : "Load Game (Crash Report Expected)"}");
-  mvaddstr(y++, 1, "D - Delete Save");
-  mvaddstr(y++, 1, "B - Backup Save");
+  addOptionText(y++, 1, "D", "D - Delete Save");
+  addOptionText(y++, 1, "B", "B - Backup Save");
   mvaddstr(++y, 1, "Press the key for the action you want to take.");
   while (true) {
     int c = await getKey();
@@ -214,8 +214,8 @@ Future<void> deleteSave(SaveFile selectedSave) async {
   erase();
   mvaddstrc(1, 1, lightGray, "Delete Saved Game");
   mvaddstr(3, 1, "Are you SURE you want to delete this saved game?");
-  mvaddstr(5, 1, "Y - Yes, delete the save.");
-  mvaddstr(6, 1, "N - No, do not delete the save.");
+  addOptionText(5, 1, "Y", "Y - Yes, delete the save.");
+  addOptionText(6, 1, "N", "N - No, do not delete the save.");
   while (true) {
     int c = await getKey();
     if (c == Key.y) {
@@ -263,17 +263,18 @@ Future<SaveFile?> importSave() async {
       await saveGameFile(saveFile);
       erase();
       mvaddstrc(1, 1, lightGray, "Save imported successfully.");
-      mvaddstr(3, 1, "Press any key to continue.");
+      addOptionText(3, 1, "Any Key", "Any Key - Continue");
       await getKey();
       return saveFile;
     } catch (e) {
       erase();
       mvaddstrc(1, 1, lightGray, "Error importing save: $e");
       if (e is Error) {
-        mvaddstr(3, 1, "Press R to Generate a Crash Report");
-        mvaddstr(4, 1, "Any other key to return to the title screen.");
+        addOptionText(3, 1, "R", "R - Generate a Crash Report");
+        addOptionText(4, 1, "Any Other Key",
+            "Any Other Key - Return to the title screen");
       } else {
-        mvaddstr(3, 1, "Press any key to return to the title screen.");
+        addOptionText(3, 1, "Any Key", "Any Key - Return to the title screen");
       }
       int c = await getKey();
       if (c == Key.r && e is Error) await errorScreen(e);

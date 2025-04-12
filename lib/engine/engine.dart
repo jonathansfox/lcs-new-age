@@ -39,11 +39,77 @@ void addparagraph(int y1, int x1, int y2, int x2, String s) {
   }
 }
 
+void addInlineOptionText(
+  String key,
+  String text, {
+  bool enabledWhen = true,
+  String baseColorKey = "w",
+  String highlightColorKey = "B",
+  String disabledColorKey = "K",
+}) {
+  key = key.toUpperCase();
+  String beforeKey = "";
+  String afterKey = "";
+  int keyIndex = text.toUpperCase().indexOf(key);
+  if (keyIndex == -1) {
+    key = text[0];
+    keyIndex = 0;
+  }
+  key = text.substring(keyIndex, keyIndex + key.length);
+  beforeKey = text.substring(0, keyIndex);
+  afterKey = text.substring(keyIndex + key.length);
+  if (enabledWhen) {
+    addstrx(
+        "&$baseColorKey$beforeKey&$highlightColorKey$key&$baseColorKey$afterKey");
+  } else {
+    addstrx("&$disabledColorKey$text");
+  }
+}
+
+void addOptionText(
+  int y,
+  int x,
+  String key,
+  String text, {
+  bool enabledWhen = true,
+  String baseColorKey = "w",
+  String highlightColorKey = "B",
+  String disabledColorKey = "K",
+}) {
+  move(y, x);
+  addInlineOptionText(key, text,
+      enabledWhen: enabledWhen,
+      baseColorKey: baseColorKey,
+      highlightColorKey: highlightColorKey,
+      disabledColorKey: disabledColorKey);
+}
+
+void addCenteredOptionText(
+  int y,
+  String key,
+  String text, {
+  bool enabledWhen = true,
+  String baseColorKey = "w",
+  String highlightColorKey = "B",
+  String disabledColorKey = "K",
+}) {
+  int x = centerString(text);
+  move(y, x);
+  addInlineOptionText(key, text,
+      enabledWhen: enabledWhen,
+      baseColorKey: baseColorKey,
+      highlightColorKey: highlightColorKey,
+      disabledColorKey: disabledColorKey);
+}
+
 void mvaddstr(int y, int x, String s) => console.mvaddstr(y, x, s);
 void mvaddstrc(int y, int x, Color fg, String s) {
   setColor(fg);
   mvaddstr(y, x, s);
 }
+
+void addstrx(String s) => console.addstrx(s);
+void mvaddstrx(int y, int x, String s) => console.mvaddstrx(y, x, s);
 
 void mvaddstrCenter(int y, String s, {int x = 39}) =>
     mvaddstr(y, centerString(s, x: x), s);

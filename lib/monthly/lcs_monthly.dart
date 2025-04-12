@@ -252,8 +252,8 @@ Future<void> fundReport(bool disbanding) async {
 
     setColor(lightGray);
     if (numpages > 1) {
-      mvaddstr(24, 0, "Press Enter to reflect on the report.  ");
-      addstr(pageStr);
+      addOptionText(24, 0, "Enter", "Enter - Reflect on the report.  ");
+      addstrx(pageStrX);
 
       while (true) {
         int c = await getKey();
@@ -464,6 +464,9 @@ Future<void> printNews(LootType li, Iterable<Creature> publishers) async {
     issues.add(View.corporateCulture);
     potency = reception(50);
     offendedCorps = true;
+    for (Creature p in publishers) {
+      p.offendedCorps++;
+    }
     mvaddstr(console.y + 2, 1,
         "Be on guard for retaliation.  This guy is not the forgiving type...");
   } else if (li.idName == "LOOT_CEOLOVELETTERS") {
@@ -501,6 +504,9 @@ Future<void> printNews(LootType li, Iterable<Creature> publishers) async {
     issues.add(View.corporateCulture);
     potency = reception(50);
     offendedCorps = true;
+    for (Creature p in publishers) {
+      p.offendedCorps++;
+    }
     mvaddstr(console.y + 2, 1,
         "Be on guard for retaliation.  This guy is not the forgiving type...");
     for (Creature c in publishers) {
@@ -519,6 +525,9 @@ Future<void> printNews(LootType li, Iterable<Creature> publishers) async {
     issues.add(View.corporateCulture);
     potency = reception(50);
     offendedCorps = true;
+    for (Creature p in publishers) {
+      p.offendedCorps++;
+    }
     mvaddstr(console.y + 2, 1,
         "Be on guard for retaliation.  This guy is not the forgiving type...");
     for (Creature c in publishers) {
@@ -550,6 +559,9 @@ Future<void> printNews(LootType li, Iterable<Creature> publishers) async {
     issues.add(View.corporateCulture);
     potency = reception(50);
     offendedCorps = true;
+    for (Creature p in publishers) {
+      p.offendedCorps++;
+    }
     mvaddstr(console.y + 2, 1,
         "Be on guard for retaliation.  These guys don't like to lose...");
     for (Creature c in publishers) {
@@ -620,6 +632,7 @@ Future<void> printNews(LootType li, Iterable<Creature> publishers) async {
     for (Creature c in publishers) {
       addjuice(c, 50, 1000);
       criminalize(c, Crime.treason);
+      c.offendedCIA++;
     }
   } else if (li.idName == "LOOT_POLICERECORDS") {
     mvaddstr(
@@ -742,6 +755,7 @@ Future<void> printNews(LootType li, Iterable<Creature> publishers) async {
         "This is bound to get the Conservative masses a little riled up...");
     for (Creature c in publishers) {
       addjuice(c, 20, 1000);
+      c.offendedAngryRuralMobs++;
     }
   } else if (li.idName == "LOOT_AMRADIOFILES") {
     mvaddstr(
@@ -765,6 +779,7 @@ Future<void> printNews(LootType li, Iterable<Creature> publishers) async {
         "This is bound to get the Conservative masses a little riled up...");
     for (Creature c in publishers) {
       addjuice(c, 20, 1000);
+      c.offendedAngryRuralMobs++;
     }
   }
 

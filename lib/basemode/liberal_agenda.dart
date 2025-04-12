@@ -32,15 +32,18 @@ Future<bool> liberalAgenda([AgendaVibe vibe = AgendaVibe.ongoing]) async {
     if (vibe == AgendaVibe.liberalVictory) {
       mvaddstrc(0, 0, lightGreen, "The Triumph of the Liberal Agenda");
       mvaddstr(23, 0, "The country has achieved Elite Liberal status!");
-      mvaddstr(24, 0, "Press L to view the high score list.");
+      addOptionText(24, 0, "L", "L - View the high score list");
     } else if (vibe == AgendaVibe.conservativeVictory) {
       mvaddstrc(0, 0, red, "The Abject Failure of the Liberal Agenda");
       mvaddstr(23, 0, "The country has been Reaganified.");
-      mvaddstr(24, 0, "Press L to view the high score list.");
+      addOptionText(24, 0, "L", "L - View the high score list");
     } else {
       mvaddstrc(0, 0, white, "The Status of the Liberal Agenda");
-      mvaddstr(24, 0,
-          "Press D to disband and wait. $pageStrShort. Any other key to exit.");
+      addOptionText(24, 0, "D", "D - Disband and Wait",
+          baseColorKey: ColorKey.white);
+      mvaddstrx(24, 27, pageStrShortX);
+      addOptionText(24, 50, "Any other key", "Any Other Key - Exit",
+          baseColorKey: ColorKey.white);
     }
     _agendaPage(page, vibe);
     if (vibe == AgendaVibe.ongoing) {

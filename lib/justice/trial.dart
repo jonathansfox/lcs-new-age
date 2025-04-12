@@ -145,9 +145,9 @@ Future<void> trial(Creature g) async {
   mvaddstrc(y + 2, 1, lightGray, "How will you conduct the defense?");
 
   y += 4;
-  mvaddstr(y++, 1, "A - Use a court-appointed attorney.");
-  mvaddstr(y++, 1, "B - Defend self!");
-  mvaddstr(y++, 1, "C - Plead guilty.");
+  addOptionText(y++, 1, "A", "A - Use a court-appointed attorney.");
+  addOptionText(y++, 1, "B", "B - Defend self!");
+  addOptionText(y++, 1, "C", "C - Plead guilty.");
   mvaddstrc(y++, 1, ledger.funds < 5000 ? darkGray : lightGray,
       "D - Pay \$5000 to hire Elite Liberal Attorney ${uniqueCreatures.aceLiberalAttorney.name}.");
   if (sleeperlawyer != null) {

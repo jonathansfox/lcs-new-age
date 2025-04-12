@@ -483,7 +483,12 @@ Future<void> characterCreationQuestions(Creature founder, bool choose) async {
     for (int i = 0; i < question.answers.length; i++) {
       if (!choose && i != highlight) continue;
       _Option option = question.answers[i];
-      mvaddstrc(y++, 0, lightGray, "${letterAPlus(i)} - ${option.option}");
+      String letter = letterAPlus(i);
+      if (choose) {
+        addOptionText(y++, 0, letter, "$letter - ${option.option}");
+      } else {
+        mvaddstrc(y++, 4, lightGray, option.option);
+      }
       mvaddstrc(y++, 4, darkGray, option.description);
     }
 

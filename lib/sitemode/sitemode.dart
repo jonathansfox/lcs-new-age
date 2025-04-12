@@ -417,7 +417,7 @@ Future<void> _siteModeAux() async {
       }
       squad.clear();
 
-      mvaddstrc(9, 1, lightGray, "C - Reflect on your Conservative ineptitude");
+      addOptionText(9, 1, "C", "C - Reflect on your Conservative ineptitude");
     }
 
     //PRINT SITE MAP
@@ -437,6 +437,9 @@ Future<void> _siteModeAux() async {
             p.prisoner!.kidnapped = true;
             if (p.type.preciousToAngryRuralMobs) offendedAngryRuralMobs = true;
             havehostage = true;
+            for (Creature p in squad) {
+              p.offendedAngryRuralMobs++;
+            }
           }
         }
       }
@@ -1667,7 +1670,8 @@ Future<void> _resolveSite() async {
       } else {
         activeSite!.closed = siteCrime ~/ 10; // Close down site
       }
-    } else if (activeSite!.controller == SiteController.lcs) {
+    } else if (activeSite!.controller == SiteController.lcs &&
+        !activeSite!.siege.underAttack) {
       activeSite!.heat += siteCrime; // Increase heat
     }
 

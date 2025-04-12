@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:collection/collection.dart';
 import 'package:lcs_new_age/basemode/activities.dart';
 import 'package:lcs_new_age/basemode/help_system.dart';
@@ -35,7 +33,7 @@ Future<void> activateRegulars() async {
   while (true) {
     erase();
     printFunds();
-    mvaddstr(0, 0, "Activate Uninvolved Liberals");
+    mvaddstr(0, 0, "Assign Tasks to Liberals");
     makeDelimiter(y: 1);
     mvaddstr(1, 4, "CODE NAME");
     mvaddstr(1, 24, "SKILL");
@@ -45,20 +43,22 @@ Future<void> activateRegulars() async {
     int y = 2;
     for (int p = page * 19; p < tempPool.length && p < (page + 1) * 19; p++) {
       Creature c = tempPool[p];
-      mvaddstrc(y, 0, lightGray, "${letterAPlus(y - 2)} - ${c.name}");
+      String key = letterAPlus(y - 2);
+      addOptionText(y, 0, key, "$key - ${c.name}");
       printSkillSummary(y, 24, c, showWeaponSkill: false);
       printHealthStat(y, 32, c, small: true);
       mvaddstrc(
           y,
           41,
           c.site?.isPartOfTheJusticeSystem == true ? yellow : lightGray,
-          c.location?.getName(short: true) ?? "In Hiding");
+          c.location?.getName(short: true, includeCity: true) ?? "In Hiding");
       mvaddstrc(y, 57, c.activity.color, c.activity.description);
       y++;
     }
     mvaddstrc(22, 0, lightGray, "Press a Letter to Assign an Activity.");
-    mvaddstr(23, 0, "$pageStr. T to sort people.");
-    mvaddstr(24, 0, "Press Z to assign simple tasks in bulk.");
+    mvaddstrx(23, 0, "$pageStrX.  ");
+    addInlineOptionText("T", "T - Sorting options");
+    addOptionText(24, 0, "Z", "Z - Assign simple tasks in bulk");
     int c = await getKey();
     if (isPageUp(c) && page > 0) page--;
     if (isPageDown(c) && (page + 1) * 19 < tempPool.length) page++;
@@ -154,10 +154,10 @@ Future<void> _activateOne(Creature c) async {
     _activity(ActivityType.bury, "Z - Corpse Disposal", state != 0,
         grayOut: !canDisposeCorpses);
     setColor(activeSafehouse?.siege.underSiege ?? false ? darkGray : lightGray);
-    mvaddstr(_y++, 1, "G - Equip This Liberal");
+    addOptionText(_y++, 1, "g", "G - Equip This Liberal");
     _activity(ActivityType.none, "X - Nothing for Now", state != 0);
-    mvaddstrc(19, 40, lightGray, "? - About the Selected Activity");
-    mvaddstrc(20, 40, lightGray, "Enter - Confirm Selection");
+    addOptionText(19, 40, "?", "? - About the Selected Activity");
+    addOptionText(20, 40, "Enter", "Enter - Confirm Selection");
     if (state == Key.a) {
       _activismSubmenu(c);
     } else if (state == Key.b) {
@@ -239,25 +239,21 @@ int _y = 10;
 ActivityType _highlightedActivity = ActivityType.none;
 void _category(
     List<ActivityType> category, String desc, bool highlight, bool ignore) {
-  if (highlight) {
-    setColor(lightBlue);
-  } else {
-    setColor((!ignore && category.contains(_highlightedActivity))
-        ? lightBlue
-        : lightGray);
+  String colorKey = "w";
+  if (highlight || (!ignore && category.contains(_highlightedActivity))) {
+    colorKey = "C";
   }
-  mvaddstr(_y++, 1, desc);
+  addOptionText(_y++, 1, desc[0], desc, baseColorKey: colorKey);
 }
 
 void _activity(ActivityType activity, String desc, bool ignore,
     {int x = 1, bool grayOut = false}) {
-  if (grayOut) {
-    setColor(darkGray);
-  } else {
-    setColor(
-        !ignore && activity == _highlightedActivity ? lightBlue : lightGray);
+  String colorKey = "w";
+  if (!ignore && activity == _highlightedActivity) {
+    colorKey = "C";
   }
-  mvaddstr(_y++, x, desc);
+  addOptionText(_y++, x, desc[0], desc,
+      baseColorKey: colorKey, enabledWhen: !grayOut);
 }
 
 void _subActivity(ActivityType activity, String desc, {bool greyOut = false}) {
@@ -510,9 +506,10 @@ Future<void> _selectClothingToMake(Creature cr) async {
     lineBuilder: (y, key, index) {
       int difficulty = minDifficulty(craftable[index]);
       bool selected = selectedClothingIndex == index;
-      Color color = lightGray;
-      if (selected) color = white;
-      mvaddstrc(y, 0, color, "$key - ${craftable[index].name}");
+      String color = ColorKey.lightGray;
+      if (selected) color = ColorKey.white;
+      addOptionText(y, 0, key, "$key - ${craftable[index].name}",
+          baseColorKey: color);
       addDifficultyText(y, 37, difficulty + 4);
       String price =
           "\$${craftable[index].makePrice + craftable[index].allowedArmor.first.makePrice}";
@@ -639,8 +636,14 @@ void _clothingDetailFooter(
   addDifficultyText(console.y, console.x, difficulty);
 
   setColor(white);
-  mvaddstrCenter(
-      24, "ENTER - Confirm Selection   ESC - Cancel Making Clothing");
+  String enterText = "Enter - Confirm Selection";
+  String escapeText = "Escape - Cancel Making Clothing";
+  String fullText = "$enterText   $escapeText";
+  int startX = centerString(fullText);
+  move(23, startX);
+  addInlineOptionText("Enter", enterText);
+  addstr("  ");
+  addInlineOptionText("Escape", escapeText);
 }
 
 Future<void> _selectSkillForEducation(
@@ -800,12 +803,12 @@ Future<void> _activateBulk() async {
     setColor(lightGray);
     printFunds();
 
-    mvaddstr(0, 0, "Activate Uninvolved Liberals");
+    mvaddstr(0, 0, "Assign Tasks in Bulk");
     addHeader({4: "CODE NAME", 25: "CURRENT ACTIVITY", 51: "BULK ACTIVITY"});
 
     void addOption(int i, String name) {
-      mvaddstrc(i + 1, 51, selectedactivity == i - 1 ? white : lightGray,
-          "$i - $name");
+      addOptionText(i + 1, 51, "$i", "$i - $name",
+          baseColorKey: selectedactivity == i - 1 ? "W" : "w");
     }
 
     addOption(1, "Liberal Activism");
@@ -819,7 +822,8 @@ Future<void> _activateBulk() async {
         p < temppool.length && p < page * 19 + 19;
         p++, y++) {
       Creature tempp = temppool[p];
-      mvaddstrc(y, 0, lightGray, "${letterAPlus(y - 2)} - ${tempp.name}");
+      String letter = letterAPlus(p - page * 19);
+      addOptionText(y, 0, letter, "$letter - ${tempp.name}");
 
       move(y, 25);
       setColor(tempp.activity.type.color);
@@ -828,7 +832,7 @@ Future<void> _activateBulk() async {
 
     mvaddstrc(22, 0, lightGray,
         "Press a Letter to Assign an Activity.  Press a Number to select an Activity.");
-    mvaddstr(23, 0, pageStr);
+    mvaddstrx(23, 0, pageStrX);
 
     int c = await getKey();
 
@@ -927,7 +931,8 @@ Future<void> _selectTendHostage(Creature cr) async {
       mvaddstrc(y, 0, lightGray, "$key - ${h.name}");
       mvaddstr(y, 25, "${h.rawSkill.values.reduce((a, b) => a + b)}");
       printHealthStat(y, 33, h, small: true);
-      mvaddstrc(y, 45, lightGray, h.location?.name ?? "Missing");
+      mvaddstrc(y, 45, lightGray,
+          h.location?.getName(short: true, includeCity: true) ?? "Missing");
       mvaddstr(y, 60,
           "${h.daysSinceJoined} Day${h.daysSinceJoined == 1 ? "" : "s"}");
     },

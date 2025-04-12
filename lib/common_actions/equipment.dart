@@ -43,8 +43,7 @@ Future<void> equip(List<Item>? loot) async {
     int x = 1, y = 10;
     for (int l = page * 18; l < loot.length && l < page * 18 + 18; l++) {
       String let = letterAPlus(l - page * 18, capitalize: true);
-      mvaddstrc(y, x, lightGray, "$let - ");
-      loot[l].printEquipTitle();
+      addOptionText(y, x, let, "$let - ${loot[l].equipTitle()}");
       if (loot[l].stackSize > 1 && !loot[l].type.isMoney) {
         addstrc(lightGray, " x${loot[l].stackSize}");
       }
@@ -68,20 +67,23 @@ Future<void> equip(List<Item>? loot) async {
     mvaddstrc(19, 1, lightGray, "Press a letter to equip a Liberal item");
     mvaddstr(20, 1,
         "Press a number to drop that Squad member's Conservative weapon");
-    mvaddstr(21, 1, "S - Liberally Strip a Squad member");
-    mvaddstr(22, 1, "Cursors - Increase or decrease ammo allocation");
+    addOptionText(21, 1, "S", "S - Liberally Strip a Squad member");
+    addOptionText(
+        22, 1, "Cursors", "Cursors - Increase or decrease ammo allocation");
 
-    if (site != null && site.controller == SiteController.lcs) {
+    if (site != null &&
+        site.controller == SiteController.lcs &&
+        loot != site.loot) {
       setColorConditional(site.loot.isNotEmpty);
-      mvaddstr(23, 1, "Y - Get things from ");
+      addOptionText(23, 1, "Y", "Y - Get things from ");
       addstr(site.getName(short: true));
 
       setColorConditional(loot.isNotEmpty);
-      mvaddstr(23, 40, "Z - Stash things at ");
+      addOptionText(23, 40, "Z", "Z - Stash things at ");
       addstr(site.getName(short: true));
     }
 
-    mvaddstrc(24, 1, lightGray, "Enter - Done");
+    addOptionText(24, 1, "Enter", "Enter - Done");
 
     int c = await getKey();
 
@@ -239,7 +241,9 @@ Future<void> equip(List<Item>? loot) async {
       return;
     }
 
-    if (site != null && site.controller == SiteController.lcs) {
+    if (site != null &&
+        site.controller == SiteController.lcs &&
+        loot != site.loot) {
       if (c == Key.y && site.loot.isNotEmpty) {
         await moveLoot(loot, site.loot);
       }
@@ -318,7 +322,7 @@ Future<void> moveLoot(List<Item> dest, List<Item> source) async {
     }
 
     mvaddstrc(23, 1, lightGray, "Press a letter to select an item.");
-    mvaddstr(24, 1, "Enter - Done");
+    addOptionText(24, 1, "Enter", "Enter - Done");
 
     int c = await getKey();
 

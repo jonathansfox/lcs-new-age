@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 const Color black = Color(0xFF111111);
 const Color darkGray = Color(0xFF555555);
-const Color midGray = Color(0xFF999999); // not used
+const Color midGray = Color(0xFF999999);
 const Color lightGray = Color(0xFFC0C0C0);
 const Color white = Color(0xFFFFFFFF);
 const Color brown = Color(0xFF613915); // not used
 const Color darkRed = Color(0xFF661008);
 const Color red = Color(0xFFFF1B13);
-const Color orange = Color(0xFFFFA000); // not used
+const Color orange = Color(0xFFFFA000);
 const Color yellow = Color(0xFFEEFF00);
 const Color halfYellow = Color(0xFF808000); // only used in movies
 const Color green = Color(0xFF028121);
@@ -18,6 +18,58 @@ const Color blue = Color(0xFF16B8FF);
 const Color lightBlue = Color(0xFF73D7EE);
 const Color purple = Color(0xFFDD37E6);
 const Color pink = Color(0xFFFA98FF); // not used
+
+const Color transparent = Color(0x00000000);
+
+// Reversed colorMap
+class ColorKey {
+  static const String green = 'g';
+  static const String lightGreen = 'G';
+  static const String darkBlue = 'b';
+  static const String blue = 'B';
+  static const String lightBlue = 'C';
+  static const String darkCyan = 'c';
+  static const String cyan = 'C';
+  static const String darkRed = 'r';
+  static const String red = 'R';
+  static const String brown = 'o';
+  static const String orange = 'O';
+  static const String halfYellow = 'y';
+  static const String yellow = 'Y';
+  static const String darkMagenta = 'p';
+  static const String magenta = 'p';
+  static const String purple = 'p';
+  static const String pink = 'P';
+  static const String black = 'k';
+  static const String darkGray = 'K';
+  static const String midGray = 'm';
+  static const String lightGray = 'w';
+  static const String white = 'W';
+  static const String transparent = 'x';
+}
+
+const colorMap = {
+  ColorKey.green: green,
+  ColorKey.lightGreen: lightGreen,
+  ColorKey.darkBlue: darkBlue,
+  ColorKey.blue: blue,
+  ColorKey.darkCyan: blue,
+  ColorKey.cyan: lightBlue,
+  ColorKey.darkRed: darkRed,
+  ColorKey.red: red,
+  ColorKey.brown: brown,
+  ColorKey.orange: orange,
+  ColorKey.halfYellow: halfYellow,
+  ColorKey.yellow: yellow,
+  ColorKey.purple: purple,
+  ColorKey.pink: pink,
+  ColorKey.black: black,
+  ColorKey.darkGray: darkGray,
+  ColorKey.midGray: midGray,
+  ColorKey.lightGray: lightGray,
+  ColorKey.white: white,
+  ColorKey.transparent: transparent,
+};
 
 class Skin {
   static const Color a = Color(0xFF3f2c28);

@@ -1119,8 +1119,41 @@ Future<void> specialCableBroadcastStudio() async {
 }
 
 Future<void> specialDisplayCase() async {
-  bool smash =
-      await sitemodePrompt("You see a display case.", "Smash it? (Yes or No)");
+  List<String> items;
+  switch (activeSite?.type) {
+    case SiteType.barAndGrill:
+      items = [
+        "some neo-Nazi memorabilia",
+        "a Confederate flag",
+        "a portrait of Ronald Reagan",
+        "a photo of a lynching",
+        "white supremacist literature",
+        "a portrait of Strom Thurmond",
+        "some old records with racist lyrics",
+      ];
+    case SiteType.courthouse:
+      items = [
+        "a portrait of Ronald Reagan",
+        "a portrait of some old white guy",
+        "an old police badge",
+        "a copy of the US Constitution",
+        "an old photo of the courthouse",
+        "an old photo of a hanging",
+        "an award from a Conservative group",
+        "a bust of some old white guy",
+      ];
+    default:
+      items = [
+        "some Conservative memoribilia",
+        "a Confederate flag",
+        "a portrait of some old white guy",
+        "some random pointless shit",
+      ];
+  }
+  String featuring = items.randomSeeded(
+      locx + locy * 7 + locz + sites.indexOf(activeSite ?? sites[0]));
+  bool smash = await sitemodePrompt(
+      "You see a display case containing $featuring.", "Smash it? (Yes or No)");
   if (!smash) return;
 
   await _vandalizeTile();

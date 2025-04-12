@@ -176,18 +176,18 @@ class Clothing extends Item {
     if (quality > type.qualityLevels) {
       et = "Tattered Rags";
     }
-    et += shortArmorDetail();
+    et += "&C${shortArmorDetail()}&x";
     if ((quality > 1 && quality <= type.qualityLevels) || bloody || damaged) {
       if (quality > 9) {
-        et += "X";
+        et += "&KX&x";
       } else if (quality > 1) {
-        et += quality.toString();
+        et += "&Y$quality&x";
       }
       if (bloody) {
-        et += "B";
+        et += "&RB&x";
       }
       if (damaged) {
-        et += "D";
+        et += "&OD&x";
       }
     }
     return et;

@@ -38,7 +38,7 @@ Future<void> setVehicles() async {
         "       Vehicles in red have been selected by both this squad and another.");
     mvaddstr(23, 1,
         "       These cars may be used by both squads but not on the same day.");
-    mvaddstr(24, 1, "Enter - Done");
+    addOptionText(24, 1, "Enter", "Enter - Done");
 
     String rawKey = await getKeyCaseSensitive();
     int input = rawKey.codePoint;
@@ -100,11 +100,9 @@ void printCars(int page) {
       setColor(lightGray);
     }
 
-    String str =
+    String key =
         String.fromCharCode('A'.codePoint + (l - (page * carsPerPage)));
-    //str[1] = '\x0';
-    str += " - ${vehiclePool[l].fullName()}";
-    mvaddstr(y, x, str);
+    addOptionText(y, x, key, "$key - ${vehiclePool[l].fullName()}");
     x += 26;
     if (x > 53) {
       x = 1;

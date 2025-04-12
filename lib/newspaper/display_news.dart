@@ -429,6 +429,9 @@ Future<void> displayStory(
             if (did(Drama.unlockedDoor)) {
               addDrama("unlawful entry", "picked locks");
             }
+            if (did(Drama.musicalRampage)) {
+              addDrama("a musical rampage", "performed an impromptu concert");
+            }
 
             story += "."
                 "&r";

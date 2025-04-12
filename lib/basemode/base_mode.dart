@@ -156,6 +156,8 @@ Future<bool> baseMode() async {
         await updateTheSlogan();
       case Key.num0:
         activeSquadMember = null;
+      //case Key.m:
+      //await mediaOverview();
       case Key.x:
         await autoSaveGame();
         endGame();
@@ -182,9 +184,6 @@ void baseModeSquadSafehouseDisplay(Site? loc) {
   Site? aSafehouse = activeSafehouse;
   if (aSafehouse != null) {
     printLocation(aSafehouse);
-    if ((aSafehouse.upgradable) && !aSafehouse.siege.underSiege) {
-      mvaddstrc(8, 1, lightGray, "I - Invest in this location");
-    }
   } else if (activeSquad != null) {
     printParty();
   } else {
@@ -192,16 +191,6 @@ void baseModeSquadSafehouseDisplay(Site? loc) {
   }
 
   if (loc == null) return;
-  if (loc.siege.underSiege) {
-    if (loc.siege.underAttack) {
-      mvaddstrc(8, 1, red, "Under Attack");
-    } else {
-      mvaddstrc(8, 1, yellow, "Under Siege");
-      if (loc.compound.rations <= 0) {
-        addstr(" (No Food)");
-      }
-    }
-  }
 
   if (loc.hasFlag) {
     printFlag();
@@ -325,86 +314,100 @@ void locHeader([Site? loc]) {
 
 void baseModeOptionsDisplay(Site? loc) {
   int squadSize = activeSquad?.members.length ?? 0;
-  bool sieged = loc?.siege.underSiege ?? false;
+  Site? site = loc;
+  bool sieged = site?.siege.underSiege ?? false;
   int safehouseCount = sites.where((l) => l.isSafehouse).length;
   bool cannotWait = pool.any((p) => p.site?.siege.underAttack ?? false);
 
   mvaddstrc(18, 10, lightGray, "=== ACTIVISM ===");
   mvaddstr(18, 51, "=== PLANNING ===");
-  setColorConditional(squadSize > 0 && !(loc?.siege.underAttack ?? false));
-  mvaddstr(19, 40, "E - Equip Squad");
-  setColorConditional(vehiclePool.isNotEmpty && squadSize > 0);
-  mvaddstr(19, 60, "V - Vehicles");
-  setColorConditional(pool.isNotEmpty);
-  mvaddstr(20, 40, "R - Review Assets and Form Squads");
-  setColorConditional(squadSize > 1);
-  if (squadSize > 1 && !sieged) mvaddstr(8, 31, "O - Reorder");
+  addOptionText(19, 40, "e", "E - Equip Squad", enabledWhen: squadSize > 0);
+  addOptionText(19, 60, "v", "V - Vehicles",
+      enabledWhen: vehiclePool.isNotEmpty && squadSize > 0);
+  addOptionText(20, 40, "r", "R - Review Assets and Form Squads",
+      enabledWhen: pool.isNotEmpty);
+  //eraseLine(8);
+  Site? aSafehouse = activeSafehouse;
+  if (sieged && site != null) {
+    if (site.siege.underAttack) {
+      mvaddstrc(8, 1, red, "Safehouse Under Attack");
+    } else {
+      mvaddstrc(8, 1, yellow, "Safehouse Under Siege");
+      if (site.compound.rations <= 0) {
+        addstr(" (No Food)");
+      }
+    }
+  } else if (aSafehouse != null) {
+    if ((aSafehouse.upgradable) && !aSafehouse.siege.underSiege) {
+      addOptionText(8, 1, "i", "I - Invest in this location");
+    } else if (!aSafehouse.upgradable) {
+      mvaddstrc(8, 1, midGray, "This location cannot be upgraded");
+    }
+  }
+  if (squadSize > 1 && !sieged) addOptionText(8, 31, "o", "O - Reorder");
   if (squadSize > 0 && !sieged) {
     // don't cover up info about siege with irrelevant squad name of a squad
     // that will be disbanded during the siege anyway
     mvaddstrc(8, 1, lightGray, activeSquad?.name ?? "");
   }
-
-  setColorConditional(
-      squads.length > 1 || (activeSquad == null && squads.isNotEmpty));
-  mvaddstr(8, 45, "N - Next Squad");
-  setColorConditional(safehouseCount > 0);
-  mvaddstr(8, 62, "Z - Next Location");
-  mvaddstrc(21, 40, lightGray, "L - The Status of the Liberal Agenda");
-  setColorConditional(pool.where((p) => p.isActiveLiberal).any(
-      (p) => p.squad == null || p.squad?.activity.type == ActivityType.none));
-  mvaddstr(21, 1, "A - Activate Liberals");
-  setColorConditional(pool.any((p) => p.sleeperAgent));
-  mvaddstr(21, 25, "B - Sleepers");
-  setColorConditional(
-      squadSize > 0 && activeSquad?.activity.type != ActivityType.none);
-  mvaddstr(20, 1, "C - Cancel Departure");
+  addOptionText(8, 45, "n", "N - Next Squad",
+      enabledWhen:
+          squads.length > 1 || (activeSquad == null && squads.isNotEmpty));
+  addOptionText(8, 62, "z", "Z - Next Location",
+      enabledWhen: safehouseCount > 0);
+  addOptionText(21, 40, "l", "L - The Status of the Liberal Agenda");
+  addOptionText(21, 1, "a", "A - Assign Tasks",
+      enabledWhen: pool.any((p) =>
+          p.isActiveLiberal &&
+          (p.squad == null || p.squad?.activity.type == ActivityType.none)));
+  addOptionText(21, 20, "b", "B - Sleeper Agents",
+      enabledWhen: pool.any((p) => p.sleeperAgent));
+  addOptionText(20, 1, "c", "C - Cancel Departure",
+      enabledWhen:
+          squadSize > 0 && activeSquad?.activity.type != ActivityType.none);
 
   if (sieged) {
-    setColorConditional(
-        squadSize > 0 || pool.any((p) => p.site?.siege.underAttack ?? false));
-    mvaddstr(19, 1, "F - Escape/Engage");
-    mvaddstrc(19, 23, lightGray, "G - Give Up");
+    addOptionText(19, 1, "f", "F - Fight/Escape",
+        enabledWhen: squadSize > 0 ||
+            pool.any((p) => p.site?.siege.underAttack ?? false));
+    addOptionText(19, 23, "g", "G - Give Up");
   } else {
-    setColorConditional(squadSize > 0);
-    mvaddstr(19, 1, "F - Go Forth to Stop Evil");
+    addOptionText(19, 1, "f", "F - Go Forth to Stop Evil",
+        enabledWhen: squadSize > 0);
   }
 
-  setColor(lightGray);
   if (cannotWait) {
-    mvaddstr(23, 1, "Cannot Wait until Siege Resolved");
+    mvaddstrc(23, 1, red, "Cannot Wait until Siege Resolved");
   } else {
     if (sieged) {
-      mvaddstr(23, 1, "W - Wait out the siege");
+      addOptionText(23, 1, "w", "W - Wait out the siege");
     } else if (squads.any((s) => s.activity.type == ActivityType.visit)) {
-      mvaddstrc(23, 1, lightGreen, "W - Carry out your plans");
+      addOptionText(23, 1, "w", "W - Carry out your plans", baseColorKey: "G");
     } else {
-      mvaddstr(23, 1, "W - Wait a day");
+      addOptionText(23, 1, "w", "W - Wait a day");
     }
     if (date.add(const Duration(days: 1)).month != month) {
-      addstr(" (next month)");
+      addstrc(lightGray, " (next month)");
     }
   }
-  mvaddstrc(22, 40, lightGray, "S - Free Speech: the Liberal Slogan");
-  mvaddstrc(23, 40, lightGray, "X - Live to fight evil another day");
+  addOptionText(22, 40, "m", "M - Media Overview & Strategy",
+      enabledWhen: false);
+  addOptionText(23, 40, "x", "X - Exit to the Title Screen");
 
   if (loc?.hasFlag ?? false) {
-    setColorConditional(sieged, ifTrue: lightGreen, ifFalse: lightGray);
-    mvaddstr(22, 1, "P - Protest: Burn the flag");
+    addOptionText(22, 1, "p", "P - Protest: Burn the flag",
+        baseColorKey: sieged ? "G" : "w");
   } else {
-    setColorConditional(ledger.funds >= 20 &&
-        !sieged &&
-        (activeSafehouse != null || activeSquad != null));
-    mvaddstr(22, 1, "P - Pride: fly a flag here (\$20)");
+    addOptionText(22, 1, "p", "P - Pride: Fly a flag here (\$20)",
+        enabledWhen: (activeSafehouse != null || activeSquad != null) &&
+            ledger.funds >= 20 &&
+            !sieged);
   }
 
   setColor(lightGray);
-  int y = (loc?.hasFlag ?? false) ? 17 : 13;
-  if (loc?.hasFlag ?? false) {
-    mvaddstrCenter(y++, slogan);
-  } else {
-    mvaddstrCenter(y++, slogan);
-  }
+  int y = (loc?.hasFlag ?? false) ? 16 : 13;
+  mvaddstrCenter(y++, slogan);
+  addCenteredOptionText(y++, "s", "(S - Change the Slogan)", baseColorKey: "m");
   if (loc != null) {
     printSafehouseSecurityBox(loc);
   }
@@ -484,6 +487,7 @@ Future<void> howTimesHaveChanged(int daysWithoutVision) async {
 enum CantSeeReason { hospital, dating, hiding, other, prison, disbanded, none }
 
 Future<void> updateTheSlogan() async {
+  eraseLine(16);
   mvaddstrc(16, 0, lightGray, "What is your new slogan?");
   eraseLine(17);
   slogan = await enterName(17, 0, "We need a slogan!");

@@ -213,10 +213,9 @@ Future<void> tendHostage(InterrogationSession intr) async {
         "No Hallucinogenic Drugs",
         cost: "(\$50)");
     setColor(techniques[Technique.kill] ?? false ? red : lightGray);
-    move(y, 0);
+    addOptionText(y, 0, "K", "K - Kill the Hostage");
     y += 2;
-    addstr("K - Kill the Hostage");
-    mvaddstrc(y++, 0, lightGray, "Press Enter to Confirm the Plan");
+    addOptionText(y++, 0, "Enter", "Enter - Confirm the Plan");
 
     showInterrogationSidebar(intr, lead);
 

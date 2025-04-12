@@ -89,6 +89,35 @@ class Console {
     addstr(s);
   }
 
+  void addstrx(String s) {
+    const Color dummy = Color(0x00000000);
+    bool validColorKey(int i) {
+      return i < s.length - 1 && colorMap.containsKey(s[i + 1]);
+    }
+
+    Color oldBackground = currentBackground;
+    Color oldForeground = currentForeground;
+    for (var i = 0; i < s.length; i++) {
+      if (s[i] == '&' && validColorKey(i)) {
+        Color newColor = colorMap[s[++i]]!;
+        if (newColor == dummy) newColor = oldForeground;
+        setColor(newColor, currentBackground);
+      } else if (s[i] == '^' && validColorKey(i)) {
+        Color newColor = colorMap[s[++i]]!;
+        if (newColor == dummy) newColor = oldBackground;
+        setColor(currentForeground, newColor);
+      } else {
+        addchar(s[i]);
+      }
+    }
+    setColor(oldForeground, oldBackground);
+  }
+
+  void mvaddstrx(int y, int x, String s) {
+    move(y, x);
+    addstrx(s);
+  }
+
   void keyEvent(KeyEvent event) {
     lastKey = event;
     nextKeyEvent?.complete(event);

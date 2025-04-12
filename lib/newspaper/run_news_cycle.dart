@@ -36,7 +36,10 @@ Future<void> generateRandomEventNewsStories() async {
 
   // The slow defeat of the Conservative Crime Squad...
   if (ccsActive && ccsExposure.index >= CCSExposure.exposed.index) {
-    await advanceCCSDefeatStoryline();
+    if ((ccsExposure == CCSExposure.exposed && oneIn(30)) ||
+        (ccsExposure == CCSExposure.nobackers && oneIn(75))) {
+      await advanceCCSDefeatStoryline();
+    }
   }
 
   // Random major event news stories
@@ -406,8 +409,9 @@ void setpriority(NewsStory ns) {
       ns.priority += drama[Drama.hijackedBroadcast]! * 30;
 
       // Common site crimes
-      ns.priority += drama[Drama.killedSomebody]! * 30;
-      ns.priority += drama[Drama.carCrash]! * 30;
+      ns.priority += drama[Drama.killedSomebody]! * 30; // uncapped
+      ns.priority += drama[Drama.carCrash]! * 30; // uncapped
+      ns.priority += drama[Drama.musicalRampage]! * 15; // uncapped
       ns.priority += drama[Drama.freeMonsters]! * 12;
       ns.priority += drama[Drama.freeRabbits]! * 8;
       ns.priority += drama[Drama.vandalism]! * 8;

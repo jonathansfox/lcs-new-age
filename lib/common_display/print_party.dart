@@ -31,7 +31,7 @@ void printParty({
       70: "TRANSPORT",
     });
     for (int p = 0; p < party.length; p++) {
-      setColor(lightGray);
+      setColor(blue);
       mvaddchar(p + 2, 0, String.fromCharCode('1'.codePoint + p));
 
       setColor(party[p].isHoldingBody ? pink : white);

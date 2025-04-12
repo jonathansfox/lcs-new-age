@@ -47,8 +47,11 @@ Future<void> planSiteVisit() async {
       District? thisDistrict = (thisLocation is District) ? thisLocation : null;
       City? thisCity = (thisLocation is City) ? thisLocation : null;
       String name = thisLocation.getName();
-
-      mvaddstrc(y, 0, lightGray, "${letterAPlus(y - 10)} - $name");
+      String letter = letterAPlus(y - 10);
+      addOptionText(y, 0, letter, "$letter - $name",
+          enabledWhen: thisSite?.isClosed != true &&
+              thisSite?.siege.underSiege != true &&
+              (thisLocation.area == squadLocation?.area || haveCar));
       if (thisSite == squadLocation ||
           thisCity == squadLocation?.city ||
           thisDistrict == squadLocation?.district) {
@@ -92,8 +95,9 @@ Future<void> planSiteVisit() async {
       y++;
     }
     if (area == squadLocation?.city) {
-      mvaddstrc(y, 0, lightGray,
-          "${letterAPlus(y - 10)} - Travel to a Different City");
+      String letter = letterAPlus(y - 10);
+      addOptionText(y, 0, letter, "$letter - Travel to a Different City",
+          enabledWhen: haveCar && ledger.funds >= ticketPrice);
       if (!haveCar) addstrc(yellow, " (Need Car)");
       addstrc(ledger.funds < ticketPrice ? red : green, " (\$$ticketPrice)");
     }
@@ -101,9 +105,10 @@ Future<void> planSiteVisit() async {
     if (page > 0) mvaddstr(10, 60, previousPageStr);
     if (page + 1 < destinationList.length / 11) mvaddstr(20, 60, nextPageStr);
     if (area == squadLocation?.city) {
-      mvaddstr(24, 1, "Enter - The Squad is not yet Liberal enough");
+      addOptionText(
+          24, 1, "Enter", "Enter - The Squad is not yet Liberal enough");
     } else {
-      mvaddstr(24, 1, "Enter - Back one step");
+      addOptionText(24, 1, "Enter", "Enter - Back one step");
     }
     int c = await getKey();
     if (isPageUp(c) && page > 0) page--;

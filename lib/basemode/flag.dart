@@ -54,12 +54,12 @@ Future<void> burnFlag(Site loc) async {
 }
 
 Future<void> burnFlagAnimation() async {
-  Duration duration = const Duration(milliseconds: 3000);
+  Duration duration = const Duration(milliseconds: 1500);
   console.addGraphic(
     ConsoleGraphic(
-      10.5,
+      10,
       27.25,
-      16,
+      15.5,
       51.75,
       FlagBurningAnimation(
         SvgPicture.asset('assets/flags/Flag_of_the_United_States.svg'),
@@ -260,6 +260,6 @@ class BurnData {
 }
 
 void printFlag() {
-  console.addGraphic(ConsoleGraphic(10.5, 27.25, 16, 51.75,
+  console.addGraphic(ConsoleGraphic(10, 27.25, 15.5, 51.75,
       SvgPicture.asset('assets/flags/Flag_of_the_United_States.svg')));
 }

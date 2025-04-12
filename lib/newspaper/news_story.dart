@@ -62,6 +62,7 @@ enum Drama {
   hijackedBroadcast,
   legalGunUsed,
   illegalGunUsed,
+  musicalRampage,
 }
 
 enum NewsStories {

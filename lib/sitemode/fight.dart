@@ -137,14 +137,19 @@ Future<void> squadMemberAttacks(
       siteCrime += 3;
       addjuice(p, 1, 200);
     }
-    addDramaToSiteStory(Drama.attacked);
-    if (p.weapon.isCurrentlyLegal && p.weapon.isAGun) {
-      addDramaToSiteStory(Drama.legalGunUsed);
-    } else if (p.weapon.isAGun) {
-      addDramaToSiteStory(Drama.illegalGunUsed);
+    if (!p.weapon.type.musicalAttack) {
+      addDramaToSiteStory(Drama.attacked);
+      if (p.weapon.isCurrentlyLegal && p.weapon.isAGun) {
+        addDramaToSiteStory(Drama.legalGunUsed);
+      } else if (p.weapon.isAGun) {
+        addDramaToSiteStory(Drama.illegalGunUsed);
+      }
+      // Charge with assault if first strike
+      addPotentialCrime([p], Crime.assault, reasonKey: target.id.toString());
+    } else {
+      addPotentialCrime([p], Crime.disturbingThePeace,
+          reasonKey: target.id.toString());
     }
-    // Charge with assault if first strike
-    addPotentialCrime([p], Crime.assault, reasonKey: target.id.toString());
   }
 
   // Dead foes drop loot, removed from encounter, grant bonus juice
@@ -215,6 +220,7 @@ Future<void> enemyattack(List<Creature> possibleEnemies) async {
 
         encounter.remove(e);
         possibleEnemies.remove(e);
+        if (activeSiteUnderSiege) activeSite!.siege.kills++;
 
         printParty();
         printEncounter();
@@ -927,17 +933,6 @@ Future<void> hit(Creature a, Creature t, Attack attackUsed, BodyPart hitPart,
           if (t.type.majorEnemy || t.type.tank) {
             killjuice += 50;
           }
-          if (activeSite?.siege.underSiege == false && mode == GameMode.site) {
-            if (!t.type.majorEnemy &&
-                !t.type.canPerformArrests &&
-                !t.type.lawEnforcement &&
-                !t.type.edgelord &&
-                !t.type.ccsMember &&
-                !t.type.tank &&
-                t.calculateWillRunAway()) {
-              killjuice = 0;
-            }
-          }
           addjuice(a, killjuice, 1000); // Instant juice
         } else {
           addjuice(a, -killjuice, -50);
@@ -1428,14 +1423,12 @@ Future<bool> socialAttack(Creature a, Creature t, Attack attackUsed) async {
       } else {
         if (a.align == Alignment.conservative) {
           mvaddstr(10, 1, "${t.name} is turned Conservative");
-          t.stunned = 0;
           if (t.prisoner != null) {
             await freehostage(t, FreeHostageMessage.continueLine);
           }
           addstr("!");
         } else {
           mvaddstr(10, 1, "${t.name} doesn't want to fight anymore");
-          t.stunned = 0;
           if (t.prisoner != null) {
             await freehostage(t, FreeHostageMessage.continueLine);
           }
@@ -1457,6 +1450,7 @@ Future<bool> socialAttack(Creature a, Creature t, Attack attackUsed) async {
             }
           }
           liberalize(t);
+          if (activeSiteUnderSiege) activeSite!.siege.kills++;
           t.isWillingToTalk = true;
         } else {
           t.isWillingToTalk = true;
@@ -1468,10 +1462,12 @@ Future<bool> socialAttack(Creature a, Creature t, Attack attackUsed) async {
       if (t.juice >= 1) {
         mvaddstr(10, 1, "${t.name} seems less badass!");
         addjuice(t, -100, 0);
+        t.stunned += lcsRandom(2);
       } else if (!t.attributeCheck(Attribute.heart, Difficulty.average) ||
           t.attribute(Attribute.heart) < t.attribute(Attribute.wisdom)) {
         mvaddstr(10, 1, "${t.name}'s Heart swells!");
         t.adjustAttribute(Attribute.heart, 1);
+        t.stunned += lcsRandom(2);
       } else {
         if (t.align == Alignment.conservative) {
           if (activeSite?.controller == SiteController.ccs) {
@@ -1486,6 +1482,8 @@ Future<bool> socialAttack(Creature a, Creature t, Attack attackUsed) async {
         t.stunned = 0;
 
         liberalize(t);
+        if (activeSiteUnderSiege) activeSite!.siege.kills++;
+        sitestory?.drama.add(Drama.musicalRampage);
         t.infiltration /= 2;
         t.justConverted = true;
         t.isWillingToTalk = true;

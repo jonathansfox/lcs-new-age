@@ -66,10 +66,10 @@ Future<void> sortingPrompt(SortingScreens sortScreen) async {
   move(1, 1);
   setColor(lightGray);
   addstr("Choose how to sort the list of ${sortScreen.description}.");
-  mvaddstr(3, 2, "A - No sorting.");
-  mvaddstr(4, 2, "B - Sort by name.");
-  mvaddstr(5, 2, "C - Sort by location and name.");
-  mvaddstr(6, 2, "D - Sort by squad or name.");
+  addOptionText(3, 2, "A", "A - No sorting.");
+  addOptionText(4, 2, "B", "B - Sort by name.");
+  addOptionText(5, 2, "C", "C - Sort by location and name.");
+  addOptionText(6, 2, "D", "D - Sort by squad or name.");
 
   while (true) {
     int c = await getKey();

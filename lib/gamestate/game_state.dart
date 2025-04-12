@@ -58,6 +58,7 @@ class GameState {
   List<DatingSession> datingSessions = [];
   List<InterrogationSession> interrogationSessions = [];
 
+  @JsonKey(defaultValue: false)
   bool offendedAngryRuralMobs = false;
   bool offendedCia = false;
   bool offendedCorps = false;

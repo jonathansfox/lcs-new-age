@@ -21,9 +21,9 @@ Future<bool> talkAboutIssues(Creature a, Creature tk) async {
   bool youAreStupid = false;
   bool issueTooLiberal = false;
 
-  if (a.attribute(Attribute.intelligence) < 5 ||
-      oneIn(a.attribute(Attribute.intelligence)) &&
-          a.attributeCheck(Attribute.intelligence, Difficulty.average)) {
+  if ((a.attribute(Attribute.intelligence) < 5 ||
+          oneIn(a.attribute(Attribute.intelligence))) &&
+      !a.attributeCheck(Attribute.intelligence, Difficulty.average)) {
     youAreStupid = true;
   } else if (laws[lw] == DeepAlignment.eliteLiberal) {
     issueTooLiberal = true;
@@ -191,16 +191,16 @@ Map<Law, _DiscussionPoint> _discussionPoints = {
       "We've come so far, but animals are still denied the right to vote!",
       "Don't pretend animals are human."),
   Law.policeReform: _DiscussionPoint(
-      "System racism and lack of accountability in policing disproportionately",
+      "Systemic racism and lack of accountability in policing disproportionately",
       "harm marginalized communities.",
       "Cops write speeding tickets just to fund their donut breaks!",
-      "Why the fuck haven't we abolished the police yet?",
+      "We still haven't abolished the police.",
       "Only criminals have reason to fear police."),
   Law.privacy: _DiscussionPoint(
       "The intelligence community monitors innocent citizens, treating your",
       "private life like a library book they can check out at any time.",
       "The NSA probably has notes on how many holes are in your underwear.",
-      "Do you really trust the government to have spy agencies?",
+      "As long as the government has spies, they'll keep undermining privacy.",
       "National security is important."),
   Law.deathPenalty: _DiscussionPoint(
       "The death penalty isn't justice, it's institutionalized revenge.",
@@ -218,7 +218,7 @@ Map<Law, _DiscussionPoint> _discussionPoints = {
       "Industries that stop at nothing to become more profitable are polluting",
       "the environment in ways that hurt not only humans, but animals too.",
       "You wanna look like the Toxic Avenger?  Oppose pollution!",
-      "We're still polluting a little bit.",
+      "We have a long way to go before we reach zero carbon emissions.",
       "It's not that bad."),
   Law.labor: _DiscussionPoint(
       "Corporate greed has turned full-time jobs into poverty traps, while",
@@ -287,7 +287,7 @@ Map<Law, _DiscussionPoint> _discussionPoints = {
       "Millions of people are treated like criminals for living normal lives.",
       "Immigration is an act of hope that deserves our respect, not rejection.",
       "Borders are just lines on a map, man.",
-      "All the immigrants, not everybody likes them.",
+      "We shouldn't rest until we have truly open borders.",
       "Immigration undermines our economy and culture."),
   Law.elections: _DiscussionPoint(
       "Political favors are bought and sold for campaign contributions,",
@@ -304,7 +304,7 @@ Map<Law, _DiscussionPoint> _discussionPoints = {
   Law.torture: _DiscussionPoint(
       "In the name of national security, we've sacrificed our soul by letting",
       "the government torture and abuse human beings on our behalf.",
-      "The government is wasting money on extreme sports like waterboarding!",
+      "The government forces people to do extreme sports like waterboarding!",
       "We need to stay vigilant about respecting human rights at all times.",
       "The terrorists would do worse to us."),
   Law.prisons: _DiscussionPoint(

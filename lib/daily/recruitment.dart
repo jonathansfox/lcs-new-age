@@ -186,40 +186,27 @@ Future<bool> completeRecruitMeeting(RecruitmentSession r, Creature p) async {
         addstr(" kind of regrets agreeing to this.");
       }
   }
-  move(11, 0);
-  addstr("How should ");
-  addstr(p.name);
-  addstr(" approach the situation?");
+  mvaddstr(11, 0, "How should ${p.name} approach the situation?");
 
-  move(13, 0);
-  if (ledger.funds < 50) setColor(darkGray);
-  addstr(
-      "A - Spend \$50 on props and a ${inPerson ? "" : "e-"}book for them to keep afterward.");
-  setColor(lightGray);
-  move(14, 0);
-  addstr("B - Just casually chat with them and discuss politics.");
+  addOptionText(13, 0, "A",
+      "A - Spend \$50 on props and a${inPerson ? " " : "n e-"}book for them to keep.",
+      enabledWhen: ledger.funds >= 50);
+  addOptionText(
+      14, 0, "B", "B - Just casually chat with them and discuss politics.");
 
-  move(15, 0);
+  bool canRecruit = false;
+  String recruitmentText = "C - ";
   if (p.subordinatesLeft > 0 && r.eagerness >= 4) {
-    addstr("C - Offer to let ");
-    addstr(r.recruit.name);
-    addstr(" join the LCS as a full member.");
+    canRecruit = true;
+    recruitmentText += "Offer to let ${r.recruit.name} join the LCS.";
   } else if (p.subordinatesLeft <= 0) {
-    setColor(darkGray);
-    addstr("C - ");
-    addstr(p.name);
-    addstr(" needs more Juice to recruit.");
-    setColor(lightGray);
+    recruitmentText += "${p.name} needs more Juice to recruit.";
   } else {
-    setColor(darkGray);
-    addstr("C - ");
-    addstr(r.recruit.name);
-    addstr(" isn't ready to join the LCS.");
-    setColor(lightGray);
+    recruitmentText += "${r.recruit.name} isn't ready to join the LCS.";
   }
+  addOptionText(15, 0, "C", recruitmentText, enabledWhen: canRecruit);
 
-  move(16, 0);
-  addstr("D - Break off the meetings.");
+  addOptionText(16, 0, "D", "D - Break off the meetings.");
 
   int y = 18;
 
@@ -227,35 +214,22 @@ Future<bool> completeRecruitMeeting(RecruitmentSession r, Creature p) async {
     int c = await getKey();
 
     if (c == Key.c && p.subordinatesLeft > 0 && r.eagerness >= 4) {
-      move(y, 0);
-      addstr(p.name);
-      addstr(" offers to let ");
-      addstr(r.recruit.name);
-      addstr(" join the Liberal Crime Squad.");
-
+      mvaddstr(y, 0, "${p.name} offers to let ${r.recruit.name} join the LCS.");
       await getKey();
 
-      setColor(lightGreen);
-      move(y += 2, 0);
-
-      addstr(r.recruit.name);
-      addstr(" accepts, and is eager to get started.");
-
+      mvaddstrc(y += 2, 0, lightGreen,
+          "${r.recruit.name} accepts, and is eager to get started.");
       liberalize(r.recruit);
-
       await getKey();
 
       pool.add(r.recruit);
-
       erase();
       await sleeperizePrompt(r.recruit, p, 6);
 
       r.recruit.hireId = p.id;
-
       p.train(Skill.persuasion, 25);
       recruitmentSessions.remove(r);
       stats.recruits++;
-
       return true;
     }
     if (c == Key.b || (c == Key.a && ledger.funds >= 50)) {

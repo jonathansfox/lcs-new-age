@@ -72,9 +72,8 @@ Future<void> kidnapattempt() async {
 
       int x = 1, y = 11;
       for (int t2 = 0; t2 < viableTargets.length; t2++) {
-        mvaddchar(y++, x, letterAPlus(t2));
-        addstr(" - ");
-        addstr(viableTargets[t2].name);
+        String letter = letterAPlus(t2);
+        addOptionText(y++, x, letter, "$letter - ${viableTargets[t2].name}");
 
         if (y == 17) {
           y = 11;

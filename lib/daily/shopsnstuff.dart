@@ -30,20 +30,16 @@ Future<void> hospital(Site loc) async {
     locHeader();
     printParty();
 
-    mvaddstrc(10, 1, lightGray, "F - Go in and fix up Conservative wounds");
+    addOptionText(10, 1, "F", "F - Go in and fix up Conservative wounds");
+    addOptionText(12, 1, "Enter", "Enter - Leave");
 
-    mvaddstrc(12, 1, lightGray, "Enter - Leave");
-
-    if (partysize > 0 && (activeSquadMemberIndex == -1 || partysize > 1)) {
-      setColor(lightGray);
-    } else {
-      mvaddstrc(13, 1, darkGray, "# - Check the status of a squad Liberal");
-    }
-    if (activeSquadMemberIndex != -1) {
-      setColor(lightGray);
-    } else {
-      mvaddstrc(14, 1, darkGray, "0 - Show the squad's Liberal status");
-    }
+    bool showPartyPrompt =
+        partysize > 0 && (activeSquadMemberIndex == -1 || partysize > 1);
+    mvaddstrc(13, 1, showPartyPrompt ? lightGray : darkGray,
+        "# - Check the status of a squad Liberal");
+    bool showStatusPrompt = activeSquadMember != null;
+    addOptionText(14, 1, "0", "0 - Show the squad's Liberal status",
+        enabledWhen: showStatusPrompt);
 
     int c = await getKey();
 
@@ -163,36 +159,31 @@ Future<void> dealership(Site loc) async {
       }
     }
 
-    mvaddstrc(10, 1, carToSell == null ? lightGray : darkGray,
-        "G - Get a Liberal car");
+    addOptionText(10, 1, "G", "G - Get a Liberal car",
+        enabledWhen: carToSell == null);
 
     move(11, 1);
     if (carToSell != null) {
       price = (0.8 * carToSell.type.price).round();
 
       if (carToSell.heat > 0) price = price ~/ 10;
-      setColor(lightGray);
-      addstr("S - Sell the ${carToSell.fullName()} (\$$price)");
+      addInlineOptionText(
+          "S", "S - Sell the ${carToSell.fullName()} (\$$price)");
     } else {
-      setColor(darkGray);
-      addstr("S - Sell a car");
+      addInlineOptionText("S", "S - Sell a car", enabledWhen: false);
     }
 
-    /*if(car_to_sell && car_to_sell.heat>1 && ledger.funds>=500)
+    /*if(car_to_sell && car_to_sell.heat>1 && ledger.funds>=500) {
          setColor(lightGray);
-      else
-         mvaddstrc(12, 1, darkGray, "P - Repaint car, replace plates and tags ($500)");*/
+      } else {
+         addOptionText(12, 1, "P", "P - Repaint car, replace plates and tags ($500)");
+      }*/
+    addOptionText(15, 1, "0", "0 - Show the squad's Liberal status",
+        enabledWhen: activeSquadMember != null);
+    addOptionText(16, 1, "B", "B - Choose a buyer",
+        enabledWhen: partysize >= 2);
+    addOptionText(16, 40, "Enter", "Enter - Leave");
 
-    if (partysize >= 2) {
-      setColor(lightGray);
-    } else {
-      mvaddstrc(16, 1, darkGray, "B - Choose a buyer");
-    }
-
-    mvaddstrc(16, 40, lightGray, "Enter - Leave");
-
-    mvaddstrc(15, 1, activeSquadMember != null ? lightGray : darkGray,
-        "0 - Show the squad's Liberal status");
     if (partysize > 0 && (activeSquadMemberIndex == -1 || partysize > 1)) {
       setColor(lightGray);
     } else {

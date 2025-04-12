@@ -70,8 +70,8 @@ Future<void> doActivityRecruit(Creature cr) async {
         addstrc(encounter[i].align.color, encounter[i].name);
         printCreatureAgeAndGender(encounter[i]);
       }
-      mvaddstrc(12 + recruitCount + 1, 0, lightGray,
-          "Press enter or escape to call it a day.");
+      addOptionText(12 + recruitCount + 1, 0, "Enter/Escape",
+          "Enter/Escape - Call it a day");
 
       int c = await getKey();
 

@@ -34,6 +34,7 @@ class Siege {
   bool camerasOff = false;
   int timeUntilCops = -1;
   int timeuntilcorps = -1;
+  @JsonKey(defaultValue: -1)
   int timeuntilRuralMob = -1;
   int timeuntilccs = -1;
   int timeuntilcia = -1;

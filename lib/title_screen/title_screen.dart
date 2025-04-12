@@ -10,7 +10,7 @@ import 'package:lcs_new_age/title_screen/new_game.dart';
 import 'package:lcs_new_age/title_screen/world.dart';
 import 'package:lcs_new_age/utils/colors.dart';
 
-const String gameVersion = "1.2.8";
+const String gameVersion = "1.2.9";
 bool megaFounderCheat = false;
 
 Future<void> titleScreen() async {
@@ -64,8 +64,9 @@ void printTitleScreen(HighScores? highScores) {
   setColor(black, background: lightGray);
   mvaddstr(22, 65, "Version $gameVersion");
   setColor(lightGray);
-  mvaddstrCenter(23,
-      "Press I to Import a saved game.  Any other key to Pursue your Liberal Agenda.");
+  String startPrompt =
+      "&BI&x - Import a saved game   &BAny Other Key&x to Pursue your Liberal Agenda";
+  mvaddstrx(23, centerString(startPrompt) + 4, startPrompt);
   mvaddstrCenter(24, "(click the game window to give it keyboard focus)");
 }
 

@@ -67,8 +67,8 @@ Future<int> choiceprompt(
     for (int p = page * 19, y = 2;
         p < option.length && p < page * 19 + 19;
         p++, y++) {
-      mvaddchar(y, 0, letterAPlus(y - 2));
-      addstr(" - ${option[p]}");
+      String letter = letterAPlus(y - 2);
+      addOptionText(y, 0, letter, "$letter - ${option[p]}");
     }
 
     setColor(lightGray);
@@ -90,8 +90,7 @@ Future<int> choiceprompt(
     }
     move(23, 0);
     addstr(pageStr);
-    move(24, 0);
-    if (allowexitwochoice) addstr("Enter - $exitString");
+    if (allowexitwochoice) addOptionText(24, 0, "Enter", "Enter - $exitString");
 
     int c = await getKey();
 

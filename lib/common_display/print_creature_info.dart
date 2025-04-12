@@ -249,14 +249,17 @@ Future<void> fullCreatureInfoScreen(Creature cr) async {
     if (page == 1) printFullCreatureSkills(cr);
     if (page == 2) printFullCreatureCrimes(cr);
 
-    move(23, 0);
-    addstr("N - Change Name           G - Change Gender");
+    addOptionText(23, 0, "N", "N - Change Name");
+    addOptionText(23, 26, "G", "G - Change Gender");
     if ((activeSquad?.members.length ?? 0) > 1) {
-      addstr("    LEFT/RIGHT - Other Liberals");
+      addOptionText(23, 50, "LEFT", "LEFT");
+      addstr(" / ");
+      addOptionText(23, 57, "RIGHT", "RIGHT - Other Liberals");
     }
-    move(24, 0);
-    addstr("Press any other key to continue the Struggle");
-    addstr("    UP/DOWN  - More Info");
+    mvaddstr(24, 0, "Any Other Key - Continue the Struggle");
+    addOptionText(24, 52, "UP", "UP");
+    addstr(" / ");
+    addOptionText(24, 57, "DOWN", "DOWN - More Info");
 
     int c = await getKey();
 

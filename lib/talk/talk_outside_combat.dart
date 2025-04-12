@@ -33,24 +33,24 @@ Future<bool> talkOutsideCombat(Creature a, Creature tk) async {
   printCreatureAgeAndGender(tk);
   addstr(":");
 
-  mvaddstrc(11, 1, lightGray,
-      "A - Strike up a conversation about politics$whileNaked.");
-  setColorConditional(tk.canDate(a));
-  mvaddstr(12, 1, "B - Drop a pickup line$whileNaked.");
-  mvaddstrc(13, 1, lightGray,
-      "C - On second thought, don't say anything$whileNaked.");
+  addOptionText(
+      11, 1, "A", "A - Strike up a conversation about politics$whileNaked.");
+  addOptionText(12, 1, "B", "B - Drop a pickup line$whileNaked.",
+      enabledWhen: tk.canDate(a));
+  addOptionText(
+      13, 1, "C", "C - On second thought, don't say anything$whileNaked.");
 
   if (tk.type.id == CreatureTypeIds.landlord) {
     if (activeSite?.controller == SiteController.unaligned) {
-      mvaddstr(14, 1, "D - Rent a room$whileNaked.");
+      addOptionText(14, 1, "D", "D - Rent a room$whileNaked.");
     } else if (activeSite?.controller == SiteController.lcs) {
-      mvaddstr(14, 1, "D - Stop renting a room$whileNaked.");
+      addOptionText(14, 1, "D", "D - Stop renting a room$whileNaked.");
     }
   } else if (tk.type.id == CreatureTypeIds.gangMember ||
       tk.type.id == CreatureTypeIds.merc) {
-    mvaddstr(14, 1, "D - Buy weapons$whileNaked.");
+    addOptionText(14, 1, "D", "D - Buy weapons$whileNaked.");
   } else if (tk.type.id == CreatureTypeIds.bankTeller) {
-    mvaddstr(14, 1, "D - Rob the bank$whileNaked.");
+    addOptionText(14, 1, "D", "D - Rob the bank$whileNaked.");
   }
 
   while (true) {
@@ -181,9 +181,9 @@ Future<bool> heyIWantToRentARoom(Creature a, Creature tk) async {
     int c = Key.a;
 
     setColor(ledger.funds >= rent ? white : darkGray);
-    mvaddstr(11, 1, "A - Accept.");
-    mvaddstrc(12, 1, white, "B - Decline.");
-    mvaddstr(13, 1, "C - Threaten the landlord.");
+    addOptionText(11, 1, "A", "A - Accept.");
+    addOptionText(12, 1, "B", "B - Decline.");
+    addOptionText(13, 1, "C", "C - Threaten the landlord.");
 
     c = await getKey();
 
@@ -423,13 +423,14 @@ Future<bool> heyINeedAGun(Creature a, Creature tk) async {
 Future<bool> talkToBankTeller(Creature a, Creature tk) async {
   clearSceneAreas();
   setColor(lightGray);
-  mvaddstr(11, 1, "A - Quietly pass the teller a robbery note");
+  addOptionText(11, 1, "A", "A - Quietly pass the teller a robbery note");
   if (a.indecent) addstr(" while naked");
   addstr(".");
-  mvaddstr(12, 1, "B - Threaten bystanders and demand access to the vault");
+  addOptionText(
+      12, 1, "B", "B - Threaten bystanders and demand access to the vault");
   if (a.indecent) addstr(" while naked");
   addstr(".");
-  mvaddstr(13, 1, "C - On second thought, don't rob the bank");
+  addOptionText(13, 1, "C", "C - On second thought, don't rob the bank");
   if (a.indecent) addstr(" while naked");
   addstr(".");
 
@@ -530,17 +531,13 @@ Future<bool> talkToBankTeller(Creature a, Creature tk) async {
       Creature? armedLiberal =
           squad.firstWhereOrNull((p) => p.weapon.type.threatening);
       if (armedLiberal != null) {
-        mvaddstr(9, 1, armedLiberal.name);
-        addstr(" brandishes the ");
-        addstr(armedLiberal.weapon.getName(sidearm: true));
-        addstr(".");
+        String weaponName = armedLiberal.weapon.getName(sidearm: true);
+        mvaddstr(9, 1, "${armedLiberal.name} brandishes the $weaponName.");
         await getKey();
         clearMessageArea();
       }
-      mvaddstr(10, 1, a.name);
-      addstr(" says, ");
-      mvaddstrc(11, 1, lightGreen, "\"");
-      addstr(slogan);
+      mvaddstr(10, 1, "${a.name} says, ");
+      mvaddstrc(11, 1, lightGreen, "\"$slogan");
       mvaddstr(12, 1, "OPEN THE VAULT, NOW!\"");
 
       await getKey();

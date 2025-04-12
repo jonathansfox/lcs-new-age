@@ -270,75 +270,66 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
       temp.removeAt(temp.length - 1);
     }
 
-    move(10, 0);
-    addstr("How should ");
-    addstr(p.name);
-    addstr(" approach the situation?");
+    mvaddstr(10, 0, "How should ${p.name} approach the situation?");
 
-    if (ledger.funds >= 100 &&
+    bool canPay100 = ledger.funds >= 100 &&
         p.clinicMonthsLeft == 0 &&
-        (sameCity || eIsSexworker)) {
-      setColor(lightGray);
-    } else {
-      setColor(darkGray);
-    }
-    move(11, 0);
+        (sameCity || eIsSexworker);
+    String payText;
     if (sameCity) {
       if (eIsSexworker) {
-        addstr("A - Pay \$100 for a night together.");
+        payText = "A - Pay \$100 for a night together.";
       } else {
-        addstr(
-            "A - Spend a hundred bucks to take ${e.name.split(' ').first} out on the town.");
+        payText =
+            "A - Spend a hundred bucks to take ${e.name.split(' ').first} out on the town.";
       }
     } else {
       if (eIsSexworker) {
-        addstr("A - Pay \$100 for a one-on-one video call.");
+        payText = "A - Pay \$100 for a one-on-one video call.";
       } else {
-        addstr("A - There is no expectation to spend money on this date.");
+        payText = "A - There is no expectation to spend money on this date.";
       }
     }
+    addOptionText(11, 0, "A", payText, enabledWhen: canPay100);
+
+    bool canAvoidPaying = !eIsSexworker;
+    String avoidPayingText;
     move(12, 0);
     if (eIsSexworker) {
-      addstrc(darkGray,
-          "B - ${e.name} expects to be paid for ${e.gender.hisHer} time.");
+      avoidPayingText =
+          "B - ${e.name} expects to be paid for ${e.gender.hisHer} time.";
+    } else if (sameCity) {
+      avoidPayingText =
+          "B - Try to get through the evening without spending a penny.";
     } else {
-      if (sameCity) {
-        addstrc(lightGray,
-            "B - Try to get through the evening without spending a penny.");
-      } else {
-        addstrc(lightGray,
-            "B - Try to charm ${e.gender.himHer} with online dating.");
-      }
+      avoidPayingText =
+          "B - Try to charm ${e.gender.himHer} with online dating.";
     }
-    if (p.clinicMonthsLeft == 0 &&
+    addOptionText(12, 0, "B", avoidPayingText, enabledWhen: canAvoidPaying);
+
+    bool canGoOnVacation = p.clinicMonthsLeft == 0 &&
         p.blood == p.maxBlood &&
-        ledger.funds >= vacationPrice) {
-      setColor(lightGray);
-    } else {
-      setColor(darkGray);
-    }
-    move(13, 0);
+        ledger.funds >= vacationPrice;
+    String vacationText;
     if (p.blood == p.maxBlood) {
       if (sameCity) {
-        addstr(
-            "C - Spend a week and \$$vacationPrice on a cheap vacation (stands up other dates).");
+        vacationText =
+            "C - Spend a week and \$$vacationPrice on a cheap vacation (stands up other dates).";
       } else {
-        addstr(
-            "C - Spend \$$vacationPrice to visit ${e.name.split(' ').first} for a week (stands up other dates).");
+        vacationText =
+            "C - Spend \$$vacationPrice to visit ${e.name.split(' ').first} for a week (stands up other dates).";
       }
     } else {
-      addstr(
-          "C - Spend a week and \$$vacationPrice on a cheap vacation (must be uninjured).");
+      vacationText =
+          "C - Spend a week and \$$vacationPrice on a cheap vacation (must be uninjured).";
     }
-    setColor(lightGray);
-    move(14, 0);
-    addstr("D - Break it off.");
+    addOptionText(13, 0, "C", vacationText, enabledWhen: canGoOnVacation);
+
+    addOptionText(14, 0, "D", "D - Break it off.");
     if (e.align == Alignment.conservative &&
         p.clinicMonthsLeft == 0 &&
         sameCity) {
-      setColor(lightGray);
-      move(15, 0);
-      addstr("E - Just kidnap the Conservative bitch.");
+      addOptionText(15, 0, "E", "E - Just kidnap the Conservative.");
     }
 
     int thingsincommon = countCommonInterests(p, e);

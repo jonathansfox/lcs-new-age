@@ -260,7 +260,7 @@ Future<ChaseOutcome> carChaseSequence() async {
         p.die();
         p.location = null;
       }
-      mvaddstrc(9, 1, lightGray, "C - Reflect on your Conservative driving.");
+      addOptionText(9, 1, "C", "C - Reflect on your Conservative driving.");
       printChaseEncounter();
       while (await getKey() != Key.c) {}
       if (!await checkForDefeat()) {
@@ -937,7 +937,7 @@ Future<void> evasiverun() async {
               message += "pushed to the ground, and handcuffed!";
             } else {
               if (p.blood <= 10) {
-                message += "thrown to the ground, and tazed to death!";
+                message += "thrown to the ground, and TAZED TO DEATH!";
               } else {
                 message += "thrown to the ground, and tazed repeatedly!";
               }
@@ -945,17 +945,17 @@ Future<void> evasiverun() async {
             }
           case CreatureTypeIds.deathSquad:
             message +=
-                " is seized, thrown to the ground, and shot in the head!";
+                " is seized, thrown to the ground, and SHOT IN THE HEAD!";
             p.blood = 0;
           case CreatureTypeIds.tank:
-            message += " is crushed beneath the tank's treads!";
+            message += " is CRUSHED beneath the tank's treads!";
             p.blood = 0;
           default:
             message += " is seized, ";
             if (p.blood <= 60) {
-              message += "thrown to the ground, and beaten to death!";
+              message += "slammed against the ground, and BEATEN TO DEATH!";
             } else {
-              message += "thrown to the ground, and beaten senseless!";
+              message += "slammed against the ground, and brutally beaten!";
             }
             p.blood -= 60;
         }

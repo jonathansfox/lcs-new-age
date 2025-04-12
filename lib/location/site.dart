@@ -51,6 +51,24 @@ class Site extends Location {
   bool newRental = false;
   @JsonKey()
   int heat = 0;
+  @JsonKey(defaultValue: 0)
+  int extraHeatFromRuralMobs = 0;
+  @JsonKey(defaultValue: 0)
+  int extraHeatFromCorps = 0;
+  @JsonKey(defaultValue: 0)
+  int extraHeatFromCIA = 0;
+  @JsonKey(defaultValue: 0)
+  int extraHeatFromCCS = 0;
+  int get extraHeatFromCCSTarget {
+    if (!ccsActive) return 0;
+    if ([SiteType.barAndGrill, SiteType.bombShelter, SiteType.bunker]
+        .contains(type)) {
+      return ccsState.index * creaturesPresent.length * 3;
+    } else {
+      return ccsState.index * creaturesPresent.length;
+    }
+  }
+
   @JsonKey()
   bool hasFlag = false;
   @JsonKey(includeToJson: true, includeFromJson: true, defaultValue: false)

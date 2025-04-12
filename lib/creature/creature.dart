@@ -672,10 +672,10 @@ class Creature {
       AmmoType? ammoType = weaponType.acceptableAmmo.firstOrNull;
       if (ammoType != null) {
         spareAmmo = Ammo(ammoType.idName,
-            stackSize: magsOfAmmo * weaponType.ammoCapacity - 1);
+            stackSize: magsOfAmmo * weaponType.ammoCapacity);
       } else if (weaponType.thrown) {
         spareAmmo = Weapon(weaponType.idName,
-            stackSize: magsOfAmmo * weaponType.ammoCapacity - 1);
+            stackSize: magsOfAmmo * weaponType.ammoCapacity);
       }
     }
   }

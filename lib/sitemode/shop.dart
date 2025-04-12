@@ -211,9 +211,7 @@ class Shop extends ShopOption {
           move(y, 40);
         }
 
-        if (availableOptions[p].letter != null) {
-          addchar(availableOptions[p].letter!.toUpperCase());
-        } else {
+        if (availableOptions[p].letter == null) {
           // Find an available letter to use for this ware.
           bool done = false;
           while (takenLetters < 27 && !done) {
@@ -236,15 +234,15 @@ class Shop extends ShopOption {
               }
             }
           }
-          availableOptions[p].letter = letterAPlus(takenLetters);
-          addchar(letterAPlus(takenLetters++));
+          availableOptions[p].letter = letterAPlus(takenLetters++);
         }
-
-        addstr(" - ");
-        addstr(availableOptions[p].halfscreenDescription());
+        String letter = availableOptions[p].letter!.toUpperCase();
+        String desc = availableOptions[p].halfscreenDescription();
         if (availableOptions[p] is ShopItem) {
-          addstr(" (\$${(availableOptions[p] as ShopItem).price(false)})");
+          desc += " (\$${(availableOptions[p] as ShopItem).price(false)})";
         }
+        addInlineOptionText(letter, "$letter - $desc");
+
         if (x == 1) {
           x = 2;
         } else {
@@ -253,37 +251,30 @@ class Shop extends ShopOption {
         }
       }
       if (sellMasks) {
+        setColor(lightGray);
         move(y, 1 + (x - 1) * 39);
-        if (ledger.funds >= 15) {
-          setColor(lightGray);
-        } else {
-          setColor(darkGray);
-        }
-        addstr("M - Buy a Mask (\$15)");
+        addInlineOptionText("M", "M - Buy a Mask (\$15)",
+            enabledWhen: ledger.funds >= 15);
       }
       if (x == 2) y++;
 
-      mvaddstrc(y++, 1, lightGray, "E - Look over Equipment");
+      addOptionText(y++, 1, "E", "E - Look over Equipment");
 
       if (allowSelling) {
-        move(y++, 1);
-        if (customers.members[0].base?.loot.isNotEmpty == true) {
-          setColor(lightGray);
-        } else {
-          setColor(darkGray);
-        }
-        addstr("S - Sell something");
+        setColor(lightGray);
+        addOptionText(y++, 1, "S", "S - Sell something",
+            enabledWhen: customers.members[0].base?.loot.isNotEmpty == true);
       }
 
-      setColorConditional(activeSquadMemberIndex != -1);
-      mvaddstr(++y, 1, "0 - Show the squad's Liberal status");
+      addOptionText(++y, 1, "0", "0 - Show the squad's Liberal status",
+          enabledWhen: activeSquadMemberIndex != -1);
       setColorConditional(
           partysize > 0 && (activeSquadMemberIndex == -1 || partysize > 1));
       mvaddstr(y++, 40, "# - Check the status of a squad Liberal");
-      setColorConditional(partysize >= 2);
-      mvaddstr(y, 1, "B - Choose a buyer");
+      addOptionText(y, 1, "B", "B - Choose a buyer",
+          enabledWhen: partysize >= 2);
 
-      mvaddstrc(y, 40, lightGray, "Enter - $exitText");
+      addOptionText(y, 40, "Enter", "Enter - $exitText");
 
       int c = await getKey();
 
@@ -331,10 +322,9 @@ class Shop extends ShopOption {
       count: availableOptions.length,
       lineBuilder: (y, key, index) {
         setColorConditional(availableOptions[index].isAvailable());
-        move(y, 0);
-        addchar(letterAPlus(y - 2));
-        addstr(" - ");
-        addstr(availableOptions[index].fullscreenDescription());
+        String letter = letterAPlus(y - 2);
+        addOptionText(y, 0, letter,
+            "$letter - ${availableOptions[index].fullscreenDescription()}");
         if (availableOptions[index] is ShopItem) {
           move(y, 39);
           addstr("\$${(availableOptions[index] as ShopItem).price(false)}");
@@ -374,15 +364,13 @@ class Shop extends ShopOption {
         WeaponType weapon =
             weaponTypes[(availableOptions[i] as ShopItem).itemId]!;
         if (descriptionLine) {
-          setColor(darkGray);
+          setColor(midGray);
           move(y, 4);
           addstr(weapon.description ?? "");
         } else {
-          setColorConditional(availableOptions[i].isAvailable());
-          move(y, 0);
-          addchar(letterAPlus((y - 2) ~/ 2));
-          addstr(" - ");
-          addstr(weapon.name);
+          String letter = letterAPlus((y - 2) ~/ 2);
+          addOptionText(y, 0, letter, "$letter - ${weapon.name}",
+              enabledWhen: availableOptions[i].isAvailable());
           move(y, 20);
           AmmoType? ammo = weapon.acceptableAmmo.firstOrNull;
           if (ammo != null && weapon.ammoCapacity > 0) {
@@ -436,11 +424,8 @@ class Shop extends ShopOption {
       lineBuilder: (y, key, index) {
         AmmoType ammo =
             ammoTypes[(availableOptions[index] as ShopItem).itemId]!;
-        setColorConditional(availableOptions[index].isAvailable());
-        move(y, 0);
-        addchar(key);
-        addstr(" - ");
-        addstr(ammo.name);
+        addOptionText(y, 0, key, "$key - ${ammo.name}",
+            enabledWhen: availableOptions[index].isAvailable());
         move(y, 24);
         addstr(ammo.damage.toString());
         if (ammo.multihit > 1) {
@@ -477,11 +462,8 @@ class Shop extends ShopOption {
       lineBuilder: (y, key, index) {
         ClothingType clothing =
             clothingTypes[(availableOptions[index] as ShopItem).itemId]!;
-        setColorConditional(availableOptions[index].isAvailable());
-        move(y, 0);
-        addchar(key);
-        addstr(" - ");
-        addstr(clothing.name);
+        addOptionText(y, 0, key, "$key - ${clothing.name}",
+            enabledWhen: availableOptions[index].isAvailable());
         move(y, 24);
         addstr(clothing.traitsList(true).join(", "));
         move(y, 59);
@@ -511,20 +493,20 @@ class Shop extends ShopOption {
       Site base = customers.members[0].base!;
       bool lootAvailable = base.loot.isNotEmpty;
 
-      mvaddstrc(10, 1, lightGray, "E - Look over Equipment");
+      addOptionText(10, 1, "E", "E - Look over Equipment");
       setColorConditional(lootAvailable);
-      mvaddstr(10, 40, "F - Pawn Selectively");
-      mvaddstr(11, 1, "W - Pawn all Weapons");
-      mvaddstr(11, 40, "A - Pawn all Ammunition");
-      mvaddstr(12, 1, "C - Pawn all Clothes");
-      mvaddstr(12, 40, "L - Pawn all Loot");
+      addOptionText(10, 40, "F", "F - Pawn Selectively");
+      addOptionText(11, 1, "W", "W - Pawn all Weapons");
+      addOptionText(11, 40, "A", "A - Pawn all Ammunition");
+      addOptionText(12, 1, "C", "C - Pawn all Clothes");
+      addOptionText(12, 40, "L", "L - Pawn all Loot");
       setColorConditional(activeSquadMember != null);
-      mvaddstr(15, 1, "0 - Show the squad's Liberal status");
+      addOptionText(15, 1, "0", "0 - Show the squad's Liberal status");
       setColorConditional(
           partysize > 0 && (activeSquadMemberIndex == -1 || partysize > 1));
       mvaddstr(15, 40, "# - Check the status of a squad Liberal");
 
-      mvaddstrc(16, 40, lightGray, "Enter - Done pawning");
+      addOptionText(16, 40, "Enter", "Enter - Done pawning");
 
       int c = await getKey();
 
@@ -649,7 +631,7 @@ class Shop extends ShopOption {
       }
 
       mvaddstrc(23, 1, lightGray, "Press a letter to select an item to sell.");
-      mvaddstr(24, 1, "Enter - Done");
+      addOptionText(24, 1, "Enter", "Enter - Done");
 
       int c = await getKey();
 
@@ -722,7 +704,7 @@ class Shop extends ShopOption {
       mvaddstrc(22, 0, lightGray, "Press a Letter to select a Mask");
       move(23, 0);
       addstr(pageStr);
-      mvaddstr(24, 0, "Z - Surprise ");
+      addOptionText(24, 0, "Z", "Z - Surprise ");
       addstr(buyer.name);
       addstr(" With a Random Mask");
 

@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:lcs_new_age/engine/engine.dart';
 
 String interfacePgUp = "[";
@@ -68,7 +69,14 @@ String get pageStr {
   } else {
     str = "PGUP/PGDN";
   }
-  return "$str to view other Liberal pages";
+  return "$str - View other Liberal pages";
+}
+
+String get pageStrX {
+  return pageStr
+      .split(" ")
+      .mapIndexed((i, s) => i == 0 ? "&B$s&x" : s)
+      .join(" ");
 }
 
 String pageStrWithCurrentAndMax(int current, int max) {
@@ -80,7 +88,14 @@ String pageStrWithCurrentAndMax(int current, int max) {
   } else {
     str = "PGUP/PGDN";
   }
-  return "$str to view other Liberal pages ($current/$max)";
+  return "$str - View other Liberal pages ($current/$max)";
+}
+
+String pageStrWithCurrentAndMaxX(int current, int max) {
+  return pageStrWithCurrentAndMax(current, max)
+      .split(" ")
+      .mapIndexed((i, s) => i == 0 ? "&B$s&x" : s)
+      .join(" ");
 }
 
 String get pageStrShort {
@@ -92,7 +107,14 @@ String get pageStrShort {
   } else {
     str = "PGUP/PGDN";
   }
-  return "$str for other pages";
+  return "$str - Other pages";
+}
+
+String get pageStrShortX {
+  return pageStrShort
+      .split(" ")
+      .mapIndexed((i, s) => i == 0 ? "&B$s&x" : s)
+      .join(" ");
 }
 
 bool isBackKey(int c) =>

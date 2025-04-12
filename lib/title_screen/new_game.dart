@@ -24,10 +24,10 @@ Future<void> setupNewGame() async {
   bool strongccs = false;
   bool nightmarelaws = false;
 
-  void checkBoxOption(int y, bool ticked, String text,
+  void checkBoxOption(int y, bool ticked, String key, String text,
       {bool disabled = false}) {
-    mvaddstrc(
-        y, 0, disabled ? darkGray : lightGray, "[${ticked ? "X" : " "}] $text");
+    addOptionText(y, 0, key, "[${ticked ? "X" : " "}] $key - $text",
+        enabledWhen: !disabled);
   }
 
   erase();
@@ -35,14 +35,14 @@ Future<void> setupNewGame() async {
     mvaddstrc(4, 6, white,
         "New Game of Liberal Crime Squad: Advanced Gameplay Options");
     checkBoxOption(
-        7, classicmode, "A - Classic Mode: No Conservative Crime Squad.");
-    checkBoxOption(9, strongccs,
-        "B - We Didn't Start The Fire: The CCS starts active and extremely strong.",
+        7, classicmode, "A", "Classic Mode: No Conservative Crime Squad.");
+    checkBoxOption(9, strongccs, "B",
+        "We Didn't Start The Fire: The CCS starts active and extremely strong.",
         disabled: classicmode);
-    checkBoxOption(11, nightmarelaws,
-        "C - Nightmare Mode: Liberalism is forgotten. Is it too late to fight back?");
+    checkBoxOption(11, nightmarelaws, "C",
+        "Nightmare Mode: Liberalism is forgotten. Is it too late to fight back?");
 
-    mvaddstr(15, 0, "Press any other key to continue...");
+    addOptionText(15, 0, "Any Other Key", "Any Other Key - Continue...");
 
     int c = await getKey();
 
@@ -155,26 +155,34 @@ Future<void> makeCharacter() async {
   while (true) {
     erase();
     mvaddstrc(4, 6, white, "The Founder of the Liberal Crime Squad");
+
     mvaddstrc(7, 2, lightGray, "Given Name: ");
     addstrc(white, first[sex]!);
-    mvaddstrc(7, 34, darkGray, "(Press A to have your parents reconsider)");
+    mvaddstrx(7, 34, "&m(Press &BA&m to have your parents reconsider)");
+
     mvaddstrc(9, 2, lightGray, "Family Name: ");
     addstrc(white, last);
-    mvaddstrc(9, 34, darkGray, "(Press B to be born to a different family)");
+    mvaddstrx(9, 34, "&m(Press &BB&m to be born to a different family)");
+
     mvaddstrc(11, 2, lightGray, "Sex at Birth: ");
     addstrc(white, sexDesc());
-    mvaddstrc(11, 34, darkGray, "(Press C to have the doctor check again)");
+    mvaddstrx(11, 34, "&m(Press &BC&m to have the doctor check again)");
+
     mvaddstrc(13, 2, lightGray, "Tragic Origin: ");
     if (letMeChoose) {
       addstrc(lightGreen, "Let Me Choose");
     } else {
       addstrc(red, "Let Fate Decide");
     }
-    mvaddstrc(13, 34, darkGray, "(Press D to toggle choice or fate)");
+    mvaddstrx(13, 34, "&m(Press &BD&m to toggle choice or fate)");
+
     mvaddstrc(15, 2, lightGray, "City: ");
     addstrc(white, startingCity.getName(includeCity: true));
-    mvaddstrc(15, 34, darkGray, "(Press E to move at a young age)");
-    mvaddstr(19, 2, "Press any other key when ready to begin...");
+    mvaddstrx(15, 34, "&m(Press &BE&m to move at a young age)");
+
+    addOptionText(
+        19, 2, "Any Other Key", "Press any other key when ready to begin...",
+        baseColorKey: ColorKey.midGray);
 
     int c = await getKey();
     if (c == Key.a) {

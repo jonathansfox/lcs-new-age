@@ -44,15 +44,15 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
     canSurrender = true;
   }
 
-  mvaddstrc(11, 1, lightGray, "A - Intimidate");
+  addOptionText(11, 1, "A", "A - Intimidate");
   setColorConditional(hostages > 0);
-  mvaddstr(12, 1, "B - Threaten hostages");
+  addOptionText(12, 1, "B", "B - Threaten hostages");
   setColorConditional(target.isWillingToTalk);
-  mvaddstr(13, 1, "C - Bluff");
+  addOptionText(13, 1, "C", "C - Bluff");
   setColorConditional(canSurrender);
-  mvaddstr(14, 1, "D - Surrender to authorities");
+  addOptionText(14, 1, "D", "D - Surrender to authorities");
   setColor(lightGray);
-  mvaddstr(15, 1, "E - Do nothing");
+  addOptionText(15, 1, "E", "E - Do nothing");
   while (true) {
     c = await getKey();
 
@@ -172,18 +172,11 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
       } else {
         clearSceneAreas();
         mvaddstrc(9, 1, lightGray, "How should ${liberal.name} respond?");
-        move(11, 1);
-        if (hostages > 1) {
-          addstr("A - Execute a hostage");
-        } else {
-          addstr("A - Execute the hostage");
-        }
-        move(12, 1);
-        if (hostages > 1) {
-          addstr("B - Offer to trade the hostages for freedom");
-        } else {
-          addstr("B - Offer to trade the hostage for freedom");
-        }
+        bool plural = hostages > 1;
+        addOptionText(
+            11, 1, "A", "A - Execute ${plural ? "a" : "the"} hostage");
+        addOptionText(12, 1, "B",
+            "B - Offer to trade the hostage${plural ? "s" : ""} for freedom");
 
         while (true) {
           c = await getKey();

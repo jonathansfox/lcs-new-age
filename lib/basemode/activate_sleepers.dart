@@ -44,9 +44,8 @@ Future<void> activateSleepers() async {
     int y = 2;
     for (Creature tempp in temppool.skip(page * 9).take(9)) {
       setColor(lightGray);
-      mvaddchar(y, 0, letterAPlus((y - 2) ~/ 2));
-      addstr(" - ");
-      addstr(tempp.name);
+      String letter = letterAPlus((y - 2) ~/ 2);
+      addOptionText(y, 0, letter, "$letter - ${tempp.name}");
 
       mvaddstr(y, 24, tempp.type.name);
 
@@ -129,54 +128,55 @@ Future<void> activateSleeper(Creature cr) async {
     makeDelimiter();
 
     setColor(state == Key.a ? white : lightGray);
-    mvaddstr(10, 1, "A - Communication and Advocacy");
+    addOptionText(10, 1, "A", "A - Communication and Advocacy");
 
     setColor(state == Key.b ? white : lightGray);
-    mvaddstr(11, 1, "B - Espionage");
+    addOptionText(11, 1, "B", "B - Espionage");
 
     setColor(state == Key.c ? white : lightGray);
-    mvaddstr(12, 1, "C - Join the Active LCS");
+    addOptionText(12, 1, "C", "C - Join the Active LCS");
 
-    mvaddstrc(20, 40, lightGray, "Enter - Confirm Selection");
+    addOptionText(20, 40, "Enter", "Enter - Confirm Selection");
 
     switch (state) {
       case Key.a:
-        setColor(cr.activity.type == ActivityType.none ? white : lightGray);
-        mvaddstr(10, 40, "1 - Lay Low");
-
-        setColor(cr.activity.type == ActivityType.sleeperLiberal
-            ? white
-            : lightGray);
-        mvaddstr(11, 40, "2 - Advocate Liberalism");
-
-        move(12, 40);
-        if (cr.subordinatesLeft > 0) {
-          setColor(cr.activity.type == ActivityType.sleeperRecruit
-              ? white
-              : lightGray);
-          addstr("3 - Expand Sleeper Network");
-        } else {
-          setColor(darkGray);
+        addOptionText(10, 40, "1", "1 - Lay Low",
+            baseColorKey: cr.activity.type == ActivityType.none
+                ? ColorKey.white
+                : ColorKey.lightGray);
+        addOptionText(11, 40, "2", "2 - Advocate Liberalism",
+            baseColorKey: cr.activity.type == ActivityType.sleeperLiberal
+                ? ColorKey.white
+                : ColorKey.lightGray);
+        bool canRecruit = true;
+        String recruitText = "3 - Expand Sleeper Network";
+        if (cr.subordinatesLeft <= 0) {
+          canRecruit = false;
           if (cr.brainwashed) {
-            addstr("3 - [Enlightened Can't Recruit]");
+            recruitText = "3 - [Enlightened Can't Recruit]";
           } else {
-            addstr("3 - [Need More Juice to Recruit]");
+            recruitText = "3 - [Need More Juice to Recruit]";
           }
         }
+        addOptionText(12, 40, "3", recruitText,
+            enabledWhen: canRecruit,
+            baseColorKey: cr.activity.type == ActivityType.sleeperRecruit
+                ? ColorKey.white
+                : ColorKey.lightGray);
 
       case Key.b:
-        setColor(
-            cr.activity.type == ActivityType.sleeperSpy ? white : lightGray);
-        mvaddstr(10, 40, "1 - Uncover Secrets");
-
-        setColor(cr.activity.type == ActivityType.sleeperEmbezzle
-            ? white
-            : lightGray);
-        mvaddstr(11, 40, "2 - Embezzle Funds");
-
-        setColor(
-            cr.activity.type == ActivityType.sleeperSteal ? white : lightGray);
-        mvaddstr(12, 40, "3 - Steal Equipment");
+        addOptionText(10, 40, "1", "1 - Uncover Secrets",
+            baseColorKey: cr.activity.type == ActivityType.sleeperSpy
+                ? ColorKey.white
+                : ColorKey.lightGray);
+        addOptionText(11, 40, "2", "2 - Embezzle Funds",
+            baseColorKey: cr.activity.type == ActivityType.sleeperEmbezzle
+                ? ColorKey.white
+                : ColorKey.lightGray);
+        addOptionText(12, 40, "3", "3 - Steal Equipment",
+            baseColorKey: cr.activity.type == ActivityType.sleeperSteal
+                ? ColorKey.white
+                : ColorKey.lightGray);
     }
 
     setColor(lightGray);
@@ -202,6 +202,7 @@ Future<void> activateSleeper(Creature cr) async {
         mvaddstr(22, 3, cr.name);
         addstr(" will steal equipment and send it to the Camp.");
       default:
+        mvaddstrc(22, 3, red, "${cr.name} will dig around in the bugfield.");
         debugPrint("Unexpected sleeper activity type: "
             "${cr.activity.type.name}");
     }
