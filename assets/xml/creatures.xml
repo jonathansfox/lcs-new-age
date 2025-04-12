@@ -702,6 +702,7 @@ Elements marked as hardcoded may have their values overridden by the game.
     <creaturetype idname="CREATURE_AGENT">
         <type_name>Agent</type_name>
         <weapon>WEAPON_9MM_HANDGUN</weapon>
+        <weapon>WEAPON_45_HANDGUN</weapon>
         <weapon>WEAPON_M4</weapon>
         <weapon>WEAPON_PUMP_SHOTGUN</weapon>
         <weapon>WEAPON_MP5</weapon>
@@ -994,6 +995,7 @@ Elements marked as hardcoded may have their values overridden by the game.
     <creaturetype idname="CREATURE_GANGMEMBER">
         <type_name>Gang Member</type_name>
         <weapon>WEAPON_9MM_HANDGUN</weapon>
+        <weapon>WEAPON_45_HANDGUN</weapon>
         <weapon>WEAPON_AK102</weapon>
         <weapon>WEAPON_MP5</weapon>
         <weapon>WEAPON_PUMP_SHOTGUN</weapon>
