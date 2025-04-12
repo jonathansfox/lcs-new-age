@@ -433,6 +433,11 @@ void _medicalSubmenu(Creature c) {
   _subActivity(ActivityType.clinic, "1 - Go to the Hospital",
       greyOut: c.blood >= c.maxBlood);
   //_subActivity(ActivityType.augment, "2 - Augment a Liberal");
+  _y++;
+  mvaddstrc(_y++, 40, midGray, "Capable medics will always provide");
+  mvaddstrc(_y++, 40, midGray, "medical care to themselves or others");
+  mvaddstrc(_y++, 40, midGray, "in the same location.  This does not");
+  mvaddstrc(_y++, 40, midGray, "interfere with other tasks.");
 }
 
 void _medicalChoice(Creature c, int choice) {
