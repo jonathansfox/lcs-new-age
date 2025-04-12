@@ -774,7 +774,11 @@ class Creature {
     if (!siteAlarm) courage += 100;
     if (type.canPerformArrests || type.lawEnforcement) courage += 200;
     if (type.intimidationResistant) courage += 200;
-    if (type.ccsMember) courage += 200;
+    if (type.ccsMember ||
+        typeId == CreatureTypeIds.neoNazi ||
+        typeId == CreatureTypeIds.naziPunk) {
+      courage += 2000;
+    }
     if ((equippedWeapon != null &&
             (equippedWeapon!.type.threatening ||
                 equippedWeapon!.type.musicalAttack)) ||
