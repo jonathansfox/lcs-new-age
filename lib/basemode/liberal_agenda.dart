@@ -48,11 +48,9 @@ Future<bool> liberalAgenda([AgendaVibe vibe = AgendaVibe.ongoing]) async {
     }
     int c = await getKey();
     if (isPageUp(c) || c == Key.leftArrow) {
-      page = AgendaPage
-          .values[(page.index - 1).clamp(0, AgendaPage.values.length - 1)];
+      page = AgendaPage.values[(page.index - 1) % (AgendaPage.values.length)];
     } else if (isPageDown(c) || c == Key.rightArrow) {
-      page = AgendaPage
-          .values[(page.index + 1).clamp(0, AgendaPage.values.length - 1)];
+      page = AgendaPage.values[(page.index + 1) % (AgendaPage.values.length)];
     } else if (c == Key.l && vibe != AgendaVibe.ongoing) {
       break;
     } else if (c == Key.d && vibe == AgendaVibe.ongoing) {
