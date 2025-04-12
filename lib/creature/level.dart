@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:lcs_new_age/common_display/common_display.dart';
 import 'package:lcs_new_age/creature/attributes.dart';
 import 'package:lcs_new_age/creature/creature.dart';
@@ -29,7 +31,7 @@ int levelAttribute(Creature creature, Attribute attribute) {
   if (creature.level >= 2) {
     value = (value * (1 + (creature.level - 1) / 10)).round();
   }
-  return value;
+  return max(1, value);
 }
 
 String levelTitle(int level, Alignment align) {

@@ -412,7 +412,7 @@ class Creature {
   int permanentAttribute(Attribute a) {
     int value = rawAttributes[a]!;
     value = max(1, body.permanentAttributeMods(a, value, age));
-    if (a == Attribute.heart) value -= min(value - 1, heartDamage);
+    if (a == Attribute.heart) value -= heartDamage;
     return value;
   }
 
