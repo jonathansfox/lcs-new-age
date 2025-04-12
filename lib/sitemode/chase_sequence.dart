@@ -688,6 +688,15 @@ Future<bool> evasivedrive(int turn) async {
 }
 
 Future<bool> enemyCarUpdate() async {
+  void abandonCars() {
+    vehiclePool
+        .removeWhere((v) => chaseSequence?.friendcar.contains(v) ?? false);
+    chaseSequence?.friendcar.clear();
+    for (Creature p in squad) {
+      p.carId = null;
+    }
+  }
+
   for (Vehicle enemyCar in chaseSequence!.enemycar.toList()) {
     Creature? enemyCarDriver =
         encounter.firstWhereOrNull((c) => c.car == enemyCar && c.isDriver);
@@ -766,6 +775,7 @@ Future<bool> enemyCarUpdate() async {
               10, 1, lightGray, "The squad will have to face them on foot!");
           await getKey();
         }
+        abandonCars();
         return true;
       } else if (attack > defense + 5) {
         mvaddstrc(
@@ -781,6 +791,7 @@ Future<bool> enemyCarUpdate() async {
         mvaddstrc(
             11, 1, lightGray, "The squad will have to face them on foot!");
         await getKey();
+        abandonCars();
         return true;
       } else if (defense > attack + 5) {
         mvaddstrc(
