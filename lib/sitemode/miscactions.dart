@@ -376,7 +376,7 @@ Future<bool> radioBroadcast() async {
 String _mediaQualityDescription(
     int segmentpower, String medium, String viewername) {
   return switch (segmentpower) {
-    < 25 => "The Squad sounds wholly insane.",
+    < 25 => "The Squad sounds utterly clueless.",
     < 35 => "The segment really sucks.",
     < 45 => "It is a very boring hour.",
     < 55 => "It is mediocre $medium.",

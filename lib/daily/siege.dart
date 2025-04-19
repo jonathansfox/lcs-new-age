@@ -903,18 +903,19 @@ Future<void> siegeTurn() async {
           move(8, 1);
           if (segmentpower < 35) {
             String playName = "${[
-              "Flaming",
-              "Dumb",
-              "Retarded",
-              "Insane",
-              "Crazy",
-              "Loopy",
-              "Idiot",
+              "Ridiculous",
+              "Oblivious",
+              "Clueless",
+              "Inept",
+              "The Wrong",
+              "Semiconscious",
               "Empty-Headed",
-              "Nutty",
+              "Fake",
+              "Hypocrite",
+              "Infantile",
               "Half-Baked",
               "Pot-Smoking",
-              "Stoner",
+              "Stoned",
             ].random} ${[
               "Liberal",
               "Socialist",
@@ -922,10 +923,11 @@ Future<void> siegeTurn() async {
               "Communist",
               "Marxist",
               "Green",
-              "Elite",
+              "Leftist",
               "Guerrilla",
-              "Commando",
-              "Soldier",
+              "Rebel",
+              "Radical",
+              "Stoner",
             ].random}";
             addstr(repname.firstLast);
             addstr(" canceled the interview halfway through");
