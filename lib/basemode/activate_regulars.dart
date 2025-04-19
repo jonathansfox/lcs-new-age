@@ -613,8 +613,12 @@ void _clothingDetailFooter(
       addstrc(red, "Alarming");
     }
   }
+  int headArmor = armor.headArmor;
+  if (headArmor == 0 && clothing.concealsFace) {
+    headArmor = armor.limbArmor;
+  }
   mvaddstrc(20, 20, lightGray, "Head: ");
-  addstrc(lightBlue, "${armor.headArmor} Armor");
+  addstrc(lightBlue, "$headArmor Armor");
   mvaddstrc(21, 20, lightGray, "Torso: ");
   addstrc(lightBlue, "${armor.bodyArmor} Armor");
   mvaddstrc(22, 20, lightGray, "Limbs: ");

@@ -90,8 +90,15 @@ class Clothing extends Item {
       ((armor?.bodyArmor ?? 0) * armorQualityModifier).round();
   @JsonKey(defaultValue: 0)
   int bodyArmor = 0;
-  int get maxHeadArmor =>
-      ((armor?.headArmor ?? 0) * armorQualityModifier).round();
+  int get maxHeadArmor {
+    ArmorUpgrade? armor = this.armor;
+    if (armor == null) return 0;
+    if (armor.headArmor == 0 && type.concealsFace) {
+      return (armor.limbArmor * armorQualityModifier).round();
+    }
+    return (armor.headArmor * armorQualityModifier).round();
+  }
+
   @JsonKey(defaultValue: 0)
   int headArmor = 0;
   int get maxLimbArmor =>
