@@ -984,7 +984,10 @@ Future<bool> addsiegeencounter(int type) async {
                 e = Creature.fromId(CreatureTypeIds.agent);
                 ensureIsArmed(e);
               case SiegeType.angryRuralMob:
-                e = Creature.fromId(CreatureTypeIds.angryRuralMob);
+                e = Creature.fromId(lcsRandomWeighted({
+                  CreatureTypeIds.angryRuralMob: 9,
+                  CreatureTypeIds.neoNazi: 1,
+                }));
                 ensureIsArmed(e);
               case SiegeType.corporateMercs:
                 e = Creature.fromId(CreatureTypeIds.merc);
