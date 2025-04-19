@@ -602,7 +602,7 @@ void _clothingDetailFooter(
       clothing.traitsList(false, specifiedArmorUpgrade: armor);
   if (traits.isEmpty) {
     if (alarming) {
-      addstrc(red, "Immediate Alarm");
+      addstrc(red, "Alarming");
     } else {
       addstrc(darkGray, "None");
     }
