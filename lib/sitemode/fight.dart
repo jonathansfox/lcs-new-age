@@ -361,9 +361,10 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
 
     return false;
   }
-  bool canSocialAttack =
-      a.align == Alignment.liberal || encounter.length < ENCMAX;
   bool forceRanged = mode == GameMode.carChase;
+  bool canSocialAttack =
+      (a.align == Alignment.liberal || encounter.length < ENCMAX) &&
+          !forceRanged;
   bool forceNoReload = forceMelee || !a.canReload();
   Attack? attackUsed = a.getAttack(forceRanged, forceMelee, forceNoReload,
       allowSocial: canSocialAttack);
@@ -1872,7 +1873,7 @@ Future<void> captureCreature(Creature t) async {
     }
   } else {
     t.location = findSiteInSameCity(
-        activeSite?.city ?? t.site?.city, SiteType.policeStation);
+        activeSite?.city ?? t.location?.city, SiteType.policeStation);
   }
 
   t.squad = null;

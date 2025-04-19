@@ -36,9 +36,8 @@ Future<void> doActivityGraffiti(List<Creature> graffiti) async {
         await showMessage(
             "${graffiti[s].name} grabbed a ${sprayPaint.getName()} from ${graffiti[s].base!.name}.");
         graffiti[s].giveWeapon(sprayPaint, graffiti[s].base!.loot);
-      } else if (sprayType != null &&
-          ledger.funds >= sprayType.fenceValue * 2) {
-        ledger.subtractFunds(20, Expense.shopping);
+      } else if (sprayType != null && ledger.funds >= sprayType.price) {
+        ledger.subtractFunds(sprayType.price, Expense.shopping);
         await showMessage(
             "${graffiti[s].name} bought spraypaint for graffiti.");
         graffiti[s]

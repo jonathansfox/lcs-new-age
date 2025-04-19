@@ -219,6 +219,7 @@ Future<bool> completeRecruitMeeting(RecruitmentSession r, Creature p) async {
 
       mvaddstrc(y += 2, 0, lightGreen,
           "${r.recruit.name} accepts, and is eager to get started.");
+      r.recruit.hireId = p.id;
       liberalize(r.recruit);
       await getKey();
 
@@ -226,7 +227,6 @@ Future<bool> completeRecruitMeeting(RecruitmentSession r, Creature p) async {
       erase();
       await sleeperizePrompt(r.recruit, p, 6);
 
-      r.recruit.hireId = p.id;
       p.train(Skill.persuasion, 25);
       recruitmentSessions.remove(r);
       stats.recruits++;

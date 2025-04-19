@@ -1681,6 +1681,7 @@ Future<void> _resolveSite() async {
         if (p.sleeperAgent && p.location == activeSite) {
           p.sleeperAgent = false;
           erase();
+          setColor(lightGray);
           mvaddstr(8, 1, "Sleeper ");
           addstr(p.name);
           addstr(" has been outed by your bold attack!");

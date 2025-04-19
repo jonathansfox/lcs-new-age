@@ -378,6 +378,7 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
           ledger.funds >= vacationPrice &&
           p.clinicMonthsLeft == 0 &&
           p.blood == p.maxBlood) {
+        ledger.subtractFunds(vacationPrice, Expense.dating);
         for (int e2 = d.dates.length - 1; e2 >= 0; e2--) {
           if (e2 == ei) continue;
           d.dates.removeAt(e2);

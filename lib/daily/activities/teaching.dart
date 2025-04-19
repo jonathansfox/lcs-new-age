@@ -7,7 +7,7 @@ import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/gamestate/ledger.dart';
 import 'package:lcs_new_age/location/city.dart';
-import 'package:lcs_new_age/location/site.dart';
+import 'package:lcs_new_age/location/location.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
 
 Future<void> doActivityTeach(List<Creature> teachers) async {
@@ -63,15 +63,15 @@ Future<void> doActivityTeach(List<Creature> teachers) async {
     //over the entire list of sites multiple times.
     List<Creature> students = [];
     City? city = teacher.site?.city;
-    Iterable<Site> sites = city?.sites ?? [];
+    Iterable<Location> locations = allLocations.where((l) => l.city == city);
     Iterable<String> siteIdsInJusticeSystem =
         sites.where((s) => s.isPartOfTheJusticeSystem).map((s) => s.idString);
-    Iterable<String> siteIds = sites.map((s) => s.idString);
+    Iterable<String> siteIds = locations.map((s) => s.idString);
     for (Creature p in pool) {
       if (p != teacher &&
           siteIds.contains(p.locationId) &&
           p.align == Alignment.liberal &&
-          (!siteIdsInJusticeSystem.contains(p.locationId) || p.sleeperAgent) &&
+          (p.sleeperAgent || !siteIdsInJusticeSystem.contains(p.locationId)) &&
           p.clinicMonthsLeft == 0) {
         students.add(p);
       }

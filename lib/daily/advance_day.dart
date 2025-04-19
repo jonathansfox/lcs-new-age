@@ -75,9 +75,15 @@ Future<void> _tendHostages() async {
 void _moveSquadlessToBases() {
   for (Creature c in pool) {
     if (c.squad != null || !c.isActiveLiberal) continue;
-    if (c.location != c.base && c.base?.siege.underSiege == true) {
-      c.base = sites.firstWhere((l) =>
-          l.city == c.location?.city && l.type == SiteType.homelessEncampment);
+    if (c.location != c.base &&
+        (c.base?.siege.underSiege == true || c.base == null)) {
+      if (c.location == null && c.base == null) {
+        c.base = sites.firstWhere((l) => l.type == SiteType.homelessEncampment);
+      } else {
+        c.base = sites.firstWhere((l) =>
+            l.city == c.location?.city &&
+            l.type == SiteType.homelessEncampment);
+      }
     }
     if (c.base != null) c.location = c.base;
   }
@@ -709,20 +715,24 @@ Future<void> _dailyHealing() async {
             {bool possiblePermanentDamage = true,
             int extraDifficulty = 0,
             int extraBleed = 0}) {
-          injuries[p.site!] = injuries[p.site]! + 25;
+          Site? site = p.site;
+          int medicalValue = medical[site] ?? 0;
+          if (site != null) {
+            injuries[p.site!] = injuries[p.site]! + 25;
+          }
           // Notably, return false if the injury is stabilized, true
           // if it remains untreated.
           if (p.site != null &&
-              medical[p.site]! + lcsRandom(10) > (14 + extraDifficulty)) {
+              medicalValue + lcsRandom(10) > (14 + extraDifficulty)) {
             return false; // stabilized
           } else {
             if (possiblePermanentDamage) {
-              if (p.site != null && lcsRandom(20) > medical[p.site]!) {
+              if (p.site != null && lcsRandom(20) > medicalValue) {
                 p.permanentHealthDamage++;
               }
             }
             damage += 1 + extraBleed;
-            if (medical[p.site]! + 9 <= 14 + extraDifficulty) {
+            if (medicalValue + 9 <= 14 + extraDifficulty) {
               transfer = true;
             }
             return true;
@@ -854,7 +864,6 @@ Future<void> _doRent() async {
             if (p.base == l) p.base = hs;
           }
           hs.addLootAndProcessMoney(l.loot);
-          l.loot.clear();
 
           l.compound = Compound();
           l.compound.rations = 0;

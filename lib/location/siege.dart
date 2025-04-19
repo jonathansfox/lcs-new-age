@@ -217,6 +217,7 @@ Future<void> surrenderToAuthorities(Site loc) async {
         confiscated +=
             ledger.funds - confiscated - 30000 - lcsRandom(20000) - confiscated;
       }
+      if (confiscated > ledger.funds) confiscated = ledger.funds;
       mvaddstr(y += 2, 1,
           "Law enforcement has confiscated \$$confiscated in LCS funds.");
       ledger.subtractFunds(confiscated, Expense.confiscated);

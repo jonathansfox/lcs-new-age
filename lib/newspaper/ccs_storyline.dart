@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:collection/collection.dart';
 import 'package:lcs_new_age/creature/creature.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/justice/crimes.dart';
@@ -33,26 +34,27 @@ Future<void> advanceCCSDefeatStoryline() async {
 NewsStory ccsBackerArrestStory() {
   NewsStory ns = NewsStory.prepare(NewsStories.ccsNoBackers)..priority = 8000;
   ccsExposure = CCSExposure.nobackers;
-  // arrest seventeen representatives and eight senators
-  int arrestsleft = 8;
-  for (int i = 0; i < senate.length; i++) {
-    if ((senate[i] == DeepAlignment.archConservative ||
-            senate[i] == DeepAlignment.conservative) &&
-        oneIn(4)) {
-      senate[i] = DeepAlignment.eliteLiberal;
-      arrestsleft--;
-      if (arrestsleft <= 0) break;
-    }
+  // arrest eight senators
+  List<int> conservativeSenators = senate
+      .mapIndexed<int>((i, s) => (s == DeepAlignment.archConservative ||
+              s == DeepAlignment.conservative)
+          ? i
+          : -1)
+      .whereNot((i) => i == -1)
+      .shuffled();
+  for (int i = 0; i < min(8, conservativeSenators.length); i++) {
+    senate[conservativeSenators[i]] = DeepAlignment.eliteLiberal;
   }
-  arrestsleft = 17;
-  for (int i = 0; i < house.length; i++) {
-    if ((house[i] == DeepAlignment.archConservative ||
-            house[i] == DeepAlignment.conservative) &&
-        oneIn(4)) {
-      house[i] = DeepAlignment.eliteLiberal;
-      arrestsleft--;
-      if (arrestsleft <= 0) break;
-    }
+  // arrest seventeen representatives
+  List<int> conservativeHouse = house
+      .mapIndexed<int>((i, s) => (s == DeepAlignment.archConservative ||
+              s == DeepAlignment.conservative)
+          ? i
+          : -1)
+      .whereNot((i) => i == -1)
+      .shuffled();
+  for (int i = 0; i < min(17, conservativeHouse.length); i++) {
+    house[conservativeHouse[i]] = DeepAlignment.eliteLiberal;
   }
   // change police regulation issue to be more liberal
   laws.update(
