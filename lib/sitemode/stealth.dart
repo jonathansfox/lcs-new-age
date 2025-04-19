@@ -400,7 +400,8 @@ enum WeaponCheckResult {
 WeaponCheckResult weaponCheck(Creature creature, {bool metalDetector = false}) {
   bool suspicious = creature.weapon.type.suspicious;
   bool concealed = creature.weaponIsConcealed ||
-      politics.laws[Law.gunControl] == DeepAlignment.archConservative;
+      (politics.laws[Law.gunControl] == DeepAlignment.archConservative &&
+          creature.weapon.type.isAGun);
   bool inCharacter = creature.weaponIsInCharacter;
   if (disguiseQuality(creature).lowQuality) inCharacter = false;
   if (suspicious) {
