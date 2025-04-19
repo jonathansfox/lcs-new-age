@@ -56,7 +56,7 @@ Future<void> setVehicles() async {
             "Choose a Liberal to ${driver ? "drive it" : "be a passenger"}.");
         c = (await getKey()) - '1'.codePoint;
       }
-      if (c >= 0 && c <= 5) {
+      if (c >= 0 && c < squad.length) {
         Creature p = squad[c];
         p.preferredCarId = vehiclePool[carIndex].id;
         if (driver) {
