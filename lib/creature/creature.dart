@@ -646,7 +646,11 @@ class Creature {
       }
     }
     wantedForCrimes[crime] = (wantedForCrimes[crime] ?? 0) + 1;
-    heat += crimeHeat(crime);
+    if (clothing.type.concealsFace) {
+      heat += crimeHeat(crime) ~/ 2;
+    } else {
+      heat += crimeHeat(crime);
+    }
   }
 
   void giveClothingType(String clothingTypeString, {List<Item>? lootPile}) {
