@@ -52,7 +52,7 @@ Future<void> planSiteVisit() async {
           enabledWhen: thisSite?.isClosed != true &&
               thisSite?.siege.underSiege != true &&
               (thisLocation.area == squadLocation?.area || haveCar));
-      if (thisSite == squadLocation ||
+      if (thisLocation == squadLocation ||
           thisCity == squadLocation?.city ||
           thisDistrict == squadLocation?.district) {
         addstrc(white, " (Current Location)");

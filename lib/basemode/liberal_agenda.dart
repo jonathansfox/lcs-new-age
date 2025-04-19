@@ -379,7 +379,7 @@ void _pollsPage(int start) {
       case View.torture:
         addstr("want stronger measures to prevent torture");
       case View.intelligence:
-        addstr("want to stop government mass surveilance");
+        addstr("want to stop government mass surveillance");
       case View.freeSpeech:
         addstr("believe in unfettered free speech");
       case View.genetics:
@@ -488,9 +488,9 @@ String _concernString(View view) {
       }
     case View.intelligence:
       if (publicOpinion[view]! > 50) {
-        return "ending mass surveilance";
+        return "ending mass surveillance";
       } else {
-        return "government mass surveilance";
+        return "government mass surveillance";
       }
     case View.freeSpeech:
       if (publicOpinion[view]! > 50) {

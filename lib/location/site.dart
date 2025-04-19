@@ -61,12 +61,18 @@ class Site extends Location {
   int extraHeatFromCCS = 0;
   int get extraHeatFromCCSTarget {
     if (!ccsActive) return 0;
+    int ccsReach = ccsState.index;
+    if (!city.sites.any((s) => s.controller == SiteController.ccs)) {
+      ccsReach -= 2;
+    }
+    if (ccsReach < 0) ccsReach = 0;
+    int target = ccsReach *
+        creaturesPresent.where((e) => e.isCriminal && e.isActiveLiberal).length;
     if ([SiteType.barAndGrill, SiteType.bombShelter, SiteType.bunker]
         .contains(type)) {
-      return ccsState.index * creaturesPresent.length * 3;
-    } else {
-      return ccsState.index * creaturesPresent.length;
+      target *= 3;
     }
+    return target;
   }
 
   @JsonKey()
@@ -216,7 +222,9 @@ class Site extends Location {
 
   /* add all items from a list to a location, and deal with money properly */
   void addLootAndProcessMoney(List<Item> loot) {
-    for (Item l in loot) {
+    List<Item> lootCopy = loot.toList();
+    loot.clear();
+    for (Item l in lootCopy) {
       if (l is Money) {
         ledger.addFunds(l.stackSize, Income.thievery);
       } else {
@@ -224,7 +232,6 @@ class Site extends Location {
         this.loot.add(l);
       }
     }
-    loot.clear();
   }
 }
 

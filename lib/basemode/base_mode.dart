@@ -1,3 +1,6 @@
+import 'dart:ui';
+
+import 'package:collection/collection.dart';
 import 'package:lcs_new_age/basemode/activate_regulars.dart';
 import 'package:lcs_new_age/basemode/activate_sleepers.dart';
 import 'package:lcs_new_age/basemode/activities.dart';
@@ -405,7 +408,7 @@ void baseModeOptionsDisplay(Site? loc) {
   }
 
   setColor(lightGray);
-  int y = (loc?.hasFlag ?? false) ? 16 : 13;
+  int y = (loc?.hasFlag ?? false) ? 16 : 15;
   mvaddstrCenter(y++, slogan);
   addCenteredOptionText(y++, "s", "(S - Change the Slogan)", baseColorKey: "m");
   if (loc != null) {
@@ -433,6 +436,30 @@ void printSafehouseSecurityBox(Site site) {
     addstrc(heat > heatProtection ? red : darkGray, "$heat");
     mvaddstrc(11, 2, lightGray, "Secrecy: ");
     addstrc(heat > heatProtection ? red : darkGray, "$heatProtection");
+  }
+  int extrajudicialHeat = [
+    site.extraHeatFromCIA ~/ 2,
+    site.extraHeatFromCCS,
+    site.extraHeatFromCorps,
+    site.extraHeatFromRuralMobs * 2,
+  ].max;
+  if (extrajudicialHeat > heatProtection * 0.3) {
+    setColor(lightGray);
+    mvaddstr(12, 1, "│                │");
+    mvaddstr(13, 1, "│                │");
+    mvaddstr(14, 1, "└────────────────┘");
+    Color color = darkGray;
+    String description = "Possible";
+    if (extrajudicialHeat > heatProtection * 0.6) {
+      color = midGray;
+      description = "Likely";
+    }
+    if (extrajudicialHeat > heatProtection * 0.9) {
+      color = red;
+      description = "Overt";
+    }
+    mvaddstrc(12, 4, color, description);
+    mvaddstrc(13, 4, color, "Surveillance");
   }
 }
 

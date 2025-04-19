@@ -341,20 +341,31 @@ Future<void> siegeCheck() async {
         erase();
         setColor(white);
         addparagraph(
-            8,
+            6,
             1,
-            13,
+            18,
             78,
-            "A convoy of gray SUVs marked with the logo of a notorious "
-            "private military company pulls up to the ${l.getName()}.");
+            "In a groundbreaking act of synergy, the Corporations have decided "
+            "to diversify their operations into a micro-targeted deplatforming "
+            "campaign with the goal of downsizing the LCS "
+            "into a fine red mist.");
         await getKey();
+        setColor(white);
         addparagraph(
-            console.y,
+            console.y + 1,
             1,
-            13,
+            18,
             78,
-            "PMC contractors pour out of the vehicles, armed to the teeth with "
-            "automatic weapons, and move to surround the building!");
+            "Leveraging their unparalleled expertise in tactical engagement "
+            "and displacement logistics, a globally recognized private "
+            "military company has initiated a daylight operation against the "
+            "${l.getName()} to seamlessly deliver live munitions into your "
+            "skull.");
+        await getKey();
+        mvaddstrc(console.y + 1, 1, red,
+            "You have been found redundant and will now be terminated.");
+        mvaddstrc(console.y + 1, 1, red,
+            "Corporate mercenaries are moving to liquidate the ${l.getName()}.");
         await getKey();
 
         l.siege.activeSiegeType = SiegeType.corporateMercs;
@@ -510,26 +521,35 @@ Future<void> siegeCheck() async {
         l.siege.timeuntilcia = -1;
         // CIA raids!
         erase();
-        mvaddstrc(8, 1, white,
-            "In the dead of the night, a column of unmarked black vans surround the ${l.getName()}.");
-        int y = 10;
+        setColor(red);
+        addparagraph(
+            6,
+            1,
+            16,
+            78,
+            "In the dead of the night, a column of unmarked black vans with "
+            "tinted windows surrounds the ${l.getName()}.");
         await getKey();
-        mvaddstr(y++, 1,
+        mvaddstrc(console.y + 1, 1, white,
             "Hair stands on end... the air is charged with the sound of silence.");
+        await getKey();
         if (l.compound.cameras) {
-          mvaddstr(y++, 1, "The camera feeds are dead.");
+          mvaddstr(console.y + 2, 1, "The camera feeds are dead.");
+          await getKey();
         }
         if (l.compound.generator) {
-          mvaddstr(y++, 1, "The generator won't start.");
+          mvaddstr(console.y + 2, 1, "The generator won't start.");
+          await getKey();
         }
         if (l.compound.solarPanels) {
-          mvaddstr(
-              y++, 1, "The solar batteries are suddenly reporting no charge.");
+          mvaddstr(console.y + 2, 1,
+              "The solar batteries are suddenly reporting no charge.");
+          await getKey();
         }
-        mvaddstr(y++, 1,
+        mvaddstr(console.y + 2, 1,
             "The compound is plunged into darkness as the doors spontaneously unlock.");
-        y++;
-        mvaddstr(y++, 1, "The CIA has arrived.");
+        await getKey();
+        mvaddstrc(console.y + 2, 1, red, "The CIA has arrived.");
         await getKey();
 
         l.siege.activeSiegeType = SiegeType.cia;
@@ -559,25 +579,35 @@ Future<void> siegeCheck() async {
           oneIn(30) &&
           numpres > 0) {
         erase();
+        setColor(red);
+        addparagraph(
+            6,
+            1,
+            16,
+            78,
+            "A loosely-organized column of pickup trucks sporting gun racks "
+            "and Confederate flags is approaching the ${l.getName()}.");
+        await getKey();
         setColor(white);
         addparagraph(
-            8,
+            console.y + 1,
             1,
-            13,
+            16,
             78,
-            "Overnight, a fringe far-right social media account publishes a "
-            "conspiracy theory about a building where an enclave of hundreds "
-            "of elites are generating forgeries, deepfakes, and committing "
-            "unspeakable crimes against innocent children.");
+            "Overnight, a fringe far-right social media account published a "
+            "detailed conspiracy theory about a building where an enclave of "
+            "hundreds of Liberal elites were supposedly generating forgeries, "
+            "deepfakes, and committing unspeakable crimes against innocent "
+            "children.");
         await getKey();
         addparagraph(
-            console.y,
+            console.y + 1,
             1,
-            13,
+            16,
             78,
-            "Rallied by calls to violence that sweep through social media, a "
-            "loosely organized column of pickup trucks sporting gun racks and "
-            "Confederate flags is descending on the ${l.getName()}!");
+            "Rallied by misguided calls to violence that swept through social "
+            "media, the Conservative masses are pouring into ${l.district.name} "
+            "to assault the ${l.getName()}!");
         await getKey();
 
         l.siege.activeSiegeType = SiegeType.angryRuralMob;
@@ -1025,10 +1055,11 @@ Future<void> siegeDefeat() async {
       if (ledger.funds <= 2000) {
         mvaddstr(8, 1, "Fortunately, your funds remain intact.");
       } else {
-        int confiscated = lcsRandom(lcsRandom(ledger.funds - 2000) + 1) + 1000;
+        int confiscated = lcsRandom(lcsRandom(ledger.funds - 3000) + 1) + 1000;
         if (ledger.funds - confiscated > 50000) {
           confiscated += ledger.funds - 30000 - lcsRandom(20000) - confiscated;
         }
+        if (confiscated > ledger.funds) confiscated = ledger.funds;
         mvaddstr(8, 1,
             "Law enforcement has confiscated \$$confiscated in LCS funds.");
         ledger.subtractFunds(confiscated, Expense.confiscated);
