@@ -1,12 +1,20 @@
 import 'package:lcs_new_age/creature/attributes.dart';
 
 int ageModifierForAttribute(Attribute attribute, int age) {
-  if (age < childAge) return childAgeModifiers[attribute]!;
-  if (age < teenAge) return teenAgeModifiers[attribute]!;
-  if (age > elderlyAge) return elderlyAgeModifiers[attribute]!;
-  if (age > oldAge) return oldAgeModifiers[attribute]!;
-  if (age > middleAge) return middleAgeModifiers[attribute]!;
-  return 0;
+  switch (age) {
+    case < childAge:
+      return childAgeModifiers[attribute]!;
+    case < teenAge:
+      return teenAgeModifiers[attribute]!;
+    case < middleAge:
+      return middleAgeModifiers[attribute]!;
+    case < oldAge:
+      return oldAgeModifiers[attribute]!;
+    case < elderlyAge:
+      return elderlyAgeModifiers[attribute]!;
+    default:
+      return 0;
+  }
 }
 
 // older age damages base health using a different mechanism and should not
@@ -31,7 +39,7 @@ const Map<Attribute, int> oldAgeModifiers = {
   Attribute.heart: 0,
 };
 
-const int middleAge = 52;
+const int middleAge = 35;
 const Map<Attribute, int> middleAgeModifiers = {
   Attribute.strength: -1,
   Attribute.agility: -1,
