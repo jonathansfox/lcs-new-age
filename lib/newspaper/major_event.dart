@@ -499,7 +499,7 @@ String majorEventStoryText(View? view, bool positive) {
           "Palestinian", "Egyptian", "French", "German",
           "Iraqi", "Bolivian", "Columbian",
         ].random;
-        String insaneBanReason = [
+        String ridiculousBanReason = [
           "glorifies Satan worship and was spawned by demons from the pit",
           "teaches children to kill their parents and hate life",
           "causes violence in schools and is a gateway to cocaine use",
@@ -524,7 +524,7 @@ String majorEventStoryText(View? view, bool positive) {
             "   The book, $bookTitle, is an immensely popular book by "
             "$nationality author $authorName.  Although the title is "
             "adored by children worldwide, some conservatives feel that "
-            "the book $insaneBanReason.  In their complaint, the groups "
+            "the book $ridiculousBanReason.  In their complaint, the groups "
             "cited an incident involving a child that $childMisbehavior "
             "as key evidence of the dark nature of the book.&r"
             "   When the decision to ban the book was announced yesterday, "

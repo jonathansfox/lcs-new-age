@@ -329,8 +329,7 @@ Future<bool> completeRecruitMeeting(RecruitmentSession r, Creature p) async {
           addstr(p.name);
           addstr(" needs more experience.");
         } else {
-          addstr(p.name);
-          addstr(" comes off as slightly insane.");
+          addstr("${r.recruit.name} thinks ${p.name} is dangerous extremist.");
 
           move(y++, 0);
           addstr(
