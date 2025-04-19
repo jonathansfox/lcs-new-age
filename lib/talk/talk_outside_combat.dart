@@ -506,11 +506,11 @@ Future<bool> talkToBankTeller(Creature a, Creature tk) async {
           case 1:
             addstr("looks startled, ");
           case 2:
-            addstr("bites her lip, ");
+            addstr("inhales sharply, ");
           case 3:
-            addstr("grimaces, ");
+            addstr("sets the paper aside, ");
           case 4:
-            addstr("frowns, ");
+            addstr("looks up, ");
         }
         mvaddstr(
             12, 1, "and slips several bricks of cash into the squad's bag.");

@@ -1647,7 +1647,7 @@ Future<void> _siteModeAux() async {
 
 /* site - determines spin on site news story, "too hot" timer */
 Future<void> _resolveSite() async {
-  if (siteAlarm) {
+  if (siteAlarm || sitestory!.drama.any((d) => d == Drama.bankTellerRobbery)) {
     commitPotentialCrimes();
   } else {
     clearPotentialCrimes();
