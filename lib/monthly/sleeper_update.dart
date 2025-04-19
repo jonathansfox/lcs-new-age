@@ -156,6 +156,7 @@ void sleeperInfluence(Creature cr, Map<View, int> libpower) {
         View.drugs, View.immigration, //
       ], power);
     /* Legal block - influences an array of social issues */
+    case CreatureTypeIds.liberalJudge:
     case CreatureTypeIds.conservativeJudge:
     case CreatureTypeIds.lawyer:
       addIssues([
@@ -229,7 +230,6 @@ void sleeperInfluence(Creature cr, Map<View, int> libpower) {
     case CreatureTypeIds.emo:
     case CreatureTypeIds.hippie:
     case CreatureTypeIds.unionWorker:
-    case CreatureTypeIds.liberalJudge:
       return;
     /* Miscellaneous block -- includes everyone else */
     case CreatureTypeIds.president:
@@ -253,7 +253,7 @@ void sleeperInfluence(Creature cr, Map<View, int> libpower) {
 
 Future<void> sleeperSpy(Creature cr, Map<View, int> libpower) async {
   Site? homes =
-      findSiteInSameCity(cr.workSite?.city, SiteType.homelessEncampment);
+      findSiteInSameCity(cr.workLocation.city, SiteType.homelessEncampment);
 
   if (lcsRandom(100) > 100 * cr.infiltration) {
     cr.infiltration -= 0.05;
@@ -350,12 +350,37 @@ Future<void> sleeperSpy(Creature cr, Map<View, int> libpower) async {
     case CreatureTypeIds.eminentScientist:
       await leak("LOOT_RESEARCHFILES", "internal animal research reports");
     case CreatureTypeIds.conservativeJudge:
+    case CreatureTypeIds.liberalJudge:
       await leak("LOOT_JUDGEFILES", "compromising files about another Judge");
     case CreatureTypeIds.ccsArchConservative:
       if (ccsExposure.index >= CCSExposure.lcsGotData.index) break;
       await leak(
           "LOOT_CCS_BACKERLIST", "a list of the CCS's government backers");
       ccsExposure = CCSExposure.lcsGotData;
+    default:
+      // 2/3 chance of not leaking anything
+      if (!oneIn(3)) break;
+      // Or find something interesting based on job location
+      switch (cr.workSite?.type) {
+        case SiteType.amRadioStation:
+          await leak("LOOT_AMRADIOFILES", "proof of systemic AM Radio bias");
+        case SiteType.cableNewsStation:
+          await leak(
+              "LOOT_CABLENEWSFILES", "proof of systemic Cable News bias");
+        case SiteType.whiteHouse:
+        case SiteType.intelligenceHQ:
+          await leak("LOOT_SECRETDOCUMENTS", "secret intelligence files");
+        case SiteType.prison:
+          await leak("LOOT_PRISONFILES", "internal prison records");
+        case SiteType.geneticsLab:
+        case SiteType.cosmeticsLab:
+          await leak("LOOT_RESEARCHFILES", "internal animal research reports");
+        case SiteType.corporateHQ:
+        case SiteType.ceoHouse:
+          await leak("LOOT_CORPFILES", "secret corporate documents");
+        default:
+          break;
+      }
   }
 }
 
@@ -492,9 +517,9 @@ Future<void> sleeperRecruit(Creature cr, Map<View, int> libpower) async {
       if (e.workLocation == cr.workLocation || oneIn(5)) {
         if (e.align != Alignment.liberal && !oneIn(5)) continue;
 
+        e.hireId = cr.id;
         liberalize(e);
         e.nameCreature();
-        e.hireId = cr.id;
         e.sleeperAgent = true;
         e.workSite?.mapped = true;
         e.workSite?.hidden = false;
