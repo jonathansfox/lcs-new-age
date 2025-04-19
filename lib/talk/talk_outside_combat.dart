@@ -267,7 +267,7 @@ Future<bool> heyIWantToRentARoom(Creature a, Creature tk) async {
           difficulty += 6;
         }
 
-        if (roll < difficulty - 1) {
+        if (roll < difficulty - 4) {
           mvaddstrc(12, 1, white, tk.name);
           addstr(" responds, ");
           mvaddstrc(13, 1, lightBlue, "\"I think you'd better leave.\"");
