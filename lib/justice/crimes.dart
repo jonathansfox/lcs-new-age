@@ -140,33 +140,33 @@ int crimeHeat(Crime crime) {
     case Crime.treason:
     case Crime.terrorism:
       return 100;
-    case Crime.arson:
     case Crime.racketeering:
+      return 50;
+    case Crime.arson:
     case Crime.escapingPrison:
     case Crime.aidingEscape:
-      return 50;
+    case Crime.cyberTerrorism:
+      return 20;
     case Crime.murder:
     case Crime.kidnapping:
     case Crime.bankRobbery:
-    case Crime.resistingArrest:
-    case Crime.cyberTerrorism:
     case Crime.extortion:
     case Crime.embezzlement:
-      return 20;
-    case Crime.drugDistribution:
+    case Crime.grandTheftAuto:
     case Crime.creditCardFraud:
+    case Crime.dataTheft:
+      return 5;
+    case Crime.unlawfulBurial:
+    case Crime.resistingArrest:
+    case Crime.drugDistribution:
+      return 1;
+    case Crime.harboring:
+    case Crime.breakingAndEntering:
+    case Crime.juryTampering:
+    case Crime.cyberVandalism:
+    case Crime.vandalism:
     case Crime.flagBurning:
     case Crime.unlawfulSpeech:
-    case Crime.juryTampering:
-    case Crime.grandTheftAuto:
-      return 5;
-    case Crime.harboring:
-    case Crime.unlawfulBurial:
-    case Crime.breakingAndEntering:
-    case Crime.dataTheft:
-    case Crime.vandalism:
-    case Crime.cyberVandalism:
-      return 1;
     case Crime.illegalEntry:
     case Crime.assault:
     case Crime.theft:
