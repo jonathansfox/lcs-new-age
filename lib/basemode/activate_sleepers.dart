@@ -201,6 +201,9 @@ Future<void> activateSleeper(Creature cr) async {
       case ActivityType.sleeperSteal:
         mvaddstr(22, 3, cr.name);
         addstr(" will steal equipment and send it to the Camp.");
+      case ActivityType.sleeperJoinLcs:
+        mvaddstr(22, 3, cr.name);
+        addstr(" will join the active LCS.");
       default:
         mvaddstrc(22, 3, red, "${cr.name} will dig around in the bugfield.");
         debugPrint("Unexpected sleeper activity type: "
