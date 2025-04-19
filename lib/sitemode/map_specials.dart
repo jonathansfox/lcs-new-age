@@ -36,6 +36,7 @@ import 'package:lcs_new_age/sitemode/site_display.dart';
 import 'package:lcs_new_age/sitemode/sitemap.dart';
 import 'package:lcs_new_age/sitemode/sitemode.dart';
 import 'package:lcs_new_age/sitemode/stealth.dart';
+import 'package:lcs_new_age/talk/talk.dart';
 import 'package:lcs_new_age/utils/colors.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 
@@ -510,9 +511,12 @@ Future<void> specialLabGeneticCagedAnimals() async {
     sitestory!.drama.add(Drama.freeMonsters);
     if (oneIn(2)) {
       fillEncounter(CreatureTypeIds.genetic, lcsRandom(6) + 1);
-      await encounterMessage(
-          "Uh, maybe that idea was Conservative in retrospect...");
-      siteAlarm = true;
+      await talk(squad.first, encounter.first);
+      if (encounter.first.align == Alignment.conservative) {
+        siteAlarm = true;
+      } else if (siteAlarmTimer > 1) {
+        siteAlarmTimer = 1;
+      }
     }
   } else if (result != UnlockResult.noAttempt) {
     await noticeCheck();

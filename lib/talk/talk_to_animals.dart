@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:lcs_new_age/creature/attributes.dart';
 import 'package:lcs_new_age/creature/creature.dart';
 import 'package:lcs_new_age/engine/engine.dart';
@@ -16,22 +18,29 @@ Future<bool> heyMisterAnimal(List<(String, String)> goodTalk,
       value.attribute(Attribute.heart) >= element.attribute(Attribute.heart)
           ? value
           : element);
+  Color targetColor;
   if (liberal.attribute(Attribute.heart) >= 15) {
     success = true;
     (pitch, response) = goodTalk.random;
+    targetColor = lightGreen;
   } else {
     target.isWillingToTalk = false;
     (pitch, response) = badTalk.random;
+    targetColor = red;
   }
 
   clearSceneAreas();
+  printEncounter();
+  printSiteMapSmall(locx, locy, locz);
 
-  mvaddstrc(10, 1, white, "${liberal.name} says, ");
-  mvaddstrc(11, 1, lightGreen, pitch);
+  mvaddstrc(9, 1, white, "${liberal.name}: ");
+  mvaddstrc(10, 1, lightGreen, pitch);
   await getKey();
 
-  mvaddstrc(13, 1, white, "${target.name} says, ");
-  mvaddstrc(14, 1, yellow, response);
+  clearMessageArea();
+
+  mvaddstrc(9, 1, white, "${target.name}: ");
+  mvaddstrc(10, 1, targetColor, response);
   await getKey();
 
   if (success) {
@@ -132,10 +141,10 @@ List<(String, String)> randomMonsterTalkGood = [
 ];
 
 List<(String, String)> randomMonsterTalkBad = [
-  ("\"Hi Mister Monster!\"", "\"Die in a fire!\""),
+  ("\"Stay calm!\"", "\"Die in a fire!\""),
   ("\"Good monster!\"", "\"You will die screaming!\""),
   ("\"Woah, uh... shit!\"", "\"Foolish mortal!\""),
-  ("\"Don't kill us!\"", "\"Pathetic human! You're already dead!\""),
+  ("\"Don't kill me!\"", "\"Pathetic human! You're already dead!\""),
   ("\"Oh crap!\"", "\"Where is your god now, mortal?!\""),
   ("\"Uhhh... down, boy?\"", "\"You dare call me a boy? Fool!\""),
   ("\"Don't eat me!\"", "\"I will feast on your flesh!\""),
@@ -147,6 +156,9 @@ List<(String, String)> randomMonsterTalkBad = [
     "\"Shh... it's okay... I'm a friend!\"",
     "\"We will kill you AND your friends!\""
   ),
-  ("\"OH MAN I LOVE MONSTERS!\"", "\"WHAT A COINCIDENCE, I LOVE EATING YOU!\""),
+  (
+    "\"OH MAN I LOVE MONSTERS!\"",
+    "\"WHAT A COINCIDENCE, I WILL LOVE EATING YOU!\""
+  ),
   ("\"Slurp! Boom! Raaahgh!\"", "\"Your mockery will be met with death!\""),
 ];
