@@ -56,34 +56,17 @@ bool testWorkLocation(CreatureType type, Site location) {
     case CreatureTypeIds.servant:
       okaySite.add(SiteType.ceoHouse);
     case CreatureTypeIds.janitor:
-      okaySite.addAll([
-        SiteType.tenement,
-        SiteType.apartment,
-        SiteType.upscaleApartment,
-        SiteType.cosmeticsLab,
-        SiteType.geneticsLab,
-        SiteType.clinic,
-        SiteType.universityHospital,
-        SiteType.policeStation,
-        SiteType.courthouse,
-        SiteType.prison,
-        SiteType.intelligenceHQ,
-        SiteType.dirtyIndustry,
-        SiteType.nuclearPlant,
-        SiteType.corporateHQ,
-        SiteType.amRadioStation,
-        SiteType.cableNewsStation,
-        SiteType.pawnShop,
-        SiteType.drugHouse,
-        SiteType.juiceBar,
-        SiteType.barAndGrill,
-        SiteType.latteStand,
-        SiteType.veganCoOp,
-        SiteType.internetCafe,
-        SiteType.departmentStore,
-        SiteType.oubliette,
-        SiteType.fireStation,
-      ]);
+      // Wherever you go, there they are
+      // (short list of exceptions)
+      okaySite.addAll(SiteType.values.toList()
+        ..remove(SiteType.publicPark)
+        ..remove(SiteType.drugHouse)
+        ..remove(SiteType.homelessEncampment)
+        ..remove(SiteType.bombShelter)
+        ..remove(SiteType.bunker)
+        ..remove(SiteType.armyBase)
+        ..remove(SiteType.ceoHouse)
+        ..remove(SiteType.warehouse));
     case CreatureTypeIds.sweatshopWorker:
       okaySite.add(SiteType.sweatshop);
     case CreatureTypeIds.unionWorker:
@@ -142,7 +125,10 @@ bool testWorkLocation(CreatureType type, Site location) {
         SiteType.cableNewsStation,
       ]);
     case CreatureTypeIds.genetic:
-      okaySite.add(SiteType.geneticsLab);
+      okaySite.addAll([
+        SiteType.geneticsLab,
+        SiteType.ceoHouse,
+      ]);
     case CreatureTypeIds.guardDog:
       okaySite.addAll([
         SiteType.prison,
@@ -182,6 +168,7 @@ bool testWorkLocation(CreatureType type, Site location) {
       okaySite.addAll([
         SiteType.latteStand,
         SiteType.internetCafe,
+        SiteType.juiceBar,
       ]);
     case CreatureTypeIds.bartender:
       okaySite.add(SiteType.barAndGrill);
@@ -201,7 +188,6 @@ bool testWorkLocation(CreatureType type, Site location) {
         SiteType.whiteHouse,
       ]);
     case CreatureTypeIds.sexWorker:
-    case CreatureTypeIds.chef:
       okaySite.add(SiteType.barAndGrill);
     case CreatureTypeIds.merc:
       okaySite.addAll([
@@ -227,12 +213,22 @@ bool testWorkLocation(CreatureType type, Site location) {
     case CreatureTypeIds.radioPersonality:
       okaySite.add(SiteType.amRadioStation);
     case CreatureTypeIds.artCritic:
-    case CreatureTypeIds.journalist:
-    case CreatureTypeIds.photographer:
     case CreatureTypeIds.cameraman:
     case CreatureTypeIds.newsAnchor:
     case CreatureTypeIds.televangelist:
       okaySite.add(SiteType.cableNewsStation);
+    case CreatureTypeIds.journalist:
+    case CreatureTypeIds.photographer:
+    case CreatureTypeIds.hairstylist:
+      okaySite.addAll([
+        SiteType.cableNewsStation,
+        SiteType.whiteHouse,
+      ]);
+    case CreatureTypeIds.chef:
+      okaySite.addAll([
+        SiteType.barAndGrill,
+        SiteType.whiteHouse,
+      ]);
     case CreatureTypeIds.clerk:
       okaySite.addAll([
         SiteType.veganCoOp,
@@ -241,6 +237,7 @@ bool testWorkLocation(CreatureType type, Site location) {
         SiteType.internetCafe,
         SiteType.departmentStore,
         SiteType.oubliette,
+        SiteType.whiteHouse,
       ]);
     default:
   }
