@@ -221,6 +221,7 @@ Future<void> dealership(Site loc) async {
             "Vehicle", true, "We don't need a Conservative car");
         if (carchoice != -1 && vehicleprice[carchoice] > ledger.funds) {
           mvaddstrc(1, 1, darkRed, "You don't have enough money!");
+          carchoice = -1;
 
           await getKey();
         } else {
