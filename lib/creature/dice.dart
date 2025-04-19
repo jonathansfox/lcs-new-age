@@ -3,7 +3,7 @@ import 'package:lcs_new_age/utils/lcsrandom.dart';
 enum Dice {
   d20,
   r3d6,
-  r2d10avg;
+  r2d6;
 
   int roll() {
     switch (this) {
@@ -11,8 +11,8 @@ enum Dice {
         return lcsRandom(20) + 1;
       case Dice.r3d6:
         return lcsRandom(6) + lcsRandom(6) + lcsRandom(6) + 3;
-      case Dice.r2d10avg:
-        return ((lcsRandom(10) + 1) + (lcsRandom(10) + 1)) ~/ 2;
+      case Dice.r2d6:
+        return (lcsRandom(6) + 1) + (lcsRandom(6) + 1);
     }
   }
 
@@ -22,8 +22,8 @@ enum Dice {
         return 10;
       case Dice.r3d6:
         return 10;
-      case Dice.r2d10avg:
-        return 5;
+      case Dice.r2d6:
+        return 7;
     }
   }
 }

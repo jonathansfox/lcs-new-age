@@ -434,7 +434,7 @@ class Creature {
 
   int skillRoll(
     Skill skill, {
-    Dice dice = Dice.r2d10avg,
+    Dice dice = Dice.r2d6,
     bool take10 = false,
     bool healthMod = false,
     bool advantage = false,
@@ -491,7 +491,7 @@ class Creature {
     if (!alive) return false;
     int result = skillRoll(skills.first, take10: take10, healthMod: healthMod);
     for (int i = 1; i < skills.length; i++) {
-      result += skillRoll(skills[i], take10: true) - Dice.r2d10avg.take10();
+      result += skillRoll(skills[i], take10: true) - Dice.r2d6.take10();
     }
     difficulty = Difficulty.veryEasy +
         (difficulty - Difficulty.veryEasy) * (skills.length);
@@ -500,7 +500,7 @@ class Creature {
 
   int attributeRoll(
     Attribute att, {
-    Dice dice = Dice.r2d10avg,
+    Dice dice = Dice.r2d6,
     bool take10 = false,
     bool healthMod = false,
   }) {

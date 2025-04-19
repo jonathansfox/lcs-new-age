@@ -147,7 +147,7 @@ int _roll(Creature c, List<Skill> skills) {
               }).reduce((a, b) => a + b) /
               skills.length)
           .round() +
-      Dice.r2d10avg.roll();
+      Dice.r2d6.roll();
 }
 
 double _multiplierFromPublicMood({bool highImpact = false}) {

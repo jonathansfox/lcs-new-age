@@ -21,7 +21,7 @@ Future<void> hardlinerFight(Creature cr) async {
     wonfight = true;
   } else {
     for (int count = 0; count <= lcsRandom(5) + 2; count++) {
-      if (cr.skillRoll(Skill.martialArts) > Difficulty.hard + count) {
+      if (cr.skillRoll(Skill.martialArts) > Difficulty.average + count) {
         await showMessage(
             "${cr.name} ${[
               "breaks the arm of the nearest person!",

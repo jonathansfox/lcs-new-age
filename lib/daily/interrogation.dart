@@ -140,7 +140,7 @@ Future<void> tendHostage(InterrogationSession intr) async {
     if (tenderAttack[p] > attack) attack = tenderAttack[p];
   }
 
-  attack += Dice.r2d10avg.roll();
+  attack += Dice.r2d6.roll();
 
   List<int> goodp = [];
 
