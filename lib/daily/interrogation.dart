@@ -6,6 +6,7 @@ import 'package:lcs_new_age/common_display/common_display.dart';
 import 'package:lcs_new_age/creature/attributes.dart';
 import 'package:lcs_new_age/creature/conversion.dart';
 import 'package:lcs_new_age/creature/creature.dart';
+import 'package:lcs_new_age/creature/dice.dart';
 import 'package:lcs_new_age/creature/difficulty.dart';
 import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/daily/advance_day.dart';
@@ -130,15 +131,16 @@ Future<void> tendHostage(InterrogationSession intr) async {
     religion = max(tempp.skill(Skill.religion), religion);
     science = max(tempp.skill(Skill.science), science);
 
-    tenderAttack[p] = tempp.attribute(Attribute.heart) -
-        tempp.attribute(Attribute.wisdom) +
-        tempp.skill(Skill.psychology) * 2;
+    tenderAttack[p] =
+        tempp.attribute(Attribute.heart) + tempp.skill(Skill.psychology) * 2;
 
     tenderAttack[p] += tempp.clothing.type.interrogationBasePower;
 
     if (tenderAttack[p] < 0) tenderAttack[p] = 0;
     if (tenderAttack[p] > attack) attack = tenderAttack[p];
   }
+
+  attack += Dice.r2d10avg.roll();
 
   List<int> goodp = [];
 
@@ -162,10 +164,10 @@ Future<void> tendHostage(InterrogationSession intr) async {
   attack += business - cr.skill(Skill.business);
   attack += religion - cr.skill(Skill.religion);
   attack += science - cr.skill(Skill.science);
-  attack -= cr.skillRoll(Skill.psychology);
+  attack -= cr.skill(Skill.psychology);
 
-  attack += cr.attributeRoll(Attribute.heart);
-  attack -= cr.attributeRoll(Attribute.wisdom) * 2;
+  attack += cr.attribute(Attribute.heart);
+  attack -= cr.attribute(Attribute.wisdom);
 
   while (true) {
     y = 2;
@@ -1114,7 +1116,7 @@ Future<void> tendHostage(InterrogationSession intr) async {
 
     await getKey();
 
-    y = await traumatize(lead, "suicide", y);
+    y = await traumatize(lead, "death", y);
   }
 
   if (turned && cr.alive) {

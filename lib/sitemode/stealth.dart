@@ -25,8 +25,9 @@ Future<void> noticeCheck(
 
   Creature? sneaker;
   for (Creature p in activeSquad!.livingMembers) {
-    if (sneaker == null || p.skillRoll(Skill.stealth, take10: true) < sneak) {
-      sneak = p.skillRoll(Skill.stealth, take10: true);
+    int take10 = p.skillRoll(Skill.stealth, take10: true);
+    if (sneaker == null || take10 < sneak) {
+      sneak = take10;
       sneaker = p;
     }
   }

@@ -731,8 +731,8 @@ Future<bool> enemyCarUpdate() async {
 
       Creature yourDriver = squad.where((p) => p.isDriver).toList().random;
       Vehicle yourCar = yourDriver.car!;
-      int attack = enemyCarDriver.skillRoll(Skill.driving) +
-          lcsRandom(drivingRandomness);
+      int attack =
+          driveskill(enemyCarDriver, enemyCar) + lcsRandom(drivingRandomness);
       int defense = driveskill(yourDriver, yourCar) +
           lcsRandom(drivingRandomness + chaseSequence!.turn);
       if (!yourDriver.alive) {

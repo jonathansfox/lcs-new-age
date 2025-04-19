@@ -10,6 +10,7 @@ import 'package:lcs_new_age/common_display/common_display.dart';
 import 'package:lcs_new_age/creature/attributes.dart';
 import 'package:lcs_new_age/creature/creature.dart';
 import 'package:lcs_new_age/creature/creature_type.dart';
+import 'package:lcs_new_age/creature/dice.dart';
 import 'package:lcs_new_age/creature/name.dart';
 import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/engine/engine.dart';
@@ -867,20 +868,25 @@ Future<void> siegeTurn() async {
           await getKey();
 
           int best = 0;
-          for (int i = 0, bestvalue = -1000; i < pool.length; i++) {
+          int bestvalue = -1000;
+          for (int i = 0; i < pool.length; i++) {
             Creature p = pool[i];
             if (!p.alive || p.align != Alignment.liberal || p.location != l) {
               continue;
             }
 
             int sum = p.attribute(Attribute.intelligence) +
-                p.attribute(Attribute.heart) +
-                p.skill(Skill.persuasion) +
-                p.juice;
+                p.attribute(Attribute.heart) * 2 +
+                p.skill(Skill.persuasion) * 2 +
+                p.skill(Skill.business) +
+                p.skill(Skill.science) +
+                p.skill(Skill.religion) +
+                p.skill(Skill.law) +
+                p.juice ~/ 20;
 
             if (sum > bestvalue) {
               best = i;
-              bestvalue = sum;
+              bestvalue = sum - p.juice ~/ 20;
             }
           }
 
@@ -891,17 +897,10 @@ Future<void> siegeTurn() async {
               "The interview is wide-ranging, covering a variety of topics.");
           await getKey();
 
-          int segmentpower = pool[best].attributeRoll(Attribute.intelligence) +
-              pool[best].attributeRoll(Attribute.heart) +
-              pool[best].skillRoll(Skill.business, take10: true) +
-              pool[best].skillRoll(Skill.religion, take10: true) +
-              pool[best].skillRoll(Skill.law, take10: true) +
-              pool[best].skillRoll(Skill.science, take10: true) +
-              pool[best].skillRoll(Skill.persuasion) +
-              pool[best].skillRoll(Skill.persuasion);
+          int segmentpower = bestvalue + Dice.d20.roll();
 
           move(8, 1);
-          if (segmentpower < 35) {
+          if (segmentpower < 15) {
             String playName = "${[
               "Ridiculous",
               "Oblivious",
@@ -934,17 +933,17 @@ Future<void> siegeTurn() async {
             mvaddstr(
                 9, 1, "and later used the material for a Broadway play called");
             mvaddstr(10, 1, "$playName.");
-          } else if (segmentpower < 40) {
+          } else if (segmentpower < 20) {
             addstr(
                 "But the interview is so boring that ${repname.firstLast} falls asleep.");
-          } else if (segmentpower < 45) {
+          } else if (segmentpower < 25) {
             addstr("But ${pool[best].name} stutters nervously the whole time.");
-          } else if (segmentpower < 50) {
+          } else if (segmentpower < 30) {
             addstr(
                 "${pool[best].name}'s verbal finesse leaves something to be desired.");
-          } else if (segmentpower < 65) {
+          } else if (segmentpower < 35) {
             addstr("${pool[best].name} represents the LCS well.");
-          } else if (segmentpower < 80) {
+          } else if (segmentpower < 50) {
             addstr("The discussion was exciting and dynamic.");
             mvaddstr(9, 1,
                 "Even the Cable News and AM Radio spend days talking about it.");
@@ -959,9 +958,9 @@ Future<void> siegeTurn() async {
 
           //CHECK PUBLIC OPINION
           changePublicOpinion(View.lcsKnown, 20);
-          changePublicOpinion(View.lcsLiked, (segmentpower - 45) ~/ 2);
+          changePublicOpinion(View.lcsLiked, (segmentpower - 25) ~/ 2);
           for (int v = 0; v < 5; v++) {
-            changePublicOpinion(View.issues.random, (segmentpower - 45) ~/ 2);
+            changePublicOpinion(View.issues.random, (segmentpower - 25) ~/ 2);
           }
         }
       }

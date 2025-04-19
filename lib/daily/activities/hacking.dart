@@ -136,7 +136,7 @@ Future<void> doActivityCCFraud(List<Creature> cc) async {
   ledger.addFunds(fundgain, Income.creditCardFraud);
   for (int h = 0; h < cc.length; h++) {
     cc[h].income = fundgain ~/ cc.length;
-    if (fundgain / 25 > lcsRandom(hackSkill + 1)) {
+    if (fundgain / 10 > lcsRandom(hackSkill + 1) / 2 + hackSkill / 2) {
       criminalize(cc[h], Crime.creditCardFraud);
     }
   }

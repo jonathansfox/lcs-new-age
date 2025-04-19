@@ -1,6 +1,7 @@
 import 'package:lcs_new_age/basemode/activities.dart';
 import 'package:lcs_new_age/common_display/common_display.dart';
 import 'package:lcs_new_age/creature/creature.dart';
+import 'package:lcs_new_age/creature/dice.dart';
 import 'package:lcs_new_age/creature/difficulty.dart';
 import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/daily/activities/arrest.dart';
@@ -141,11 +142,12 @@ void _earnMoney(Creature c, Income incomeType, int money) {
 
 int _roll(Creature c, List<Skill> skills) {
   return (skills.map((skill) {
-            c.train(skill, 5);
-            return c.skillRoll(skill);
-          }).reduce((a, b) => a + b) /
-          skills.length)
-      .round();
+                c.train(skill, 5);
+                return c.skill(skill);
+              }).reduce((a, b) => a + b) /
+              skills.length)
+          .round() +
+      Dice.r2d10avg.roll();
 }
 
 double _multiplierFromPublicMood({bool highImpact = false}) {

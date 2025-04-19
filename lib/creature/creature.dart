@@ -7,6 +7,8 @@ import 'package:lcs_new_age/creature/attributes.dart';
 import 'package:lcs_new_age/creature/body.dart';
 import 'package:lcs_new_age/creature/creature_builder.dart';
 import 'package:lcs_new_age/creature/creature_type.dart';
+import 'package:lcs_new_age/creature/dice.dart';
+import 'package:lcs_new_age/creature/difficulty.dart';
 import 'package:lcs_new_age/creature/gender.dart';
 import 'package:lcs_new_age/creature/level.dart';
 import 'package:lcs_new_age/creature/name.dart';
@@ -76,7 +78,7 @@ class Creature {
   @JsonKey(includeFromJson: false, includeToJson: false)
   int get heat => max(
       sqrt(wantedForCrimes.entries
-          .fold(0, (val, b) => val + crimeHeat(b.key) * b.value)).ceil(),
+          .fold(0, (val, b) => val + crimeHeat(b.key) * (b.value))).ceil(),
       _heat);
   set heat(int value) => _heat = value;
   @JsonKey(defaultValue: 0)
@@ -432,26 +434,25 @@ class Creature {
 
   int skillRoll(
     Skill skill, {
+    Dice dice = Dice.r2d10avg,
     bool take10 = false,
     bool healthMod = false,
     bool advantage = false,
   }) {
     int roll;
     if (take10) {
-      roll = 10;
-      if (advantage) roll += 5;
+      roll = dice.take10();
+      if (advantage) roll += dice.take10() ~/ 2;
     } else {
-      roll = lcsRandom(20) + 1;
-      if (advantage) roll = max(roll, lcsRandom(20) + 1);
+      roll = dice.roll();
+      if (advantage) roll = max(roll, dice.roll());
     }
-    int attMod = attribute(skill.attribute) - 5;
     int skillMod = rawSkill[skill]!;
-    if (skillMod < 1) roll = roll ~/ 2;
     if (healthMod) {
-      roll -= (maxBlood - blood) * 4 ~/ maxBlood;
+      roll -= (maxBlood - blood) * 2 ~/ maxBlood;
       roll -= body.combatRollModifier;
     }
-    roll = roll + attMod + skillMod;
+    roll = roll + skillMod;
     if (skill == Skill.stealth) {
       roll = stealthMod(roll);
     }
@@ -485,13 +486,29 @@ class Creature {
     return result >= difficulty;
   }
 
-  int attributeRoll(Attribute att,
+  bool multiSkillCheck(List<Skill> skills, int difficulty,
       {bool take10 = false, bool healthMod = false}) {
-    int roll = lcsRandom(20) + 1;
-    if (take10) roll = 10;
+    if (!alive) return false;
+    int result = skillRoll(skills.first, take10: take10, healthMod: healthMod);
+    for (int i = 1; i < skills.length; i++) {
+      result += skillRoll(skills[i], take10: true) - Dice.r2d10avg.take10();
+    }
+    difficulty = Difficulty.veryEasy +
+        (difficulty - Difficulty.veryEasy) * (skills.length);
+    return result >= difficulty;
+  }
+
+  int attributeRoll(
+    Attribute att, {
+    Dice dice = Dice.r2d10avg,
+    bool take10 = false,
+    bool healthMod = false,
+  }) {
+    int roll = dice.roll();
+    if (take10) roll = dice.take10();
     int attMod = attribute(att) - 5;
     if (healthMod) {
-      roll -= (maxBlood - blood) * 4 ~/ maxBlood;
+      roll -= (maxBlood - blood) * 2 ~/ maxBlood;
       roll -= body.combatRollModifier;
     }
     return roll + attMod;

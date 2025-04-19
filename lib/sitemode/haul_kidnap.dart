@@ -98,7 +98,7 @@ Future<void> kidnapattempt() async {
 
       //BASIC ROLL
       int aroll = kidnapper.skillRoll(Skill.martialArts);
-      int droll = target.attributeRoll(Attribute.agility);
+      int droll = target.attributeRoll(Attribute.agility, take10: true);
 
       kidnapper.train(Skill.martialArts, droll);
 

@@ -58,7 +58,7 @@ Future<void> displayNewsStories() async {
       skill = Skill.persuasion;
     }
     if (skill != null) {
-      guardianPower += c.skillRoll(skill) - 10;
+      guardianPower += c.skillRoll(skill);
       c.train(skill, 10);
       if (noProfanity) criminalize(c, Crime.unlawfulSpeech);
     }

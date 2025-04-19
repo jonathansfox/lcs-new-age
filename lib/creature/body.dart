@@ -425,22 +425,21 @@ class HumanoidBody extends Body {
   @override
   int get combatRollModifier {
     double modifier = 0;
-    if (missingLeftEye || missingRightEye) modifier += 0.5;
-    if (missingLeftEye && missingRightEye) modifier += 10;
-    if (puncturedRightLung) modifier += 4;
-    if (puncturedLeftLung) modifier += 4;
-    if (puncturedHeart) modifier += 5;
-    if (puncturedLiver) modifier += 2.5;
-    if (puncturedStomach) modifier += 2.5;
-    if (puncturedRightKidney) modifier += 2.5;
-    if (puncturedLeftKidney) modifier += 2.5;
-    if (puncturedSpleen) modifier += 2;
-    if (brokenUpperSpine) modifier += 50;
-    if (brokenLowerSpine) modifier += 100;
-    if (brokenNeck) modifier += 150;
-    if (ribs < 10) modifier += 2.5;
-    if (ribs < 5) modifier += 2.5;
-    if (ribs <= 0) modifier += 2.5;
+    if (missingLeftEye && missingRightEye) modifier += 5;
+    if (puncturedRightLung) modifier += 2;
+    if (puncturedLeftLung) modifier += 2;
+    if (puncturedHeart) modifier += 2;
+    if (puncturedLiver) modifier += 1;
+    if (puncturedStomach) modifier += 1;
+    if (puncturedRightKidney) modifier += 1;
+    if (puncturedLeftKidney) modifier += 1;
+    if (puncturedSpleen) modifier += 1;
+    if (brokenUpperSpine) modifier += 25;
+    if (brokenLowerSpine) modifier += 50;
+    if (brokenNeck) modifier += 75;
+    if (ribs < 10) modifier += 1;
+    if (ribs < 5) modifier += 1;
+    if (ribs <= 0) modifier += 1;
     return modifier.round();
   }
 }

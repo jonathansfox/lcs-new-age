@@ -29,8 +29,8 @@ Future<void> doActivityTrouble(List<Creature> trouble) async {
 
   int power = 0;
   for (int t = 0; t < trouble.length; t++) {
-    power += trouble[t].skillRoll(Skill.art) +
-        trouble[t].skillRoll(Skill.streetSmarts);
+    power +=
+        trouble[t].skillRoll(Skill.art) + trouble[t].skill(Skill.streetSmarts);
   }
 
   int mod = 1;

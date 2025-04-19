@@ -475,7 +475,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
 
   // Basic roll
   int aroll = a.skillRoll(wsk);
-  int droll = t.skillRoll(Skill.dodge);
+  int droll = t.skillRoll(Skill.dodge, take10: true, advantage: targetIsLeader);
   if (mode == GameMode.carChase) {
     droll = 0;
     if (t.car != null && a.car != null) {
@@ -486,11 +486,9 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
     }
     a.train(wsk, droll + 5);
   } else {
-    //Founders are better dodgers
-    if (targetIsLeader) droll = max(droll, t.skillRoll(Skill.dodge));
     if (sneakAttack) {
-      droll = (t.attributeRoll(Attribute.wisdom) / 2).round();
-      aroll += a.skillRoll(Skill.stealth);
+      droll = (t.attributeRoll(Attribute.wisdom, take10: true) / 2).round();
+      aroll += a.skill(Skill.stealth);
       a.train(Skill.stealth, 10);
       a.train(wsk, 10);
     } else {
@@ -1392,9 +1390,9 @@ Future<bool> socialAttack(Creature a, Creature t, Attack attackUsed) async {
 
   int attack = a.skillRoll(attackUsed.skill);
   if (t.align == Alignment.liberal) {
-    resist = t.attributeRoll(Attribute.heart);
+    resist = t.attributeRoll(Attribute.heart, take10: true);
   } else {
-    resist = t.attributeRoll(Attribute.wisdom);
+    resist = t.attributeRoll(Attribute.wisdom, take10: true);
   }
   resist += t.skill(Skill.psychology);
   a.train(attackUsed.skill, max(1, resist));
