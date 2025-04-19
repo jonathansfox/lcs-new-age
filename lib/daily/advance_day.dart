@@ -692,7 +692,7 @@ Future<void> _dailyHealing() async {
           // Bleeding wounds
           // Chance to stabilize wound
           // Difficulty 8 (1 in 10 of happening naturally)
-          if (p.site != null && medical[p.site]! + lcsRandom(10) > 8) {
+          if (p.site != null && (medical[p.site] ?? 0) + lcsRandom(10) > 8) {
             w.bleeding = 0;
           } else {
             // Else take bleed damage (1)
