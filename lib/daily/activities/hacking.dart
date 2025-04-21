@@ -54,11 +54,11 @@ Future<void> doActivityHacking(List<Creature> hack) async {
         trackdif = Difficulty.mythic;
         crime = Crime.cyberTerrorism;
         juiceval = 25;
-        changePublicOpinion(View.intelligence, 5);
+        changePublicOpinion(View.intelligence, 5, coloredByLcsOpinions: true);
       case 2:
         msg += "sabotaged a genetics research company's network.";
         crime = Crime.cyberVandalism;
-        changePublicOpinion(View.genetics, 5);
+        changePublicOpinion(View.genetics, 5, coloredByLcsOpinions: true);
       case 3:
         msg += "intercepted internal media emails.";
         if (oneIn(2)) {
@@ -71,7 +71,7 @@ Future<void> doActivityHacking(List<Creature> hack) async {
         trackdif = Difficulty.mythic;
         crime = Crime.cyberTerrorism;
         juiceval = 25;
-        changePublicOpinion(View.military, 5);
+        changePublicOpinion(View.military, 5, coloredByLcsOpinions: true);
         changePublicOpinion(View.lcsKnown, 5);
       case 5:
         msg += "uncovered information on dangerous research.";
