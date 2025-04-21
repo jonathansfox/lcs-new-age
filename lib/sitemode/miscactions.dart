@@ -133,7 +133,7 @@ Future<UnlockResult> bash(BashTypes type) async {
         crowable = true;
       } else if (activeSite!.type != SiteType.prison &&
           activeSite!.type != SiteType.intelligenceHQ) {
-        difficulty = Difficulty.challenging; // Respectable place
+        difficulty = Difficulty.average; // Respectable place
         crowable = true;
       } else {
         difficulty = Difficulty.formidable; // Very high security
