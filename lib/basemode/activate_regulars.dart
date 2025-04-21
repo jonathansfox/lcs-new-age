@@ -200,10 +200,12 @@ Future<void> _activateOne(Creature c) async {
         c.activity = Activity.none();
       case Key.z:
         if (canDisposeCorpses) {
+          state = 0;
           c.activity = Activity(ActivityType.bury);
         }
       case Key.i:
         if (canInterrogateHostages) {
+          state = 0;
           await _selectTendHostage(c);
         }
       case Key.g:
