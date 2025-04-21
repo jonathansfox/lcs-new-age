@@ -9,6 +9,7 @@ import 'package:lcs_new_age/basemode/disbanding.dart';
 import 'package:lcs_new_age/basemode/flag.dart';
 import 'package:lcs_new_age/basemode/invest_in_location.dart';
 import 'package:lcs_new_age/basemode/liberal_agenda.dart';
+import 'package:lcs_new_age/basemode/media_overview.dart';
 import 'package:lcs_new_age/basemode/plan_site_visit.dart';
 import 'package:lcs_new_age/basemode/review_mode.dart';
 import 'package:lcs_new_age/common_actions/equipment.dart';
@@ -159,8 +160,8 @@ Future<bool> baseMode() async {
         await updateTheSlogan();
       case Key.num0:
         activeSquadMember = null;
-      //case Key.m:
-      //await mediaOverview();
+      case Key.m:
+        await mediaOverview();
       case Key.x:
         await autoSaveGame();
         endGame();
@@ -393,8 +394,13 @@ void baseModeOptionsDisplay(Site? loc) {
       addstrc(lightGray, " (next month)");
     }
   }
-  addOptionText(22, 40, "m", "M - Media Overview & Strategy",
-      enabledWhen: false);
+  int unreadNewsCount = gameState.newsArchive.where((ns) => ns.unread).length;
+  if (unreadNewsCount > 0) {
+    addOptionText(
+        22, 40, "m", "M - Media Overview & Impact &C($unreadNewsCount)");
+  } else {
+    addOptionText(22, 40, "m", "M - Media Overview & Impact");
+  }
   addOptionText(23, 40, "x", "X - Exit to the Title Screen");
 
   if (loc?.hasFlag ?? false) {

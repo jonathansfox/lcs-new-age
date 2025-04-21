@@ -163,20 +163,20 @@ class Politics {
     num power, {
     bool coloredByLcsOpinions = false,
     bool coloredByCcsOpinions = false,
+    int extraMoralAuthority = 0,
   }) {
     double existingView = publicOpinion[view]!;
     int existingInterest = publicInterest[view]!;
     if (coloredByLcsOpinions) {
-      // Power from people who haven't heard of the LCS or don't care
-      double rawPower = power * ((100 - publicOpinion[View.lcsKnown]!) / 100);
       // Power from people who have opinions about the LCS
-      double affectedPower = power - rawPower;
-      double lcsPopularity = publicOpinion[View.lcsLiked]!;
-      double moralAuthority = lcsPopularity - existingView;
-      affectedPower = affectedPower * (100 + moralAuthority) / 100;
-      power = rawPower + affectedPower;
+      double lcsPopularity = lcsApproval();
+      double moralAuthority =
+          lcsPopularity - existingView + extraMoralAuthority;
+      power = power * (50 + moralAuthority) / 100;
     } else if (coloredByCcsOpinions) {
-      power = power * (100 - publicOpinion[View.ccsHated]!) / 100;
+      power = power *
+          (50 - publicOpinion[View.ccsHated]! + extraMoralAuthority) /
+          100;
     }
     if (view == View.lcsKnown) {
       power = power.clamp(-5, 50);

@@ -178,7 +178,7 @@ void displaysinglead(bool liberalguardian, List<(int, int)> addplace,
       }
     }
 
-    displayNewsStory(ad, storyXStart, storyXEnd, sy + 1);
+    displayNewsStory(ad, storyXStart, storyXEnd, sy + 1, null);
   }
 }
 

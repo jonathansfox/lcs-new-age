@@ -413,6 +413,7 @@ class CarTheftScene {
     List<VehicleType> cart =
         vehicleTypes.values.where((v) => v.difficultyToFind < 10).toList();
     bailed = true;
+    erase();
     await pagedInterface(
       headerPrompt:
           "What type of car will ${cr.name} try to find and steal today?",

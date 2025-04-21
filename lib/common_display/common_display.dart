@@ -609,16 +609,11 @@ Future<void> pagedInterface({
 }) async {
   int page = 0;
   int pageCount = (count / pageSize).ceil();
-  if (topY == 0) {
-    erase();
-  } else {
-    eraseArea(startY: topY, startX: 0, endY: pageSize + 3 + topY, endX: 80);
-  }
-  mvaddstrc(topY, 0, white, headerPrompt);
-  addHeader(headerKey, y: topY + 1);
-  mvaddstrc(pageSize + 2 + topY, 0, lightGray, footerPrompt);
   while (true) {
-    eraseArea(startY: 2 + topY, startX: 0, endY: pageSize + 2 + topY, endX: 80);
+    eraseArea(startY: topY, startX: 0, endY: pageSize + 3 + topY, endX: 80);
+    mvaddstrc(topY, 0, white, headerPrompt);
+    addHeader(headerKey, y: topY + 1);
+    mvaddstrc(pageSize + 2 + topY, 0, lightGray, footerPrompt);
     for (int i = 0; i + page * pageSize < count && i < pageSize; i++) {
       lineBuilder(i + 2 + topY, letterAPlus(i), i + page * pageSize);
     }

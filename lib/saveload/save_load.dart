@@ -78,6 +78,7 @@ Future<bool> loadGameMenu() async {
     int selectedGame = -1;
     bool import = false;
     bool newGame = false;
+    erase();
     await pagedInterface(
         count: saveFiles.length,
         headerPrompt: "Liberal Save Game Management System",

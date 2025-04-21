@@ -21,10 +21,8 @@ Future<void> runNewsCycle() async {
   cleanUpEmptyNewsStories();
   if (canSeeThings) await runTelevisionNewsStories();
   assignPageNumbersToNewspaperStories();
+
   if (canSeeThings) await displayNewsStories();
-  for (NewsStory story in newsStories) {
-    handlePublicOpinionImpact(story);
-  }
   newsStories.clear();
 }
 
@@ -65,10 +63,20 @@ Future<void> displayNewsStories() async {
   }
 
   for (NewsStory n in newsStories) {
+    Map<View, double> beforeOpinion =
+        Map.from(gameState.politics.publicOpinion);
     bool liberalguardian = false;
     View? issueFocus;
     if (guardianPower > lcsRandom(100) && n.type != NewsStories.majorEvent) {
       liberalguardian = true;
+    }
+
+    if (n.type == NewsStories.majorEvent) {
+      if (n.positive > 0) {
+        changePublicOpinion(n.view!, 20);
+      } else {
+        changePublicOpinion(n.view!, -20);
+      }
     }
 
     if (n.type == NewsStories.squadSiteAction ||
@@ -104,6 +112,15 @@ Future<void> displayNewsStories() async {
     } else {
       await displayStory(n, false, null);
     }
+
+    handlePublicOpinionImpact(n);
+
+    n.effects = Map.fromEntries(gameState.politics.publicOpinion.entries
+        .where((entry) => entry.value != beforeOpinion[entry.key])
+        .map((entry) =>
+            MapEntry(entry.key, entry.value - beforeOpinion[entry.key]!)));
+    n.unread = false;
+    archiveNewsStory(n);
   }
 }
 
@@ -316,17 +333,18 @@ void handlePublicOpinionImpact(NewsStory ns) {
     SiteType.bank => [View.taxes, View.ceoSalary, View.corporateCulture],
     _ => [],
   };
-  for (View issue in issues) {
-    changePublicOpinion(issue, impact,
-        coloredByLcsOpinions: lcsResponsible,
-        coloredByCcsOpinions: ccsResponsible);
-  }
   if (lcsResponsible) {
+    int extraMoralAuthority = 0;
     if (ns.positive > 0) {
       changePublicOpinion(View.lcsLiked, impact);
     } else {
       changePublicOpinion(View.lcsLiked, -impact);
       changePublicOpinion(View.gunControl, impact ~/ 5);
+      extraMoralAuthority = -25;
+    }
+    for (View issue in issues) {
+      changePublicOpinion(issue, impact,
+          coloredByLcsOpinions: true, extraMoralAuthority: extraMoralAuthority);
     }
   } else if (ccsResponsible) {
     if (ns.positive > 0) {
@@ -334,6 +352,10 @@ void handlePublicOpinionImpact(NewsStory ns) {
     } else {
       changePublicOpinion(View.ccsHated, -impact);
       changePublicOpinion(View.gunControl, -impact ~/ 5);
+    }
+    for (View issue in issues) {
+      changePublicOpinion(issue, impact,
+          coloredByCcsOpinions: true, extraMoralAuthority: -25);
     }
   }
   for (View issue in issues) {
@@ -435,6 +457,7 @@ void setpriority(NewsStory ns) {
         NewsStories.squadKilledInSiteAction => fame + 10,
         _ => 0,
       };
+      if (!lcscherrybusted) ns.priority *= 5;
 
       // Suppress actions at CCS safehouses
       if (ns.loc?.controller == SiteController.ccs) {

@@ -315,6 +315,7 @@ class Shop extends ShopOption {
     List<ShopOption> availableOptions =
         options.where((o) => o.display()).toList();
     ShopOption? chosenOption;
+    erase();
     await pagedInterface(
       headerPrompt: "What will ${buyer.name} buy?",
       headerKey: {4: "PRODUCT NAME", 39: "PRICE"},
@@ -349,7 +350,10 @@ class Shop extends ShopOption {
     List<ShopOption> availableOptions =
         options.where((o) => o.display()).toList();
     bool fullscreen = false;
-    if (availableOptions.length > 5) fullscreen = true;
+    if (availableOptions.length > 5) {
+      fullscreen = true;
+      erase();
+    }
     await pagedInterface(
       headerPrompt: "What will ${buyer.name} buy?",
       headerKey: {4: "NAME", 20: "AMMO TYPE", 47: "DAMAGE", 59: "PRICE"},

@@ -497,7 +497,7 @@ Future<void> displayStory(
       }
 
       story += generateFiller(200);
-      displayNewsStory(story, storyXStart, storyXEnd, y);
+      displayNewsStory(story, storyXStart, storyXEnd, y, ns);
 
       if (ns.type == NewsStories.ccsSiteAction ||
           ns.type == NewsStories.ccsKilledInSiteAction) {
@@ -511,13 +511,13 @@ Future<void> displayStory(
       if (ns.page == 1) {
         y = 21;
         if (ns.siegetype == SiegeType.ccs) {
-          displayCenteredNewsFont("CCS MASSACRE", 5);
+          displayCenteredNewsFont("CCS MASSACRE", 5, ns);
         } else if (!liberalguardian) {
-          displayCenteredNewsFont("MYSTERIOUS", 5);
-          displayCenteredNewsFont("MASSACRE", 13);
+          displayCenteredNewsFont("MYSTERIOUS", 5, ns);
+          displayCenteredNewsFont("MASSACRE", 13, ns);
         } else {
-          displayCenteredNewsFont("CONSERVATIVE", 5);
-          displayCenteredNewsFont("MASSACRE", 13);
+          displayCenteredNewsFont("CONSERVATIVE", 5, ns);
+          displayCenteredNewsFont("MASSACRE", 13, ns);
         }
       }
 
@@ -566,7 +566,7 @@ Future<void> displayStory(
             }
             story += "fingerprints.  Like, it was all smooth.  ";
             if (noProfanity) {
-              story += "[Craziest] thing I've ever seen";
+              story += "[Strangest] thing I've ever seen";
             } else if (laws[Law.freeSpeech] == DeepAlignment.eliteLiberal) {
               story += "Damnedest thing I've ever seen";
             } else {
@@ -593,8 +593,7 @@ Future<void> displayStory(
           }
         case SiegeType.angryRuralMob:
           if (!liberalguardian) {
-            story +=
-                "Burned...  stabbed with, maybe, pitchforks.  There may have "
+            story += "...  stabbed with, maybe, pitchforks.  There may have "
                 "been bite marks.  Nothing recognizable left.  Complete carnage.";
           } else {
             story += "We have reason to believe that this brutal massacre was "
@@ -626,50 +625,52 @@ Future<void> displayStory(
           "&r";
 
       story += generateFiller(200);
-      displayNewsStory(story, storyXStart, storyXEnd, y);
+      displayNewsStory(story, storyXStart, storyXEnd, y, ns);
     case NewsStories.kidnapReport:
       int y = 2;
 
       if (ns.page == 1) {
         y = 21;
         if (liberalguardian) {
-          displayCenteredNewsFont("LCS DENIES", 5);
-          displayCenteredNewsFont("KIDNAPPING", 13);
+          displayCenteredNewsFont("LCS DENIES", 5, ns);
+          displayCenteredNewsFont("KIDNAPPING", 13, ns);
         } else {
           switch (ns.cr!.type.id) {
             case CreatureTypeIds.president:
-              displayCenteredNewsFont("PRESIDENT", 5);
-              displayCenteredNewsFont("KIDNAPPED", 13);
+              displayCenteredNewsFont("PRESIDENT", 5, ns);
+              displayCenteredNewsFont("KIDNAPPED", 13, ns);
             case CreatureTypeIds.corporateCEO:
-              displayCenteredNewsFont("CEO", 5);
-              displayCenteredNewsFont("KIDNAPPED", 13);
+              displayCenteredNewsFont("CEO", 5, ns);
+              displayCenteredNewsFont("KIDNAPPED", 13, ns);
             case CreatureTypeIds.radioPersonality:
-              displayCenteredNewsFont("RADIO HOST", 5);
-              displayCenteredNewsFont("KIDNAPPED", 13);
+              displayCenteredNewsFont("RADIO HOST", 5, ns);
+              displayCenteredNewsFont("KIDNAPPED", 13, ns);
             case CreatureTypeIds.newsAnchor:
-              displayCenteredNewsFont("NEWS ANCHOR", 5);
-              displayCenteredNewsFont("KIDNAPPED", 13);
+              displayCenteredNewsFont("NEWS ANCHOR", 5, ns);
+              displayCenteredNewsFont("KIDNAPPED", 13, ns);
             case CreatureTypeIds.eminentScientist:
-              displayCenteredNewsFont("SCIENTIST", 5);
-              displayCenteredNewsFont("KIDNAPPED", 13);
+              displayCenteredNewsFont("SCIENTIST", 5, ns);
+              displayCenteredNewsFont("KIDNAPPED", 13, ns);
             case CreatureTypeIds.liberalJudge:
             case CreatureTypeIds.conservativeJudge:
-              displayCenteredNewsFont("JUDGE", 5);
-              displayCenteredNewsFont("KIDNAPPED", 13);
+              displayCenteredNewsFont("JUDGE", 5, ns);
+              displayCenteredNewsFont("KIDNAPPED", 13, ns);
             case CreatureTypeIds.policeChief:
-              displayCenteredNewsFont("TOP COP", 5);
-              displayCenteredNewsFont("KIDNAPPED", 13);
+              displayCenteredNewsFont("POLICE CHIEF", 5, ns);
+              displayCenteredNewsFont("KIDNAPPED", 13, ns);
             case CreatureTypeIds.cop:
             case CreatureTypeIds.gangUnit:
+              displayCenteredNewsFont("POLICE", 5, ns);
+              displayCenteredNewsFont("KIDNAPPED", 13, ns);
             case CreatureTypeIds.deathSquad:
-              displayCenteredNewsFont("COP", 5);
-              displayCenteredNewsFont("KIDNAPPED", 13);
+              displayCenteredNewsFont("DEATH COP", 5, ns);
+              displayCenteredNewsFont("KIDNAPPED", 13, ns);
             case CreatureTypeIds.actor:
-              displayCenteredNewsFont("ACTOR", 5);
-              displayCenteredNewsFont("KIDNAPPED", 13);
+              displayCenteredNewsFont("ACTOR", 5, ns);
+              displayCenteredNewsFont("KIDNAPPED", 13, ns);
             default:
-              displayCenteredNewsFont("SUSPECTED", 5);
-              displayCenteredNewsFont("KIDNAPPING", 13);
+              displayCenteredNewsFont("SUSPECTED", 5, ns);
+              displayCenteredNewsFont("KIDNAPPING", 13, ns);
           }
         }
       }
@@ -697,11 +698,11 @@ Future<void> displayStory(
           "&r";
 
       story += generateFiller(200);
-      displayNewsStory(story, storyXStart, storyXEnd, y);
+      displayNewsStory(story, storyXStart, storyXEnd, y, ns);
 
     default:
       story = "The news is not yet written. Report this as a bug.&r";
-      displayNewsStory(story, storyXStart, storyXEnd, 3);
+      displayNewsStory(story, storyXStart, storyXEnd, 3, ns);
   }
 
   int c;
@@ -710,7 +711,12 @@ Future<void> displayStory(
   } while (!isBackKey(c));
 }
 
-void displayCenteredNewsFont(String str, int y) {
+void displayCenteredNewsFont(String str, int y, NewsStory ns) {
+  if (ns.headline == "") {
+    ns.headline = str;
+  } else {
+    ns.headline += " $str";
+  }
   int width = -1;
   int s;
   bool isLetter(String letter) =>
@@ -764,14 +770,22 @@ void displayCenteredNewsFont(String str, int y) {
   }
 }
 
-void displayCenteredSmallNews(String str, int y) {
+void displayCenteredSmallNews(String str, int y, NewsStory ns) {
+  ns.body = str;
   int x = 39 - ((str.length - 1) >> 1);
   move(y, x);
   setColor(black, background: lightGray);
   addstr(str);
 }
 
-void displayNewsPicture(int p, int y, [bool remapSkinTones = false]) {
+void displayNewsPicture(int p, int y, NewsStory ns,
+    [bool remapSkinTones = false]) {
+  ns.newspaperPhotoId = p;
+  ns.remapSkinTones = remapSkinTones;
+  renderNewsPic(p, y, remapSkinTones);
+}
+
+void renderNewsPic(int p, int y, [bool remapSkinTones = false]) {
   for (int x2 = 0; x2 < 78; x2++) {
     for (int y2 = 0; y2 < 15; y2++) {
       if (y + y2 > 24) break;
@@ -782,8 +796,9 @@ void displayNewsPicture(int p, int y, [bool remapSkinTones = false]) {
 }
 
 /* news - draws the specified block of text to the screen */
-void displayNewsStory(
-    String story, List<int> storyXStart, List<int> storyXEnd, int y) {
+void displayNewsStory(String story, List<int> storyXStart, List<int> storyXEnd,
+    int y, NewsStory? ns) {
+  ns?.body = newsprintToWebFormat(story);
   List<String> text = [];
   List<bool> centered = [];
 
@@ -863,4 +878,13 @@ void displayNewsStory(
     }
   }
   text.clear();
+}
+
+void archiveNewsStory(NewsStory ns) {
+  ns.date = gameState.date;
+  if (gameState.newsArchive.contains(ns)) return;
+  gameState.newsArchive.add(ns);
+  if (gameState.newsArchive.length > 51) {
+    gameState.newsArchive.removeAt(0);
+  }
 }

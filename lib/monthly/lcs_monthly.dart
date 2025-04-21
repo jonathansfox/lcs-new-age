@@ -324,6 +324,7 @@ Future<LootType?> chooseSpecialEdition() async {
 
   //PICK ONE
   LootType? lootTypeChosen;
+  erase();
   await pagedInterface(
     headerPrompt: "Do you want to publish secrets in the Liberal Guardian?",
     headerKey: {4: "SECRETS POSSESSED"},

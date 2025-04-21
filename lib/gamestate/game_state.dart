@@ -87,6 +87,9 @@ class GameState {
     for (var screen in SortingScreens.values) screen: CreatureSortMethod.none
   };
 
+  @JsonKey(defaultValue: [])
+  List<NewsStory> newsArchive = [];
+
   // Non-persisting variables (don't include in to/from JSON)
   @JsonKey(includeFromJson: false, includeToJson: false)
   Squad? get activeSquad =>
@@ -302,10 +305,12 @@ void changePublicOpinion(
   int power, {
   bool coloredByLcsOpinions = false,
   bool coloredByCcsOpinions = false,
+  int extraMoralAuthority = 0,
 }) =>
     gameState.politics.changePublicOpinion(view, power,
         coloredByLcsOpinions: coloredByLcsOpinions,
-        coloredByCcsOpinions: coloredByCcsOpinions);
+        coloredByCcsOpinions: coloredByCcsOpinions,
+        extraMoralAuthority: extraMoralAuthority);
 
 UniqueCreatures get uniqueCreatures => gameState.uniqueCreatures;
 

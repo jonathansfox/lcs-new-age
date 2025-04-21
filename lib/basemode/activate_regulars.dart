@@ -453,6 +453,7 @@ void _medicalDefault(Creature c) {
 }
 
 Future<void> _selectRecruitTarget(Creature cr) async {
+  erase();
   await pagedInterface(
     headerPrompt:
         "What type of person will ${cr.name} try to meet and recruit?",
@@ -498,6 +499,7 @@ Future<void> _selectClothingToMake(Creature cr) async {
         getSelectedClothing()!, getSelectedArmor(), cr.skill(Skill.tailoring));
   }
 
+  erase();
   await pagedInterface(
     headerPrompt:
         "Which will ${cr.name} try to make?  (Note: Half Cost if you have cloth)",
@@ -658,6 +660,7 @@ Future<void> _selectSkillForEducation(
   if (activityType == ActivityType.takeClass) {
     skills = skills.where((s) => s.canTakeClasses).toList();
   }
+  erase();
   await pagedInterface(
     headerPrompt: "What skill will ${cr.name} $flavor?",
     headerKey: {4: "SKILL", 21: "NOW", 27: "MAX", 34: "DESCRIPTION"},
@@ -921,6 +924,7 @@ Future<void> _selectTendHostage(Creature cr) async {
     cr.activity = Activity(ActivityType.interrogation, idInt: hostages[0].id);
     return;
   }
+  erase();
   await pagedInterface(
     headerPrompt: "Which hostage will ${cr.name} be watching over?",
     headerKey: {
