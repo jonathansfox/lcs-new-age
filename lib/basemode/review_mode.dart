@@ -958,14 +958,11 @@ Future<void> assignNewBasesToTheSquadless() async {
     for (int p = pageLoc * 9;
         p < temploc.length && p < pageLoc * 9 + 9;
         p++, y++) {
-      if (p == selectedbase) {
-        setColor(white);
-      } else {
-        setColor(lightGray);
-      }
       String number = (y - 1).toString();
       String name = temploc[p].getName(short: true, includeCity: true);
-      addOptionText(y, 51, number, "$number - $name");
+      addOptionText(y, 51, number, "$number - $name",
+          baseColorKey:
+              p == selectedbase ? ColorKey.white : ColorKey.lightGray);
     }
 
     setColor(lightGray);
@@ -1095,7 +1092,7 @@ Future<void> promoteliberals() async {
         p++) {
       Creature tempp = temppool[p];
       setColor(lightGray);
-      String letter = letterAPlus((y - 2) ~/ 2);
+      String letter = letterAPlus(y - 2);
       addOptionText(y, 0, letter, "$letter - ");
 
       move(y, 27);
