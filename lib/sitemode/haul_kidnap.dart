@@ -54,7 +54,9 @@ Future<void> kidnapattempt() async {
     if (e.alive &&
         e.align == Alignment.conservative &&
         (!e.type.animal || animalsArePeopleToo) &&
-        (!e.weapon.type.protectsAgainstKidnapping || e.blood <= 20) &&
+        (!e.weapon.type.protectsAgainstKidnapping ||
+            e.blood <= 20 ||
+            e.nonCombatant) &&
         !e.type.tank) {
       viableTargets.add(e);
     }
