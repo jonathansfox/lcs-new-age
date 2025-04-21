@@ -60,7 +60,7 @@ class Site extends Location {
   @JsonKey(defaultValue: 0)
   int extraHeatFromCCS = 0;
   int get extraHeatFromCCSTarget {
-    if (!ccsActive) return 0;
+    if (!ccsActive || !lcscherrybusted) return 0;
     int ccsReach = ccsState.index;
     if (!city.sites.any((s) => s.controller == SiteController.ccs)) {
       ccsReach -= 2;
