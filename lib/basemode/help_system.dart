@@ -187,7 +187,7 @@ Future<void> helpOnActivity(ActivityType type) async {
           "car, Security determines the chances of jimmying the lock or hotwiring "
           "the car. Strength is used to smash open the car window if you "
           "want to take that route.\n\n"
-          "If you run into the The Viper, understand that it's just some dumb "
+          "If you run into the The Viper, understand that it's just some silly "
           "aftermarket car alarm with a proximity sensor and a voice module. "
           "The car is not actually venomous, it does not have fangs, the snake "
           "isn't real and it can't hurt you. You can disable the annoying "
