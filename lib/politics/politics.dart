@@ -189,7 +189,7 @@ class Politics {
       publicInterest[view] = publicInterest[view]! + 1;
       remainingPower -= publicInterest[view]!;
     }
-    power = (power * min(2, 1 + existingInterest / 50)).round();
+    power = (power * min(2, 1 + existingInterest / 16)).round();
     power = power.clamp(-75, 75);
     if (power > 0) {
       publicOpinion[view] = existingView + ((100 - existingView) * power / 100);
