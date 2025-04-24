@@ -1,9 +1,12 @@
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/location/location_type.dart';
+import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/newspaper/news_story.dart';
 
-String squadStoryTextLocation(NewsStory ns, bool liberalguardian, bool ccs) {
-  String story = "  The events took place ";
+String squadStoryTextLocation(NewsStory ns, bool liberalguardian, bool ccs,
+    {bool includeOpening = true}) {
+  String story = "";
+  if (includeOpening) story += "  The events took place ";
   String placename = ns.loc!.getName();
   if (placename.substring(0, 4) == "The ") {
     placename = placename.substring(4);
@@ -64,47 +67,7 @@ String squadStoryTextLocation(NewsStory ns, bool liberalguardian, bool ccs) {
       if (liberalguardian && !ccs) story += "notorious ";
   }
   if (ccs) {
-    switch (ns.loc!.type) {
-      case SiteType.upscaleApartment:
-        story += "University Dormitory.  ";
-      case SiteType.barAndGrill:
-        story += "Gay Nightclub.  ";
-      case SiteType.cosmeticsLab:
-        story += "Animal Shelter.  ";
-      case SiteType.geneticsLab:
-        story += "Research Ethics Commission HQ.  ";
-      case SiteType.policeStation:
-        story += "Police Reform Office.  ";
-      case SiteType.courthouse:
-        story += "Abortion Clinic.  ";
-      case SiteType.prison:
-        story += "Rehabilitation Center.  ";
-      case SiteType.intelligenceHQ:
-        story += "Media Independence Office.  ";
-      case SiteType.sweatshop:
-        story += "Labor Union HQ.  ";
-      case SiteType.dirtyIndustry:
-        story += "Greenpeace Offices.  ";
-      case SiteType.nuclearPlant:
-        story += "Whirled Peas Museum.  ";
-      case SiteType.corporateHQ:
-        story += "Welfare Assistance Agency.  ";
-      case SiteType.ceoHouse:
-        story += "Tax Collection Agency.  ";
-      case SiteType.amRadioStation:
-        story += "Public Radio Station.  ";
-      case SiteType.cableNewsStation:
-        story += "Network News Station.  ";
-      case SiteType.armyBase:
-        story += "Greenpeace Offices.  ";
-      case SiteType.fireStation:
-        story += "ACLU Branch Office.  ";
-      case SiteType.bank:
-        story += "Richard Dawkins Food Bank.  ";
-      default:
-        story += placename;
-        story += ".  ";
-    }
+    story += mapCCSPlace(ns.loc!, placename);
   } else {
     story += placename;
   }
@@ -153,7 +116,7 @@ String squadStoryTextLocation(NewsStory ns, bool liberalguardian, bool ccs) {
       default:
         story += ".  ";
     }
-  } else if (!ccs) {
+  } else if (includeOpening) {
     story += ".  ";
   }
   return story;
@@ -287,4 +250,29 @@ String squadStoryTextOpening(NewsStory ns, bool liberalguardian, bool ccs) {
   story += "&r";
 
   return story;
+}
+
+String mapCCSPlace(Site loc, String placename) {
+  return {
+        SiteType.upscaleApartment: "University Dormitory",
+        SiteType.barAndGrill: "Gay Nightclub",
+        SiteType.cosmeticsLab: "Animal Shelter",
+        SiteType.geneticsLab: "Research Ethics Commission HQ",
+        SiteType.policeStation: "Police Reform Office",
+        SiteType.courthouse: "Abortion Clinic",
+        SiteType.prison: "Rehabilitation Center",
+        SiteType.intelligenceHQ: "Media Independence Office",
+        SiteType.sweatshop: "Labor Union HQ",
+        SiteType.dirtyIndustry: "Sustainable Energy Research Center",
+        SiteType.nuclearPlant: "Whirled Peas Museum",
+        SiteType.corporateHQ: "Welfare Assistance Agency",
+        SiteType.ceoHouse: "Tax Collection Agency",
+        SiteType.amRadioStation: "Public Radio Station",
+        SiteType.cableNewsStation: "Network News Station",
+        SiteType.armyBase: "Greenpeace Offices",
+        SiteType.fireStation: "ACLU Branch Office",
+        SiteType.bank: "Richard Dawkins Food Bank",
+        SiteType.whiteHouse: "Progressive Lobbying Office",
+      }[loc.type] ??
+      placename;
 }
