@@ -9,7 +9,7 @@ import 'package:lcs_new_age/politics/views.dart';
 
 part 'news_story.g.dart';
 
-@JsonSerializable(ignoreUnannotated: true)
+@JsonSerializable()
 class NewsStory {
   NewsStory();
   NewsStory.unpublished(this.type);
@@ -19,47 +19,36 @@ class NewsStory {
   factory NewsStory.fromJson(Map<String, dynamic> json) =>
       _$NewsStoryFromJson(json);
   Map<String, dynamic> toJson() => _$NewsStoryToJson(this);
+  @JsonKey(defaultValue: NewsStories.majorEvent)
   NewsStories type = NewsStories.majorEvent;
   View? view;
   int claimed = 1;
   Creature? cr;
-  int leadersex = 0;
-  String leaderName = "";
   List<Drama> drama = [];
-  @JsonKey(includeFromJson: true, includeToJson: true, defaultValue: -1)
   int locId = -1;
+  @JsonKey(includeFromJson: false, includeToJson: false)
   Site? get loc => sites.firstWhereOrNull((element) => element.id == locId);
   set loc(Site? l) => locId = l?.id ?? -1;
   int priority = 0;
   int page = 0;
   int guardianpage = 0;
-  @JsonKey(includeFromJson: true, includeToJson: true, defaultValue: 0)
   int positive = 0;
   SiegeType siegetype = SiegeType.none;
   int siegebodycount = 0;
   bool legalGunUsed = false;
   bool illegalGunUsed = false;
-  @JsonKey(includeFromJson: true, includeToJson: true)
   String publicationName = "";
-  @JsonKey(includeFromJson: true, includeToJson: true)
   DeepAlignment publicationAlignment = DeepAlignment.moderate;
-  @JsonKey(includeFromJson: true, includeToJson: true)
   DateTime? _date;
+  @JsonKey(includeFromJson: false, includeToJson: false)
   DateTime get date => _date ?? gameState.date;
   set date(DateTime d) => _date = d;
-  @JsonKey(includeFromJson: true, includeToJson: true)
   String headline = "";
-  @JsonKey(includeFromJson: true, includeToJson: true)
   String body = "";
-  @JsonKey(includeFromJson: true, includeToJson: true)
   String? byline;
-  @JsonKey(includeFromJson: true, includeToJson: true)
   Map<View, double> effects = {};
-  @JsonKey(includeFromJson: true, includeToJson: true)
   int? newspaperPhotoId;
-  @JsonKey(includeFromJson: true, includeToJson: true)
   bool remapSkinTones = false;
-  @JsonKey(includeFromJson: true, includeToJson: true)
   bool unread = true;
 }
 
