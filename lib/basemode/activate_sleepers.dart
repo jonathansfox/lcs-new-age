@@ -127,14 +127,14 @@ Future<void> activateSleeper(Creature cr) async {
 
     makeDelimiter();
 
-    setColor(state == Key.a ? white : lightGray);
-    addOptionText(10, 1, "A", "A - Communication and Advocacy");
-
-    setColor(state == Key.b ? white : lightGray);
-    addOptionText(11, 1, "B", "B - Espionage");
-
-    setColor(state == Key.c ? white : lightGray);
-    addOptionText(12, 1, "C", "C - Join the Active LCS");
+    addOptionText(10, 1, "A", "A - Communication and Advocacy",
+        baseColorKey: state == Key.a ? ColorKey.white : ColorKey.lightGray);
+    addOptionText(11, 1, "B", "B - Espionage",
+        baseColorKey: state == Key.b ? ColorKey.white : ColorKey.lightGray);
+    addOptionText(12, 1, "C", "C - Join the Active LCS",
+        baseColorKey: cr.activity.type == ActivityType.sleeperJoinLcs
+            ? ColorKey.white
+            : ColorKey.lightGray);
 
     addOptionText(20, 40, "Enter", "Enter - Confirm Selection");
 
