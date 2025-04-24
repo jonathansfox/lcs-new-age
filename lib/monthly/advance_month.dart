@@ -43,7 +43,9 @@ Future<void> advanceMonth() async {
           s.controller = SiteController.ccs;
         }
         ccsState = CCSStrength.active;
-        publicOpinion[View.ccsHated] = 100 - politics.publicMood();
+        if (!ccscherrybusted) {
+          publicOpinion[View.ccsHated] = politics.publicMood();
+        }
       }
     case CCSStrength.active:
       if (politics.publicMood() > 80) {
