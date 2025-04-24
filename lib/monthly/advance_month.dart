@@ -110,27 +110,16 @@ Future<void> advanceMonth() async {
           l.changes[c].flag ==
               SITEBLOCK_GRAFFITI_OTHER) // Find changes that refer specifically to graffiti
       {
-        int power = 0;
-        Alignment align = Alignment.moderate;
-
-        if (l.changes[c].flag == SITEBLOCK_GRAFFITI) align = Alignment.liberal;
-        if (l.changes[c].flag == SITEBLOCK_GRAFFITI_CCS) {
-          align = Alignment.conservative;
-        }
-
-        //Purge graffiti from more secure sites (or from non-secure
-        //sites about once every five years), but these will
-        //influence people more for the current month
+        // Purge graffiti from more secure sites
         if (securityable(l.type) > 0) {
           l.changes.removeAt(c);
-          power = 5;
         } else {
+          // Some occasional changes to graffiti in less secure sites
           if (l.controller == SiteController.ccs) {
             l.changes[c].flag = SITEBLOCK_GRAFFITI_CCS; // Convert to CCS tags
           } else if (l.controller == SiteController.lcs) {
             l.changes[c].flag = SITEBLOCK_GRAFFITI; // Convert to LCS tags
           } else {
-            power = 1;
             if (oneIn(10)) {
               l.changes[c].flag =
                   SITEBLOCK_GRAFFITI_OTHER; // Convert to other tags
@@ -143,13 +132,6 @@ Future<void> advanceMonth() async {
             }
           }
         }
-        if (align == Alignment.liberal) {
-          politics.addBackgroundInfluence(View.lcsKnown, power);
-          politics.addBackgroundInfluence(View.ccsHated, power);
-        } else if (align == Alignment.conservative) {
-          politics.addBackgroundInfluence(View.lcsKnown, -power);
-          politics.addBackgroundInfluence(View.ccsHated, -power);
-        }
       }
     }
   }
@@ -161,14 +143,12 @@ Future<void> advanceMonth() async {
     politics.backgroundInfluence[v] =
         ((politics.backgroundInfluence[v] ?? 0) * 0.66).round();
 
-    if (v == View.lcsLiked) continue;
     if (v == View.lcsKnown) continue;
     //if(v==View.POLITICALVIOLENCE)
     //{
     //   changePublicOpinion(View.POLITICALVIOLENCE,-1,0);
     //   continue;
     //}
-    if (v == View.ccsHated) continue;
     if (v != View.amRadio && v != View.cableNews) {
       double balance = libpower[v]! - conspower;
 
