@@ -4,6 +4,7 @@ import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/gamestate/time.dart';
 import 'package:lcs_new_age/newspaper/display_news.dart';
 import 'package:lcs_new_age/newspaper/news_story.dart';
+import 'package:lcs_new_age/newspaper/squad_story_text.dart';
 import 'package:lcs_new_age/politics/views.dart';
 import 'package:lcs_new_age/utils/colors.dart';
 import 'package:lcs_new_age/utils/interface_options.dart';
@@ -18,7 +19,7 @@ Future<void> mediaOverview() async {
     double lcsSupport = gameState.politics.lcsApproval();
     makeDelimiter(y: 20);
     mvaddstrx(21, 0,
-        "&G${gameState.politics.publicMood().toStringAsFixed(1)}%&w of people support Liberal positions on average.");
+        "&G${gameState.politics.publicMood().toStringAsFixed(1)}%&w of people have Liberal views");
     String lcsSupportColorKey = lcsSupport >= publicMood
         ? ColorKey.lightGreen
         : lcsSupport < publicMood - 20
@@ -26,7 +27,7 @@ Future<void> mediaOverview() async {
             : ColorKey.yellow;
     String lcsSupportString = lcsSupport.toStringAsFixed(1);
     mvaddstrx(22, 0,
-        "&$lcsSupportColorKey$lcsSupportString%&w of people approve of the Liberal Crime Squad.");
+        "&$lcsSupportColorKey$lcsSupportString%&w support the Liberal Crime Squad");
     setColor(midGray);
     mvaddstrx(23, 0,
         "  LCS activities will inspire supporters, but may alienate detractors.");
@@ -46,23 +47,29 @@ Future<void> mediaOverview() async {
           switch (ns.type) {
             case NewsStories.squadSiteAction:
               String name = "";
-              if (ns.loc != null) name = " at the ${ns.loc!.name}";
+              if (ns.loc != null) {
+                name = squadStoryTextLocation(ns, false, false,
+                    includeOpening: false);
+              }
               if (ns.positive > 0) {
-                headline = "LCS Strike$name";
+                headline = "LCS Action $name";
               } else {
-                headline = "LCS Rampage$name";
+                headline = "LCS Rampage $name";
               }
             case NewsStories.squadKilledInSiteAction:
               headline = "Tragic LCS Strike";
             case NewsStories.ccsKilledInSiteAction:
-              headline = "Tragic CCS Strike";
+              headline = "CCS Squad KIA";
             case NewsStories.ccsSiteAction:
               String name = "";
-              if (ns.loc != null) name = " at the ${ns.loc!.name}";
+              if (ns.loc != null) {
+                name = squadStoryTextLocation(ns, false, true,
+                    includeOpening: false);
+              }
               if (ns.positive > 0) {
-                headline = "CCS Strike$name";
+                headline = "CCS Action $name";
               } else {
-                headline = "CCS Rampage$name";
+                headline = "CCS Rampage $name";
               }
             default:
               headline = ns.body.split("\n").first.split(" - ").last;
