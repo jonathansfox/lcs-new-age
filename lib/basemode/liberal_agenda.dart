@@ -333,16 +333,18 @@ void _pollsPage(int start) {
     }
     mvaddstrc(y, 4, lightGray, "".padRight(57, "."));
     int interest = politics.publicInterest[v]!;
-    if (interest > 100) {
-      addstr("Very High");
-    } else if (interest > 50) {
-      addstr("High");
-    } else if (interest > 10) {
-      addstr("Moderate");
+    if (interest > 16) {
+      addstrc(red, "Huge");
+    } else if (interest > 8) {
+      addstrc(orange, "High");
+    } else if (interest > 4) {
+      addstrc(yellow, "Moderate");
+    } else if (interest > 2) {
+      addstrc(lightGray, "Low");
     } else if (interest > 0) {
-      addstr("Low");
+      addstrc(midGray, "Minimal");
     } else {
-      addstr("Minimal");
+      addstrc(darkGray, "None");
     }
 
     double survey = politics.publicOpinion[v]!;
@@ -419,9 +421,9 @@ void _pollsPage(int start) {
       case View.lcsKnown:
         addstr("have heard of the Liberal Crime Squad");
       case View.lcsLiked:
-        addstr("support the Liberal Crime Squad");
+        addstr("consider the Liberal Crime Squad a force for good");
       case View.ccsHated:
-        addstr("hate the Conservative Crime Squad");
+        addstr("want the Conservative Crime Squad brought to justice");
     }
   }
 }
