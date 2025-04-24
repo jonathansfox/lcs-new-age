@@ -170,12 +170,11 @@ class Politics {
     if (coloredByLcsOpinions) {
       // Power from people who have opinions about the LCS
       double lcsPopularity = lcsApproval();
-      double moralAuthority =
-          lcsPopularity - existingView + extraMoralAuthority;
-      power = power * (50 + moralAuthority) / 100;
+      double moralAuthority = lcsPopularity + extraMoralAuthority;
+      power = power * (20 + moralAuthority) / 100;
     } else if (coloredByCcsOpinions) {
       power = power *
-          (50 - publicOpinion[View.ccsHated]! + extraMoralAuthority) /
+          (100 - publicOpinion[View.ccsHated]! + extraMoralAuthority) /
           100;
     }
     if (view == View.lcsKnown) {
