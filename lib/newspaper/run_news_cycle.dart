@@ -347,15 +347,17 @@ void handlePublicOpinionImpact(NewsStory ns) {
           coloredByLcsOpinions: true, extraMoralAuthority: extraMoralAuthority);
     }
   } else if (ccsResponsible) {
+    int extraMoralAuthority = 0;
     if (ns.positive > 0) {
       changePublicOpinion(View.ccsHated, impact);
     } else {
       changePublicOpinion(View.ccsHated, -impact);
       changePublicOpinion(View.gunControl, -impact ~/ 5);
+      extraMoralAuthority = 25;
     }
     for (View issue in issues) {
       changePublicOpinion(issue, impact,
-          coloredByCcsOpinions: true, extraMoralAuthority: -25);
+          coloredByCcsOpinions: true, extraMoralAuthority: extraMoralAuthority);
     }
   }
   for (View issue in issues) {
