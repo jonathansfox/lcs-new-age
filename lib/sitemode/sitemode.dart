@@ -1652,7 +1652,10 @@ Future<void> _resolveSite() async {
   } else {
     clearPotentialCrimes();
   }
-  if (sitestory!.drama.any((d) => d == Drama.killedSomebody)) {
+  if (sitestory!.drama.any((d) =>
+      d == Drama.killedSomebody ||
+      d == Drama.legalGunUsed ||
+      d == Drama.illegalGunUsed)) {
     sitestory!.positive = -1;
   } else {
     sitestory!.positive = (siteAlienated != SiteAlienation.none) ? -1 : 1;

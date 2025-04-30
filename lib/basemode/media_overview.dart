@@ -31,8 +31,8 @@ Future<void> mediaOverview() async {
     setColor(midGray);
     mvaddstrx(23, 0,
         "  LCS activities will inspire supporters, but may alienate detractors.");
-    mvaddstrx(
-        24, 0, "  Avoid violence to increase public support for your actions.");
+    mvaddstrx(24, 0,
+        "  Avoiding violence will increase public support for your actions.");
 
     await pagedInterface(
       headerPrompt: "Media Overview",
