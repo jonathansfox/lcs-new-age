@@ -1,6 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:lcs_new_age/creature/creature.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
+import 'package:lcs_new_age/politics/alignment.dart';
+import 'package:lcs_new_age/politics/laws.dart';
 
 enum Crime {
   treason("Treason", "treason"),
@@ -165,8 +167,6 @@ int crimeHeat(Crime crime) {
     case Crime.juryTampering:
     case Crime.cyberVandalism:
     case Crime.vandalism:
-    case Crime.flagBurning:
-    case Crime.unlawfulSpeech:
     case Crime.illegalEntry:
     case Crime.assault:
     case Crime.theft:
@@ -175,5 +175,23 @@ int crimeHeat(Crime crime) {
     case Crime.loitering:
     case Crime.disturbingThePeace:
       return 0;
+    case Crime.flagBurning:
+      switch (laws[Law.flagBurning]) {
+        case DeepAlignment.archConservative:
+          return 5;
+        case DeepAlignment.conservative:
+          return 1;
+        default:
+          return 0;
+      }
+    case Crime.unlawfulSpeech:
+      switch (laws[Law.freeSpeech]) {
+        case DeepAlignment.archConservative:
+          return 5;
+        case DeepAlignment.conservative:
+          return 1;
+        default:
+          return 0;
+      }
   }
 }
