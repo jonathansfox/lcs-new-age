@@ -352,7 +352,7 @@ Future<void> tendHostage(InterrogationSession intr) async {
     // additional -50% penalty since you're actually letting them go and they
     // can easily just go back to their old life
     int successChance = -50;
-    successChance += lead.skill(Skill.persuasion) * 5;
+    successChance += lead.skill(Skill.psychology) * 5;
     successChance += ((rapport[lead.id] ?? 0) * 10).round();
     successChance -= cr.attribute(Attribute.wisdom) * 30;
     successChance -= cr.juice * 2;
@@ -1088,8 +1088,8 @@ Future<void> tendHostage(InterrogationSession intr) async {
     }
     //Target is not sold on the LCS arguments and holds firm
     //This is the worst possible outcome if you use props
-    else if (!cr.skillCheck(Skill.persuasion,
-            lead.attribute(Attribute.heart) + 5 - cr.skill(Skill.psychology)) ||
+    else if (!cr.skillCheck(
+            Skill.psychology, lead.attribute(Attribute.heart) + 5) ||
         techniques[Technique.props] == true) {
       //Loses rapport
       addRapport(lead, -0.2 - lcsRandom(5) * 0.1);
@@ -1182,8 +1182,7 @@ Future<void> tendHostage(InterrogationSession intr) async {
     //Target actually wins the argument so successfully that the Liberal
     //interrogator's convictions are the ones that are shaken
     else {
-      //Consolation prize is that they end up liking the
-      //liberal more
+      //Consolation prize is that they end up liking each other more
       addRapport(lead, 1.5);
 
       lead.adjustAttribute(Attribute.wisdom, 1);
@@ -1194,8 +1193,7 @@ Future<void> tendHostage(InterrogationSession intr) async {
           y + 4,
           79,
           "${cr.name} makes some fascinating points that ${lead.name} has "
-          "never considered before... ${lead.name} is completely thrown "
-          "off guard.");
+          "never considered before...");
       y = console.y + 1;
 
       mvaddstrc(y++, 0, red, "${lead.name} has been tainted with wisdom!");
