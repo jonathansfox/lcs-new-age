@@ -126,7 +126,7 @@ Future<void> trial(Creature g) async {
         g.confessions = 0;
       } else {
         addstr(
-            "${g.confessions} former LCS members will testify against ${g.name}");
+            "${g.confessions} former LCS members will testify against ${g.name}.");
       }
     } else {
       if (sleeperjudge != null) {
@@ -148,11 +148,12 @@ Future<void> trial(Creature g) async {
   addOptionText(y++, 1, "A", "A - Use a court-appointed attorney.");
   addOptionText(y++, 1, "B", "B - Defend self!");
   addOptionText(y++, 1, "C", "C - Plead guilty.");
-  mvaddstrc(y++, 1, ledger.funds < 5000 ? darkGray : lightGray,
-      "D - Pay \$5000 to hire Elite Liberal Attorney ${uniqueCreatures.aceLiberalAttorney.name}.");
+  addOptionText(y++, 1, "D",
+      "D - Pay \$5000 to hire Elite Liberal Attorney ${uniqueCreatures.aceLiberalAttorney.name}",
+      enabledWhen: ledger.funds >= 5000);
   if (sleeperlawyer != null) {
-    mvaddstrc(y++, 1, lightGray,
-        "E - Accept sleeper ${sleeperlawyer.name}'s offer to assist pro bono.");
+    addOptionText(y++, 1, "E",
+        "E - Accept sleeper ${sleeperlawyer.name}'s offer to assist pro bono");
   }
   mvaddstrc(++y, 5, lightGray, "Your relevant skills if you defend yourself: ");
   mvaddstr(++y, 5, "Law: ${g.skill(Skill.law)}");
