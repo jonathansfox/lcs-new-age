@@ -639,6 +639,13 @@ Future<void> displayStory(
             case CreatureTypeIds.president:
               displayCenteredNewsFont("PRESIDENT", 5, ns);
               displayCenteredNewsFont("KIDNAPPED", 13, ns);
+              // Instantly bring a max military siege to the site
+              if (ns.cr!.typeId == CreatureTypeIds.president) {
+                ns.cr!.heat += 1000;
+                ns.cr!.site?.heat += 100 + lcsRandom(100);
+                ns.cr!.site?.siege.timeUntilCops = lcsRandom(3) + 1;
+                ns.cr!.site?.siege.escalationState = SiegeEscalation.bombers;
+              }
             case CreatureTypeIds.corporateCEO:
               displayCenteredNewsFont("CEO", 5, ns);
               displayCenteredNewsFont("KIDNAPPED", 13, ns);

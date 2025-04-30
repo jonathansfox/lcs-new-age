@@ -95,6 +95,8 @@ Future<void> fundReport(bool disbanding) async {
               mvaddstr(y, 0, "Thievery");
             case Income.tshirts:
               mvaddstr(y, 0, "T-Shirt Sales");
+            case Income.ransom:
+              mvaddstr(y, 0, "Ransoming Hostages");
           }
         }
         totalmoney += ledger.income[inc] ?? 0;

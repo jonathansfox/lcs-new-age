@@ -153,7 +153,7 @@ Future<void> squadMemberAttacks(
   }
 
   // Dead foes drop loot, removed from encounter, grant bonus juice
-  if (!target.alive) {
+  if (!target.alive && target.align == Alignment.conservative) {
     if (mode == GameMode.site) makeLoot(target, groundLoot);
     encounter.remove(target);
     validTargets.remove(target);

@@ -6,15 +6,17 @@ import 'package:lcs_new_age/common_display/common_display.dart';
 import 'package:lcs_new_age/creature/attributes.dart';
 import 'package:lcs_new_age/creature/conversion.dart';
 import 'package:lcs_new_age/creature/creature.dart';
+import 'package:lcs_new_age/creature/creature_type.dart';
 import 'package:lcs_new_age/creature/dice.dart';
-import 'package:lcs_new_age/creature/difficulty.dart';
 import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/daily/advance_day.dart';
-import 'package:lcs_new_age/daily/recruitment.dart';
 import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/gamestate/ledger.dart';
+import 'package:lcs_new_age/justice/crimes.dart';
+import 'package:lcs_new_age/location/siege.dart';
 import 'package:lcs_new_age/location/site.dart';
+import 'package:lcs_new_age/newspaper/news_story.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
 import 'package:lcs_new_age/politics/views.dart';
 import 'package:lcs_new_age/utils/colors.dart';
@@ -37,6 +39,12 @@ class InterrogationSession {
   Map<Technique, bool> techniques = {};
   Map<int, double> rapport = {};
   int daysOfDrugUse = 0;
+
+  // Ransom tracking
+  bool ransomDemanded = false;
+  int ransomAmount = 0;
+  int daysUntilRansomResponse = 0;
+  bool ransomPaid = false;
 }
 
 enum Technique {
@@ -46,6 +54,10 @@ enum Technique {
   props,
   drugs,
   kill,
+  ransom,
+  free,
+  question,
+  recruit,
 }
 
 Future<void> tendHostage(InterrogationSession intr) async {
@@ -88,6 +100,13 @@ Future<void> tendHostage(InterrogationSession intr) async {
             cr.attribute(Attribute.strength) / 2 +
             cr.daysSinceJoined * 2) {
       await showMessage("${cr.name} has escaped!");
+
+      for (Creature p in pool) {
+        if (rapport[p.id] != null) {
+          p.criminalize(Crime.kidnapping);
+        }
+      }
+
       cr.site?.siege.timeUntilCops = 3;
 
       //clear activities for tenders
@@ -106,22 +125,11 @@ Future<void> tendHostage(InterrogationSession intr) async {
     if (tenders.isEmpty) return;
   }
 
-  erase();
-  mvaddstrc(
-      0, 0, white, "The Education of ${cr.name}: Day ${cr.daysSinceJoined}");
-
-  await getKey();
-
   setColor(lightGray);
-
-  bool turned = false;
 
   int y = 3;
 
-  //each day, the attack roll is initialized to the number of days of the stay with
-  //the LCS -- they will eventually break, but also eventually become too traumatized
-  //to continue
-  int business = 0, religion = 0, science = 0, attack = 0;
+  int business = 0, religion = 0, science = 0, attack = -1;
 
   List<int> tenderAttack = [for (Creature _ in tenders) 0];
 
@@ -131,16 +139,13 @@ Future<void> tendHostage(InterrogationSession intr) async {
     religion = max(tempp.skill(Skill.religion), religion);
     science = max(tempp.skill(Skill.science), science);
 
-    tenderAttack[p] =
-        tempp.attribute(Attribute.heart) + tempp.skill(Skill.psychology) * 2;
+    tenderAttack[p] = tempp.skill(Skill.psychology) * 2;
 
     tenderAttack[p] += tempp.clothing.type.interrogationBasePower;
 
     if (tenderAttack[p] < 0) tenderAttack[p] = 0;
     if (tenderAttack[p] > attack) attack = tenderAttack[p];
   }
-
-  attack += Dice.r2d6.roll();
 
   List<int> goodp = [];
 
@@ -150,7 +155,9 @@ Future<void> tendHostage(InterrogationSession intr) async {
       goodp.add(p);
     }
   }
-  Creature lead = tenders[goodp.random];
+
+  attack += Dice.r2d6.roll();
+  Creature lead = tenders[goodp.first];
   void selectNewLead() {
     tenders.removeWhere((e) => e.activity.type != ActivityType.interrogation);
     if (tenders.isNotEmpty) {
@@ -158,7 +165,6 @@ Future<void> tendHostage(InterrogationSession intr) async {
     }
   }
 
-  attack += tenders.length;
   attack += cr.daysSinceJoined;
 
   attack += business - cr.skill(Skill.business);
@@ -170,64 +176,74 @@ Future<void> tendHostage(InterrogationSession intr) async {
   attack -= cr.attribute(Attribute.wisdom);
 
   while (true) {
+    erase();
+    mvaddstrc(
+        0, 0, white, "The Education of ${cr.name}: Day ${cr.daysSinceJoined}");
     y = 2;
     if (techniques[Technique.kill] == true) {
       setColor(red);
+      eraseLine(y);
       move(y, 0);
       y += 2;
-      addstr("The Execution of an Automaton         ");
+      addstr("The Execution of ${cr.name}   ");
     } else {
       setColor(yellow);
       move(y, 0);
       y += 2;
-      addstr("Selecting a Liberal Interrogation Plan");
+      addstr("Select a Liberal Education Plan");
     }
 
-    void planItem(
-        Technique technique, String letter, String ifActive, String ifInactive,
-        {String? cost}) {
+    void planItem(Technique technique, String letter, String ifActive,
+        {int cost = 0, String colorKey = ColorKey.white, bool enabled = true}) {
       move(y++, 0);
-      if (techniques[Technique.kill] == true) {
-        setColor(darkGray);
-      } else if (techniques[technique] == true) {
-        setColor(white);
-      } else {
-        setColor(lightGray);
+      bool active = techniques[technique] ?? false;
+      String text = ifActive;
+      if (cost > 0) {
+        String costStr = "(\$$cost)";
+        text = text.padRight(30 - costStr.length, ' ') + costStr;
       }
-      if (techniques[technique] == true) {
-        addstr("$letter - $ifActive");
-      } else {
-        addstr("$letter - $ifInactive");
-      }
-      if (cost != null) {
-        mvaddstr(y - 1, 33 - cost.length, cost);
-      }
+      addInlineOptionText(
+        letter,
+        "$letter - $text",
+        enabledWhen: ledger.funds >= cost && enabled,
+        baseColorKey: active ? colorKey : ColorKey.midGray,
+      );
     }
 
-    planItem(Technique.talk, "A", "Attempt to Convert", "No Verbal Contact ");
-    planItem(Technique.restrain, "B", "Physical Restraints   ",
-        "No Physical Restraints");
-    planItem(
-        Technique.beat, "C", "Violently Beaten    ", "Not Violently Beaten");
-    planItem(Technique.props, "D", "Expensive Props   ", "No Expensive Props",
-        cost: "(\$250)");
-    planItem(Technique.drugs, "E", "Hallucinogenic Drugs   ",
-        "No Hallucinogenic Drugs",
-        cost: "(\$50)");
-    setColor(techniques[Technique.kill] ?? false ? red : lightGray);
-    addOptionText(y, 0, "K", "K - Kill the Hostage");
+    planItem(Technique.talk, "A", "Casual Conversation");
+    planItem(Technique.props, "B", "Enlightening Activities", cost: 250);
+    planItem(Technique.recruit, "C", "Attempt Recruitment");
+    planItem(Technique.question, "D", "Demand Information");
+    planItem(Technique.ransom, "E", "Draft a Ransom Note",
+        enabled: !intr.ransomDemanded);
+    planItem(Technique.free, "F", "Set ${cr.name} Free");
+    planItem(Technique.kill, "K", "Kill the Hostage", colorKey: ColorKey.red);
     y += 2;
     addOptionText(y++, 0, "Enter", "Enter - Confirm the Plan");
 
     showInterrogationSidebar(intr, lead);
 
     int c = await getKey();
-    if (c >= Key.a && c <= Key.e) {
-      Technique technique = Technique.values[c - Key.a];
-      techniques[technique] = !(techniques[technique] ?? false);
-    }
-    if (c == Key.k) {
-      techniques[Technique.kill] = !(techniques[Technique.kill] ?? false);
+    if (c >= Key.a && c <= Key.f || c == Key.k) {
+      techniques[Technique.talk] = false;
+      techniques[Technique.drugs] = false;
+      techniques[Technique.restrain] = false;
+      techniques[Technique.question] = false;
+      techniques[Technique.props] = false;
+      techniques[Technique.ransom] = false;
+      techniques[Technique.kill] = false;
+      techniques[Technique.free] = false;
+      techniques[Technique.recruit] = false;
+      techniques[switch (c) {
+        Key.a => Technique.talk,
+        Key.b => Technique.props,
+        Key.c => Technique.recruit,
+        Key.d => Technique.question,
+        Key.e => Technique.ransom,
+        Key.f => Technique.free,
+        Key.k => Technique.kill,
+        _ => Technique.talk,
+      }] = true;
     }
     if (isBackKey(c)) break;
   }
@@ -236,11 +252,6 @@ Future<void> tendHostage(InterrogationSession intr) async {
     ledger.subtractFunds(250, Expense.hostageTending);
   } else {
     techniques[Technique.props] = false;
-  }
-  if (techniques[Technique.drugs] == true && ledger.funds >= 50) {
-    ledger.subtractFunds(50, Expense.hostageTending);
-  } else {
-    techniques[Technique.drugs] = false;
   }
 
   if (techniques[Technique.kill] == true) // Kill the Hostage
@@ -253,7 +264,8 @@ Future<void> tendHostage(InterrogationSession intr) async {
     for (int i = 0; i < tenders.length; i++) {
       if (lcsRandom(50) < tenders[i].juice ||
           lcsRandom(9) + 1 >=
-              (tenders[i].rawAttributes[Attribute.heart] ?? 0)) {
+              (tenders[i].rawAttributes[Attribute.heart] ?? 0) +
+                  (rapport[tenders[i].id] ?? 0)) {
         killer = tenders[i];
         break;
       }
@@ -266,12 +278,11 @@ Future<void> tendHostage(InterrogationSession intr) async {
       stats.kills++;
       mvaddstr(y++, 0, "${lead.name} executes ${cr.name} by ");
       addstr([
-        "strangling it to death.",
-        "beating it to death.",
-        "burning photos of Trump in front of it.",
-        "telling it that taxes have been increased.",
-        "telling it its parents wanted to abort it.",
-        "administering a lethal dose of opiates.",
+        "burning photos of Ronald Reagan in front of ${cr.gender.himHer}.",
+        "telling ${cr.gender.himHer} that taxes have been increased.",
+        "forcing ${cr.gender.himHer} to listen to right-wing radio for 24 hours straight.",
+        "showing ${cr.gender.himHer} a graph of rising global temperatures.",
+        "forcing ${cr.gender.himHer} to actually read a book.",
       ].random);
 
       await getKey();
@@ -286,14 +297,6 @@ Future<void> tendHostage(InterrogationSession intr) async {
       mvaddstr(y++, 0, "execute ${cr.name} in cold blood.");
 
       await getKey();
-
-      //Interrogation will continue as planned, with
-      //these restrictions:
-      techniques[Technique.talk] = false; //don't talk to them today
-      techniques[Technique.beat] = false; //don't beat them today
-      techniques[Technique.drugs] = false; //don't administer drugs
-
-      //Food and restraint settings will be applied as normal
     }
     //show_interrogation_sidebar(cr,a);
 
@@ -313,699 +316,761 @@ Future<void> tendHostage(InterrogationSession intr) async {
     }
   }
 
+  if (techniques[Technique.free] == true) {
+    erase();
+    mvaddstrc(
+        0, 0, white, "The Release of ${cr.name}: Day ${cr.daysSinceJoined}");
+    y = 2;
+    setColor(lightGray);
+
+    if (cr.site?.siege.underSiege == true) {
+      String typeOfSiegers = switch (cr.site?.siege.activeSiegeType) {
+        SiegeType.police => switch (cr.site?.siege.escalationState) {
+            SiegeEscalation.police => "police",
+            _ => "soldiers",
+          },
+        SiegeType.cia => "CIA agents",
+        SiegeType.angryRuralMob => "people outside",
+        SiegeType.corporateMercs => "corporate mercenaries",
+        SiegeType.ccs => "CCS vigilantes",
+        _ => "giant bugs",
+      };
+      addparagraph(
+          y,
+          0,
+          y + 4,
+          79,
+          "${lead.name} leads ${cr.name} to the front door and lets "
+          "${cr.gender.himHer} run into the arms of the waiting $typeOfSiegers. "
+          "There is a brief commotion as ${cr.name} is led to safety, but "
+          "aside from that, there's no change in the situation.");
+      await getKey();
+      return;
+    }
+
+    // Calculate recruitment chance similar to recruitment attempt, with an
+    // additional -50% penalty since you're actually letting them go and they
+    // can easily just go back to their old life
+    int successChance = -50;
+    successChance += lead.skill(Skill.persuasion) * 5;
+    successChance += ((rapport[lead.id] ?? 0) * 10).round();
+    successChance -= cr.attribute(Attribute.wisdom) * 30;
+    successChance -= cr.juice * 2;
+
+    String reaction;
+    if (successChance >= 100) {
+      reaction = [
+        "looks at ${lead.name} for a long time, and actually seems sad to go.",
+        "seems to have been profoundly changed by the experience.",
+        "appears to have found a new purpose in life.",
+        "looks like ${cr.gender.heShe} has made an important decision.",
+        "exchanges a meaningful look with ${lead.name}.",
+        "tells ${lead.name} that ${cr.gender.heShe} will be in touch.",
+        "appears to be thinking deeply about the future.",
+        "looks like ${cr.gender.heShe} has found something ${cr.gender.heShe} was missing.",
+      ].random;
+    } else if (successChance < 0) {
+      reaction = [
+        "glances back at ${lead.name} with barely concealed contempt.",
+        "seems eager to get away as quickly as possible.",
+        "breaks out into a dead run as soon as ${lead.name} lets ${cr.gender.himHer} go.",
+        "can't wait to get back to ${cr.gender.hisHer} old life.",
+        "can barely believe ${lead.name} is actually letting ${cr.gender.himHer} go.",
+        "hesitates only to make sure it isn't a trick, then bolts.",
+        "looks ready to put this nonsense behind ${cr.gender.himHer}.",
+      ].random;
+    } else if (successChance < 25) {
+      reaction = [
+        "looks around cautiously, unsure what to make of this.",
+        "seems confused by the sudden change in circumstances.",
+        "appears to be processing what just happened.",
+        "looks like ${cr.gender.heShe} is trying to figure out what to do next.",
+        "runs off without a word.",
+        "glances back at ${lead.name} and looks a bit confused.",
+        "looks like ${cr.gender.heShe} is trying to make sense of everything.",
+      ].random;
+    } else {
+      reaction = [
+        "looks at ${lead.name} with a mix of emotions.",
+        "seems to have been affected by the experience.",
+        "appears to be thinking about what ${cr.gender.heShe} has learned.",
+        "looks like ${cr.gender.heShe} might have changed ${cr.gender.hisHer} mind about some things.",
+        "seems to be considering new possibilities.",
+        "appears to be reflecting on what ${cr.gender.heShe} has been through.",
+        "looks like ${cr.gender.heShe} has gained some perspective.",
+      ].random;
+    }
+
+    addparagraph(
+        y,
+        0,
+        y + 4,
+        79,
+        "${lead.name} takes ${cr.name} to a secure location and releases "
+        "${cr.gender.himHer} from captivity. ${cr.name} $reaction");
+    y = console.y + 1;
+
+    await getKey();
+
+    // Clear activities for tenders
+    for (Creature p in tenders) {
+      p.activity = Activity.none();
+    }
+
+    // If the hostage is liberal (heart > wisdom) and has rapport with the lead,
+    // they might become a sleeper agent
+    if (lcsRandom(100) < successChance) {
+      addparagraph(
+          y,
+          0,
+          y + 4,
+          79,
+          "${cr.name} gets in touch with ${lead.name} later, expressing "
+          "a desire to continue their conversations and offering "
+          "${cr.gender.hisHer} services as a sleeper agent for the "
+          "Liberal Crime Squad.");
+      cr.hireId = lead.id;
+      cr.brainwashed = true;
+      cr.base = cr.workLocation is Site ? cr.workLocation as Site : null;
+      cr.sleeperAgent = true;
+      liberalize(cr);
+      stats.recruits++;
+      await getKey();
+    } else {
+      // Otherwise they'll be released
+      pool.remove(cr);
+      if (cr.missing) {
+        cr.missing = false;
+        cr.kidnapped = false;
+      }
+    }
+
+    return;
+  }
+
+  // Recruitment attempt
+  if (techniques[Technique.recruit] == true && cr.alive) {
+    erase();
+    mvaddstrc(0, 0, white,
+        "The Recruitment of ${cr.name}: Day ${cr.daysSinceJoined}");
+    y = 2;
+    setColor(lightGray);
+
+    // Base chance of success is 0%
+    int successChance = 0;
+
+    // Add psychology skill bonus
+    successChance += lead.skill(Skill.psychology) * 5;
+
+    // Add rapport bonus
+    successChance += ((rapport[lead.id] ?? 0) * 10).round();
+    if ((rapport[lead.id] ?? 0) < 0) {
+      successChance -= 100;
+    }
+
+    // Reduce by 30% for each point of wisdom
+    successChance -= cr.attribute(Attribute.wisdom) * 30;
+
+    // Reduce by 2% for each point of juice
+    successChance -= cr.juice * 2;
+
+    String reaction;
+    if (successChance >= 100) {
+      reaction = [
+        "accepts the offer immediately.",
+        "seems to have been waiting for this ${cr.gender.hisHer} whole life.",
+        "looks like ${cr.gender.heShe} is about to say yes.",
+        "says yes without hesitation.",
+        "says yes right away.",
+        "jumps up and down in excitement.",
+        "mutters \"fuck yes\" under ${cr.gender.hisHer} breath.",
+      ].random;
+    } else if (successChance < 0) {
+      reaction = [
+        "doesn't seem impressed by the offer.",
+        "doesn't seem interested in joining.",
+        "looks baffled by the suggestion.",
+        "seems indignant at the suggestion.",
+        "looks like ${cr.gender.heShe} is about to say no.",
+      ].random;
+    } else if (successChance < 25) {
+      reaction = [
+        "doesn't react as ${lead.name} makes the pitch.",
+        "doesn't seem to know what to make of it.",
+        "looks confused by the suggestion.",
+        "looks like ${cr.gender.heShe} is trying to figure out what to say.",
+      ].random;
+    } else {
+      reaction = [
+        "leans in to listen with careful attention.",
+        "seems receptive to the idea.",
+        "asks some probing questions.",
+        "appears to be considering the offer.",
+        "looks like ${cr.gender.heShe} might be convinced.",
+        "asks a lot of questions and seems to be taking it seriously.",
+      ].random;
+    }
+
+    addparagraph(
+        y,
+        0,
+        y + 4,
+        79,
+        "${lead.name} attempts to recruit ${cr.name} to the Liberal Crime Squad. "
+        "As the pitch goes on, ${cr.gender.heShe} $reaction");
+    y = console.y + 1;
+
+    await getKey();
+
+    if (lcsRandom(100) < successChance) {
+      String reaction = [
+        "says getting kidnapped by the LCS is the best thing that ever happened "
+            "to ${cr.gender.himHer}, and laughs in a sort of shocked "
+            "and giddy way at how much ${cr.gender.hisHer} view of the "
+            "world has been changed by the experience.",
+        "says ${cr.gender.heShe} has been waiting for this moment "
+            "${cr.gender.hisHer} whole life without knowing it, and "
+            "this is the first chance ${cr.gender.heShe} has to really "
+            "become the person ${cr.gender.heShe} was meant to be.",
+        "places ${cr.gender.hisHer} hand on ${cr.gender.hisHer} chest "
+            "and says ${cr.gender.heShe} has changed a lot since "
+            "coming here, and ${cr.gender.heShe} is grateful to have a chance "
+            "to prove it and make up for ${cr.gender.hisHer} past mistakes.",
+        "says ${cr.gender.heShe} will do anything ${lead.name} asks of "
+            "${cr.gender.himHer}. ${cr.gender.heSheCap} just hopes "
+            "${cr.gender.heShe} has the skills to do something useful.",
+      ].random;
+
+      setColor(lightGreen);
+      addparagraph(y, 0, y + 4, 79,
+          "${cr.name} agrees to join the Liberal Crime Squad! ${cr.gender.heSheCap} $reaction");
+      cr.hireId = lead.id;
+      cr.juice = 0;
+      cr.brainwashed = true;
+      cr.base = cr.workLocation is Site ? cr.workLocation as Site : null;
+      liberalize(cr);
+      stats.recruits++;
+
+      // Clear activities for tenders
+      for (Creature p in tenders) {
+        p.activity = Activity.none();
+      }
+    } else {
+      String reaction;
+      if (successChance < 0) {
+        reaction = [
+          "bites ${cr.gender.hisHer} tongue and just looks furious that "
+              "${lead.name} would even suggest such a thing.",
+          "accuses ${cr.name} of being a terrorist kidnapper who "
+              "should be shot on sight.",
+          "declares that the LCS is a cult. A political cult, but still a "
+              "${noProfanity ? "[politically incorrect]" : "God damn"} cult. And "
+              "${cr.name} can take that joining bullshit and shove it where the "
+              "sun don't shine.",
+          "accuses ${lead.name} of being absolutely out of "
+              "${lead.gender.hisHer} mind if ${lead.gender.heShe} thinks "
+              "${cr.name} would ever join a left-wing terrorist organization.",
+          "rants about how the LCS are a bunch of LIBERALS and that's the "
+              "absolute worst thing you can be.",
+          "stands up and starts yelling about how ${cr.gender.heShe} "
+              "was KIDNAPPED and is a PRISONER and if ${lead.name} has "
+              "ANY DECENCY left at all, ${lead.gender.heShe} will let "
+              "${cr.gender.himHer} go RIGHT NOW.",
+        ].random;
+        rapport[lead.id] = (rapport[lead.id] ?? 0) - 2;
+      } else {
+        reaction = [
+          "says ${cr.gender.heShe} needs more time to think.",
+          "says it's worth considering, but ${cr.gender.heShe} isn't ready for "
+              "this kind of commitment.",
+          "says ${cr.gender.heShe} just wants to go back to ${cr.gender.hisHer} "
+              "normal life once ${lead.name} lets ${cr.gender.himHer} go.",
+          "seems to have second thoughts about the whole thing.",
+        ].random;
+      }
+      setColor(red);
+      addparagraph(y, 0, y + 4, 79,
+          "${cr.name} rejects the offer to join. ${cr.gender.heSheCap} $reaction");
+
+      // Failed recruitment attempt increases wisdom slightly
+      if (cr.attribute(Attribute.heart) > 1) {
+        cr.adjustAttribute(Attribute.heart, -1);
+        cr.adjustAttribute(Attribute.wisdom, 1);
+      }
+    }
+
+    await getKey();
+    return;
+  }
+
+  if (techniques[Technique.ransom] == true) {
+    if (!intr.ransomDemanded) {
+      // First time demanding ransom
+      erase();
+      mvaddstrc(
+          0, 0, white, "The Ransom of ${cr.name}: Day ${cr.daysSinceJoined}");
+      y = 2;
+      setColor(lightGray);
+
+      // Calculate ransom amount based on hostage's importance and days in captivity
+      switch (cr.type.id) {
+        // Very rich or very famous people
+        case CreatureTypeIds.corporateCEO:
+        case CreatureTypeIds.president:
+        case CreatureTypeIds.actor:
+        case CreatureTypeIds.athlete:
+        case CreatureTypeIds.eminentScientist:
+        case CreatureTypeIds.radioPersonality:
+        case CreatureTypeIds.policeChief:
+        case CreatureTypeIds.socialite:
+        case CreatureTypeIds.landlord:
+          intr.ransomAmount = 100000;
+        // Pretty well off or pretty well known
+        case CreatureTypeIds.newsAnchor:
+        case CreatureTypeIds.engineer:
+        case CreatureTypeIds.mathematician:
+        case CreatureTypeIds.liberalJudge:
+        case CreatureTypeIds.conservativeJudge:
+        case CreatureTypeIds.bankManager:
+        case CreatureTypeIds.lawyer:
+        case CreatureTypeIds.doctor:
+        case CreatureTypeIds.corporateManager:
+        case CreatureTypeIds.psychologist:
+        case CreatureTypeIds.author:
+        case CreatureTypeIds.fashionDesigner:
+        case CreatureTypeIds.artCritic:
+        case CreatureTypeIds.musicCritic:
+        case CreatureTypeIds.programmer:
+        case CreatureTypeIds.chef:
+        case CreatureTypeIds.musician:
+        case CreatureTypeIds.footballCoach:
+        case CreatureTypeIds.carSalesman:
+        case CreatureTypeIds.prisonGuard:
+        case CreatureTypeIds.swat:
+        case CreatureTypeIds.deathSquad:
+        case CreatureTypeIds.gangUnit:
+        case CreatureTypeIds.merc:
+        case CreatureTypeIds.cop:
+          intr.ransomAmount = 10000;
+        // Everybody else
+        default:
+          intr.ransomAmount = 1000;
+      }
+
+      addparagraph(
+          y,
+          0,
+          y + 4,
+          79,
+          "${lead.name} prepares a ransom demand for ${cr.name} by ${[
+            "attaching a photo of ${cr.gender.himHer} to a note made from "
+                "magazine clippings",
+            "recording a video of ${cr.gender.himHer} in captivity",
+            "attaching a personal letter from ${cr.gender.himHer} spelling "
+                "out the LCS's demands",
+          ].random}. The amount "
+          "is set at \$${intr.ransomAmount}. It may take some time "
+          "for a response...");
+      y = console.y + 1;
+
+      await getKey();
+
+      intr.ransomDemanded = true;
+      intr.daysUntilRansomResponse = 3 + lcsRandom(4); // Response in 3-6 days
+      if (!cr.kidnapped) {
+        cr.kidnapped = true;
+        NewsStory.prepare(NewsStories.kidnapReport).cr = cr;
+      }
+      cr.missing = true;
+      cr.heat += 100;
+
+      return;
+    }
+  }
+
   erase();
   mvaddstrc(
       0, 0, white, "The Education of ${cr.name}: Day ${cr.daysSinceJoined}");
   y = 2;
-  mvaddstr(y++, 0, "The Automaton");
-  if (techniques[Technique.restrain] == true) {
-    // Restraint
-    addstr(" is tied hands and feet to a metal chair");
-    mvaddstr(y++, 0, "in the middle of a back room.");
-    attack += 5;
-  } else {
-    addstr(" is locked in a back room ");
-    mvaddstr(y++, 0, "converted into a makeshift cell.");
-  }
-  //show_interrogation_sidebar(cr,a);
 
-  await getKey();
+  if (intr.ransomDemanded &&
+      !intr.ransomPaid &&
+      intr.daysUntilRansomResponse <= 0 &&
+      cr.site?.siege.underSiege == false) {
+    // Time for ransom response
+    setColor(lightGray);
 
-  if (techniques[Technique.drugs] == true) // Hallucinogenic drugs
-  {
-    mvaddstr(++y, 0, "It is subjected to dangerous hallucinogens.");
+    // Determine if ransom is paid based on various factors
+    bool willPay = false;
+    int paymentChance = 50;
 
-    // we won't apply the drug bonus JUST yet
-    int drugbonus = 10 + lead.clothing.type.interrogationDrugBonus;
-    //Possible permanent health damage
-    if (lcsRandom(50) < ++intr.daysOfDrugUse) {
-      bool lowHealth = cr.health == 1;
-      cr.permanentHealthDamage += 1;
-      move(++y, 0);
+    // Increase chance if hostage is valuable
+    if (cr.type.preciousToAngryRuralMobs) paymentChance += 20;
+    if (cr.attribute(Attribute.charisma) > 5) paymentChance += 10;
+    if (cr.attribute(Attribute.intelligence) > 5) paymentChance += 10;
 
-      await getKey();
+    // Decrease chance if LCS is well known
+    if (publicOpinion[View.lcsKnown]! > 50) paymentChance -= 20;
 
-      addstr(
-          "${cr.name} foams at the mouth and its eyes roll back in its skull.");
-
-      move(++y, 0);
-
-      await getKey();
-
-      Creature doctor = lead; // the lead interrogator is doctor by default
-      int maxskill = doctor.skill(Skill.firstAid);
-      for (int i = 0; i < tenders.length; i++) // search for the best doctor
-      {
-        if (tenders[i].skill(Skill.firstAid) > maxskill) {
-          doctor = tenders[i];
-          maxskill = doctor.skill(Skill.firstAid); // we found a doctor
-        }
-      }
-      if (lowHealth || maxskill == 0) // he's dead, Jim
-      {
-        if (maxskill > 0) {
-          // we have a real doctor but the patient is still dead anyway
-          addstr(
-              "${doctor.name} administers treatment, but there is nothing ${doctor.gender.heShe} can do.");
-        } else {
-          addstr("${doctor.name} has a panic attack and ");
-          switch (lcsRandom(3)) {
-            case 0:
-              addstr("faints.");
-            case 1:
-              addstr("runs away.");
-            case 2:
-              addstr("just covers ${doctor.gender.hisHer} eyes.");
-            case 3:
-              if (noProfanity) {
-                addstr("[makes a stinky].");
-              } else {
-                addstr("shits ${doctor.gender.hisHer} pants.");
-              }
-          }
-        }
-
-        move(++y, 0);
-
-        await getKey();
-
-        cr.die();
-        setColor(yellow);
-        if (maxskill > 0) {
-          addstr(
-              "${cr.name} dies from a lethal overdose in their weakened state.");
-        } else {
-          addstr(
-              "${cr.name} dies due to ${doctor.name}'s incompetence at first aid.");
-          y = await traumatize(doctor, "overdose", ++y);
-          if (doctor.activity.type == ActivityType.none && doctor == lead) {
-            selectNewLead();
-          }
-        }
-      } else {
-        if (doctor.skillCheck(
-            Skill.firstAid, Difficulty.hard)) // is the doctor AWESOME?
-        {
-          doctor.train(Skill.firstAid, 20);
-          if (doctor != lead) {
-            addstr(
-                "${doctor.name} swiftly intervenes and takes control of the interrogation.");
-            y++;
-            lead = doctor;
-          } else {
-            addstr("${doctor.name} immediately switches to doctor mode.");
-          }
-          mvaddstr(y++, 0,
-              "${doctor.gender.heSheCap} applies aggressive treatment to flush the drugs from ${cr.name}'s system.");
-
-          await getKey();
-
-          mvaddstr(y++, 0,
-              "${cr.name} recovers quickly, with no long-term health damage.");
-          mvaddstr(y, 0,
-              "${doctor.name} strikes the drug regimen from the schedule for the day.");
-          cr.permanentHealthDamage -= 1; // no permanent health damage
-          // drugs eliminated from the system
-          intr.daysOfDrugUse = 0;
-          drugbonus = 0;
-          techniques[Technique.drugs] = false;
-        } else {
-          doctor.train(Skill.firstAid, 10);
-          addstr("${doctor.name} steps in to stabilize the situation.");
-
-          move(++y, 0);
-
-          await getKey();
-
-          addstr(cr.name);
-          // the patient was out long enough to have a near-death experience
-          if (cr.skill(Skill.religion) > 0) {
-            addstr(" had a near-death experience and met God in heaven.");
-          } else {
-            addstr(" had a near-death experience and met John Lennon.");
-          }
-          // the near-death experience doubles the drug bonus
-          drugbonus *= 2;
-        }
-        // rapport bonus for having life saved by doctor
-        addRapport(doctor, 0.5);
-      }
-    }
-    attack += drugbonus; // now we finally apply the drug bonus
-    move(++y, 0);
-    //show_interrogation_sidebar(cr,a);
-
+    willPay = lcsRandom(100) < paymentChance;
+    addparagraph(y, 0, y + 4, 79,
+        "A response has been received from ${cr.name}'s relatives:");
+    y = console.y + 1;
     await getKey();
+
+    if (willPay) {
+      setColor(lightGreen);
+      addparagraph(
+          y,
+          0,
+          y + 4,
+          79,
+          [
+            "\$${intr.ransomAmount} has been deposited in a secure account "
+                "according to the instructions provided. Please return "
+                "${cr.properName} to us unharmed.",
+            "We have sent you the money in the manner you requested. "
+                "Just give us our dear ${cr.properName} back.",
+            "We will do anything to get ${cr.properName} back. The money is "
+                "yours. We are trusting you. Please keep your word.",
+          ].random);
+      y = console.y + 1;
+
+      ledger.addFunds(intr.ransomAmount, Income.ransom);
+      intr.ransomPaid = true;
+
+      for (var key in techniques.keys) {
+        techniques[key] = false;
+      }
+      techniques[Technique.free] = true;
+
+      await getKey();
+    } else {
+      setColor(red);
+      addparagraph(
+          y,
+          0,
+          y + 4,
+          79,
+          [
+            "The friends and relatives of ${cr.name} will not negotiate with kidnappers and terrorists.",
+            "Go to hell.",
+            "The family of ${cr.name} will not, under any circumstances, finance a terrorist campaign.",
+            "The family of ${cr.name} will not, under any circumstances, pay a ransom for that miserable piece of shit.",
+          ].random);
+      y = console.y + 1;
+      setColor(lightGray);
+
+      await getKey();
+      intr.ransomPaid = true;
+    }
+  } else {
+    setColor(lightGray);
+    addparagraph(y, 0, y + 4, 79,
+        "${cr.name} is locked in a back room converted into a makeshift cell.");
+    y = console.y + 1;
+    if (intr.ransomDemanded &&
+        !intr.ransomPaid &&
+        cr.site?.siege.underSiege == false) {
+      // Waiting for response
+      intr.daysUntilRansomResponse--;
+    }
   }
 
-  if (techniques[Technique.beat] == true && !turned && cr.alive) // Beating
+  if (techniques[Technique.question] == true && cr.alive) // Firm Interrogation
   {
-    move(++y, 0);
+    move(y, 0);
 
-    int forceroll = 0;
-    bool tortured = false;
+    // Base forceroll on lead interrogator's psychology skill and rapport
+    int forceroll = lead.skillRoll(Skill.psychology) +
+        ((rapport[lead.id] ?? 0) * 5).round();
+    // Reduce rapport with lead
+    addRapport(lead, -1);
 
-    for (int i = 0; i < tenders.length; i++) {
-      //add interrogator's strength to beating strength
-      forceroll += tenders[i].attributeRoll(Attribute.strength);
-      //reduce rapport with each interrogator
-      addRapport(tenders[i], -0.4);
-    }
-
-    //Torture captive if lead interrogator has low heart
-    //and you funded using extra supplies
-    //
-    //Yeah, you kinda don't want this to happen
-    if (!lead.attributeCheck(Attribute.heart, Difficulty.easy) &&
-        techniques[Technique.props] == true) {
-      tortured = true;
-      //Torture more devastating than normal beating
-      forceroll *= 5;
-      //Extremely bad for rapport with lead interrogator
-      addRapport(lead, -3);
-
-      addstr("${lead.name} ${[
-        "re-enacts scenes from Abu Ghraib",
-        "whips the Automaton with a steel cable",
-        "holds the hostage's head under water",
-        "pushes needles under the Automaton's fingernails",
-        "beats the hostage with a metal bat",
-        "beats the hostage with a belt",
-      ].random}");
-      addstr(", ");
-      mvaddstr(++y, 0, "screaming \"");
-      for (int i = 0; i < 2; i++) {
-        addstr([
-          "I hate you!",
-          "Does it hurt?!",
-          "Nobody loves you!",
-          "God hates you!",
-          "Don't fuck with me!",
-          "This is Liberalism!",
-          "Convert, bitch!",
-          "I'm going to kill you!",
-          "Do you love me?!",
-          "I am your God!",
-        ].random);
-        if (i < 1) addstr(" ");
-      }
-      addstr("\" in its face.");
-
-      cr.permanentHealthDamage += 1;
-      cr.heartDamage += 1;
-    } else {
-      if (tenders.length == 1) {
-        addstr(tenders[0].name);
-        addstr(" beats");
-      } else if (tenders.length == 2) {
-        addstr(tenders[0].name);
-        addstr(" and ");
-        addstr(tenders[1].name);
-        addstr(" beat");
-      } else {
-        addstr(cr.name);
-        addstr("'s guards beat");
-      }
-      addstr(" the Automaton");
-      if (techniques[Technique.props] == true) {
-        switch (lcsRandom(6)) {
-          case 0:
-            addstr(" with a giant stuffed elephant");
-          case 1:
-            addstr(" while draped in a Confederate flag");
-          case 2:
-            addstr(" with a cardboard cutout of Reagan");
-          case 3:
-            addstr(" with a King James Bible");
-          case 4:
-            addstr(" with fists full of money");
-          case 5:
-            addstr(" with Conservative propaganda on the walls");
-        }
-      }
-      addstr(", ");
-      move(++y, 0);
-      switch (lcsRandom(4)) {
-        case 0:
-          addstr("scream");
-        case 1:
-          addstr("yell");
-        case 2:
-          addstr("shout");
-        case 3:
-          addstr("holler");
-      }
-      addstr("ing \"");
-      for (int i = 0; i < 3; i++) {
-        switch (lcsRandom(20)) {
-          case 0:
-            addstr("McDonalds");
-          case 1:
-            addstr("Elon Musk");
-          case 2:
-            addstr("Mike Pence");
-          case 3:
-            addstr("Wal-Mart");
-          case 4:
-            addstr("George W. Bush");
-          case 5:
-            addstr("ExxonMobil");
-          case 6:
-            addstr("Ted Cruz");
-          case 7:
-            addstr("Family values");
-          case 8:
-            addstr("Conservatism");
-          case 9:
-            addstr("War on Drugs");
-          case 10:
-            addstr("Russia");
-          case 11:
-            addstr("Donald Trump");
-          case 12:
-            addstr("Tucker Carlson");
-          case 13:
-            addstr("Tax cuts");
-          case 14:
-            addstr("Military spending");
-          case 15:
-            addstr("Sean Hannity");
-          case 16:
-            addstr("Deregulation");
-          case 17:
-            addstr("Police");
-          case 18:
-            addstr("Corporations");
-          case 19:
-            addstr("Wiretapping");
-        }
-        if (i < 2) addstr("! ");
-      }
-      addstr("!\" in its face.");
-    }
-    y++;
-
-    cr.blood -= (5 + lcsRandom(5)) *
-        (1 + (techniques[Technique.props] == true ? 1 : 0));
-
-    //show_interrogation_sidebar(cr,a);
+    String message = "${lead.name} interrogates ${cr.name}, ${[
+      "asking",
+      "demanding",
+      "saying",
+      "pressing ${cr.gender.himHer} by saying",
+      "probing ${cr.gender.himHer} by saying",
+    ].random} \"${[
+      "What do you know?",
+      "Where do you work?",
+      if (ccsActive) "What do you know about the CCS?",
+      "Give up your secrets!",
+      "Tell us what you know!",
+      "We need information!",
+      "What are you hiding?",
+      "What's really going on?",
+    ].random}\"";
+    addparagraph(y, 0, y + 4, 79, message);
+    y = console.y + 1;
 
     await getKey();
 
     if (!cr.attributeCheck(Attribute.wisdom, forceroll)) {
       if (cr.skillCheck(Skill.religion, forceroll)) {
-        mvaddstr(y++, 0, cr.name);
-        if (techniques[Technique.drugs] != true) {
-          switch (lcsRandom(2)) {
-            case 0:
-              addstr(" prays...");
-            case 1:
-              addstr(" cries out for God.");
-          }
-        } else {
-          switch (lcsRandom(2)) {
-            case 0:
-              addstr(" takes solace in the personal appearance of God.");
-            case 1:
-              addstr(" appears to be having a religious experience.");
-          }
-        }
-      } else if (forceroll >
-          cr.attribute(Attribute.wisdom) * 6 +
-              cr.attribute(Attribute.heart) * 3) {
-        mvaddstr(y++, 0, cr.name);
-        switch (lcsRandom(4)) {
-          case 0:
-            addstr(" screams helplessly for ");
-            if (techniques[Technique.drugs] == true) {
-              addstr("John Lennon's mercy.");
-            } else if (cr.skill(Skill.religion) > 0) {
-              addstr("God's mercy.");
-            } else {
-              addstr("mommy.");
-            }
-          case 1:
-            if (techniques[Technique.restrain] == true) {
-              addstr(" goes limp in the restraints.");
-            } else {
-              addstr(" curls up in the corner and doesn't move.");
-            }
-          case 2:
-            if ((techniques[Technique.drugs] == true && oneIn(5)) ||
-                cr.type.dog) {
-              addstr(" barks helplessly.");
-            } else {
-              addstr(" cries helplessly.");
-            }
-          case 3:
-            if (techniques[Technique.drugs] == true && oneIn(3)) {
-              addstr(" wonders about apples.");
-            } else {
-              addstr(" wonders about death.");
-            }
-        }
-
-        cr.heartDamage += 1;
-
-        if (oneIn(2) && cr.juice > 0) {
-          cr.juice = max(0, cr.juice - forceroll);
-        } else if (cr.rawAttributes[Attribute.wisdom]! > 1) {
-          cr.adjustAttribute(Attribute.wisdom, -forceroll ~/ 10);
-          if (cr.rawAttributes[Attribute.wisdom]! < 1) {
-            cr.rawAttributes[Attribute.wisdom] = 1;
-          }
-        }
-
+        mvaddstr(
+            y++,
+            0,
+            "${cr.name} ${[
+              "prays silently...",
+              "seeks strength in faith.",
+              "tries to find inner peace.",
+              "looks to God for guidance.",
+              "whispers a prayer.",
+              "asks for divine help.",
+            ].random}");
+      } else {
         Site? workSite =
             cr.workLocation is Site ? cr.workLocation as Site : null;
         if (workSite?.mapped == false && oneIn(5)) {
-          //show_interrogation_sidebar(cr,a);
+          addparagraph(y, 0, y + 4, 79,
+              "${cr.name} reveals everything ${cr.gender.heShe} knows about the ${workSite!.name}.");
+          y = console.y + 1;
 
           await getKey();
-
-          mvaddstr(y++, 0,
-              "${lead.name} beats information out of the pathetic thing.");
-
-          move(y++, 0);
-
-          await getKey();
-
-          addstr("A detailed map has been created of the ${workSite!.name}.");
 
           workSite.mapped = true;
           workSite.hidden = false;
-        }
-      } else {
-        mvaddstr(y++, 0, cr.name);
-        addstr(" seems to be getting the message.");
-
-        if (cr.juice > 0) if ((cr.juice -= forceroll) < 0) cr.juice = 0;
-
-        if (cr.rawAttributes[Attribute.wisdom]! > 1) {
-          cr.adjustAttribute(Attribute.wisdom, -forceroll ~/ 10 - 1);
-          if (cr.rawAttributes[Attribute.wisdom]! < 1) {
-            cr.rawAttributes[Attribute.wisdom] = 1;
-          }
-        }
-      }
-
-      if (forceroll > cr.health * 5) {
-        //show_interrogation_sidebar(cr,a);
-
-        await getKey();
-
-        move(y++, 0);
-        if (cr.health > 1) {
-          cr.permanentHealthDamage += 1;
-          addstr("${cr.name} is badly hurt.");
         } else {
-          addstr(
-              "${cr.name}'s weakened body crumbles under the brutal assault.");
-          cr.die();
+          String the = cr.workLocation is Site ? "the " : "";
+          addparagraph(y, 0, y + 4, 79,
+              "${cr.name} shares information about $the${cr.workLocation.name}, though ${cr.gender.heShe} doesn't know much of interest to the LCS.");
+          y = console.y + 1;
+
+          await getKey();
         }
-        await getKey();
       }
     } else {
-      mvaddstr(y++, 0, "${cr.name} takes it well.");
+      mvaddstr(y++, 0, "${cr.name} holds firm.");
       await getKey();
-    }
-    //show_interrogation_sidebar(cr,a);
-
-    if (tortured && cr.alive) {
-      y = await traumatize(lead, "torture", y);
-      if (lead.activity.type == ActivityType.none) {
-        selectNewLead();
-      }
-      setColor(white);
     }
   }
 
   // Verbal Interrogation
-  if (techniques[Technique.talk] == true && cr.alive) {
+  else if ((techniques[Technique.talk] == true ||
+          techniques[Technique.props] == true) &&
+      cr.alive) {
     double rapportTemp = rapport[lead.id] ?? 0;
 
-    if (techniques[Technique.restrain] != true) attack += 5;
-    attack += (rapportTemp * 3).round();
+    if (techniques[Technique.props] == true) attack += 10;
+    attack += (rapportTemp * 5).round();
 
-    ++y;
-    mvaddstr(y++, 0, lead.name);
-
-    if (techniques[Technique.props] == true) //props
-    {
-      attack += 10;
-      addstr([
-        " plays violent video games with ",
-        " reads Origin of the Species to ",
-        " watches a documentary about police brutality with ",
-        " explores an elaborate political fantasy with ",
-        " watches controversial avant-garde films with ",
-        " plays the anime film Bible Black for ",
-        " watches a documentary about Emmett Till with ",
-        " watches left-wing video essays with ",
-        " listens to Liberal radio shows with ",
-      ].random);
+    String message;
+    if (techniques[Technique.props] == true) {
+      List<String> miniOptions = [
+        "protest sign workshop",
+        "drag show",
+        "puppet show",
+        "movie showing",
+        "yoga session",
+        "speech",
+        "poetry slam",
+        "chill session",
+        "fashion show",
+        "big hug",
+        "miniature concert",
+        "book reading",
+        "feast",
+        "mock protest",
+        "board game",
+        "live chicken",
+      ];
+      message = "${lead.name} ${[
+        "serves ${cr.name} an incredible vegan feast, complete with quinoa "
+            "casserole and an oat milk latte, insisting that ${cr.gender.heShe} "
+            "try it all while ${lead.name} explains the comparative carbon "
+            "footprint of the ingredients and contrasts this against the "
+            "carbon footprint of a traditional meat-based meal.",
+        "holds an in-depth microaggression workshop with ${cr.name}, engaging "
+            "${cr.gender.himHer} in a series of elaborate role-playing scenarios "
+            "where they dissect even the most innocuous phrases for hidden biases "
+            "and discuss how this impacts ${cr.name} and others around them.",
+        "puts together a poetry slam for ${cr.name}, where at first ${lead.name} "
+            "reads some of ${lead.gender.hisHer} own poetry before ${cr.name} "
+            "is given the stage to join in with several verses of ${cr.gender.hisHer} own, "
+            "leading into a long discussion about the poetic form and the "
+            "lived experiences that feed into their respective verses.",
+        "holds a mock protest to bring ${cr.name} into the movement in spirit, "
+            "starting with an extended planning session where they pick out "
+            "phrases and put together protest signs about issues that really "
+            "matter to ${cr.gender.himHer}.",
+        "holds a movie night with ${cr.name}, with a marathon of documentaries "
+            "on topics like renewable energy and intersectionality, pausing "
+            "frequently for collaborative discussions on \"what it all means\".",
+        "has ${cr.name} brainstorm protest sign ideas on issues that matter to "
+            "${cr.gender.himHer}, then helps ${cr.gender.himHer} to "
+            "put together a sign ${cr.gender.heShe} can take out into the street "
+            "once ${cr.name} is released.",
+        "puts on a drag brunch for ${cr.name}, encouraging ${cr.gender.himHer} to "
+            "embrace self-expression and self-love through glitter, pancakes, "
+            "and RuPaul quotes.",
+        "sets up a supervised drug experimentation day for ${cr.name}, with a "
+            "variety of substances to try, including Cannabis, LSD, MDMA, "
+            "and psilocybin, making sure that ${cr.gender.heShe} is "
+            "comfortable with the process and has a safe space to explore "
+            "altered states of consciousness while minimizing risk to "
+            "${cr.gender.hisHer} health.",
+        "assigns ${cr.name} a stack of progressive literature, focused on readings "
+            "from bell hooks, Audre Lorde, and other feminist icons, so ${cr.gender.heShe} "
+            "can break through the barriers of ${cr.gender.hisHer} old mindset "
+            "and start to understand the importance of intersectional feminism.",
+        "assigns ${cr.name} a stack of progressive literature, focused on readings "
+            "from Ngũgĩ wa Thiong'o, Edward Said, and other postcolonial theorists, "
+            "so ${cr.gender.heShe} can start to understand the importance of "
+            "decolonizing ${cr.gender.hisHer} mind.",
+        "assigns ${cr.name} a stack of progressive literature, focused on readings "
+            "from Angela Davis, Frantz Fanon, and other revolutionary thinkers, "
+            "so ${cr.gender.heShe} can start to understand some of the ideas "
+            "that underpin revolutionary left-wing politics.",
+        "assigns ${cr.name} a stack of progressive literature, focused on readings "
+            "from Peter Kropotkin, Emma Goldman, and other anarchist thinkers, "
+            "so ${cr.gender.heShe} can start to question the absolute authority "
+            "of the state and the need for a more just and equitable society.",
+        "assigns ${cr.name} a stack of progressive literature, focused on readings "
+            "from Judith Butler, Michel Foucault, and other queer theorists, "
+            "so ${cr.gender.heShe} can start to understand the politics of "
+            "queer liberation and the fight against gender-based oppression.",
+        "holds a mandatory self-care bootcamp for ${cr.name}, complete with yoga "
+            "sessions, aromatherapy, and journaling prompts like \"What does "
+            "your political inner child look like?\"",
+        "hosts a \"paint your feelings\" session for ${cr.name}, where ${cr.gender.heShe} "
+            "is encouraged to express the flaws in ${cr.gender.hisHer} ideology "
+            "through abstract art, with no judgment or critique, but a deep "
+            "compassion.",
+        "organizes a personalized concert of protest-inspired music, inviting "
+            "${cr.name} to join in on the harmonies, with a focus on uplifting "
+            "songs about love and unity early in the session, and then moving "
+            "into more complex and forceful pieces as the session progresses.",
+        "holds an inclusive fashion show for ${cr.name}, where ${cr.gender.heShe} "
+            "can try on a variety of outfits that challenge traditional gender "
+            "norms and incorporate elements of niche subcultures, each item "
+            "linked to a discussion about the history and significance of the "
+            "style and the subculture it comes from.",
+        "brings in gardening supplies and teaches ${cr.name} how to grow ${cr.gender.hisHer} own "
+            "food, narrating how sowing literal seeds of change mirrors the "
+            "LCS's mission to uproot harmful ideologies.",
+        "builds an intricate escape room for ${cr.name}, full of puzzles about "
+            "systemic inequality, where ${cr.gender.heShe} can only solve each "
+            "puzzle by first escaping ${cr.gender.hisHer} old mindset.",
+        "stages a puppet show for ${cr.name}, featuring characters like "
+            "Karl Marx and Rosa Luxemburg in a series of skits about the "
+            "history of the LCS and the importance of revolutionary "
+            "politics.",
+        "throws a holiday party for ${cr.name} celebrating ${[
+          "Intersectional Justice Jubilee",
+          "Hug-Your-Haters Day",
+          "Intersectionality Awareness Day",
+          "Queer Liberation Day",
+          "Decolonization Day",
+          "Anarchist Abolitionist Day",
+          "Feminist Resistance Day",
+          "Trans Unity Day",
+          "Rainbow Butterfly Day",
+          "Incredible Inclusivity Day",
+          "Black Power Day",
+          "African Roots Day",
+          "Black And Proud Day",
+          "Black Lives Do In Fact Matter Day",
+          "Love Wins Day",
+          "Liberalism Day",
+          "Leftist Pride Day",
+          "Social Justice Day",
+          "Adopt-A-Conservative Day",
+          "Fuck The Police Day",
+          "Radical Self-Care Day",
+          "Resistance Day",
+          "Even Prouder Pride Day",
+          "I'm A Liberal Day",
+          "Damn It's Good To Be A Liberal Day",
+          "Liberalism Is The New Black Day",
+          "Join The LCS Day",
+          "Stop Being A Conservative Day",
+        ].random}, complete with a ${miniOptions.randomPop()}, a ${miniOptions.randomPop()}, and a ${miniOptions.randomPop()}.",
+        "gives ${cr.name} a live chicken to hold while ${lead.name} plays "
+            "a series of undercover videos of factory farms and slaughterhouses "
+            "for ${cr.gender.himHer}, then encourages ${cr.gender.himHer} to "
+            "get in touch with ${cr.gender.hisHer} true feelings.",
+      ].random}";
     } else {
-      switch (lcsRandom(4)) {
-        case 0:
-          addstr(" talks about ${View.issues.random.label} with ");
-        case 1:
-          addstr(" argues about ${View.issues.random.label} with ");
-        case 2:
-          addstr(" tries to expose the true Liberal side of ");
-        case 3:
-          addstr(" attempts to recruit ");
-      }
+      message = "${lead.name} ${[
+        "raves about how good vegan food is to ${cr.name}.",
+        "explains microaggressions to ${cr.name}.",
+        "recites some spoken word poetry for ${cr.name}.",
+        "quizzes ${cr.name} about correct recycling habits.",
+        "enthuses about the benefits of regular meditation to ${cr.name} "
+            "and offers to teach ${cr.gender.himHer} how to do it.",
+        "shows ${cr.name} pictures of people having fun at a protest and "
+            "suggests ${cr.gender.heShe} would get a lot out of it.",
+        "describes a progressive film to ${cr.name} and tells ${cr.gender.himHer} "
+            "about what it means.",
+        "tells ${cr.name} about some clever protest signs people have come up "
+            "with in the past.",
+        "tells ${cr.name} how much fun drag shows are and offers to answer "
+            "any questions ${cr.gender.himHer} has about them.",
+        "recommends ${cr.name} read some theory when ${cr.gender.heShe} gets "
+            "a chance, and tries to explain some of the complex ideas "
+            "from memory.",
+        "asks ${cr.name} \"What does your political inner child look like?\"",
+        "tries to do a guided meditation with ${cr.name}, and asks "
+            "${cr.gender.himHer} to visualize ${cr.gender.hisHer} feelings "
+            "like a painting.",
+        "plays a selection of protest songs on ${lead.gender.hisHer} cell "
+            "phone and asks ${cr.gender.himHer} what ${cr.gender.heShe} thinks "
+            "they mean.",
+        "challenges ${cr.name} to imagine a world without posessions, and "
+            "wonders if ${cr.gender.heShe} can.",
+        "suggests ${cr.name} would look good in a hemp tunic.",
+        "says ${cr.name} would could be a totally epic left-wing punk rebel "
+            "if ${cr.gender.heShe} is interested in that sort of thing.",
+        "tells ${cr.name} about the importance of intersectionality.",
+        "explains to ${cr.name} that fair trade coffee actually tastes better "
+            "and is better for the world.",
+        "works with ${cr.name} to imagine the best possible world.",
+        "asks ${cr.name} to imagine a world without prisons, and tries to "
+            "engage ${cr.gender.himHer} in a discussion about how "
+            "conflicts would be resolved if locking people away wasn't "
+            "an option.",
+        "asks ${cr.name} to imagine a world without borders, where moving "
+            "between countries is as easy as moving between cities.",
+        "tries to help ${cr.name} escape ${cr.gender.hisHer} old mindset.",
+        "encourages ${cr.name} to admit ${cr.gender.hisHer} past mistakes, "
+            "everything ${cr.gender.heShe} feels guilty or ashamed of, "
+            "so ${lead.gender.heShe} can show unconditional acceptance and "
+            "understanding of them instead of the rejection ${cr.name} was "
+            "expecting.",
+      ].random}";
     }
-    addstr(cr.name);
-    addstr(".");
-
-    //Hallucinogenic drugs:
-    //Re-interprets lead interrogator
-    if (techniques[Technique.drugs] == true) {
-      //show_interrogation_sidebar(cr,a);
-
-      await getKey();
-
-      move(y++, 0);
-      if (cr.skillCheck(Skill.psychology, Difficulty.challenging)) {
-        addstr("${cr.name} ${[
-          "takes the drug-induced hallucinations with stoicism.",
-          "mutters its initials over and over again.",
-          "babbles continuous numerical sequences.",
-          "manages to remain grounded through the hallucinations.",
-        ].random}");
-      } else if ((rapportTemp > 1 && oneIn(3)) || oneIn(10)) {
-        rapportTemp = 10;
-        switch (lcsRandom(4)) {
-          case 0:
-            addstr(
-                "${cr.name} gasps as ${lead.name} is revealed to be an angel.");
-          case 1:
-            addstr(
-                "${cr.name} looks at ${lead.name} and deep truths are revealed.");
-          case 2:
-            addstr("${cr.name} stammers and ");
-            if (techniques[Technique.restrain] == true) {
-              addstr("talks about hugging ");
-            } else {
-              addstr("hugs ");
-            }
-            addstr("${lead.name}.");
-          case 3:
-            addstr(
-                "${cr.name} begs ${lead.name} to let the colors stay forever.");
-        }
-      } else if ((rapportTemp < -1 && oneIn(3)) || oneIn(5)) {
-        attack = 0;
-        switch (lcsRandom(4)) {
-          case 0:
-            addstr(
-                "${cr.name} screams in horror as ${lead.name} devours its soul.");
-          case 1:
-            addstr(cr.name);
-            if (techniques[Technique.restrain] != true) {
-              addstr(" curls up and");
-            }
-            addstr(" begs for the nightmare to end.");
-          case 2:
-            addstr(
-                "${cr.name} screams as ${lead.name} shifts from one demonic form to another.");
-          case 3:
-            if ((rapport[lead.id] ?? 0) < -3) {
-              addstr("${cr.name} begs Hitler to stay and kill ${lead.name}.");
-            } else {
-              addstr(
-                  "${cr.name} screams at ${lead.name} to stop looking like Hitler.");
-            }
-        }
-      } else {
-        switch (lcsRandom(4)) {
-          case 0:
-            addstr(
-                "${cr.name} comments on the swirling light ${lead.name} is radiating.");
-          case 1:
-            addstr("${cr.name} can't stop looking at the moving colors.");
-          case 2:
-            addstr(
-                "${cr.name} laughs hysterically at ${lead.name}'s altered appearance.");
-          case 3:
-            if (cr.type.dog) {
-              addstr("${cr.name} meows and purrs like a cat.");
-            } else {
-              addstr("${cr.name} barks and woofs like a dog.");
-            }
-        }
-      }
-    }
-
-    //show_interrogation_sidebar(cr,a);
+    addparagraph(y, 0, y + 6, 79, message);
+    y = console.y + 1;
 
     await getKey();
 
-    if (cr.skill(Skill.psychology) > lead.skill(Skill.psychology)) {
-      move(y++, 0);
-      switch (lcsRandom(4)) {
-        case 0:
-          addstr("${cr.name} plays mind games with ${lead.name}.");
-        case 1:
-          addstr("${cr.name} knows how this works, and won't budge.");
-        case 2:
-          addstr("${cr.name} asks if Liberal mothers would approve of this.");
-        case 3:
-          addstr("${cr.name} seems resistant to this form of interrogation.");
-      }
-    }
-    //Attempt to convert when the target is brutally treated will
-    //just alienate them and make them cynical
-    else if (techniques[Technique.beat] == true || rapportTemp < -2) {
-      mvaddstr(y++, 0, cr.name);
-      switch (lcsRandom(7)) {
-        case 0:
-          addstr(" babbles mindlessly.");
-        case 1:
-          addstr(" just whimpers.");
-        case 2:
-          addstr(" cries helplessly.");
-        case 3:
-          addstr(" is losing faith in the world.");
-        case 4:
-          addstr(" only grows more distant.");
-        case 5:
-          addstr(" is too terrified to even speak to ${lead.name}.");
-        case 6:
-          addstr(" just hates the LCS even more.");
-      }
-
-      if (lead.skillCheck(Skill.seduction, Difficulty.challenging)) {
-        //show_interrogation_sidebar(cr,a);
-
-        await getKey();
-
-        mvaddstr(y++, 0, lead.name);
-        switch (lcsRandom(7)) {
-          case 0:
-            addstr(" consoles the Conservative automaton.");
-          case 1:
-            addstr(" shares some chocolates.");
-          case 2:
-            addstr(" provides a shoulder to cry on.");
-          case 3:
-            addstr(" understands ${cr.name}'s pain.");
-          case 4:
-            addstr("'s heart opens to the poor Conservative.");
-          case 5:
-            addstr(" helps the poor thing to come to terms with captivity.");
-          case 6:
-            addstr(
-                "'s patience and kindness leaves the Conservative confused.");
-        }
-
-        addRapport(lead, 0.7);
-        if ((rapport[lead.id] ?? 0) > 3) {
-          //show_interrogation_sidebar(cr,a);
-
-          await getKey();
-
-          mvaddstr(y++, 0, cr.name);
-          addstr([
-            " emotionally clings to ${lead.name}'s sympathy.",
-            " begs ${lead.name} for help.",
-            " promises to be good.",
-            " reveals childhood pains.",
-            " thanks ${lead.name} for being merciful.",
-            " cries in ${lead.name}'s arms.",
-            " really likes ${lead.name}.",
-          ].random);
-
-          if ((rapport[lead.id] ?? 0) > 5) turned = true;
-        }
-      }
-
-      if (cr.attribute(Attribute.heart) > 1) {
-        cr.adjustAttribute(Attribute.heart, -1);
-      }
-    }
-    //Failure to break religious convictions
-    else if (cr.skill(Skill.religion) >
-            religion + lead.skill(Skill.psychology) &&
-        techniques[Technique.drugs] != true) {
-      move(y++, 0);
-      addstr([
-        "${lead.name} is unable to shake ${cr.name}'s religious conviction.",
-        "${lead.name} will never be broken so long as God grants it strength.",
-        "${lead.name}'s efforts to question ${cr.name}'s faith seem futile.",
-        "${lead.name} calmly explains the Conservative tenets of its faith.",
-      ].random);
-      lead.train(Skill.religion, cr.skill(Skill.religion) * 4);
-    }
-    //Failure to persuade entrenched capitalists
-    else if (cr.skill(Skill.business) >
-            business + lead.skill(Skill.psychology) &&
-        techniques[Technique.drugs] != true) {
-      move(y++, 0);
-      addstr([
-        "${cr.name} will never be moved by ${lead.name}'s pathetic economic ideals.",
-        "${cr.name} wishes a big company would just buy the LCS and shut it down.",
-        "${cr.name} explains to ${lead.name} why communism failed.",
-        "${cr.name} mumbles incoherently about Reaganomics.",
-      ].random);
-      lead.train(Skill.business, cr.skill(Skill.business) * 4);
-    }
-    //Failure to persuade scientific minds
-    else if (cr.skill(Skill.science) > science + lead.skill(Skill.psychology) &&
-        techniques[Technique.drugs] != true) {
-      move(y++, 0);
-      addstr([
-        "${cr.name} wonders what mental disease has possessed ${lead.name}.",
-        "${cr.name} explains why nuclear energy is safe.",
-        "${cr.name} makes Albert Einstein faces at ${lead.name}.",
-        "${cr.name} pities ${lead.name}'s blind ignorance of science.",
-      ].random);
-      lead.train(Skill.science, cr.skill(Skill.science) * 4);
-    }
     //Target is swayed by Liberal Reason -- skilled interrogators, time held,
     //and rapport contribute to the likelihood of this
-    else if (!cr.attributeCheck(Attribute.wisdom, (attack / 6).round())) {
+    int marginOfSuccess = cr.attribute(Attribute.wisdom) * 2 +
+        cr.skill(Skill.business) +
+        cr.skill(Skill.religion) +
+        cr.skill(Skill.science) +
+        cr.skill(Skill.psychology) * 2;
+    if (marginOfSuccess < attack) {
+      // Reduce juice if any is there
       if (cr.juice > 0) {
-        cr.juice -= attack;
+        cr.juice -= marginOfSuccess;
         if (cr.juice < 0) cr.juice = 0;
+      } else if (cr.juice == 0) {
+        // Otherwise, modify heart and wisdom when juice is 0
+        if (cr.attribute(Attribute.wisdom) > 1) {
+          cr.adjustAttribute(Attribute.wisdom, -1);
+        }
+        if (cr.attribute(Attribute.heart) < 10) {
+          cr.adjustAttribute(Attribute.heart, 1);
+        }
       }
 
-      if (cr.attribute(Attribute.heart) < 10) {
-        cr.adjustAttribute(Attribute.heart, 1);
-      } else {
-        cr.adjustAttribute(Attribute.wisdom, -1);
-      }
       //Improve rapport with interrogator
-      addRapport(lead, 1.5);
-
-      //Join LCS??
-      //1) They were liberalized
-      if (cr.attribute(Attribute.heart) > cr.attribute(Attribute.wisdom) + 4) {
-        turned = true;
-      }
-      //2) They were befriended
-      if ((rapport[lead.id] ?? 0) > 4) turned = true;
+      addRapport(lead, 1 + lcsRandom(5) * 0.2);
 
       mvaddstr(y++, 0, cr.name);
       addstr([
@@ -1014,42 +1079,128 @@ Future<void> tendHostage(InterrogationSession intr) async {
         " is beginning to see Liberal reason.",
         " has a revelation of understanding.",
         " grudgingly admits sympathy for LCS ideals.",
+        " is beginning to see the error of ${cr.gender.hisHer} ways.",
+        " is beginning to understand where the LCS is coming from.",
+        " never really thought about things this way before.",
       ].random);
 
       await getKey();
-
-      y = await maybeRevealSecrets(cr, lead, y);
     }
     //Target is not sold on the LCS arguments and holds firm
     //This is the worst possible outcome if you use props
-    else if (!cr.skillCheck(
-            Skill.persuasion, lead.attribute(Attribute.heart) + 10) ||
+    else if (!cr.skillCheck(Skill.persuasion,
+            lead.attribute(Attribute.heart) + 5 - cr.skill(Skill.psychology)) ||
         techniques[Technique.props] == true) {
-      //Not completely unproductive; builds rapport
-      addRapport(lead, 0.2);
+      //Loses rapport
+      addRapport(lead, -0.2 - lcsRandom(5) * 0.1);
 
-      mvaddstr(y++, 0, cr.name);
-      addstr(" holds firm.");
+      String description;
+      if (rapportTemp > lcsRandom(3) ||
+          cr.skill(Skill.psychology) > lead.skill(Skill.psychology)) {
+        if (cr.skill(Skill.psychology) > lead.skill(Skill.psychology)) {
+          description = [
+            "${cr.name} plays along but somehow makes everything seem so "
+                "silly and trivial.",
+            "${lead.name} somehow ends up on the defensive as ${cr.name} calls "
+                "out every manipulative comment ${lead.gender.heShe} makes "
+                "in the effort to get ${cr.gender.himHer} to change "
+                "${cr.gender.hisHer} views.",
+            "${cr.name} sardonically critiques this \"recruitment strategy\" "
+                "of love bombing hostages until they think this miserable "
+                "existence as a criminal on the fringes of society is somehow "
+                "better than the alternative.",
+            "${cr.name} suggets ${lead.name} should see a therapist to deal "
+                "${cr.gender.hisHer} issues instead of kidnapping and "
+                "brainwashing people.",
+            "${cr.name} offers some sardonically deadpan advice on how "
+                "${lead.name} could make this more coercive and convincing.",
+            "${cr.name} keeps asking ${lead.name} the same questions for "
+                "some reason and it's just pissing ${lead.gender.himHer} off.",
+            "${cr.name} dismisses the activities and asks some rather "
+                "rather uncomfortable questions about ${lead.name}'s past.",
+          ].random;
+          lead.train(Skill.psychology, cr.skill(Skill.psychology) * 4);
+          rapport[lead.id] = (rapport[lead.id] ?? 0) - lcsRandom(10) * 0.1;
+        } else if (cr.skill(Skill.religion) > lead.skill(Skill.religion)) {
+          description = [
+            "${lead.name} is unable to shake ${cr.name}'s religious conviction.",
+            "${cr.name} draws strength from God.",
+            "${lead.name}'s efforts to shake ${cr.name}'s faith seem futile.",
+            "${cr.name} explains the Conservative tenets of ${cr.gender.hisHer} faith.",
+            "${cr.name} praises the Lord for this moment to converse.",
+            "${cr.name} prays that health finds them both.",
+            "${cr.name} asks ${lead.name} if ${lead.gender.heShe} ever think${lead.gender.s} about Jesus.",
+          ].random;
+          lead.train(Skill.religion, cr.skill(Skill.religion) * 4);
+        } else if (cr.skill(Skill.business) > lead.skill(Skill.business)) {
+          description = [
+            "${cr.name} offers to make a deal.",
+            "${cr.name} asks if there's a ransom.",
+            "${cr.name} asks if the LCS plans to make money from kidnapping.",
+            "${cr.name} suggests the interrogation room could be better decorated.",
+            "${cr.name} explains the basics of supply and demand.",
+            "${cr.name} talks about economic theory.",
+            "${cr.name} mounts a defense of Reaganomics.",
+            "${cr.name} talks about the importance of the free market.",
+            "${cr.name} explains the importance of capitalism.",
+            "${cr.name} professes faith in the invisible hand.",
+          ].random;
+          lead.train(Skill.business, cr.skill(Skill.business) * 4);
+        } else {
+          description = [
+            "The conversation is polite.",
+            "${cr.name} engages but is not swayed.",
+            "${cr.name} is not convinced.",
+            "${cr.name} asks questions, but seems unmoved.",
+            "${cr.name} teases ${lead.name} a bit.",
+            "${cr.name} asks for ${[
+              "coffee",
+              "tea",
+              "water",
+              "a burger",
+            ].random}.",
+            "${cr.name} explains why ${cr.gender.heShe} disagrees.",
+            "${cr.name} debates the points raised.",
+          ].random;
+        }
+      } else {
+        description = [
+          "${cr.name} just stares.",
+          "${cr.name} demands to be released.",
+          "${cr.name} refuses to speak.",
+          "${cr.name} yells at ${lead.name}.",
+          "${cr.name} huffs indignantly.",
+          "${cr.name} insults ${lead.name}.",
+          "${cr.name} looks at the walls.",
+          "${cr.name} ignores ${lead.name}.",
+        ].random;
+      }
+      addparagraph(y, 0, y + 4, 79, description);
+      y = console.y + 1;
+      await getKey();
     }
     //Target actually wins the argument so successfully that the Liberal
     //interrogator's convictions are the ones that are shaken
     else {
       //Consolation prize is that they end up liking the
       //liberal more
-      addRapport(lead, 1);
+      addRapport(lead, 1.5);
 
       lead.adjustAttribute(Attribute.wisdom, 1);
 
-      mvaddstr(y++, 0, "${cr.name} turns the tables on ${lead.name}!");
+      addparagraph(
+          y,
+          0,
+          y + 4,
+          79,
+          "${cr.name} makes some fascinating points that ${lead.name} has "
+          "never considered before... ${lead.name} is completely thrown "
+          "off guard.");
+      y = console.y + 1;
 
-      //show_interrogation_sidebar(cr,a);
+      mvaddstrc(y++, 0, red, "${lead.name} has been tainted with wisdom!");
       await getKey();
-
-      mvaddstr(y++, 0, "${lead.name} has been tainted with wisdom!");
     }
-
-    //show_interrogation_sidebar(cr,a);
-    await getKey();
   }
 
   //Lead interrogator gets bonus experience
@@ -1061,44 +1212,6 @@ Future<void> tendHostage(InterrogationSession intr) async {
     }
   }
 
-  //Possibly suicidal when heart is down to 1 and prisoner has already been
-  //captive for a week without rescue
-  if (!turned &&
-      cr.alive &&
-      cr.attribute(Attribute.heart) <= 1 &&
-      oneIn(3) &&
-      cr.daysSinceJoined > 6) {
-    move(++y, 0);
-
-    //can't commit suicide if restrained
-    if (!oneIn(6) || techniques[Technique.restrain] == true) {
-      setColor(purple);
-      addstr(cr.name);
-      //can't cut self if restrained
-      switch (lcsRandom(5 - (techniques[Technique.restrain] == true ? 1 : 0))) {
-        case 0:
-          addstr(" mutters about death.");
-        case 1:
-          addstr(" broods darkly.");
-        case 2:
-          addstr(" has lost hope of rescue.");
-        case 3:
-          addstr(" is making peace with God.");
-        case 4:
-          addstr(" is bleeding from self-inflicted wounds.");
-          cr.blood -= lcsRandom(15) + 10;
-      }
-    } else {
-      setColor(red);
-      addstr("${cr.name} has committed suicide.");
-      cr.die();
-    }
-    y++;
-    //show_interrogation_sidebar(cr,a);
-
-    await getKey();
-  }
-
   //Death
   if (!cr.alive || cr.blood < 1) {
     cr.die();
@@ -1107,9 +1220,7 @@ Future<void> tendHostage(InterrogationSession intr) async {
     move(++y, 0);
     setColor(red);
     addstr(cr.name);
-    addstr(" is dead under ");
-    addstr(lead.name);
-    addstr("'s interrogation.");
+    addstr(" suddenly drops dead.");
     setColor(lightGray);
     y++;
     //show_interrogation_sidebar(cr,a);
@@ -1117,44 +1228,6 @@ Future<void> tendHostage(InterrogationSession intr) async {
     await getKey();
 
     y = await traumatize(lead, "death", y);
-  }
-
-  if (turned && cr.alive) {
-    //clear_interrogation_sidebar();
-    //delete interrogation information
-    mvaddstrc(++y, 0, white,
-        "The Automaton has been Enlightened!   Your Liberal ranks are swelling!");
-    if (cr.attribute(Attribute.heart) > 7 &&
-        cr.attribute(Attribute.wisdom) > 2 &&
-        cr.permanentHealthDamage == 0 &&
-        cr.kidnapped) {
-      mvaddstr(++y, 0,
-          "The conversion is convincing enough that the police no longer consider it a kidnapping.");
-      //Actually liberalized -- they'll clean up the kidnapping story
-      cr.missing = false;
-      cr.kidnapped = false;
-    }
-    cr.brainwashed = true;
-    await getKey();
-
-    y += 2;
-    cr.hireId = lead.id;
-    liberalize(cr);
-    stats.recruits++;
-
-    y = await maybeRevealSecrets(cr, lead, y);
-
-    if (cr.missing && !cr.kidnapped) {
-      await getKey();
-
-      erase();
-      mvaddstrc(y = 1, 0, white,
-          "${cr.name}'s disappearance has not yet been reported.");
-      y = y + 2;
-      await sleeperizePrompt(cr, lead, y);
-      cr.missing = false;
-      return;
-    }
   }
 
   if (cr.align == Alignment.liberal || !cr.alive) {
@@ -1317,30 +1390,30 @@ void showInterrogationSidebar(InterrogationSession intr, Creature a) {
   addstr("Heart: ${a.attribute(Attribute.heart)}");
   mvaddstr(++y, 40, "Wisdom: ${a.attribute(Attribute.wisdom)}");
   mvaddstr(++y, 40, "Outfit: ${a.clothing.longName}");
+
+  //mvaddstr(++y, 40, "Rapport: ${rapport[a.id]?.toStringAsFixed(1) ?? 0}");
   move(y += 2, 40);
 
-  if ((rapport[a.id] ?? 0) > 3) {
-    addstr("${cr.name} clings helplessly ");
-    mvaddstr(++y, 40, "to ");
-    addstr(a.name);
-    addstr(" as ${cr.gender.hisHer} only friend.");
+  if ((rapport[a.id] ?? 0) > 7) {
+    addstr("${cr.name} chats warmly with");
+    mvaddstr(++y, 40, "${cr.gender.hisHer} friend ${a.name}.");
+  } else if ((rapport[a.id] ?? 0) > 5) {
+    addstr("${cr.name} looks forward to");
+    mvaddstr(++y, 40, "these little chats.");
+  } else if ((rapport[a.id] ?? 0) > 3) {
+    addstr("${cr.name} has mutual respect");
+    mvaddstr(++y, 40, "for ${a.name}.");
   } else if ((rapport[a.id] ?? 0) > 1) {
-    addstr("${cr.name} likes ");
-    addstr(a.name);
-    addstr(".");
+    addstr("${cr.name} lets ${cr.gender.hisHer}");
+    mvaddstr(++y, 40, "guard down a little.");
   } else if ((rapport[a.id] ?? 0) > -1) {
-    addstr("${cr.name} is uncooperative ");
-    mvaddstr(++y, 40, "toward ");
-    addstr(a.name);
-    addstr(".");
+    addstr("${cr.name} is uncooperative");
+    mvaddstr(++y, 40, "toward ${a.name}.");
   } else if ((rapport[a.id] ?? 0) > -4) {
-    addstr("${cr.name} hates ");
-    addstr(a.name);
-    addstr(".");
+    addstr("${a.name} is losing");
+    mvaddstr(++y, 40, "patience with ${cr.name}.");
   } else {
-    addstr("${cr.name} would like to ");
-    mvaddstr(++y, 40, "murder ");
-    addstr(a.name);
-    addstr(".");
+    addstr("${a.name} is out of fucks");
+    mvaddstr(++y, 40, "to give about ${cr.name}.");
   }
 }

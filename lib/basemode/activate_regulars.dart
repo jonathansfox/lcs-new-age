@@ -149,7 +149,7 @@ Future<void> _activateOne(Creature c) async {
     _category(_teaching, "T - Teaching Classes", state == Key.t, state != 0);
     _category(_medical, "M - Medical and Support", state == Key.m, state != 0);
     _activity(
-        ActivityType.interrogation, "I - Interrogate a Hostage", state != 0,
+        ActivityType.interrogation, "I - Interact with a Prisoner", state != 0,
         grayOut: !canInterrogateHostages);
     _activity(ActivityType.bury, "Z - Corpse Disposal", state != 0,
         grayOut: !canDisposeCorpses);

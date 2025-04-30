@@ -99,7 +99,7 @@ Future<void> siegeCheck() async {
 
         // Kidnapped persons increase heat
         if (p.kidnapped && p.align != Alignment.liberal) {
-          crimes += 5 * p.daysSinceJoined;
+          crimes += 2 * p.daysSinceJoined;
           continue;
         }
 
@@ -137,13 +137,16 @@ Future<void> siegeCheck() async {
 
       int huntingSpeed = 0;
       if (l.heat > l.heatProtection) {
-        if (l.heatProtection == 0) {
+        if (l.creaturesPresent
+            .any((p) => p.kidnapped && p.align == Alignment.conservative)) {
+          huntingSpeed = 30;
+        } else if (l.heatProtection == 0) {
           huntingSpeed = 5;
         } else {
           huntingSpeed = max(1, min(l.heat ~/ l.heatProtection, 5));
         }
         if (policeChiefCompromised) {
-          huntingSpeed = 1;
+          huntingSpeed = (huntingSpeed / 5).ceil();
         }
       }
       if (l.siege.timeUntilCops > 0) {
@@ -1638,9 +1641,12 @@ Future<void> stateBrokenLaws(Site loc) async {
   int kidnapped = 0;
   String? kname;
 
+  List<Creature> hostages = [];
+
   for (Creature p in pool) {
     if (!p.alive || p.location != loc) continue;
     if (p.kidnapped) {
+      hostages.add(p);
       kname = p.properName;
       kidnapped++;
     }
@@ -1649,6 +1655,11 @@ Future<void> stateBrokenLaws(Site loc) async {
         brokenLaws.add(c);
       }
     }
+  }
+  bool kidnappedThePresident =
+      hostages.firstWhereOrNull((h) => h == uniqueCreatures.president) != null;
+  if (kidnappedThePresident) {
+    kname = "President ${uniqueCreatures.president.properName.split(" ").last}";
   }
   int typenum = brokenLaws.length;
 
@@ -1664,7 +1675,7 @@ Future<void> stateBrokenLaws(Site loc) async {
 
   move(3, 1);
   if (loc.siege.escalationState.index >= SiegeEscalation.tanks.index &&
-      politics.publicMood() < 20) {
+      (politics.publicMood() < 20 || kidnappedThePresident)) {
     addstr("In the name of God, your campaign of terror ends here!");
   } else if (loc.type == SiteType.homelessEncampment) {
     addstr("Everyone in the camp is under arrest!");

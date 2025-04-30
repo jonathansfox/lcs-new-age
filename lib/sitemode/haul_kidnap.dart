@@ -146,11 +146,45 @@ Future<void> kidnapattempt() async {
       move(10, 1);
       addstr("and says, ");
       setColor(lightGreen);
-      if (noProfanity) {
-        addstr("\"[Please], be cool.\"");
-      } else {
-        addstr("\"Bitch, be cool.\"");
-      }
+      addstr("\"${[
+        "Please, be cool.",
+        "No sudden moves now.",
+        "Nobody needs to get hurt.",
+        "Stay cool, now.",
+        "You're coming with me.",
+        "This is for your own good.",
+        "I'll keep you safe.",
+        "Walk calmly.",
+        "One foot in front of the other.",
+        "Yep, you're walking with me.",
+        "It's cool, it's cool.",
+        "I'm gonna need you to come with me.",
+        "Let's go for a walk.",
+        "Let's hang out for a bit.",
+        "Fancy meeting you here.",
+        "Care to step outside?",
+        "Why don't you come with me?",
+        "Today is your lucky day.",
+        "After you.",
+        "Let's go.",
+        "Let's be friends.",
+        "You and me are buddies now.",
+        "Time to go.",
+        "We're friends now.",
+        "You're my friend now.",
+        "It's taco night, and you're invited.",
+        "I have someone I'd like you to meet.",
+        "Don't worry. You've never been safer.",
+        "Hello, friend...",
+        "You and me are gonna be great friends.",
+        "I just know we're gonna get along great.",
+        "Ever considered a career in politics?",
+        "Ever thought about being an activist?",
+        "I think you'd enjoy being a Liberal.",
+        "You might like direct action.",
+        "I prefer the term 'activist' myself.",
+        "Don't worry, I'm not a cop.",
+      ].random}\"");
 
       kidnapper.prisoner = target;
 
