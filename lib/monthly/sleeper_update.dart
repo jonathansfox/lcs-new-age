@@ -578,7 +578,7 @@ Future<void> sleeperRecruit(Creature cr, Map<View, int> libpower) async {
                 "News from our ${cr.gender.manWoman} in the White House: Under "
                 "intense pressure from the President, &$oldAlignColor${positionToFill.name} "
                 "&$oldAlignColor${politics.execName[positionToFill]!.last}&x "
-                "has agreed to adopt &$newAlignColor$bestPossibleAlign&x "
+                "has agreed to adopt &$newAlignColor${bestPossibleAlign.label}&x "
                 "policies.");
             addjuice(cr, 25, 1000);
             await getKey();
