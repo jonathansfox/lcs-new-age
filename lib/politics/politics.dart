@@ -348,7 +348,16 @@ enum Exec {
   president,
   vicePresident,
   secretaryOfState,
-  attorneyGeneral,
+  attorneyGeneral;
+
+  String get displayName {
+    return switch (this) {
+      president => "President",
+      vicePresident => "Vice President",
+      secretaryOfState => "Secretary of State",
+      attorneyGeneral => "Attorney General",
+    };
+  }
 }
 
 enum PoliticalParty {

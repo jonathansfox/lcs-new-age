@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:lcs_new_age/basemode/base_mode.dart';
 import 'package:lcs_new_age/basemode/liberal_agenda.dart';
 import 'package:lcs_new_age/common_display/common_display.dart';
+import 'package:lcs_new_age/creature/gender.dart';
 import 'package:lcs_new_age/creature/name.dart';
 import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
@@ -221,10 +222,13 @@ Future<void> tryToRepealConstitution() async {
     //REAGANIFY
     HighScore yourScore;
     if (canSeeThings) {
-      execName[Exec.president] = FullName("Ronald", "", "Reagan");
-      execName[Exec.vicePresident] = FullName("Strom", "", "Thurmond");
-      execName[Exec.secretaryOfState] = FullName("Jesse", "", "Helms");
-      execName[Exec.attorneyGeneral] = FullName("Jerry", "", "Falwell");
+      execName[Exec.president] = FullName("Ronald", "", "Reagan", Gender.male);
+      execName[Exec.vicePresident] =
+          FullName("Strom", "", "Thurmond", Gender.male);
+      execName[Exec.secretaryOfState] =
+          FullName("Jesse", "", "Helms", Gender.male);
+      execName[Exec.attorneyGeneral] =
+          FullName("Jerry", "", "Falwell", Gender.male);
       for (Exec e in exec.keys) {
         exec[e] = DeepAlignment.archConservative;
       }

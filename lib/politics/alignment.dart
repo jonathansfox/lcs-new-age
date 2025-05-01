@@ -43,6 +43,21 @@ enum DeepAlignment implements Comparable<DeepAlignment> {
     }
   }
 
+  String get colorKey {
+    switch (this) {
+      case eliteLiberal:
+        return ColorKey.lightGreen;
+      case liberal:
+        return ColorKey.lightBlue;
+      case moderate:
+        return ColorKey.yellow;
+      case conservative:
+        return ColorKey.purple;
+      case archConservative:
+        return ColorKey.red;
+    }
+  }
+
   String get label {
     switch (this) {
       case eliteLiberal:

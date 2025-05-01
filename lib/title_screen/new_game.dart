@@ -1,4 +1,5 @@
 import 'package:lcs_new_age/creature/attributes.dart';
+import 'package:lcs_new_age/creature/conversion.dart';
 import 'package:lcs_new_age/creature/creature.dart';
 import 'package:lcs_new_age/creature/creature_type.dart';
 import 'package:lcs_new_age/creature/gender.dart';
@@ -17,6 +18,9 @@ import 'package:lcs_new_age/title_screen/questions.dart';
 import 'package:lcs_new_age/title_screen/title_screen.dart';
 import 'package:lcs_new_age/utils/colors.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
+
+// Debug flag to start with the President as a sleeper agent
+const bool debugPresidentSleeper = false;
 
 Future<void> setupNewGame() async {
   gameState = GameState();
@@ -259,4 +263,14 @@ Future<void> aNewConservativeEra() async {
   mvaddstr(19, 2, "In this dark time, the Liberal Crime Squad is born...");
 
   await getKey();
+
+  // If debug flag is enabled, make the President a sleeper agent
+  if (debugPresidentSleeper) {
+    uniqueCreatures.president.sleeperAgent = true;
+    uniqueCreatures.president.hireId = pool[0].id;
+    liberalize(uniqueCreatures.president);
+    uniqueCreatures.president.juice = 1000;
+    pool.add(uniqueCreatures.president);
+    exec[Exec.president] = DeepAlignment.eliteLiberal;
+  }
 }

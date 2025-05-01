@@ -7,13 +7,15 @@ part 'name.g.dart';
 
 @JsonSerializable()
 class FullName {
-  FullName(this.first, this.middle, this.last);
+  FullName(this.first, this.middle, this.last, this.gender);
   factory FullName.fromJson(Map<String, dynamic> json) =>
       _$FullNameFromJson(json);
   Map<String, dynamic> toJson() => _$FullNameToJson(this);
   String first;
   String middle;
   String last;
+  @JsonKey(defaultValue: Gender.nonbinary)
+  Gender gender;
 
   @override
   String toString() => "$first $middle $last";
@@ -23,7 +25,8 @@ class FullName {
 
 FullName generateFullName([Gender gender = Gender.nonbinary]) {
   gender = forceGenderBinary(gender);
-  return FullName(firstName(gender), firstName(gender), lastName(gender));
+  return FullName(
+      firstName(gender), firstName(gender), lastName(gender), gender);
 }
 
 String lastName([Gender gender = Gender.nonbinary]) {

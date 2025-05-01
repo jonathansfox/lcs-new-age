@@ -25,18 +25,31 @@ void addparagraph(int y1, int x1, int y2, int x2, String s) {
   for (int i = 0; i < lines.length; i++) {
     List<String> words = lines[i].split(" ");
     for (int j = 0; j < words.length; j++) {
-      if (console.x + words[j].length + 1 > x2) {
+      if (console.x + strLenX(words[j]) + 1 > x2) {
         console.move(console.y + 1, x1);
         if (console.y > y2) return;
         if (words[j].isEmpty) continue;
       } else if (j != 0) {
         addstr(" ");
       }
-      addstr(words[j]);
+      addstrx(words[j], restoreOldColor: false);
     }
     move(console.y + 1, x1);
     if (console.y > y2) return;
   }
+}
+
+int strLenX(String s) {
+  int len = 0;
+  for (int i = 0; i < s.length; i++) {
+    if ((s[i] == "&" || s[i] == "^") &&
+        (i + 1 < s.length && colorMap.containsKey(s[i + 1]))) {
+      i++;
+    } else {
+      len++;
+    }
+  }
+  return len;
 }
 
 void addInlineOptionText(
@@ -108,8 +121,10 @@ void mvaddstrc(int y, int x, Color fg, String s) {
   mvaddstr(y, x, s);
 }
 
-void addstrx(String s) => console.addstrx(s);
-void mvaddstrx(int y, int x, String s) => console.mvaddstrx(y, x, s);
+void addstrx(String s, {bool restoreOldColor = true}) =>
+    console.addstrx(s, restoreOldColor: restoreOldColor);
+void mvaddstrx(int y, int x, String s, {bool restoreOldColor = true}) =>
+    console.mvaddstrx(y, x, s, restoreOldColor: restoreOldColor);
 
 void mvaddstrCenter(int y, String s, {int x = 39}) =>
     mvaddstr(y, centerString(s, x: x), s);

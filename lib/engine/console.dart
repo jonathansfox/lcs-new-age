@@ -89,7 +89,7 @@ class Console {
     addstr(s);
   }
 
-  void addstrx(String s) {
+  void addstrx(String s, {bool restoreOldColor = true}) {
     const Color dummy = Color(0x00000000);
     bool validColorKey(int i) {
       return i < s.length - 1 && colorMap.containsKey(s[i + 1]);
@@ -110,12 +110,14 @@ class Console {
         addchar(s[i]);
       }
     }
-    setColor(oldForeground, oldBackground);
+    if (restoreOldColor) {
+      setColor(oldForeground, oldBackground);
+    }
   }
 
-  void mvaddstrx(int y, int x, String s) {
+  void mvaddstrx(int y, int x, String s, {bool restoreOldColor = true}) {
     move(y, x);
-    addstrx(s);
+    addstrx(s, restoreOldColor: restoreOldColor);
   }
 
   void keyEvent(KeyEvent event) {

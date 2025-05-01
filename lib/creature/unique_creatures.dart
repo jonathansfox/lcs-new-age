@@ -34,9 +34,12 @@ class UniqueCreatures {
     _president ??= Creature.fromId(CreatureTypeIds.president)
       ..properName = politics.execName[Exec.president]!.firstLast
       ..name = "President ${politics.execName[Exec.president]!.last}"
+      ..gender = politics.execName[Exec.president]!.gender
+      ..genderAssignedAtBirth = politics.execName[Exec.president]!.gender
       ..align = politics.exec[Exec.president]!.shallow
       ..alreadyNamed = true
       ..infiltration = 1
+      ..juice = 1000
       ..location = sites.firstWhere((s) => s.type == SiteType.whiteHouse)
       ..workLocation = sites.firstWhere((s) => s.type == SiteType.whiteHouse);
     return _president!;

@@ -5,6 +5,8 @@ import 'package:lcs_new_age/creature/attributes.dart';
 import 'package:lcs_new_age/creature/conversion.dart';
 import 'package:lcs_new_age/creature/creature.dart';
 import 'package:lcs_new_age/creature/creature_type.dart';
+import 'package:lcs_new_age/creature/gender.dart';
+import 'package:lcs_new_age/creature/name.dart';
 import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
@@ -15,6 +17,7 @@ import 'package:lcs_new_age/justice/crimes.dart';
 import 'package:lcs_new_age/location/location_type.dart';
 import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
+import 'package:lcs_new_age/politics/politics.dart';
 import 'package:lcs_new_age/politics/views.dart';
 import 'package:lcs_new_age/sitemode/fight.dart';
 import 'package:lcs_new_age/sitemode/map_specials.dart';
@@ -506,6 +509,157 @@ Future<void> sleeperSteal(Creature cr, Map<View, int> libpower) async {
 
 Future<void> sleeperRecruit(Creature cr, Map<View, int> libpower) async {
   if (cr.subordinatesLeft > 0) {
+    // Special handling for President recruiting cabinet members
+    if (cr == uniqueCreatures.president) {
+      // Find a cabinet position that isn't already Elite Liberal
+      Exec? positionToFill = Exec.values
+          .where((e) =>
+              e != Exec.president &&
+              politics.exec[e] != DeepAlignment.eliteLiberal)
+          .randomOrNull;
+
+      if (positionToFill != null) {
+        // Calculate the most Liberal candidate the Senate would confirm
+        // Start with the current alignment and try to move more Liberal
+        DeepAlignment currentAlign = politics.exec[positionToFill]!;
+        DeepAlignment bestPossibleAlign = currentAlign;
+        int houseVotesRequired = 0;
+        if (positionToFill == Exec.vicePresident) {
+          houseVotesRequired = politics.house.length ~/ 2 + 1;
+        }
+
+        // President's charisma and juice can help convince some Senators
+        int bonusVotes = (cr.attribute(Attribute.charisma) / 10).round() +
+            (cr.juice / 100).round();
+
+        // Try each more Liberal alignment until we find the most Liberal one that can get confirmed
+        for (int i = currentAlign.index + 1;
+            i < DeepAlignment.values.length;
+            i++) {
+          DeepAlignment testAlign = DeepAlignment.values[i];
+          int votesFor = 0;
+          int houseVotesFor = 0;
+
+          // Count votes from each Senator
+          for (DeepAlignment senatorAlign in politics.senate) {
+            // Senators will support a candidate one step more Liberal than themselves
+            if (testAlign.index <= senatorAlign.index + 1) {
+              votesFor++;
+            }
+          }
+          for (DeepAlignment houseAlign in politics.house) {
+            if (testAlign.index <= houseAlign.index + 1) {
+              houseVotesFor++;
+            }
+          }
+
+          votesFor += bonusVotes;
+          houseVotesFor += bonusVotes;
+
+          // Need 51 votes to confirm
+          if (votesFor >= 51 && houseVotesFor >= houseVotesRequired) {
+            bestPossibleAlign = testAlign;
+          } else {
+            break; // Can't get any more Liberal than this
+          }
+        }
+
+        if (bestPossibleAlign != currentAlign) {
+          politics.exec[positionToFill] = bestPossibleAlign;
+          String newAlignColor = bestPossibleAlign.colorKey;
+          String oldAlignColor = currentAlign.colorKey;
+          if (bestPossibleAlign.index == currentAlign.index + 1) {
+            // Convince the existing cabinet member to shift to the new alignment
+            erase();
+            setColor(lightGray);
+            addparagraph(
+                6,
+                1,
+                10,
+                79,
+                "News from our ${cr.gender.manWoman} in the White House: Under "
+                "intense pressure from the President, &$oldAlignColor${positionToFill.name} "
+                "&$oldAlignColor${politics.execName[positionToFill]!.last}&x "
+                "has agreed to adopt &$newAlignColor$bestPossibleAlign&x "
+                "policies.");
+            addjuice(cr, 25, 1000);
+            await getKey();
+            return;
+          } else if (bestPossibleAlign.index > currentAlign.index) {
+            // Appoint the new cabinet member
+            FullName oldName = politics.execName[positionToFill]!;
+            // Generate a new name for the cabinet member
+            politics.execName[positionToFill] =
+                generateFullName(switch (bestPossibleAlign) {
+              DeepAlignment.archConservative => Gender.whiteMalePatriarch,
+              DeepAlignment.conservative => Gender.male,
+              DeepAlignment.eliteLiberal => Gender.nonbinary,
+              _ => Gender.maleBias,
+            });
+
+            erase();
+            setColor(lightGray);
+            if (positionToFill == Exec.vicePresident) {
+              addparagraph(
+                  6,
+                  1,
+                  10,
+                  79,
+                  "News from our ${cr.gender.manWoman} in the White House: Under "
+                  "intense pressure from the President, "
+                  "&${oldAlignColor}Vice President ${oldName.last}&w "
+                  "is resigning. The President already has a new second "
+                  "in mind: &$newAlignColor${politics.execName[positionToFill]!.firstLast}&w "
+                  "is expected to pass confirmation in both the House and the "
+                  "Senate.");
+            } else {
+              addparagraph(
+                  6,
+                  1,
+                  10,
+                  79,
+                  "News from our ${cr.gender.manWoman} in the White House: Under "
+                  "intense pressure from the President, "
+                  "&$oldAlignColor${positionToFill.displayName} ${oldName.last}&w "
+                  "is resigning. The President already has a new cabinet member "
+                  "in mind: &$newAlignColor${politics.execName[positionToFill]!.firstLast}&w "
+                  "is expected to pass confirmation in the Senate.");
+            }
+
+            // Add juice for successful appointment, more for more Liberal appointments
+            addjuice(
+                cr, (bestPossibleAlign.index - currentAlign.index) * 25, 1000);
+
+            await getKey();
+            return;
+          }
+        } else {
+          // Failed to get a more Liberal appointment confirmed
+          String oldAlignColor = currentAlign.colorKey;
+          erase();
+          setColor(lightGray);
+          addparagraph(
+              6,
+              1,
+              14,
+              79,
+              "Update from our ${cr.gender.manWoman} in the White House: "
+              "Despite the President's best efforts, &$oldAlignColor${positionToFill.displayName} "
+              "${politics.execName[positionToFill]!.last}&w continues to "
+              "hold out against the internal push for more Liberal policies. "
+              "The President is considering other options, but lacks the "
+              "votes in Congress to confirm a more Liberal appointment.");
+
+          await getKey();
+          return;
+        }
+      } else {
+        // All cabinet positions are already Elite Liberal so let the president
+        // recruit like everyone else
+      }
+    }
+
+    // Normal sleeper recruitment logic for non-Presidents
     activeSite = cr.workSite;
     activeSite ??=
         findSiteInSameCity(cr.workLocation.city, SiteType.publicPark);
