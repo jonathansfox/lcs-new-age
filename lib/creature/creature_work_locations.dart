@@ -188,7 +188,12 @@ bool testWorkLocation(CreatureType type, Site location) {
         SiteType.whiteHouse,
       ]);
     case CreatureTypeIds.sexWorker:
-      okaySite.add(SiteType.barAndGrill);
+      okaySite.addAll([
+        SiteType.barAndGrill,
+        SiteType.tenement,
+        SiteType.drugHouse,
+        SiteType.ceoHouse,
+      ]);
     case CreatureTypeIds.merc:
       okaySite.addAll([
         SiteType.corporateHQ,
