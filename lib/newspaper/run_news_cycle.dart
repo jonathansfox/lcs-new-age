@@ -509,7 +509,7 @@ void setpriority(NewsStory ns) {
       if (ns.priority > 20000) ns.priority = 20000;
     case NewsStories.kidnapReport:
       // Kidnappings are higher priority if they're an archconservative or otherwise prominent
-      ns.priority = 20;
+      ns.priority = 50;
       if (ns.cr?.type.id == CreatureTypeIds.corporateCEO ||
           ns.cr?.type.id == CreatureTypeIds.radioPersonality ||
           ns.cr?.type.id == CreatureTypeIds.newsAnchor ||
@@ -517,8 +517,14 @@ void setpriority(NewsStory ns) {
           ns.cr?.type.id == CreatureTypeIds.president ||
           ns.cr?.type.id == CreatureTypeIds.conservativeJudge ||
           ns.cr?.type.id == CreatureTypeIds.liberalJudge ||
-          ns.cr?.type.id == CreatureTypeIds.actor) {
-        ns.priority = 40;
+          ns.cr?.type.id == CreatureTypeIds.actor ||
+          ns.cr?.type.id == CreatureTypeIds.athlete ||
+          ns.cr?.type.id == CreatureTypeIds.socialite ||
+          ns.cr?.type.id == CreatureTypeIds.policeChief ||
+          ns.cr?.type.id == CreatureTypeIds.cop ||
+          ns.cr?.type.id == CreatureTypeIds.gangUnit ||
+          ns.cr?.type.id == CreatureTypeIds.deathSquad) {
+        ns.priority = 200;
       }
     case NewsStories.massacre:
       // More people massacred, higher priority
