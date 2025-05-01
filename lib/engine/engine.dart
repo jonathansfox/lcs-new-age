@@ -19,7 +19,13 @@ void addstrc(Color fg, String s) {
   addstr(s);
 }
 
-void addparagraph(int y1, int x1, int y2, int x2, String s) {
+void addparagraph(
+  int y1,
+  int x1,
+  String s, {
+  int y2 = CONSOLE_HEIGHT - 1,
+  int x2 = CONSOLE_WIDTH - 1,
+}) {
   console.move(y1, x1);
   List<String> lines = s.split("\n");
   for (int i = 0; i < lines.length; i++) {

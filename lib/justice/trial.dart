@@ -107,7 +107,7 @@ Future<void> trial(Creature g) async {
     if (typenum == 1) charges += " and ";
     if (typenum == 0) charges += ".";
     setColor(red);
-    addparagraph(5, 1, 12, 79, charges);
+    addparagraph(5, 1, charges);
     await getKey();
   }
 

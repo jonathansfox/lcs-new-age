@@ -128,7 +128,7 @@ Future<void> readNewsStory(NewsStory ns) async {
     mvaddstrc(console.y + 1, 0, lightGray, ns.byline!);
   }
   setColor(lightGray);
-  addparagraph(console.y + 2, 0, 23, 79, ns.body);
+  addparagraph(console.y + 2, 0, ns.body);
   if (ns.newspaperPhotoId != null) {
     renderNewsPic(ns.newspaperPhotoId!, console.y + 1, ns.remapSkinTones);
   }

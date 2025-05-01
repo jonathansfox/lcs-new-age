@@ -146,7 +146,7 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
       message += ".";
     }
   }
-  addparagraph(1, 1, console.height - 2, console.width - 2, message);
+  addparagraph(1, 1, x2: console.width - 2, message);
 
   await getKey();
 

@@ -575,8 +575,6 @@ Future<void> sleeperRecruit(Creature cr, Map<View, int> libpower) async {
             addparagraph(
                 6,
                 1,
-                10,
-                79,
                 "News from our ${cr.gender.manWoman} in the White House: Under "
                 "intense pressure from the President, &$oldAlignColor${positionToFill.name} "
                 "&$oldAlignColor${politics.execName[positionToFill]!.last}&x "
@@ -603,8 +601,6 @@ Future<void> sleeperRecruit(Creature cr, Map<View, int> libpower) async {
               addparagraph(
                   6,
                   1,
-                  10,
-                  79,
                   "News from our ${cr.gender.manWoman} in the White House: Under "
                   "intense pressure from the President, "
                   "&${oldAlignColor}Vice President ${oldName.last}&w "
@@ -616,8 +612,6 @@ Future<void> sleeperRecruit(Creature cr, Map<View, int> libpower) async {
               addparagraph(
                   6,
                   1,
-                  10,
-                  79,
                   "News from our ${cr.gender.manWoman} in the White House: Under "
                   "intense pressure from the President, "
                   "&$oldAlignColor${positionToFill.displayName} ${oldName.last}&w "
@@ -641,8 +635,6 @@ Future<void> sleeperRecruit(Creature cr, Map<View, int> libpower) async {
           addparagraph(
               6,
               1,
-              14,
-              79,
               "Update from our ${cr.gender.manWoman} in the White House: "
               "Despite the President's best efforts, &$oldAlignColor${positionToFill.displayName} "
               "${politics.execName[positionToFill]!.last}&w continues to "

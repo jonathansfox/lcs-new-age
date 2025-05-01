@@ -7,7 +7,7 @@ import 'package:lcs_new_age/creature/name.dart';
 import 'package:lcs_new_age/creature/sort_creatures.dart';
 import 'package:lcs_new_age/creature/unique_creatures.dart';
 import 'package:lcs_new_age/daily/dating.dart';
-import 'package:lcs_new_age/daily/interrogation.dart';
+import 'package:lcs_new_age/daily/hostages/tend_hostage.dart';
 import 'package:lcs_new_age/daily/recruitment.dart';
 import 'package:lcs_new_age/gamestate/crime_squad.dart';
 import 'package:lcs_new_age/gamestate/game_mode.dart';

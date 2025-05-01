@@ -347,8 +347,6 @@ Future<void> siegeCheck() async {
         addparagraph(
             6,
             1,
-            18,
-            78,
             "In a groundbreaking act of synergy, the Corporations have decided "
             "to diversify their operations into a micro-targeted deplatforming "
             "campaign with the goal of downsizing the LCS "
@@ -358,8 +356,6 @@ Future<void> siegeCheck() async {
         addparagraph(
             console.y + 1,
             1,
-            18,
-            78,
             "Leveraging their unparalleled expertise in tactical engagement "
             "and displacement logistics, a globally recognized private "
             "military company has initiated a daylight operation against the "
@@ -529,8 +525,6 @@ Future<void> siegeCheck() async {
         addparagraph(
             6,
             1,
-            16,
-            78,
             "In the dead of the night, a column of unmarked black vans with "
             "tinted windows surrounds the ${l.getName()}.");
         await getKey();
@@ -587,8 +581,6 @@ Future<void> siegeCheck() async {
         addparagraph(
             6,
             1,
-            16,
-            78,
             "A loosely-organized column of pickup trucks sporting gun racks "
             "and Confederate flags is approaching the ${l.getName()}.");
         await getKey();
@@ -596,8 +588,6 @@ Future<void> siegeCheck() async {
         addparagraph(
             console.y + 1,
             1,
-            16,
-            78,
             "Overnight, a fringe far-right social media account published a "
             "detailed conspiracy theory about a building where an enclave of "
             "hundreds of Liberal elites were supposedly generating forgeries, "
@@ -607,8 +597,6 @@ Future<void> siegeCheck() async {
         addparagraph(
             console.y + 1,
             1,
-            16,
-            78,
             "Rallied by misguided calls to violence that swept through social "
             "media, the Conservative masses are pouring into ${l.district.name} "
             "to assault the ${l.getName()}!");
@@ -1554,7 +1542,7 @@ Future<void> conquerText() async {
         "Liberal Agenda is realized.";
   }
   setColor(lightGray);
-  addparagraph(3, 11, 5, 59, text);
+  addparagraph(3, 11, x2: 59, text);
 
   mvaddstr(7, 19, "Press C to Continue Liberally.");
 
@@ -1628,7 +1616,7 @@ Future<void> conquerTextCCS() async {
   }
 
   setColor(lightGray);
-  addparagraph(3, 11, 13, 59, text);
+  addparagraph(3, 11, x2: 59, text);
 
   mvaddstr(15, 19, "Press C to Continue Liberally.");
 
@@ -1694,7 +1682,7 @@ Future<void> stateBrokenLaws(Site loc) async {
     String crimeName = Crime.values
             .firstWhereOrNull((c) => brokenLaws.contains(c))
             ?.wantedFor ??
-        "harboring a fugitive from justice";
+        "questioning";
     addstr("You are wanted for $crimeName");
     if (typenum > 1) addstr(" and other crimes");
     addstr("!");

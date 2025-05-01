@@ -4,7 +4,7 @@ import 'package:lcs_new_age/utils/colors.dart';
 
 void _body(String s) {
   setColor(lightGray);
-  addparagraph(3, 1, 20, 78, s);
+  addparagraph(3, 1, s);
 }
 
 void _head(String s) => mvaddstrc(1, 1, lightGreen, s);
