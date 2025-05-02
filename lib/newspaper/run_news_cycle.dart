@@ -113,7 +113,7 @@ Future<void> displayNewsStories() async {
       await displayStory(n, false, null);
     }
 
-    handlePublicOpinionImpact(n);
+    handlePublicOpinionImpact(n, liberalguardian);
 
     n.effects = Map.fromEntries(gameState.politics.publicOpinion.entries
         .where((entry) => entry.value != beforeOpinion[entry.key])
@@ -212,7 +212,7 @@ void assignPageNumbersToNewspaperStories() {
   } while (acted);
 }
 
-void handlePublicOpinionImpact(NewsStory ns) {
+void handlePublicOpinionImpact(NewsStory ns, bool liberalguardian) {
   // Check if this function is meant to handle public opinion impact
   // for this type of news story (primarily deals with squad/site actions)
   List<NewsStories> okayTypes = [
@@ -335,12 +335,16 @@ void handlePublicOpinionImpact(NewsStory ns) {
   };
   if (lcsResponsible) {
     int extraMoralAuthority = 0;
-    if (ns.positive > 0) {
+    if (ns.positive > 0 || liberalguardian) {
       changePublicOpinion(View.lcsLiked, impact);
     } else {
       changePublicOpinion(View.lcsLiked, -impact);
-      changePublicOpinion(View.gunControl, impact ~/ 5);
       extraMoralAuthority = -25;
+    }
+    if (ns.legalGunUsed) {
+      changePublicOpinion(View.gunControl, impact);
+    } else if (ns.illegalGunUsed) {
+      changePublicOpinion(View.gunControl, impact ~/ 5);
     }
     for (View issue in issues) {
       changePublicOpinion(issue, impact,
@@ -348,7 +352,7 @@ void handlePublicOpinionImpact(NewsStory ns) {
     }
   } else if (ccsResponsible) {
     int extraMoralAuthority = 0;
-    if (ns.positive > 0) {
+    if (ns.positive > 0 && !liberalguardian) {
       changePublicOpinion(View.ccsHated, impact);
     } else {
       changePublicOpinion(View.ccsHated, -impact);
