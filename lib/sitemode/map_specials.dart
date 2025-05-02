@@ -1578,20 +1578,43 @@ Future<void> specialOvalOffice() async {
     await encounterMessage("The President isn't here...");
 
     mvaddstr(10, 1, "Secret Service agents ambush the squad!");
-    await getKey();
     for (int e = 0; e < 6; e++) {
       encounter.add(Creature.fromId(CreatureTypeIds.secretService));
     }
     printEncounter();
+    await getKey();
 
     await enemyattack(encounter);
     await creatureadvance();
   } else {
     await encounterMessage("The President is in the Oval Office.");
-    encounter.add(Creature.fromId(CreatureTypeIds.secretService));
-    encounter.add(uniqueCreatures.president);
-    encounter.add(Creature.fromId(CreatureTypeIds.secretService));
-    printEncounter();
+    if (uniqueCreatures.president.formerHostage &&
+        uniqueCreatures.president.align == Alignment.conservative) {
+      encounter.add(Creature.fromId(CreatureTypeIds.secretService));
+      encounter.add(Creature.fromId(CreatureTypeIds.secretService));
+      encounter.add(Creature.fromId(CreatureTypeIds.secretService));
+      encounter.add(uniqueCreatures.president);
+      encounter.add(Creature.fromId(CreatureTypeIds.secretService));
+      encounter.add(Creature.fromId(CreatureTypeIds.secretService));
+      encounter.add(Creature.fromId(CreatureTypeIds.secretService));
+      printEncounter();
+      if (squad.first.genderAssignedAtBirth == Gender.male) {
+        await encounterMessage("${uniqueCreatures.president.name} smirks,",
+            line2: "\"You got brass fucking balls, I'll give you that.\"");
+      } else {
+        await encounterMessage("${uniqueCreatures.president.name} smirks,",
+            line2: "\"You're a cute girl, I'll give you that.\"");
+      }
+      siteAlarm = true;
+
+      await enemyattack(encounter);
+      await creatureadvance();
+    } else {
+      encounter.add(Creature.fromId(CreatureTypeIds.secretService));
+      encounter.add(uniqueCreatures.president);
+      encounter.add(Creature.fromId(CreatureTypeIds.secretService));
+      printEncounter();
+    }
   }
 }
 

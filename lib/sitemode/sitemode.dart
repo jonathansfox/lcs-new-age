@@ -1553,7 +1553,24 @@ Future<void> _siteModeAux() async {
                   await getKey();
 
                   encounter.clear();
-                  encounter.add(uniqueCreatures.ceo);
+                  if (uniqueCreatures.ceo.formerHostage &&
+                      uniqueCreatures.ceo.align == Alignment.conservative) {
+                    encounter.add(Creature.fromId(CreatureTypeIds.guardDog));
+                    encounter.add(Creature.fromId(CreatureTypeIds.guardDog));
+                    encounter.add(Creature.fromId(CreatureTypeIds.merc));
+                    encounter.add(Creature.fromId(CreatureTypeIds.merc));
+                    encounter.add(Creature.fromId(CreatureTypeIds.merc));
+                    encounter.add(uniqueCreatures.ceo);
+                    printEncounter();
+                    await encounterMessage("The CEO snarls, ",
+                        line2: "\"Fool me twice... can't get fooled again!\"");
+                    siteAlarm = true;
+
+                    await enemyattack(encounter);
+                    await creatureadvance();
+                  } else {
+                    encounter.add(uniqueCreatures.ceo);
+                  }
                 } else {
                   addstr("The CEO's study lies empty.");
 

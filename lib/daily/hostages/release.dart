@@ -5,6 +5,8 @@ import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/daily/hostages/tend_hostage.dart';
 import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
+import 'package:lcs_new_age/items/clothing.dart';
+import 'package:lcs_new_age/items/clothing_type.dart';
 import 'package:lcs_new_age/location/siege.dart';
 import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/utils/colors.dart';
@@ -124,9 +126,17 @@ Future<void> handleRelease(
   } else {
     // Otherwise they'll be released
     pool.remove(cr);
-    if (cr.missing) {
-      cr.missing = false;
-      cr.kidnapped = false;
+    cr.location = cr.workLocation;
+    // Make sure they recognize the LCS if they see them again
+    cr.formerHostage = true;
+    // Give them appropriate clothing and weapon in case they lost them
+    ClothingType? armorType = cr.type.randomArmor;
+    if (armorType != null && armorType.idName != "CLOTHING_NONE") {
+      cr.equippedClothing = Clothing(armorType.idName);
     }
+    cr.type.randomWeaponFor(cr);
+    // Clear their kidnapping flags
+    cr.missing = false;
+    cr.kidnapped = false;
   }
 }

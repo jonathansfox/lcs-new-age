@@ -90,6 +90,8 @@ class Creature {
   double infiltration = 0;
   int meetings = 0;
   bool hasWheelchair = false;
+  @JsonKey(defaultValue: false)
+  bool formerHostage = false;
   Activity activity = Activity(ActivityType.none);
   String name = "";
   String properName = "";
@@ -159,8 +161,12 @@ class Creature {
   Creature? prisoner;
   @JsonKey(includeFromJson: false, includeToJson: false)
   bool incapacitatedThisRound = false;
+  @JsonKey(
+      includeFromJson: false, includeToJson: false, name: "isWillingToTalk")
+  bool _isWillingToTalk = true;
   @JsonKey(includeFromJson: false, includeToJson: false)
-  bool isWillingToTalk = true;
+  bool get isWillingToTalk => _isWillingToTalk && !formerHostage;
+  set isWillingToTalk(bool value) => _isWillingToTalk = value;
   @JsonKey(includeFromJson: false, includeToJson: false)
   bool noticedParty = false;
   @JsonKey(includeFromJson: false, includeToJson: false)
