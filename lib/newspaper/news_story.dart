@@ -39,6 +39,7 @@ class NewsStory {
   bool illegalGunUsed = false;
   String publicationName = "";
   DeepAlignment publicationAlignment = DeepAlignment.moderate;
+  @JsonKey(includeToJson: true, includeFromJson: true)
   DateTime? _date;
   @JsonKey(includeFromJson: false, includeToJson: false)
   DateTime get date => _date ?? gameState.date;

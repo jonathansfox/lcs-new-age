@@ -888,7 +888,7 @@ void displayNewsStory(String story, List<int> storyXStart, List<int> storyXEnd,
 }
 
 void archiveNewsStory(NewsStory ns) {
-  ns.date = gameState.date;
+  ns.date = gameState.date.copyWith();
   if (gameState.newsArchive.contains(ns)) return;
   gameState.newsArchive.add(ns);
   if (gameState.newsArchive.length > 51) {
