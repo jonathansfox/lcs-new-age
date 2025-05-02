@@ -39,9 +39,9 @@ Future<void> doActivityHacking(List<Creature> hack) async {
     msg += " has ";
   }
 
-  if (Difficulty.heroic <= hackTeamSkill) {
+  if (Difficulty.formidable <= hackTeamSkill) {
     // Major hack
-    trackdif = Difficulty.superHeroic;
+    trackdif = Difficulty.heroic;
     juiceval = 10;
     crime = Crime.dataTheft;
 
@@ -68,7 +68,7 @@ Future<void> doActivityHacking(List<Creature> hack) async {
         }
       case 4:
         msg += "broke into military networks leaving LCS slogans.";
-        trackdif = Difficulty.mythic;
+        trackdif = Difficulty.superHeroic;
         crime = Crime.cyberTerrorism;
         juiceval = 25;
         changePublicOpinion(View.military, 5, coloredByLcsOpinions: true);
@@ -105,9 +105,7 @@ Future<void> doActivityHacking(List<Creature> hack) async {
   debugPrint("Hacking: $msg, $crime, $trackdif, $trackEvade");
 
   if (trackdif > trackEvade) {
-    for (int h = 0; h < hack.length; h++) {
-      criminalize(hack[h], crime);
-    }
+    criminalizeAll(hack, crime, splitHeat: true);
   }
 
   // Award juice to the hacking team for a job well done

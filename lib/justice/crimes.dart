@@ -56,8 +56,8 @@ class CrimeData {
   final List<Creature> perpetrators;
 }
 
-void criminalize(Creature creature, Crime crime) {
-  creature.criminalize(crime);
+void criminalize(Creature creature, Crime crime, {double heatMultiplier = 1}) {
+  creature.criminalize(crime, heatMultiplier: heatMultiplier);
 }
 
 void addPotentialCrime(Iterable<Creature> creatures, Crime crime,
@@ -131,9 +131,11 @@ void commitPotentialCrimes() {
   gameState.potentialCrimes.clear();
 }
 
-void criminalizeAll(Iterable<Creature> creatures, Crime crime) {
+void criminalizeAll(Iterable<Creature> creatures, Crime crime,
+    {bool splitHeat = false}) {
   for (var creature in creatures) {
-    creature.criminalize(crime);
+    creature.criminalize(crime,
+        heatMultiplier: splitHeat ? 1 / creatures.length : 1);
   }
 }
 

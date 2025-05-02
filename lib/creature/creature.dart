@@ -656,7 +656,7 @@ class Creature {
     }
   }
 
-  void criminalize(Crime crime) {
+  void criminalize(Crime crime, {double heatMultiplier = 1}) {
     if (mode == GameMode.site) {
       if (activeSiteUnderSiege &&
           activeSite?.siege.activeSiegeType != SiegeType.police) {
@@ -669,10 +669,11 @@ class Creature {
       }
     }
     wantedForCrimes[crime] = (wantedForCrimes[crime] ?? 0) + 1;
-    if (clothing.type.concealsFace) {
-      heat += crimeHeat(crime) ~/ 2;
+    int heatFromCrime = (crimeHeat(crime) * heatMultiplier).ceil();
+    if (clothing.type.concealsFace && mode == GameMode.site) {
+      heat += heatFromCrime ~/ 2;
     } else {
-      heat += crimeHeat(crime);
+      heat += heatFromCrime;
     }
   }
 
