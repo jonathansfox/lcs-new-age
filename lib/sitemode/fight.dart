@@ -388,19 +388,19 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
   if (a.weapon.type.idName == "WEAPON_NONE") {
     int result = a.skillRoll(Skill.martialArts);
     if (a.body is HumanoidBody) {
-      if (result < 15) {
+      if (result < Difficulty.easy) {
         addstr("flails at");
         maxNumberOfAttacks = 1;
         damageMultiplier = 0.5;
-      } else if (result < 20) {
+      } else if (result < Difficulty.average) {
         addstr("punches");
         maxNumberOfAttacks = 1;
         damageMultiplier = 1;
-      } else if (result < 25) {
+      } else if (result < Difficulty.hard) {
         addstr("kicks");
         maxNumberOfAttacks = 1;
         damageMultiplier = 1;
-      } else if (result < 45) {
+      } else if (result < Difficulty.heroic) {
         switch (lcsRandom(3)) {
           case 0:
             addstr("pummels");
