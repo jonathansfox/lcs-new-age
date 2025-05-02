@@ -6,19 +6,17 @@ int ageModifierForAttribute(Attribute attribute, int age) {
       return childAgeModifiers[attribute]!;
     case < teenAge:
       return teenAgeModifiers[attribute]!;
-    case < middleAge:
+    case >= middleAge:
       return middleAgeModifiers[attribute]!;
-    case < oldAge:
+    case >= oldAge:
       return oldAgeModifiers[attribute]!;
-    case < elderlyAge:
+    case >= elderlyAge:
       return elderlyAgeModifiers[attribute]!;
     default:
       return 0;
   }
 }
 
-// older age damages base health using a different mechanism and should not
-// modify health in this table
 const int elderlyAge = 70;
 const Map<Attribute, int> elderlyAgeModifiers = {
   Attribute.strength: -6,
@@ -49,7 +47,6 @@ const Map<Attribute, int> middleAgeModifiers = {
   Attribute.heart: 0,
 };
 
-// younger ages are allowed to modify health
 const int teenAge = 16;
 const Map<Attribute, int> teenAgeModifiers = {
   Attribute.strength: -1,
@@ -60,7 +57,7 @@ const Map<Attribute, int> teenAgeModifiers = {
   Attribute.heart: 1,
 };
 
-const int childAge = 16;
+const int childAge = 12;
 const Map<Attribute, int> childAgeModifiers = {
   Attribute.strength: -3,
   Attribute.agility: 0,
