@@ -55,10 +55,12 @@ Future<bool> talkAboutIssues(Creature a, Creature tk) async {
 
   int difficulty = Difficulty.veryEasy;
 
-  if (tk.align == Alignment.conservative) difficulty += 15;
-  if (!tk.type.talkReceptive) difficulty += 15;
-  if (youAreStupid) difficulty += 9;
-  if (issueTooLiberal) difficulty += 9;
+  if (tk.align == Alignment.conservative) {
+    difficulty += DifficultyModifier.aLotHarder;
+  }
+  if (!tk.type.talkReceptive) difficulty += DifficultyModifier.aLotHarder;
+  if (youAreStupid) difficulty += DifficultyModifier.aLittleHarder;
+  if (issueTooLiberal) difficulty += DifficultyModifier.aLittleHarder;
 
   succeeded = a.skillCheck(Skill.persuasion, difficulty);
   debugPrint("Talk about issues: $succeeded, $difficulty");

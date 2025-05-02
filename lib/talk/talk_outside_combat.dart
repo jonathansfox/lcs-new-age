@@ -261,10 +261,10 @@ Future<bool> heyIWantToRentARoom(Creature a, Creature tk) async {
         int difficulty = Difficulty.formidable;
 
         if (!lcscherrybusted) {
-          difficulty += 6;
+          difficulty += DifficultyModifier.aLittleHarder;
         }
         if (armedLiberal == null) {
-          difficulty += 6;
+          difficulty += DifficultyModifier.aLittleHarder;
         }
 
         if (roll < difficulty - 4) {
@@ -546,10 +546,10 @@ Future<bool> talkToBankTeller(Creature a, Creature tk) async {
       int difficulty = Difficulty.veryEasy;
 
       if (armedLiberal == null) {
-        difficulty += 12;
+        difficulty += DifficultyModifier.aLotHarder;
       }
       if (activeSite!.hasHighSecurity) {
-        difficulty += 12;
+        difficulty += DifficultyModifier.aLotHarder;
       }
 
       clearSceneAreas();

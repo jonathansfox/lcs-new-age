@@ -168,14 +168,14 @@ Future<bool> doYouComeHereOften(Creature a, Creature tk) async {
   }
   if (tk.type.id == CreatureTypeIds.corporateCEO ||
       tk.type.id == CreatureTypeIds.president) {
-    difficulty = Difficulty.legendary;
+    difficulty = Difficulty.heroic;
   }
 
   if (a.indecent) {
     if (!oneIn(5)) {
-      difficulty += 10;
+      difficulty += DifficultyModifier.aLotHarder;
     } else {
-      difficulty -= 10;
+      difficulty += DifficultyModifier.aLotEasier;
     }
   }
 

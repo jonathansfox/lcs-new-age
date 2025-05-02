@@ -261,10 +261,10 @@ Future<bool> handleRansomAmbush(
   }
 
   if (!pickedGoodLocation) {
-    difficulty += 3;
+    difficulty += DifficultyModifier.aLittleHarder;
   }
   if (!approachedCarefully) {
-    difficulty += 3;
+    difficulty += DifficultyModifier.aLittleHarder;
   }
 
   bool gotMoney = false;

@@ -11,3 +11,11 @@ class Difficulty {
   static const int legendary = 21;
   static const int mythic = 23;
 }
+
+class DifficultyModifier {
+  static const int none = 0;
+  static const int aLittleHarder = 3;
+  static const int aLotHarder = 6;
+  static const int aLittleEasier = -3;
+  static const int aLotEasier = -6;
+}

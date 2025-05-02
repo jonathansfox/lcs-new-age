@@ -226,11 +226,11 @@ Future<void> disguisecheck(int timer) async {
 
       // Increase difficulty if Conservatives suspicious...
       if (siteAlarmTimer == 0) {
-        stealthDifficulty += 6;
-        disguiseDifficulty += 6;
+        stealthDifficulty += DifficultyModifier.aLotHarder;
+        disguiseDifficulty += DifficultyModifier.aLotHarder;
       }
       // Sneaking with a party is hard
-      stealthDifficulty += (partysize - 1) * 3;
+      stealthDifficulty += partysize - 1;
 
       // Make the attempt!
       for (Creature c in squad) {
