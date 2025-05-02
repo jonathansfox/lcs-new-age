@@ -366,7 +366,7 @@ Future<void> tendHostage(InterrogationSession intr) async {
       cr.hireId = lead.id;
       cr.juice = 0;
       cr.brainwashed = true;
-      cr.base = cr.workLocation is Site ? cr.workLocation as Site : null;
+      cr.base = cr.site;
       liberalize(cr);
       stats.recruits++;
 
