@@ -576,9 +576,9 @@ Future<void> sleeperRecruit(Creature cr, Map<View, int> libpower) async {
                 6,
                 1,
                 "News from our ${cr.gender.manWoman} in the White House: Under "
-                "intense pressure from the President, &$oldAlignColor${positionToFill.name} "
-                "&$oldAlignColor${politics.execName[positionToFill]!.last}&x "
-                "has agreed to adopt &$newAlignColor${bestPossibleAlign.label}&x "
+                "intense pressure from the President, &$oldAlignColor${positionToFill.displayName} "
+                "&$oldAlignColor${politics.execName[positionToFill]!.last}&w "
+                "has agreed to adopt &$newAlignColor${bestPossibleAlign.label}&w "
                 "policies.");
             addjuice(cr, 25, 1000);
             await getKey();
@@ -672,9 +672,10 @@ Future<void> sleeperRecruit(Creature cr, Map<View, int> libpower) async {
         pool.add(e);
 
         erase();
-        mvaddstr(
-            6, 1, "Sleeper ${cr.name} has recruited a new ${e.type.name}.");
-        mvaddstr(8, 1, "${e.name} looks forward serving the Liberal cause!");
+        mvaddstrc(6, 1, lightGray,
+            "Sleeper ${cr.name} has recruited a new ${e.type.name}.");
+        mvaddstrc(8, 1, lightGray,
+            "${e.name} looks forward serving the Liberal cause!");
 
         await getKey();
 
