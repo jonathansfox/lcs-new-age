@@ -1,3 +1,20 @@
+1.3.4 - 5/3/2025
+- A little more progress on the work-in-progress mouse support, including a couple more clickable areas and mouse over highlighting
+- Updated Community Service to only boost LCS popularity if people have already heard of the LCS and not boost public interest in the LCS
+- Made retroactive criminal charges for murder affect sneaky knife kills you got away with earlier if you get caught before the end of the site action
+- Made sneaking up and stabbing people a bit harder if there's already a deeply concerning pile of corpses with conspicuous stab wounds heaped in the corner of the room
+- Made it so pursuers in chase sequences start already aware of your presence so you can't just sneak up and stealth kill them after they spot you
+- Made blood kinda spray everywhere if too much is spilled on one tile
+- Fixed a display bug where stealth attacking police officers in the head was saying you were attacking them in the vest
+- Fixed a bug where all news stories were getting the 'HELL ON EARTH' image added to them on game load
+- Added some extra safeguards against catching charges from crimes committed at a location that isn't supposed to report crimes to the police
+- Simplified the code for placing stairs to hopefully resolve a bug where the complex stair placement code was apparently failing to prevent two sets of stairs from appearing in the same place
+- Automatically discontinue teaching and show a message if there's nothing left to teach
+- Adjusted drug arrest attempts to make them less common in nightmare mode but more common outside of it
+- Gave more street smarts and art skill training for graffiti
+- Increased the range of issues causing trouble can affect and reduced the impact on public opinion of the LCS
+- Some additional minor UI changes to the title screen
+
 1.3.3 - 5/2/2025
 - Emergency hotfix, fixed inability to start new game caused by title screen changes (oof!)
 - Added prototype mouse support
