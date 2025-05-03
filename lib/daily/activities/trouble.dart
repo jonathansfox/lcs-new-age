@@ -22,15 +22,16 @@ Future<void> doActivityTrouble(List<Creature> trouble) async {
 
   String message;
   if (trouble.length > 1) {
-    message = "Your Activists have ";
+    message = "Your Activists ";
   } else {
-    message = "${trouble[0].name} has ";
+    message = "${trouble[0].name} ";
   }
 
   int power = 0;
   for (int t = 0; t < trouble.length; t++) {
     power +=
         trouble[t].skillRoll(Skill.art) + trouble[t].skill(Skill.streetSmarts);
+    trouble[t].train(Skill.streetSmarts, 5);
   }
 
   int mod = 1;
@@ -42,79 +43,181 @@ Future<void> doActivityTrouble(List<Creature> trouble) async {
   if (lcsRandom(100) < power) mod++;
 
   while (issue == null) {
-    switch (lcsRandom(10)) {
-      case 0:
-        message += "run around uptown splashing paint on fur coats!";
+    issue = View.issues.random;
+    switch (issue) {
+      case View.animalResearch:
+        message += "ran around uptown splashing paint on fur coats!";
         juiceval = 2;
         crime = Crime.assault;
-        issue = View.animalResearch;
-      case 1:
+      case View.lgbtRights:
         message += "disrupted a traditional wedding at a church!";
         juiceval = 2;
         crime = Crime.disturbingThePeace;
-        issue = View.lgbtRights;
-      case 2:
+      case View.womensRights:
         message += "posted horrifying dead abortion doctor pictures downtown!";
-        issue = View.womensRights;
         if (noProfanity) {
           juiceval = 2;
           crime = Crime.unlawfulSpeech;
         } else {
           juiceval = 1;
         }
-      case 3:
-        message += "gone downtown and reenacted a police beating!";
-        issue = View.policeBehavior;
+      case View.policeBehavior:
+        message += "went downtown and reenacted a police beating!";
         juiceval = 2;
         crime = Crime.disturbingThePeace;
-      case 4:
+      case View.nuclearPower:
         message +=
-            "dressed up and pretended to be radioactive mutant${trouble.length > 1 ? "s" : ""}!";
-        issue = View.nuclearPower;
+            "dressed up and pretended to be ${trouble.length > 1 ? "" : "a "}"
+            "radioactive mutant${trouble.length > 1 ? "s" : ""}!";
         juiceval = 1;
-      case 5:
+      case View.pollution:
         message += "squirted business people with fake polluted water!";
-        issue = View.pollution;
         juiceval = 2;
         crime = Crime.assault;
-      case 6:
+      case View.deathPenalty:
         if (laws[Law.deathPenalty] == DeepAlignment.eliteLiberal) continue;
         message += "distributed fliers graphically illustrating executions!";
-        issue = View.deathPenalty;
         if (noProfanity) {
           juiceval = 2;
           crime = Crime.unlawfulSpeech;
         } else {
           juiceval = 1;
         }
-      case 7:
+      case View.torture:
         if (laws[Law.torture] == DeepAlignment.eliteLiberal) continue;
         message += "distributed fliers graphically illustrating CIA torture!";
-        issue = View.torture;
         if (noProfanity) {
           juiceval = 2;
           crime = Crime.unlawfulSpeech;
         } else {
           juiceval = 1;
         }
-      case 8:
+      case View.corporateCulture:
         message += "burned a corporate symbol and denounced capitalism!";
-        issue = View.corporateCulture;
         if (corporateFeudalism) {
           juiceval = 2;
           crime = Crime.flagBurning;
         } else {
           juiceval = 1;
         }
-      case 9:
-        message += "set up a mock sweatshop in the middle of the mall!";
-        issue = View.sweatshops;
+      case View.sweatshops:
+        message += "set up a mock sweatshop in the mall!";
         juiceval += 1;
+      case View.taxes:
+        message += "organized a pro-tax flash mob in a ritzy area!";
+        juiceval = 2;
+        crime = Crime.disturbingThePeace;
+      case View.intelligence:
+        message += "staged a performance of George Orwell's 1984!";
+        juiceval = 1;
+      case View.freeSpeech:
+        message += "held an anti-censorship street performance!";
+        if (noProfanity) {
+          juiceval = 2;
+          crime = Crime.unlawfulSpeech;
+        } else {
+          juiceval = 1;
+        }
+      case View.genetics:
+        message += "created a protest camp outside a biotech firm!";
+        if (noProfanity) {
+          juiceval = 2;
+          crime = Crime.unlawfulSpeech;
+        } else {
+          juiceval = 1;
+        }
+      case View.justices:
+        message += "staged a sit-in at the courthouse!";
+        if (noProfanity) {
+          juiceval = 2;
+          crime = Crime.unlawfulSpeech;
+        } else {
+          juiceval = 2;
+          crime = Crime.disturbingThePeace;
+        }
+      case View.gunControl:
+        message += "organized a die-in at city hall to protest gun violence!";
+        if (noProfanity) {
+          juiceval = 2;
+          crime = Crime.unlawfulSpeech;
+        } else {
+          juiceval = 2;
+          crime = Crime.disturbingThePeace;
+        }
+      case View.ceoSalary:
+        message += "marched downtown to protest wealth inqueality!";
+        if (noProfanity) {
+          juiceval = 2;
+          crime = Crime.unlawfulSpeech;
+        } else {
+          juiceval = 1;
+        }
+      case View.civilRights:
+        message += "marched downtown chanting Black Lives Matter!";
+        if (noProfanity) {
+          juiceval = 2;
+          crime = Crime.unlawfulSpeech;
+        } else {
+          juiceval = 1;
+        }
+      case View.drugs:
+        message += "handed out free samples of marijuana!";
+        juiceval = 2;
+        crime = Crime.drugDistribution;
+      case View.immigration:
+        message += "distributed fliers declaring that no one is illegal!";
+        if (noProfanity) {
+          juiceval = 2;
+          crime = Crime.unlawfulSpeech;
+        } else {
+          juiceval = 1;
+        }
+      case View.military:
+        message += "organized an anti-war protest!";
+        if (noProfanity) {
+          juiceval = 2;
+          crime = Crime.unlawfulSpeech;
+        } else {
+          juiceval = 1;
+        }
+      case View.prisons:
+        message += "staged a prison abolition protest!";
+        if (noProfanity) {
+          juiceval = 2;
+          crime = Crime.unlawfulSpeech;
+        } else {
+          juiceval = 1;
+        }
+      case View.amRadio:
+        message += "burned an effigy of a right-wing radio host!";
+        if (noProfanity) {
+          juiceval = 2;
+          crime = Crime.unlawfulSpeech;
+        } else {
+          juiceval = 1;
+        }
+      case View.cableNews:
+        message += "burned an effigy of a right-wing news anchor!";
+        if (noProfanity) {
+          juiceval = 2;
+          crime = Crime.unlawfulSpeech;
+        } else {
+          juiceval = 1;
+        }
+      default:
+        message += "protested against the game being buggy!";
+        if (noProfanity) {
+          // How DARE you protest against the game being buggy!
+          juiceval = 2;
+          crime = Crime.unlawfulSpeech;
+        } else {
+          juiceval = 1;
+        }
     }
   }
 
-  changePublicOpinion(View.lcsKnown, mod);
-  changePublicOpinion(View.lcsLiked, mod ~/ 2);
+  politics.changePublicOpinion(View.lcsKnown, mod ~/ 2, noPublicInterest: true);
+  politics.changePublicOpinion(View.lcsLiked, mod ~/ 4, noPublicInterest: true);
   politics.addBackgroundInfluence(issue, mod);
 
   if (!disbanding) {
