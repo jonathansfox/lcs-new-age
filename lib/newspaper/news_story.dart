@@ -61,11 +61,9 @@ class NewsStory {
   String headline = "";
   @JsonKey(defaultValue: "")
   String body = "";
-  @JsonKey(defaultValue: "")
   String? byline;
   @JsonKey(defaultValue: {})
   Map<View, double> effects = {};
-  @JsonKey(defaultValue: 0)
   int? newspaperPhotoId;
   @JsonKey(defaultValue: false)
   bool remapSkinTones = false;

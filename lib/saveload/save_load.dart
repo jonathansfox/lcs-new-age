@@ -12,6 +12,7 @@ import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/gamestate/time.dart';
 import 'package:lcs_new_age/location/location_type.dart';
 import 'package:lcs_new_age/location/site.dart';
+import 'package:lcs_new_age/newspaper/news_story.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
 import 'package:lcs_new_age/title_screen/launch_game.dart';
 import 'package:lcs_new_age/title_screen/title_screen.dart';
@@ -378,6 +379,15 @@ void applyBugFixes(String version) {
           [SiteType.barAndGrill, SiteType.bombShelter, SiteType.bunker]
               .contains(s.type))) {
         s.controller = SiteController.ccs;
+      }
+    }
+  }
+  if (compareVersionStrings(version, "1.3.4") < 0) {
+    for (NewsStory newsStory in gameState.newsArchive) {
+      if (newsStory.byline == "") newsStory.byline = null;
+      if (newsStory.newspaperPhotoId == 0 &&
+          newsStory.headline != "HELL ON EARTH") {
+        newsStory.newspaperPhotoId = null;
       }
     }
   }
