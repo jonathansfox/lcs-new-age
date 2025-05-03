@@ -126,5 +126,10 @@ Future<void> doActivityTeach(List<Creature> teachers) async {
         teacher.train(Skill.teaching, 1);
       }
     }
+    if (workload == 0) {
+      await showMessage(
+          "${teacher.name} has no students and will stop ${teacher.activity.description}.");
+      teacher.activity = Activity(ActivityType.none);
+    }
   }
 }
