@@ -965,8 +965,7 @@ Future<void> hit(Creature a, Creature t, Attack attackUsed, BodyPart hitPart,
           }
         }
         if (target.squadId == null &&
-            (!target.type.animal || animalsArePeopleToo) &&
-            !sneakAttack) {
+            (!target.type.animal || animalsArePeopleToo)) {
           siteCrime += 10;
           if (t.type.majorEnemy) {
             siteCrime += 90;
