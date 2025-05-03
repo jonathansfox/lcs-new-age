@@ -1183,6 +1183,10 @@ void makeChasers(SiteType? sitetype, int sitecrime) {
     } while (load[v] >= goal);
     load[v]++;
   }
+
+  for (Creature e in encounter) {
+    e.noticedParty = true;
+  }
 }
 
 enum CarChaseReaction {
