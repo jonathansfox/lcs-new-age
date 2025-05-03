@@ -85,10 +85,12 @@ Future<void> doActivityGraffiti(List<Creature> graffiti) async {
         graffiti[s].activity.view = null;
         addjuice(graffiti[s], power, power * 20);
         graffiti[s].train(Skill.art, 10);
+        graffiti[s].train(Skill.streetSmarts, 5);
       } else {
         await showMessage(
             "${graffiti[s].name} works through the night on a large mural.");
         graffiti[s].train(Skill.art, 10);
+        graffiti[s].train(Skill.streetSmarts, 5);
       }
     } else if (oneIn(max(30 - graffiti[s].skill(Skill.art) * 2, 5))) {
       issue = View.issues.random;
@@ -98,8 +100,11 @@ Future<void> doActivityGraffiti(List<Creature> graffiti) async {
       graffiti[s].activity.view = issue;
       power = 0;
       graffiti[s].train(Skill.art, 10);
+      graffiti[s].train(Skill.streetSmarts, 5);
     } else {
       addjuice(graffiti[s], 1, 50);
+      graffiti[s].train(Skill.art, 5);
+      graffiti[s].train(Skill.streetSmarts, 5);
     }
 
     graffiti[s].train(Skill.art, 4);
