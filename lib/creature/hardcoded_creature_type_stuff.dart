@@ -141,7 +141,6 @@ void applyHardcodedCreatureTypeStuff(Creature cr, CreatureType type) {
         cr.giveClothingType("CLOTHING_BUNKERGEAR");
       }
     case CreatureTypeIds.ccsVigilante:
-      cr.giveClothingType("CLOTHING_CLOTHES");
       switch (lcsRandom(5) + ccsState.index) {
         case 0:
         case 1:
