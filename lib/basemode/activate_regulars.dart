@@ -792,7 +792,7 @@ void _activityFooter(Creature cr) {
     default:
       addstr(" report a bug to the developers: ${cr.activity.type.name}.");
   }
-  mvaddstrx(20, 40, "&BEnter&w - Confirm Selection");
+  addOptionText(20, 40, "Enter", "Enter - Confirm Selection");
 }
 
 Future<void> _activateBulk() async {

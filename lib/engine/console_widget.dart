@@ -25,6 +25,36 @@ class _ConsoleWidgetState extends State<ConsoleWidget> {
   late final FocusAttachment focusAttachment;
   bool hasFocus = false;
   final TextEditingController textEditingController = TextEditingController();
+  int? hoverX;
+  int? hoverY;
+
+  void updateHoverPosition(double dx, double dy) {
+    double cellWidth = textSpanWidth / console.width;
+    double cellHeight = textSpanHeight / console.height;
+    int newX = (dx / cellWidth).floor();
+    int newY = (dy / cellHeight).floor();
+
+    if (newX >= 0 &&
+        newX < console.width &&
+        newY >= 0 &&
+        newY < console.height) {
+      if (newX != hoverX || newY != hoverY) {
+        debugPrint("Hover position updated: ($newX, $newY)");
+        setState(() {
+          hoverX = newX;
+          hoverY = newY;
+        });
+      }
+    } else {
+      if (hoverX != null || hoverY != null) {
+        debugPrint("Hover position cleared");
+        setState(() {
+          hoverX = null;
+          hoverY = null;
+        });
+      }
+    }
+  }
 
   @override
   void initState() {
@@ -118,13 +148,23 @@ class _ConsoleWidgetState extends State<ConsoleWidget> {
     for (int y = 0; y < console.buffer.length; y++) {
       List<ConsoleChar> line = console.buffer[y];
       for (int x = 0; x < line.length; x++) {
+        Color cellColor = line[x].background;
+        // If the cursor is over a cell with the same mouseClickKey, lighten its color
+        if (hoverX != null && hoverY != null) {
+          String? hoverKey = console.buffer[hoverY!][hoverX!].mouseClickKey;
+          if (line[x].mouseClickKey != null &&
+              line[x].mouseClickKey == hoverKey) {
+            cellColor = Color.lerp(cellColor, Colors.white, 0.2)!;
+          }
+        }
+
         if (x == 0) {
           startPoint = x;
-          currentColor = line[x].background;
-        } else if (currentColor != line[x].background) {
+          currentColor = cellColor;
+        } else if (currentColor != cellColor) {
           intervals.add((y, startPoint, x, currentColor));
           startPoint = x;
-          currentColor = line[x].background;
+          currentColor = cellColor;
         }
         if (x == line.length - 1) {
           intervals.add((y, startPoint, line.length, currentColor));
@@ -212,38 +252,50 @@ class _ConsoleWidgetState extends State<ConsoleWidget> {
             child: SizedBox(
               width: textSpanWidth,
               height: textSpanHeight,
-              child: GestureDetector(
-                onTapDown: (details) {
-                  // Convert tap coordinates to console coordinates
-                  double cellWidth = textSpanWidth / console.width;
-                  double cellHeight = textSpanHeight / console.height;
-                  int x = (details.localPosition.dx / cellWidth).floor();
-                  int y = (details.localPosition.dy / cellHeight).floor();
-                  console.handleMouseClick(y, x);
+              child: MouseRegion(
+                onHover: (event) {
+                  updateHoverPosition(
+                      event.localPosition.dx, event.localPosition.dy);
                 },
-                onTap: () {
-                  debugPrint("Requesting focus");
-                  focusNode.requestFocus();
-                  debugPrint("Widget has focus: ${focusNode.hasFocus}");
+                onExit: (event) {
+                  setState(() {
+                    hoverX = null;
+                    hoverY = null;
+                  });
                 },
-                child: Stack(
-                  children: [
-                    background(),
-                    Positioned.fill(
-                      child: CustomPaint(painter: BlockPainter(console)),
-                    ),
-                    RichText(
-                      text: fg,
-                      softWrap: false,
-                      textHeightBehavior: const TextHeightBehavior(
-                        applyHeightToFirstAscent: false,
-                        applyHeightToLastDescent: false,
-                        leadingDistribution: TextLeadingDistribution.even,
+                child: GestureDetector(
+                  onTapDown: (details) {
+                    // Convert tap coordinates to console coordinates
+                    double cellWidth = textSpanWidth / console.width;
+                    double cellHeight = textSpanHeight / console.height;
+                    int x = (details.localPosition.dx / cellWidth).floor();
+                    int y = (details.localPosition.dy / cellHeight).floor();
+                    console.handleMouseClick(y, x);
+                  },
+                  onTap: () {
+                    debugPrint("Requesting focus");
+                    focusNode.requestFocus();
+                    debugPrint("Widget has focus: ${focusNode.hasFocus}");
+                  },
+                  child: Stack(
+                    children: [
+                      background(),
+                      Positioned.fill(
+                        child: CustomPaint(painter: BlockPainter(console)),
                       ),
-                    ),
-                    ...graphics(),
-                    mobileKeyboardLayer(),
-                  ],
+                      RichText(
+                        text: fg,
+                        softWrap: false,
+                        textHeightBehavior: const TextHeightBehavior(
+                          applyHeightToFirstAscent: false,
+                          applyHeightToLastDescent: false,
+                          leadingDistribution: TextLeadingDistribution.even,
+                        ),
+                      ),
+                      ...graphics(),
+                      mobileKeyboardLayer(),
+                    ],
+                  ),
                 ),
               ),
             ),

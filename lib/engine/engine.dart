@@ -70,8 +70,25 @@ void addInlineOptionText(
   key = key.toUpperCase();
   String mouseClickKey = key;
   if (key.length > 1) {
-    if (key.toLowerCase().startsWith("any")) {
-      mouseClickKey = "Enter";
+    if (key.toLowerCase().startsWith("any") ||
+        key.toLowerCase().startsWith("enter")) {
+      mouseClickKey = String.fromCharCode(Key.enter);
+    } else if (key.toLowerCase().startsWith("backspace")) {
+      mouseClickKey = String.fromCharCode(Key.backspace);
+    } else if (key.toLowerCase().startsWith("tab")) {
+      mouseClickKey = String.fromCharCode(Key.tab);
+    } else if (key.toLowerCase().startsWith("shift")) {
+      mouseClickKey = String.fromCharCode(Key.shift);
+    } else if (key.toLowerCase().startsWith("up")) {
+      mouseClickKey = String.fromCharCode(Key.upArrow);
+    } else if (key.toLowerCase().startsWith("down")) {
+      mouseClickKey = String.fromCharCode(Key.downArrow);
+    } else if (key.toLowerCase().startsWith("right")) {
+      mouseClickKey = String.fromCharCode(Key.rightArrow);
+    } else if (key.toLowerCase().startsWith("left")) {
+      mouseClickKey = String.fromCharCode(Key.leftArrow);
+    } else if (key.toLowerCase().startsWith("space")) {
+      mouseClickKey = String.fromCharCode(Key.space);
     }
   }
   String beforeKey = "";

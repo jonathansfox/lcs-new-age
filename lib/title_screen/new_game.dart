@@ -162,15 +162,18 @@ Future<void> makeCharacter() async {
 
     mvaddstrc(7, 2, lightGray, "Given Name: ");
     addstrc(white, first[sex]!);
-    mvaddstrx(7, 34, "&m(Press &BA&m to have your parents reconsider)");
+    addOptionText(7, 34, "A", "(A to have your parents reconsider)",
+        baseColorKey: ColorKey.midGray);
 
     mvaddstrc(9, 2, lightGray, "Family Name: ");
     addstrc(white, last);
-    mvaddstrx(9, 34, "&m(Press &BB&m to be born to a different family)");
+    addOptionText(9, 34, "B", "(B to be born to a different family)",
+        baseColorKey: ColorKey.midGray);
 
     mvaddstrc(11, 2, lightGray, "Sex at Birth: ");
     addstrc(white, sexDesc());
-    mvaddstrx(11, 34, "&m(Press &BC&m to have the doctor check again)");
+    addOptionText(11, 34, "C", "(C to have the doctor check again)",
+        baseColorKey: ColorKey.midGray);
 
     mvaddstrc(13, 2, lightGray, "Tragic Origin: ");
     if (letMeChoose) {
@@ -178,11 +181,13 @@ Future<void> makeCharacter() async {
     } else {
       addstrc(red, "Let Fate Decide");
     }
-    mvaddstrx(13, 34, "&m(Press &BD&m to toggle choice or fate)");
+    addOptionText(13, 34, "D", "(D to toggle choice or fate)",
+        baseColorKey: ColorKey.midGray);
 
     mvaddstrc(15, 2, lightGray, "City: ");
     addstrc(white, startingCity.getName(includeCity: true));
-    mvaddstrx(15, 34, "&m(Press &BE&m to move at a young age)");
+    addOptionText(15, 34, "E", "(E to move at a young age)",
+        baseColorKey: ColorKey.midGray);
 
     addOptionText(
         19, 2, "Any Other Key", "Press any other key when ready to begin...",
