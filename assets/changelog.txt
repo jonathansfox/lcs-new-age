@@ -1,3 +1,9 @@
+1.3.5 - 5/3/2025
+- Reduced the impact of blood on stealth kill difficulty and gave feedback about people being extra suspicious in bloody areas
+- Made disguised CCS vigilantes encountered in public mix up their outfits so they should wear the wrong thing more often
+- Made 22 handguns more common for random people at moderate and conservative gun control
+- Made Security Guards carry 9mm handguns at moderate and conservative gun control and only nightsticks at liberal and elite liberal gun control
+
 1.3.4 - 5/3/2025
 - A little more progress on the work-in-progress mouse support, including a couple more clickable areas and mouse over highlighting
 - Updated Community Service to only boost LCS popularity if people have already heard of the LCS and not boost public interest in the LCS
