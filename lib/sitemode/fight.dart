@@ -663,8 +663,12 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
     if (bursthits > 1 && !attackUsed.ranged) {
       str += " strikes true";
     } else if (t.clothing.covers(hitPart)) {
-      if (hitPart.weakSpot && t.clothing.headArmor > 4 && t.human) {
-        str += "helmet";
+      if (hitPart.weakSpot && t.human) {
+        if (t.clothing.headArmor > 4) {
+          str += "helmet";
+        } else {
+          str += hitPart.name.toLowerCase();
+        }
       } else if (hitPart.critical && t.clothing.bodyArmor > 4 && t.human) {
         str += t.clothing.armor?.name.split(",").first.toLowerCase() ?? "armor";
       } else if (t.clothing.getLimbArmor(hitPart) > 4) {
