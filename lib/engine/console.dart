@@ -62,34 +62,49 @@ class Console {
 
   void eraseLine(int y) => eraseArea(startY: y, endY: y + 1);
 
-  void addchar(String c) {
+  void addchar(String c, {String? mouseClickKey}) {
     if (y >= buffer.length) return;
     if (x >= buffer[y].length) return;
     if (c == '█') {
-      buffer[y][x] = ConsoleChar(' ', currentForeground, currentForeground);
+      buffer[y][x] = ConsoleChar(' ', currentForeground, currentForeground,
+          mouseClickKey: mouseClickKey);
     } else {
-      buffer[y][x] = ConsoleChar(c, currentForeground, currentBackground);
+      buffer[y][x] = ConsoleChar(c, currentForeground, currentBackground,
+          mouseClickKey: mouseClickKey);
     }
     x++;
   }
 
-  void mvaddchar(int y, int x, String c) {
-    move(y, x);
-    addchar(c);
+  void handleMouseClick(int y, int x) {
+    if (y >= buffer.length || x >= buffer[y].length) return;
+    String? key = buffer[y][x].mouseClickKey;
+    if (key != null) {
+      keyEvent(KeyDownEvent(
+        logicalKey: LogicalKeyboardKey.keyA,
+        physicalKey: PhysicalKeyboardKey.keyA,
+        character: key,
+        timeStamp: const Duration(),
+      ));
+    }
   }
 
-  void addstr(String s) {
+  void mvaddchar(int y, int x, String c, {String? mouseClickKey}) {
+    move(y, x);
+    addchar(c, mouseClickKey: mouseClickKey);
+  }
+
+  void addstr(String s, {String? mouseClickKey}) {
     for (var i = 0; i < s.length; i++) {
       addchar(s[i]);
     }
   }
 
-  void mvaddstr(int y, int x, String s) {
+  void mvaddstr(int y, int x, String s, {String? mouseClickKey}) {
     move(y, x);
     addstr(s);
   }
 
-  void addstrx(String s, {bool restoreOldColor = true}) {
+  void addstrx(String s, {bool restoreOldColor = true, String? mouseClickKey}) {
     const Color dummy = Color(0x00000000);
     bool validColorKey(int i) {
       return i < s.length - 1 && colorMap.containsKey(s[i + 1]);
@@ -107,7 +122,7 @@ class Console {
         if (newColor == dummy) newColor = oldBackground;
         setColor(currentForeground, newColor);
       } else {
-        addchar(s[i]);
+        addchar(s[i], mouseClickKey: mouseClickKey);
       }
     }
     if (restoreOldColor) {
@@ -115,9 +130,10 @@ class Console {
     }
   }
 
-  void mvaddstrx(int y, int x, String s, {bool restoreOldColor = true}) {
+  void mvaddstrx(int y, int x, String s,
+      {bool restoreOldColor = true, String? mouseClickKey}) {
     move(y, x);
-    addstrx(s, restoreOldColor: restoreOldColor);
+    addstrx(s, restoreOldColor: restoreOldColor, mouseClickKey: mouseClickKey);
   }
 
   void keyEvent(KeyEvent event) {

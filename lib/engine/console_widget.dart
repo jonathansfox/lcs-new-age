@@ -213,6 +213,14 @@ class _ConsoleWidgetState extends State<ConsoleWidget> {
               width: textSpanWidth,
               height: textSpanHeight,
               child: GestureDetector(
+                onTapDown: (details) {
+                  // Convert tap coordinates to console coordinates
+                  double cellWidth = textSpanWidth / console.width;
+                  double cellHeight = textSpanHeight / console.height;
+                  int x = (details.localPosition.dx / cellWidth).floor();
+                  int y = (details.localPosition.dy / cellHeight).floor();
+                  console.handleMouseClick(y, x);
+                },
                 onTap: () {
                   debugPrint("Requesting focus");
                   focusNode.requestFocus();

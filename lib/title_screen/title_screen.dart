@@ -14,7 +14,7 @@ import 'package:lcs_new_age/utils/colors.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const String gameVersion = "1.3.2";
+const String gameVersion = "1.3.3";
 bool megaFounderCheat = false;
 
 Future<void> titleScreen() async {
@@ -35,7 +35,7 @@ Future<void> titleScreen() async {
                   (e) => e.hireId == null && e.align == Alignment.liberal)
               ?.name ??
           "Unknown";
-      continueText = "C - Continue Playing as &G$founder&x";
+      continueText = "C - Continue as &G$founder&x";
     }
   }
 
@@ -76,6 +76,8 @@ Future<void> titleScreen() async {
         }
       case Key.n:
         await setupNewGame();
+        makeWorld();
+        await makeCharacter();
         mode = GameMode.base;
         await baseMode();
         return;
@@ -99,17 +101,6 @@ Future<void> titleScreen() async {
         return;
     }
   }
-}
-
-Future<void> loadSaveOrStartNewGame() async {
-  if (await loadGameMenu()) {
-    return;
-  }
-
-  // on failure, create a new game
-  await setupNewGame();
-  makeWorld();
-  await makeCharacter();
 }
 
 void printTitleScreen(HighScores? highScores) {

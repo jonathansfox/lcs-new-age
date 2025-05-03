@@ -68,6 +68,12 @@ void addInlineOptionText(
   String disabledColorKey = "K",
 }) {
   key = key.toUpperCase();
+  String mouseClickKey = key;
+  if (key.length > 1) {
+    if (key.toLowerCase().startsWith("any")) {
+      mouseClickKey = "Enter";
+    }
+  }
   String beforeKey = "";
   String afterKey = "";
   int keyIndex = text.toUpperCase().indexOf(key);
@@ -80,7 +86,8 @@ void addInlineOptionText(
   afterKey = text.substring(keyIndex + key.length);
   if (enabledWhen) {
     addstrx(
-        "&$baseColorKey$beforeKey&$highlightColorKey$key&$baseColorKey$afterKey");
+        "&$baseColorKey$beforeKey&$highlightColorKey$key&$baseColorKey$afterKey",
+        mouseClickKey: mouseClickKey);
   } else {
     addstrx("&$disabledColorKey$text");
   }
@@ -128,10 +135,13 @@ void mvaddstrc(int y, int x, Color fg, String s) {
   mvaddstr(y, x, s);
 }
 
-void addstrx(String s, {bool restoreOldColor = true}) =>
-    console.addstrx(s, restoreOldColor: restoreOldColor);
-void mvaddstrx(int y, int x, String s, {bool restoreOldColor = true}) =>
-    console.mvaddstrx(y, x, s, restoreOldColor: restoreOldColor);
+void addstrx(String s, {bool restoreOldColor = true, String? mouseClickKey}) =>
+    console.addstrx(s,
+        restoreOldColor: restoreOldColor, mouseClickKey: mouseClickKey);
+void mvaddstrx(int y, int x, String s,
+        {bool restoreOldColor = true, String? mouseClickKey}) =>
+    console.mvaddstrx(y, x, s,
+        restoreOldColor: restoreOldColor, mouseClickKey: mouseClickKey);
 
 void mvaddstrCenter(int y, String s, {int x = 39}) =>
     mvaddstr(y, centerString(s, x: x), s);

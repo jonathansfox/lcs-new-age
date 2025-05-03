@@ -1,3 +1,7 @@
+1.3.3 - 5/2/2025
+- Emergency hotfix, fixed inability to start new game caused by title screen changes (oof!)
+- Added prototype mouse support
+
 1.3.2 - 5/2/2025
 - Updated the title screen to incorporate a main menu
 - Fixed Universal Liberal Statistics to account for incomplete saved games (at least until you delete them)
