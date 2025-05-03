@@ -488,6 +488,17 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
   } else {
     if (sneakAttack) {
       droll = (t.attributeRoll(Attribute.wisdom, take10: true) / 2).round();
+      if (siteAlarmTimer == 0) {
+        droll += DifficultyModifier.aLittleHarder;
+      }
+      // Current tile bloody? People are more on guard
+      if (mode == GameMode.site) {
+        if (levelMap[locx][locy][locz].megaBloody) {
+          droll += DifficultyModifier.aLotHarder;
+        } else if (levelMap[locx][locy][locz].bloody) {
+          droll += DifficultyModifier.aLittleHarder;
+        }
+      }
       aroll += a.skill(Skill.stealth);
       a.train(Skill.stealth, 10);
       a.train(wsk, 10);
