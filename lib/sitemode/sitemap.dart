@@ -191,7 +191,14 @@ class SiteTile {
   bool get alarm => flag & SITEBLOCK_ALARMED > 0;
   set alarm(bool value) => setFlag(SITEBLOCK_ALARMED, value);
   bool get bloody => flag & SITEBLOCK_BLOODY > 0;
-  set bloody(bool value) => setFlag(SITEBLOCK_BLOODY, value);
+  set bloody(bool value) {
+    setFlag(SITEBLOCK_BLOODY, value);
+    if (value) bloodCounter++;
+    if (bloodCounter > 10) {
+      setFlag(SITEBLOCK_BLOODY2, true);
+    }
+  }
+
   bool get megaBloody => flag & SITEBLOCK_BLOODY2 > 0;
   set megaBloody(bool value) => setFlag(SITEBLOCK_BLOODY2, value);
   bool get chainlink => flag & SITEBLOCK_CHAINLINK > 0;
@@ -242,6 +249,8 @@ class SiteTile {
   bool get siegeUnitDamaged => siegeflag & SIEGEFLAG_UNIT_DAMAGED > 0;
   set siegeUnitDamaged(bool value) =>
       setSiegeFlag(SIEGEFLAG_UNIT_DAMAGED, value);
+
+  int bloodCounter = 0;
 
   void setFlag(int flag, bool value) {
     if (value) {
