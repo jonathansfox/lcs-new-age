@@ -26,7 +26,9 @@ Alignment nonConservativeAlignment() {
 
 void giveCivilianWeapon(Creature cr) {
   if (cr.align == Alignment.liberal) return;
-  if (laws[Law.gunControl] == DeepAlignment.conservative && oneIn(30)) {
+  if (laws[Law.gunControl] == DeepAlignment.moderate && oneIn(30)) {
+    cr.giveWeaponAndAmmo("WEAPON_22_HANDGUN", 1);
+  } else if (laws[Law.gunControl] == DeepAlignment.conservative && oneIn(10)) {
     cr.giveWeaponAndAmmo("WEAPON_22_HANDGUN", 2);
   } else if (laws[Law.gunControl] == DeepAlignment.archConservative) {
     if (oneIn(10)) {
@@ -64,8 +66,8 @@ void applyHardcodedCreatureTypeStuff(Creature cr, CreatureType type) {
     case CreatureTypeIds.securityGuard:
       if (laws[Law.gunControl] == DeepAlignment.archConservative) {
         cr.giveWeaponAndAmmo("WEAPON_MP5", 4);
-      } else if (laws[Law.gunControl] != DeepAlignment.archConservative) {
-        cr.giveWeaponAndAmmo("WEAPON_22_HANDGUN", 4);
+      } else if (laws[Law.gunControl]!.index < DeepAlignment.liberal.index) {
+        cr.giveWeaponAndAmmo("WEAPON_9MM_HANDGUN", 4);
       } else {
         cr.giveWeaponAndAmmo("WEAPON_NIGHTSTICK", 0);
       }
