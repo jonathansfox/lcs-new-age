@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/gamestate/time.dart';
+import 'package:lcs_new_age/saveload/save_load.dart';
 import 'package:lcs_new_age/title_screen/game_over.dart';
 import 'package:lcs_new_age/utils/colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -252,6 +253,28 @@ Future<HighScores> loadHighScores() async {
       debugPrint("loadHighScores: Unknown scoreVersion: $loadversion");
       highScores = HighScores();
   }
+
+  // Load high scores from saved games
+  final List<SaveFile> saveFiles = await loadGameList();
+  for (final saveFile in saveFiles) {
+    if (saveFile.gameState != null) {
+      final GameState gameState = saveFile.gameState!;
+      highScores.universalRecruits += gameState.stats.recruits;
+      highScores.universalMartyrs += gameState.stats.martyrs;
+      highScores.universalKills += gameState.stats.kills;
+      highScores.universalKidnappings += gameState.stats.kidnappings;
+      highScores.universalFunds += gameState.ledger.totalIncome;
+      highScores.universalSpent += gameState.ledger.totalExpense;
+      highScores.universalFlagBuys += gameState.stats.flagsBought;
+      highScores.universalFlagBurns += gameState.stats.flagsBurned;
+    }
+  }
+
+  // Sort and limit to top 5 scores
+  highScores.scoreList.sort((a, b) => a.compareTo(b));
+  highScores.scoreList =
+      highScores.scoreList.sublist(0, min(5, highScores.scoreList.length));
+
   return highScores;
 }
 

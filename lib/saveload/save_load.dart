@@ -77,7 +77,6 @@ Future<bool> loadGameMenu() async {
     }
     int selectedGame = -1;
     bool import = false;
-    bool newGame = false;
     erase();
     await pagedInterface(
         count: saveFiles.length,
@@ -89,7 +88,7 @@ Future<bool> loadGameMenu() async {
           70: "VERSION",
         },
         footerPrompt:
-            "Plus (+) to Import a save.  Minus (-) to found a new Liberal Crime Squad.",
+            "Plus &B+&w to Import a save.  &BEnter&w to return to main menu.",
         lineBuilder: (y, key, index) {
           final SaveFile saveFile = saveFiles[index];
           if (saveFile.gameState == null) {
@@ -140,8 +139,7 @@ Future<bool> loadGameMenu() async {
           if (key == Key.plus) {
             import = true;
             return true;
-          } else if (key == Key.minus) {
-            newGame = true;
+          } else if (isBackKey(key)) {
             return true;
           }
           return false;
@@ -155,7 +153,7 @@ Future<bool> loadGameMenu() async {
       if (await loadGame(selectedSave)) {
         return true;
       }
-    } else if (newGame) {
+    } else {
       return false;
     }
   }

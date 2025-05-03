@@ -613,7 +613,8 @@ Future<void> pagedInterface({
     eraseArea(startY: topY, startX: 0, endY: pageSize + 3 + topY, endX: 80);
     mvaddstrc(topY, 0, white, headerPrompt);
     addHeader(headerKey, y: topY + 1);
-    mvaddstrc(pageSize + 2 + topY, 0, lightGray, footerPrompt);
+    setColor(lightGray);
+    mvaddstrx(pageSize + 2 + topY, 0, footerPrompt);
     for (int i = 0; i + page * pageSize < count && i < pageSize; i++) {
       lineBuilder(i + 2 + topY, letterAPlus(i), i + page * pageSize);
     }

@@ -38,6 +38,7 @@ flutter:
    - assets/flags/
    - assets/maps/
    - assets/art/
+   - assets/changelog.txt
   uses-material-design: true
   fonts:
    - family: SourceCodePro

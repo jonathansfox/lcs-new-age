@@ -8,7 +8,13 @@ import 'package:pixel_snap/material.dart';
 
 class ConsoleWidget extends StatefulWidget {
   const ConsoleWidget(this.console, {super.key});
+  static final GlobalKey<State<ConsoleWidget>> globalKey =
+      GlobalKey<State<ConsoleWidget>>();
   final Console console;
+
+  void requestFocus() {
+    (globalKey.currentState as _ConsoleWidgetState?)?.focusNode.requestFocus();
+  }
 
   @override
   State<ConsoleWidget> createState() => _ConsoleWidgetState();

@@ -42,9 +42,13 @@ class InterrogationSession {
   int daysOfDrugUse = 0;
 
   // Ransom tracking
+  @JsonKey(defaultValue: false)
   bool ransomDemanded = false;
+  @JsonKey(defaultValue: 0)
   int ransomAmount = 0;
+  @JsonKey(defaultValue: 0)
   int daysUntilRansomResponse = 0;
+  @JsonKey(defaultValue: false)
   bool ransomPaid = false;
 }
 

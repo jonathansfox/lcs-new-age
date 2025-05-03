@@ -22,34 +22,54 @@ class NewsStory {
   @JsonKey(defaultValue: NewsStories.majorEvent)
   NewsStories type = NewsStories.majorEvent;
   View? view;
+  @JsonKey(defaultValue: 1)
   int claimed = 1;
   Creature? cr;
+  @JsonKey(defaultValue: [])
   List<Drama> drama = [];
+  @JsonKey(defaultValue: -1)
   int locId = -1;
   @JsonKey(includeFromJson: false, includeToJson: false)
   Site? get loc => sites.firstWhereOrNull((element) => element.id == locId);
   set loc(Site? l) => locId = l?.id ?? -1;
+  @JsonKey(defaultValue: 0)
   int priority = 0;
+  @JsonKey(defaultValue: 0)
   int page = 0;
+  @JsonKey(defaultValue: 0)
   int guardianpage = 0;
+  @JsonKey(defaultValue: 0)
   int positive = 0;
+  @JsonKey(defaultValue: SiegeType.none)
   SiegeType siegetype = SiegeType.none;
+  @JsonKey(defaultValue: 0)
   int siegebodycount = 0;
+  @JsonKey(defaultValue: false)
   bool legalGunUsed = false;
+  @JsonKey(defaultValue: false)
   bool illegalGunUsed = false;
+  @JsonKey(defaultValue: "")
   String publicationName = "";
+  @JsonKey(defaultValue: DeepAlignment.moderate)
   DeepAlignment publicationAlignment = DeepAlignment.moderate;
   @JsonKey(includeToJson: true, includeFromJson: true)
   DateTime? _date;
   @JsonKey(includeFromJson: false, includeToJson: false)
   DateTime get date => _date ?? gameState.date;
   set date(DateTime d) => _date = d;
+  @JsonKey(defaultValue: "")
   String headline = "";
+  @JsonKey(defaultValue: "")
   String body = "";
+  @JsonKey(defaultValue: "")
   String? byline;
+  @JsonKey(defaultValue: {})
   Map<View, double> effects = {};
+  @JsonKey(defaultValue: 0)
   int? newspaperPhotoId;
+  @JsonKey(defaultValue: false)
   bool remapSkinTones = false;
+  @JsonKey(defaultValue: true)
   bool unread = true;
 }
 

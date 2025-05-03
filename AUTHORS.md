@@ -27,7 +27,7 @@ Liberal Crime Squad: New Age is a complete rewrite and fork of Liberal Crime Squ
 * Callum Davies (2012) - contributed code and Linux install instructions thru forums
 * calrogman (2013) - direct contributor to main project
 * Carlos Gustavos / blomkvist (2010-2015) - direct contributor to main project
-* Chris Johnson / grundee (2007-2008) - did most of the coding when the project was revived in 2007 and listed as retired maintainer
+* Chris Johnson / grundee (2007-2008) - refactored the code base from its original monolithic source code file and helped establish the old Subversion repository, one of the original open-source maintainers
 * Christian Sergelius / cribozai (2011) - contributed Linux install instructions thru forums
 * Ciprian Ilies / Addictgamer (2012-2013) - direct contributor to main project
 * coronelniel (2011) - direct contributor to main project

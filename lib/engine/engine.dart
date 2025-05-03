@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:lcs_new_age/common_display/common_display.dart';
+import 'package:lcs_new_age/engine/changelog.dart';
 import 'package:lcs_new_age/engine/console.dart';
 import 'package:lcs_new_age/utils/colors.dart';
 import 'package:lcs_new_age/utils/interface_options.dart';
@@ -160,6 +161,11 @@ void setColorConditional(bool active,
 Future<void> pause(int milliseconds) async {
   refresh();
   await Future.delayed(Duration(milliseconds: milliseconds));
+}
+
+Future<void> showChangelog() async {
+  String content = await rootBundle.loadString('assets/changelog.txt');
+  ChangelogWidget.globalKey.currentState?.show(content);
 }
 
 Console console = Console();
