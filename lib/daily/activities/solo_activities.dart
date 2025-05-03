@@ -21,6 +21,7 @@ import 'package:lcs_new_age/location/location_type.dart';
 import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
 import 'package:lcs_new_age/politics/views.dart';
+import 'package:lcs_new_age/utils/lcsrandom.dart';
 
 Future<void> soloActivities(bool disbanding) async {
   Map<ActivityType, List<Creature>> activities = {};
@@ -128,7 +129,9 @@ Future<void> soloActivities(bool disbanding) async {
         if (disbanding) continue;
         for (Creature p in people) {
           addjuice(p, 1, 10);
-          changePublicOpinion(View.lcsLiked, 1);
+          if (politics.publicOpinion[View.lcsKnown]! > lcsRandom(100)) {
+            changePublicOpinion(View.lcsLiked, 1, noPublicInterest: true);
+          }
         }
       case ActivityType.hacking:
         if (disbanding) continue;

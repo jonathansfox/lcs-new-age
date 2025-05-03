@@ -10,7 +10,7 @@ void _body(String s) {
 void _head(String s) => mvaddstrc(1, 1, lightGreen, s);
 
 void _footer() =>
-    mvaddstrc(console.y + 1, 1, white, "Press any key to continue.");
+    addOptionText(console.y + 1, 1, "any key", "Press any key to continue.");
 
 Future<void> helpOnActivity(ActivityType type) async {
   erase();
@@ -18,9 +18,12 @@ Future<void> helpOnActivity(ActivityType type) async {
     case ActivityType.communityService:
       _head("=== Community Service ===");
       _body("Community service is a safe way to improve public opinion of the "
-          "LCS, and steadily increases Juice up to a maximum of 10.\n\n"
-          "That's about it. It will not save the country and it will not turn "
-          "people into legends.");
+          "LCS, assuming anyone has heard of you and cares what you're doing. "
+          "Planting trees and handing out food to the homeless is not going to "
+          "get you into the news and make you a household name if you're not "
+          "giving people another reason to care.\n\n"
+          "The other power community service has is that it can forge civilians "
+          "into activists, steadily increasing Juice up to a maximum of 10.");
     case ActivityType.trouble:
       _head("=== Liberal Disobedience ===");
       _body("Liberal Disobedience is an occasionally illegal "
