@@ -1664,7 +1664,15 @@ Future<void> _siteModeAux() async {
 
 /* site - determines spin on site news story, "too hot" timer */
 Future<void> _resolveSite() async {
-  if (siteAlarm || sitestory!.drama.any((d) => d == Drama.bankTellerRobbery)) {
+  bool doesNotReportCrimes = activeSite!.type == SiteType.bombShelter ||
+      activeSite!.type == SiteType.barAndGrill ||
+      activeSite!.type == SiteType.bunker ||
+      activeSite!.type == SiteType.warehouse ||
+      activeSite!.type == SiteType.drugHouse ||
+      activeSite!.type == SiteType.homelessEncampment;
+  if ((siteAlarm ||
+          sitestory!.drama.any((d) => d == Drama.bankTellerRobbery)) &&
+      !doesNotReportCrimes) {
     commitPotentialCrimes();
   } else {
     clearPotentialCrimes();
@@ -1683,8 +1691,8 @@ Future<void> _resolveSite() async {
       // Capture a warehouse or crack den?
       if (activeSite!.type == SiteType.warehouse ||
           activeSite!.type == SiteType.drugHouse) {
-        activeSite!.controller =
-            SiteController.lcs; // Capture safehouse for the glory of the LCS!
+        // Capture safehouse for the glory of the LCS!
+        activeSite!.controller = SiteController.lcs;
         activeSite!.closed = 0;
         activeSite!.heat = siteCrime;
       } else {
