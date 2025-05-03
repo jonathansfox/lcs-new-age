@@ -14,8 +14,10 @@ class Difficulty {
 
 class DifficultyModifier {
   static const int none = 0;
-  static const int aLittleHarder = 3;
+  static const int aLittleHarder = 2;
+  static const int moderatelyHarder = 4;
   static const int aLotHarder = 6;
-  static const int aLittleEasier = -3;
+  static const int aLittleEasier = -2;
+  static const int moderatelyEasier = -4;
   static const int aLotEasier = -6;
 }

@@ -494,7 +494,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
       // Current tile bloody? People are more on guard
       if (mode == GameMode.site) {
         if (levelMap[locx][locy][locz].megaBloody) {
-          droll += DifficultyModifier.aLotHarder;
+          droll += DifficultyModifier.moderatelyHarder;
         } else if (levelMap[locx][locy][locz].bloody) {
           droll += DifficultyModifier.aLittleHarder;
         }

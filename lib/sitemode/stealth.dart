@@ -231,6 +231,13 @@ Future<void> disguisecheck(int timer) async {
       }
       // Sneaking with a party is hard
       stealthDifficulty += partysize - 1;
+      // Sneaking past a bloody scene with suspicious conservatives present
+      // is also quite hard
+      if (currentTile.megaBloody) {
+        stealthDifficulty += DifficultyModifier.moderatelyHarder;
+      } else if (currentTile.bloody) {
+        stealthDifficulty += DifficultyModifier.aLittleHarder;
+      }
 
       // Make the attempt!
       for (Creature c in squad) {
@@ -242,29 +249,19 @@ Future<void> disguisecheck(int timer) async {
         }
       }
 
-      for (Creature c in squad) {
-        // Spotted! Act casual.
-        if (spotted) {
-          // Scary weapons are not very casual.
-          if (weaponCheck(c) == WeaponCheckResult.suspicious &&
-              !(politics.laws[Law.gunControl] ==
-                  DeepAlignment.archConservative)) {
-            noticed = true;
-            squaddieThatBlewIt = c;
-            break;
-          } else {
-            int penalty = disguiseQuality(c).penalty;
-            int result = c.skillRoll(Skill.disguise) + penalty;
-            result -= timer;
-            if (result < disguiseDifficulty) {
-              // That was not very casual, dude.
-              squaddieThatBlewIt = c;
+      Iterable<Creature> spottedSquad = squad.where((c) {
+        bool blewIt = weaponCheck(c) == WeaponCheckResult.suspicious &&
+            !(politics.laws[Law.gunControl] == DeepAlignment.archConservative);
 
-              noticed = true;
-              break;
-            }
-          }
-        }
+        int penalty = disguiseQuality(c).penalty;
+        int result = c.skillRoll(Skill.disguise) + penalty;
+        result -= timer;
+        if (result < disguiseDifficulty) blewIt = true;
+        return blewIt;
+      });
+      if (spottedSquad.isNotEmpty) {
+        squaddieThatBlewIt = spottedSquad.random;
+        noticed = true;
       }
 
       if (noticed) break;

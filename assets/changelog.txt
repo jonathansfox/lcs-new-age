@@ -291,7 +291,7 @@
 - Fixed a bug which made stealth/disguise not be harder when conservatives are suspicious
 
 1.1.5 - 4/29/2024
-(New game only) Added safehouses in DC and made Arlington, VA no longer require a car
+- (New game only) Added safehouses in DC and made Arlington, VA no longer require a car
 - Revised the "punched out while datenapping" logic to be more interesting and less punishing for high martial arts characters (still no guarantee)
 - Made the media and bystanders not blame the LCS if Conservatives shoot each other while trying to stop you
 - Fixed LCS having 100x higher polling numbers than it should

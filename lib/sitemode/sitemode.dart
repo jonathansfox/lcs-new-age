@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:collection/collection.dart';
 import 'package:lcs_new_age/basemode/base_actions.dart';
 import 'package:lcs_new_age/basemode/help_system.dart';
 import 'package:lcs_new_age/basemode/review_mode.dart';
@@ -1617,6 +1618,36 @@ Future<void> _siteModeAux() async {
               }
 
               prepareEncounter(siteType, activeSite!.highSecurity > 0);
+              if (currentTile.bloody && !siteAlarm) {
+                Creature? conservative = encounter
+                    .firstWhereOrNull((e) => e.align == Alignment.conservative);
+                if (conservative != null) {
+                  printEncounter();
+                  if (currentTile.megaBloody) {
+                    await encounterMessage("${conservative.type.name} ${[
+                      "looks around wildly, shocked by the gore.",
+                      "is looking around with great fear.",
+                      "is searching for the source of the blood.",
+                      "gasps in horror at the carnage.",
+                      "is looking around near the bloody mess.",
+                      "is trying to figure out who did this.",
+                      "is inspecting the crime scene.",
+                      "looks very on edge about the bloody mess.",
+                    ].random}");
+                  } else {
+                    await encounterMessage("${conservative.type.name} ${[
+                      "looks at the blood nervously.",
+                      "glances at the blood anxiously.",
+                      "seems agitated by the blood.",
+                      "is investigating the blood.",
+                      "glances around nervously.",
+                      "seems more on guard than usual.",
+                      "is looking around for threats.",
+                      "looks confused and upset.",
+                    ].random}");
+                  }
+                }
+              }
 
               if (isApartment && currentTile.restricted) {
                 // Nobody likes you if you're breaking into their home
