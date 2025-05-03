@@ -420,62 +420,27 @@ class ConfigSiteScript extends ConfigSiteCommand {
       }
       // Stairs in secure areas should only lead into secure areas.
       // Removing secure tiles without secure tiles above them.
-      int i, j;
-      for (i = secure.length - 1; i >= 0; i--) {
-        for (j = 0; j < (secureAbove.length); j++) {
-          if (secureAbove[j] == secure[i]) {
-            break;
-          } else if ((secureAbove[j].$1 == secure[i].$1 &&
-                  secureAbove[j].$2 > secure[i].$2) ||
-              (secureAbove[j].$1 > secure[i].$1)) {
-            secure.removeAt(i);
-            break;
-          }
-        }
-        if (j == (secureAbove.length)) secure.removeAt(i);
-      }
+      secure.removeWhere((element) =>
+          !secureAbove.any((e) => e.$1 == element.$1 && e.$2 == element.$2));
       // Stairs in unsecure areas should only lead into unsecure areas.
       // Removing unsecure tiles without unsecure tiles above them.
-      for (i = unsecure.length - 1; i >= 0; i--) {
-        for (j = 0; j < (unsecureAbove.length); j++) {
-          if (unsecureAbove[j] == unsecure[i]) {
-            break;
-          } else if ((unsecureAbove[j].$1 == unsecure[i].$1 &&
-                  unsecureAbove[j].$2 > unsecure[i].$2) ||
-              (unsecureAbove[j].$1 > unsecure[i].$1)) {
-            unsecure.removeAt(i);
-            break;
-          }
-        }
-        if (j == (unsecureAbove.length)) unsecure.removeAt(i);
-      }
+      unsecure.removeWhere((element) =>
+          !unsecureAbove.any((e) => e.$1 == element.$1 && e.$2 == element.$2));
       // Place stairs in secure area if possible, otherwise unsecure area.
       if (secure.isNotEmpty) {
-        (int, int) choice = secure.random;
-        x = choice.$1;
-        y = choice.$2;
+        (x, y) = secure.random;
         z = zi - 1;
         // The tile receiving the stairs down will not eligible for stairs
         // up later.
-        for (j = 0; j < (secureAbove.length); j++) {
-          if (secureAbove[j].$1 == x && secureAbove[j].$2 == y) {
-            secureAbove.removeAt(j);
-            break;
-          }
-        }
+        secureAbove
+            .removeWhere((element) => element.$1 == x && element.$2 == y);
       } else if (unsecure.isNotEmpty) {
-        (int, int) choice = unsecure.random;
-        x = choice.$1;
-        y = choice.$2;
+        (x, y) = unsecure.random;
         z = zi - 1;
         // The tile receiving the stairs down will not eligible for stairs
         // up later.
-        for (j = 0; j < (unsecureAbove.length); j++) {
-          if (unsecureAbove[j].$1 == x && unsecureAbove[j].$2 == y) {
-            unsecureAbove.removeAt(j);
-            break;
-          }
-        }
+        unsecureAbove
+            .removeWhere((element) => element.$1 == x && element.$2 == y);
       } else {
         continue; //Nowhere to place stairs.
       }
