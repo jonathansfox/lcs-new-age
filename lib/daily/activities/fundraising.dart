@@ -76,7 +76,7 @@ Future<void> doActivitySellBrownies(List<Creature> brownies) async {
   for (Creature baker in brownies) {
     //Check for police search
     if (laws[Law.drugs]! <= DeepAlignment.moderate) {
-      bool busted = oneIn(1 + 30 * laws[Law.drugs]!.index + 3);
+      bool busted = oneIn(15 * (laws[Law.drugs]!.index + 1));
       if (busted && !baker.skillCheck(Skill.streetSmarts, Difficulty.average)) {
         sitestory = NewsStory.prepare(NewsStories.arrestGoneWrong);
         criminalize(baker, Crime.drugDistribution);
