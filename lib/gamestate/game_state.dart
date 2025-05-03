@@ -306,11 +306,13 @@ void changePublicOpinion(
   bool coloredByLcsOpinions = false,
   bool coloredByCcsOpinions = false,
   int extraMoralAuthority = 0,
+  bool noPublicInterest = false,
 }) =>
     gameState.politics.changePublicOpinion(view, power,
         coloredByLcsOpinions: coloredByLcsOpinions,
         coloredByCcsOpinions: coloredByCcsOpinions,
-        extraMoralAuthority: extraMoralAuthority);
+        extraMoralAuthority: extraMoralAuthority,
+        noPublicInterest: noPublicInterest);
 
 UniqueCreatures get uniqueCreatures => gameState.uniqueCreatures;
 

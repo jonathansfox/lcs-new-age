@@ -14,7 +14,7 @@ import 'package:lcs_new_age/utils/colors.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const String gameVersion = "1.3.3";
+const String gameVersion = "1.3.4";
 bool megaFounderCheat = false;
 
 Future<void> titleScreen() async {
@@ -23,7 +23,7 @@ Future<void> titleScreen() async {
 
   // Get the last save file to show founder name
   final prefs = await SharedPreferences.getInstance();
-  final int? lastGameId = prefs.getInt("lastGameId");
+  int? lastGameId = prefs.getInt("lastGameId");
   String continueText = "C - Continue Last Game";
   if (lastGameId != null) {
     List<SaveFile> saveFiles = await loadGameList();
@@ -36,6 +36,8 @@ Future<void> titleScreen() async {
               ?.name ??
           "Unknown";
       continueText = "C - Continue as &G$founder&x";
+    } else {
+      lastGameId = null;
     }
   }
 
@@ -50,13 +52,13 @@ Future<void> titleScreen() async {
   setColor(white);
   mvaddstrCenter(10, "Select an Option to Pursue your Liberal Agenda");
   setColor(lightGray);
-  addOptionText(12, 12, "C", continueText, enabledWhen: lastGameId != null);
-  addOptionText(12, 46, "L", "L - Load a Saved Game", enabledWhen: hasSaves);
-  addOptionText(13, 12, "N", "N - Start a New Game");
-  addOptionText(13, 46, "I", "I - Import a Save");
-  addOptionText(14, 12, "H", "H - View High Scores",
+  addOptionText(12, 10, "C", continueText, enabledWhen: lastGameId != null);
+  addOptionText(12, 48, "L", "L - Load a Saved Game", enabledWhen: hasSaves);
+  addOptionText(13, 10, "N", "N - Start a New Game");
+  addOptionText(13, 48, "I", "I - Import a Save");
+  addOptionText(14, 10, "H", "H - View High Scores",
       enabledWhen: hasHighScores);
-  addOptionText(14, 46, "V", "V - View Changelog");
+  addOptionText(14, 48, "V", "V - View Changelog");
   //rainbowLine(15, 47, 4, '▄', reverse: true);
 
   while (true) {

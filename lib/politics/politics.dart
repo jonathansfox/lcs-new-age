@@ -152,7 +152,7 @@ class Politics {
   void addBackgroundInfluence(View view, int power) {
     backgroundInfluence.update(view, (v) => v + power);
     power = power.abs();
-    while (power > 0) {
+    while (power > publicInterest[view]!) {
       publicInterest[view] = publicInterest[view]! + 1;
       power -= publicInterest[view]!;
     }
@@ -164,6 +164,7 @@ class Politics {
     bool coloredByLcsOpinions = false,
     bool coloredByCcsOpinions = false,
     int extraMoralAuthority = 0,
+    bool noPublicInterest = false,
   }) {
     double existingView = publicOpinion[view]!;
     int existingInterest = publicInterest[view]!;
@@ -184,10 +185,12 @@ class Politics {
     } else if (view == View.ccsHated) {
       power = power.clamp(-10, 25);
     }
-    int remainingPower = (power * 5).round().abs();
-    while (remainingPower > 0) {
-      publicInterest[view] = publicInterest[view]! + 1;
-      remainingPower -= publicInterest[view]!;
+    if (!noPublicInterest) {
+      int remainingPower = (power * 5).round().abs();
+      while (remainingPower > 0) {
+        publicInterest[view] = publicInterest[view]! + 1;
+        remainingPower -= publicInterest[view]!;
+      }
     }
     power = (power * min(2, 1 + existingInterest / 16)).round();
     power = power.clamp(-75, 75);
