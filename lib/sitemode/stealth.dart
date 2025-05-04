@@ -249,22 +249,26 @@ Future<void> disguisecheck(int timer) async {
         }
       }
 
-      Iterable<Creature> spottedSquad = squad.where((c) {
-        bool blewIt = weaponCheck(c) == WeaponCheckResult.suspicious &&
-            !(politics.laws[Law.gunControl] == DeepAlignment.archConservative);
+      Iterable<Creature> spottedSquad = [];
+      if (spotted) {
+        spottedSquad = squad.where((c) {
+          bool blewIt = weaponCheck(c) == WeaponCheckResult.suspicious &&
+              !(politics.laws[Law.gunControl] ==
+                  DeepAlignment.archConservative);
 
-        int penalty = disguiseQuality(c).penalty;
-        int result = c.skillRoll(Skill.disguise) + penalty;
-        result -= timer;
-        if (result < disguiseDifficulty) blewIt = true;
-        return blewIt;
-      });
-      if (spottedSquad.isNotEmpty) {
-        squaddieThatBlewIt = spottedSquad.random;
-        noticed = true;
+          int penalty = disguiseQuality(c).penalty;
+          int result = c.skillRoll(Skill.disguise) + penalty;
+          result -= timer;
+          if (result < disguiseDifficulty) blewIt = true;
+          return blewIt;
+        });
+        if (spottedSquad.isNotEmpty) {
+          squaddieThatBlewIt = spottedSquad.random;
+          noticed = true;
+        }
+
+        if (noticed) break;
       }
-
-      if (noticed) break;
     } while (noticer.isNotEmpty);
 
     // Give feedback on the Liberal Performance
