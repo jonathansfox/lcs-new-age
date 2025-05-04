@@ -172,8 +172,9 @@ void printChaseOptions() {
   addstrc(partysize > 1 ? lightGray : darkGray, "rder, ");
   bool surrenderIsAnOption = chaseSequence?.canpullover ?? false;
   addstrc(surrenderIsAnOption ? blue : darkGray, "G");
-  addstrc(surrenderIsAnOption ? lightGray : darkGray, "-Give up, ");
-  addstrc(blue, "?");
+  addstrc(surrenderIsAnOption ? lightGray : darkGray, "-Give up");
+  //addstrc(lightGray, ", ");
+  //addstrc(blue, "?");
 }
 
 void printCarChaseOptions({
