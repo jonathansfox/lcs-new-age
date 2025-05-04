@@ -482,20 +482,21 @@ Future<void> reviewMode(ReviewMode mode) async {
           int c = await getKey();
 
           if (temppool.length > 1 &&
-              ((c == Key.leftArrow) || (c == Key.rightArrow))) {
+              ((c == Key.leftArrow || c == Key.a) ||
+                  (c == Key.rightArrow || c == Key.d))) {
             int sx = 1;
-            if (c == Key.leftArrow) sx = -1;
+            if (c == Key.leftArrow || c == Key.a) sx = -1;
             p = (p + temppool.length + sx) % temppool.length;
             continue;
           }
 
-          if (c == Key.downArrow) {
+          if (c == Key.downArrow || c == Key.x) {
             page++;
             if (page > 2) page = 0;
             continue;
           }
 
-          if (c == Key.upArrow) {
+          if (c == Key.upArrow || c == Key.w) {
             page--;
             if (page < 0) page = 2;
             continue;

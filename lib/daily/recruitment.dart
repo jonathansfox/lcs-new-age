@@ -402,6 +402,10 @@ Future<void> sleeperizePrompt(
     } else if (isPageUp(c) ||
         c == Key.upArrow ||
         c == Key.leftArrow ||
+        c == Key.w ||
+        c == Key.a ||
+        c == Key.x ||
+        c == Key.d ||
         isPageDown(c) ||
         c == Key.downArrow ||
         c == Key.rightArrow) {

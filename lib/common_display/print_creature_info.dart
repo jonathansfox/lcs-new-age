@@ -264,14 +264,15 @@ Future<void> fullCreatureInfoScreen(Creature cr) async {
     int c = await getKey();
 
     if ((activeSquad?.members.length ?? 0) > 1 &&
-        ((c == Key.leftArrow) || (c == Key.rightArrow))) {
-      int sx = (c == Key.leftArrow) ? -1 : 1;
+        ((c == Key.leftArrow || c == Key.a) ||
+            (c == Key.rightArrow || c == Key.d))) {
+      int sx = (c == Key.leftArrow || c == Key.a) ? -1 : 1;
       int index = squad.indexOf(cr) + sx;
       cr = squad[index % squad.length];
-    } else if (c == Key.downArrow) {
+    } else if (c == Key.downArrow || c == Key.x) {
       page++;
       page %= pagenum;
-    } else if (c == Key.upArrow) {
+    } else if (c == Key.upArrow || c == Key.w) {
       page--;
       if (page < 0) page = pagenum - 1;
       page %= pagenum;
