@@ -339,7 +339,7 @@ void handlePublicOpinionImpact(NewsStory ns, bool liberalguardian) {
       changePublicOpinion(View.lcsLiked, impact);
     } else {
       changePublicOpinion(View.lcsLiked, -impact);
-      extraMoralAuthority = -25;
+      extraMoralAuthority = -10;
     }
     if (ns.legalGunUsed) {
       changePublicOpinion(View.gunControl, impact);
@@ -357,7 +357,7 @@ void handlePublicOpinionImpact(NewsStory ns, bool liberalguardian) {
     } else {
       changePublicOpinion(View.ccsHated, -impact);
       changePublicOpinion(View.gunControl, -impact ~/ 5);
-      extraMoralAuthority = 25;
+      extraMoralAuthority = 10;
     }
     for (View issue in issues) {
       changePublicOpinion(issue, impact,
