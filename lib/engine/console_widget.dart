@@ -78,7 +78,11 @@ class _ConsoleWidgetState extends State<ConsoleWidget> {
         ![
           LogicalKeyboardKey.altLeft,
           LogicalKeyboardKey.altRight,
-          LogicalKeyboardKey.tab
+          LogicalKeyboardKey.tab,
+          LogicalKeyboardKey.shiftLeft,
+          LogicalKeyboardKey.shiftRight,
+          LogicalKeyboardKey.controlLeft,
+          LogicalKeyboardKey.controlRight,
         ].contains(value.logicalKey)) {
       //debugPrint("Key event: $value");
       console.keyEvent(value);
