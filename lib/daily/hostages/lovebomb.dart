@@ -271,7 +271,7 @@ Future<void> handleLoveBombing(
               "of love bombing hostages until they think this miserable "
               "existence as a criminal on the fringes of society is somehow "
               "better than the alternative.",
-          "${cr.name} suggets ${lead.name} should see a therapist to deal "
+          "${cr.name} suggests ${lead.name} should see a therapist to deal "
               "with ${lead.gender.hisHer} issues instead of kidnapping and "
               "brainwashing people.",
           "${cr.name} offers some sardonically deadpan advice on how "
