@@ -85,7 +85,7 @@ void _moveSquadlessToBases() {
             l.type == SiteType.homelessEncampment);
       }
     }
-    if (c.base != null) c.location = c.base;
+    if (c.base != null && !c.imprisoned) c.location = c.base;
   }
 }
 
@@ -240,7 +240,9 @@ Future<void> _ageThings() async {
         if (c.base?.siege.underSiege == true) {
           c.hidingDaysLeft = 1;
         } else {
-          c.location = c.base;
+          if (!c.imprisoned) {
+            c.location = c.base;
+          }
           await showMessage("${c.name} regains contact with the LCS.");
         }
       }
@@ -377,7 +379,7 @@ Future<void> dispersalCheck() async {
           if (!disbanding) {
             dispersalStatus[p] = DispersalTypes.bossSafe;
             if (p.hidingDaysLeft < 0) {
-              p.hidingDaysLeft = lcsRandom(10) + 5;
+              p.hidingDaysLeft = 0;
             }
           } else {
             dispersalStatus[p] = DispersalTypes.bossInHiding;
