@@ -1717,6 +1717,11 @@ Future<void> _resolveSite() async {
     sitestory!.positive = (siteAlienated != SiteAlienation.none) ? -1 : 1;
   }
   if (!newsStories.contains(sitestory!)) newsStories.add(sitestory!);
+
+  // Reset isWillingToTalk for unique creatures
+  uniqueCreatures.ceo.isWillingToTalk = true;
+  uniqueCreatures.president.isWillingToTalk = true;
+
   if (siteCrime > 50 + lcsRandom(50)) {
     if (activeSite!.controller == SiteController.unaligned) {
       // Capture a warehouse or crack den?
