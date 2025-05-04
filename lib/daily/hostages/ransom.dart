@@ -154,9 +154,6 @@ Future<bool> handleRansomPayment(
     }
   }
 
-  ledger.addFunds(intr.ransomAmount, Income.ransom);
-  intr.ransomPaid = true;
-
   // Check for ambush based on street sense
   String location = await selectRansomLocation(lead);
   bool approachedCarefully =
