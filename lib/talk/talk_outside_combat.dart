@@ -494,10 +494,10 @@ Future<bool> talkToBankTeller(Creature a, Creature tk) async {
         addPotentialCrime(squad, Crime.bankRobbery);
         addDramaToSiteStory(Drama.bankTellerRobbery);
         siteCrime += 30;
-        encounter.add(Creature.fromId("CREATURE_MERC"));
-        encounter.add(Creature.fromId("CREATURE_MERC"));
-        encounter.add(Creature.fromId("CREATURE_MERC"));
-        encounter.add(Creature.fromId("CREATURE_MERC"));
+        encounter.add(Creature.fromId(CreatureTypeIds.merc));
+        encounter.add(Creature.fromId(CreatureTypeIds.merc));
+        encounter.add(Creature.fromId(CreatureTypeIds.merc));
+        encounter.add(Creature.fromId(CreatureTypeIds.merc));
       } else {
         mvaddstrc(11, 1, white, "The bank teller reads the note, ");
         switch (lcsRandom(5)) {

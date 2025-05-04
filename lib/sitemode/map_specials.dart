@@ -1451,7 +1451,7 @@ Future<void> specialBankVault() async {
   bool canbreakin = false;
 
   for (Creature c in squad) {
-    if (c.type.id == "CREATRUE_BANK_MANAGER") {
+    if (c.type.id == CreatureTypeIds.bankManager) {
       manager = c;
       if (c.daysSinceJoined < 30 && !c.kidnapped) {
         await encounterMessage("${c.name} opens the vault.");
@@ -1547,7 +1547,7 @@ Future<void> specialBankMoney() async {
     }
     _specialBankMoneySWATCounter++;
     for (int i = 0; i < 9; i++) {
-      encounter.add(Creature.fromId("CREATURE_SWAT"));
+      encounter.add(Creature.fromId(CreatureTypeIds.swat));
     }
     printEncounter();
     await getKey();
