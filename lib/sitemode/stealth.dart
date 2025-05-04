@@ -249,7 +249,7 @@ Future<void> disguisecheck(int timer) async {
         }
       }
 
-      Iterable<Creature> spottedSquad = [];
+      List<Creature> spottedSquad = [];
       if (spotted) {
         spottedSquad = squad.where((c) {
           bool blewIt = weaponCheck(c) == WeaponCheckResult.suspicious &&
@@ -261,7 +261,7 @@ Future<void> disguisecheck(int timer) async {
           result -= timer;
           if (result < disguiseDifficulty) blewIt = true;
           return blewIt;
-        });
+        }).toList();
         if (spottedSquad.isNotEmpty) {
           squaddieThatBlewIt = spottedSquad.random;
           noticed = true;
