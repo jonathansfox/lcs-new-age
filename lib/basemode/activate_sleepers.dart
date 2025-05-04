@@ -78,7 +78,8 @@ Future<void> activateSleepers() async {
     mvaddstrc(22, 0, lightGray, "Press a Letter to Assign an Activity.");
     move(23, 0);
     addstr(pageStr);
-    addstr(" T to sort people.");
+    addOptionText(24, 0, "T", "T - Sorting options");
+    addOptionText(24, 20, "Z", "Z - Assign tasks in bulk");
 
     setColor(lightGray);
 
@@ -104,6 +105,10 @@ Future<void> activateSleepers() async {
     if (c == Key.t) {
       await sortingPrompt(SortingScreens.activateSleepers);
       sortLiberals(temppool, SortingScreens.activateSleepers);
+    }
+
+    if (c == Key.z) {
+      await activateSleepersBulk();
     }
 
     if (isBackKey(c)) break;
@@ -252,5 +257,132 @@ Future<void> activateSleeper(Creature cr) async {
     if (c == Key.enter || c == Key.escape || c == Key.space) {
       break;
     }
+  }
+}
+
+Future<void> activateSleepersBulk() async {
+  List<Creature> temppool = pool
+      .where((p) =>
+          p.alive &&
+          p.sleeperAgent &&
+          p.align == Alignment.liberal &&
+          !p.inHiding &&
+          p.clinicMonthsLeft == 0 &&
+          p.vacationDaysLeft == 0)
+      .toList();
+
+  if (temppool.isEmpty) return;
+
+  int page = 0, selectedactivity = 0;
+
+  while (true) {
+    erase();
+    setColor(lightGray);
+    printFunds();
+
+    mvaddstr(0, 0, "Activate Sleeper Agents in Bulk");
+    addHeader({
+      4: "CODE NAME",
+      20: "JOB",
+      35: "EFF",
+      40: "CURRENT",
+      58: "BULK ACTIVITY"
+    });
+
+    void addOption(int i, String name, {bool enabled = true}) {
+      addOptionText(i + 1, 58, "$i", "$i - $name",
+          baseColorKey: selectedactivity == i - 1 ? "W" : "w",
+          enabledWhen: enabled);
+    }
+
+    addOption(1, "Lay Low");
+    addOption(2, "Advocate Liberalism");
+    addOption(3, "Uncover Secrets");
+    addOption(4, "Embezzle Funds");
+    addOption(5, "Steal Equipment");
+    addOption(6, "Expand Network");
+    addOption(7, "Join LCS");
+
+    int y = 2;
+    for (int p = page * 19;
+        p < temppool.length && p < page * 19 + 19;
+        p++, y++) {
+      Creature tempp = temppool[p];
+      String letter = letterAPlus(p - page * 19);
+      addOptionText(y, 0, letter, "$letter - ${tempp.name}");
+      setColor(lightGray);
+      mvaddstr(y, 20, tempp.type.name);
+
+      // Show infiltration level with color coding
+      if (tempp.infiltration > 0.8) {
+        setColor(red);
+      } else if (tempp.infiltration > 0.6) {
+        setColor(purple);
+      } else if (tempp.infiltration > 0.4) {
+        setColor(yellow);
+      } else if (tempp.infiltration > 0.2) {
+        setColor(white);
+      } else if (tempp.infiltration > 0.1) {
+        setColor(lightGray);
+      } else {
+        setColor(green);
+      }
+      mvaddstr(y, 35, "${(tempp.infiltration * 100).ceil()}%");
+
+      // Show current activity (first word only if long)
+      move(y, 40);
+      setColor(tempp.activity.type.color);
+      String activityLabel = tempp.activity.type.label;
+      if (activityLabel.length > 17) {
+        addstr(activityLabel.split(" ").first);
+      } else {
+        addstr(activityLabel);
+      }
+    }
+
+    mvaddstrc(22, 0, lightGray,
+        "Press a Letter to Assign an Activity.  Press a Number to select an Activity.");
+    mvaddstrx(23, 0, pageStrX);
+
+    int c = await getKey();
+
+    // Handle page navigation
+    if ((isPageUp(c) || c == Key.upArrow || c == Key.leftArrow) && page > 0) {
+      page--;
+    }
+    if ((isPageDown(c) || c == Key.downArrow || c == Key.rightArrow) &&
+        (page + 1) * 19 < temppool.length) {
+      page++;
+    }
+
+    if (c >= Key.a && c <= Key.s) {
+      int p = page * 19 + c - Key.a;
+      if (p < temppool.length) {
+        Creature tempp = temppool[p];
+        switch (selectedactivity) {
+          case 0: // Lay Low
+            tempp.activity = Activity.none();
+          case 1: // Advocate Liberalism
+            tempp.activity = Activity(ActivityType.sleeperLiberal);
+          case 2: // Uncover Secrets
+            tempp.activity = Activity(ActivityType.sleeperSpy);
+          case 3: // Embezzle Funds
+            tempp.activity = Activity(ActivityType.sleeperEmbezzle);
+          case 4: // Steal Equipment
+            tempp.activity = Activity(ActivityType.sleeperSteal);
+          case 5: // Expand Network
+            if (tempp.subordinatesLeft > 0 && !tempp.brainwashed) {
+              tempp.activity = Activity(ActivityType.sleeperRecruit);
+            }
+          case 6: // Join LCS
+            tempp.activity = Activity(ActivityType.sleeperJoinLcs);
+        }
+      }
+    }
+    if (c >= Key.num1 && c <= Key.num8) {
+      selectedactivity = c - Key.num1;
+    }
+
+    if (isBackKey(c)) break;
   }
 }
