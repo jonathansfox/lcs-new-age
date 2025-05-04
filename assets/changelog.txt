@@ -1,3 +1,15 @@
+1.3.7 - 5/4/2025
+- Added bulk activation option for sleeper agents
+- Increased the liberalizing impact of rampage news stories on the issues (or conservatizing impact, in the case of CCS rampages)
+- Made it harder for hostages to escape when guarded, and harder to escape from a safehouse with lots of people hanging around even when they aren't specifically guarding the hostage
+- Added a new name list for genetic monsters
+- Added ability to use W A D X in place of arrow keys on various UI screens for better mobile support
+- Hid the ? option during footchases since there's not actually a help page for footchases, the UI was just lying about this
+- Reset temporary state on the CEO and President when leaving site so they'll talk to you again next time you visit without having to save and load the game
+- Fixed double payment of ransom (or single payment when you couldn't collect the money)
+- Shored up some logic around returning from being in hiding to hopefully not just instantly prison break folks when returning from disbanding
+- Fixed a minor typo that could come up when tending hostages
+
 1.3.6 - 5/3/2025
 - Hotfix for stealth not working due to a bug in the last patch
 - Fix for recently recruited bank manager not being able to open the vault
