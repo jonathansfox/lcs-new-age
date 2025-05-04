@@ -95,7 +95,12 @@ Future<void> tendHostage(InterrogationSession intr) async {
   //possible hostage escape attempt if unattended or unrestrained
   if (tenders.isEmpty || techniques[Technique.restrain] == false) {
     //CHECK FOR HOSTAGE ESCAPE
-    if (lcsRandom(200) + 25 * tenders.length <
+    int liberalsAtSafehouse = pool
+        .where((e) => e.location == cr.location && e.isActiveLiberal)
+        .length;
+    int guardsAtSafehouse = tenders.length;
+    int nonGuardsAtSafehouse = liberalsAtSafehouse - guardsAtSafehouse;
+    if (lcsRandom(200) + 50 * guardsAtSafehouse + 10 * nonGuardsAtSafehouse <
         cr.attribute(Attribute.intelligence) / 2 +
             cr.attribute(Attribute.agility) / 2 +
             cr.attribute(Attribute.strength) / 2 +
