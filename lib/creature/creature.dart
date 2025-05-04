@@ -11,6 +11,7 @@ import 'package:lcs_new_age/creature/dice.dart';
 import 'package:lcs_new_age/creature/difficulty.dart';
 import 'package:lcs_new_age/creature/gender.dart';
 import 'package:lcs_new_age/creature/level.dart';
+import 'package:lcs_new_age/creature/monster_name.dart';
 import 'package:lcs_new_age/creature/name.dart';
 import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/gamestate/game_mode.dart';
@@ -573,9 +574,14 @@ class Creature {
 
   void nameCreature() {
     if (!alreadyNamed) {
-      FullName fullName = generateFullName(gender);
-      properName = fullName.firstLast;
-      name = fullName.firstLast;
+      if (type.id == CreatureTypeIds.genetic) {
+        properName = generateMonsterName();
+        name = properName;
+      } else {
+        FullName fullName = generateFullName(gender);
+        properName = fullName.firstLast;
+        name = fullName.firstLast;
+      }
       alreadyNamed = true;
     }
   }
