@@ -19,6 +19,12 @@ extension AddToMap on Map<String, int> {
   void add(String key, int value) {
     this[key] = (this[key] ?? 0) + value;
   }
+
+  void addAll(Map<String, int> other) {
+    for (var entry in other.entries) {
+      this[entry.key] = (this[entry.key] ?? 0) + entry.value;
+    }
+  }
 }
 
 /* generates a new random encounter */
@@ -31,11 +37,13 @@ void prepareEncounter(SiteType type, bool sec,
   if (postAlarmTimer > 80) {
     switch (type) {
       case SiteType.armyBase:
-        weights.add(CreatureTypeIds.soldier, 1000);
-        weights.add(CreatureTypeIds.militaryPolice, 300);
-        weights.add(CreatureTypeIds.seal, 150);
-        weights.add(CreatureTypeIds.guardDog, 100);
-        weights.add(CreatureTypeIds.tank, 100);
+        weights.addAll({
+          CreatureTypeIds.soldier: 1000,
+          CreatureTypeIds.militaryPolice: 300,
+          CreatureTypeIds.seal: 150,
+          CreatureTypeIds.guardDog: 100,
+          CreatureTypeIds.tank: 100,
+        });
       case SiteType.whiteHouse:
         weights.add(CreatureTypeIds.secretService, 1000);
       case SiteType.intelligenceHQ:
@@ -71,13 +79,15 @@ void prepareEncounter(SiteType type, bool sec,
 
   if (activeSite?.controller == SiteController.ccs &&
       (type != SiteType.barAndGrill || sec)) {
-    weights.add(CreatureTypeIds.ccsVigilante, 50);
-    weights.add(CreatureTypeIds.sexWorker, 5);
-    weights.add(CreatureTypeIds.crackhead, 5);
-    weights.add(CreatureTypeIds.priest, 5);
-    weights.add(CreatureTypeIds.radioPersonality, 1);
-    weights.add(CreatureTypeIds.televangelist, 1);
-    weights.add(CreatureTypeIds.neoNazi, 5);
+    weights.addAll({
+      CreatureTypeIds.ccsVigilante: 50,
+      CreatureTypeIds.sexWorker: 5,
+      CreatureTypeIds.crackhead: 5,
+      CreatureTypeIds.priest: 5,
+      CreatureTypeIds.radioPersonality: 1,
+      CreatureTypeIds.televangelist: 1,
+      CreatureTypeIds.neoNazi: 5,
+    });
 
     for (int n = 0; n < lcsRandom(6) + 1; n++) {
       Creature cr =
@@ -89,749 +99,760 @@ void prepareEncounter(SiteType type, bool sec,
     int encnum = num ?? 6;
     switch (type) {
       case SiteType.drugHouse:
-        weights.add(CreatureTypeIds.teenager, 100);
-        weights.add(CreatureTypeIds.musician, 1);
-        weights.add(CreatureTypeIds.mathematician, 1);
-        weights.add(CreatureTypeIds.highschoolDropout, 30);
-        weights.add(CreatureTypeIds.bum, 200);
-        if (mutantsPossible) weights.add(CreatureTypeIds.mutant, 2);
-        if (mutantsCommon) weights.add(CreatureTypeIds.mutant, 50);
-        weights.add(CreatureTypeIds.gangMember, 200);
-        weights.add(CreatureTypeIds.crackhead, 200);
-        weights.add(CreatureTypeIds.sexWorker, 200);
-        weights.add(CreatureTypeIds.punk, 5);
-        weights.add(CreatureTypeIds.biker, 5);
-        weights.add(CreatureTypeIds.painter, 1);
-        weights.add(CreatureTypeIds.sculptor, 1);
-        weights.add(CreatureTypeIds.thief, 3);
-        weights.add(CreatureTypeIds.actor, 1);
-        weights.add(CreatureTypeIds.journalist, 2);
-        if (ccsState.index < CCSStrength.defeated.index &&
-            ccsState.index > CCSStrength.inHiding.index) {
-          weights.add(CreatureTypeIds.ccsVigilante, 50);
-        }
+        weights.addAll({
+          CreatureTypeIds.teenager: 100,
+          CreatureTypeIds.musician: 1,
+          CreatureTypeIds.mathematician: 1,
+          CreatureTypeIds.highschoolDropout: 30,
+          CreatureTypeIds.bum: 200,
+          if (mutantsPossible) CreatureTypeIds.mutant: 2,
+          if (mutantsCommon) CreatureTypeIds.mutant: 50,
+          CreatureTypeIds.gangMember: 200,
+          CreatureTypeIds.crackhead: 200,
+          CreatureTypeIds.sexWorker: 200,
+          CreatureTypeIds.punk: 5,
+          CreatureTypeIds.biker: 5,
+          CreatureTypeIds.painter: 1,
+          CreatureTypeIds.sculptor: 1,
+          CreatureTypeIds.thief: 3,
+          CreatureTypeIds.actor: 1,
+          CreatureTypeIds.journalist: 2,
+          if (ccsState.index < CCSStrength.defeated.index &&
+              ccsState.index > CCSStrength.inHiding.index)
+            CreatureTypeIds.ccsVigilante: 50,
+        });
       case SiteType.juiceBar:
-        weights.add(CreatureTypeIds.teenager, 10);
-        weights.add(CreatureTypeIds.liberalJudge, 1);
-        weights.add(CreatureTypeIds.collegeStudent, 10);
-        weights.add(CreatureTypeIds.musician, 2);
-        weights.add(CreatureTypeIds.mathematician, 1);
-        weights.add(CreatureTypeIds.teacher, 1);
-        weights.add(CreatureTypeIds.highschoolDropout, 1);
-        weights.add(CreatureTypeIds.engineer, 1);
-        weights.add(CreatureTypeIds.fastFoodWorker, 1);
-        weights.add(CreatureTypeIds.baker, 1);
-        weights.add(CreatureTypeIds.barista, 1);
-        weights.add(CreatureTypeIds.bartender, 1);
-        weights.add(CreatureTypeIds.telemarketer, 1);
-        weights.add(CreatureTypeIds.carSalesman, 1);
-        weights.add(CreatureTypeIds.officeWorker, 1);
-        weights.add(CreatureTypeIds.mailman, 1);
-        weights.add(CreatureTypeIds.chef, 1);
-        weights.add(CreatureTypeIds.nurse, 1);
-        weights.add(CreatureTypeIds.amateurMagician, 1);
-        weights.add(CreatureTypeIds.hippie, 6);
-        weights.add(CreatureTypeIds.punk, 1);
-        weights.add(CreatureTypeIds.emo, 2);
-        weights.add(CreatureTypeIds.goth, 1);
-        weights.add(CreatureTypeIds.artCritic, 1);
-        weights.add(CreatureTypeIds.musicCritic, 1);
-        weights.add(CreatureTypeIds.author, 1);
-        weights.add(CreatureTypeIds.journalist, 1);
-        weights.add(CreatureTypeIds.socialite, 2);
-        weights.add(CreatureTypeIds.programmer, 1);
-        weights.add(CreatureTypeIds.retiree, 1);
-        weights.add(CreatureTypeIds.painter, 1);
-        weights.add(CreatureTypeIds.sculptor, 1);
-        weights.add(CreatureTypeIds.dancer, 1);
-        weights.add(CreatureTypeIds.photographer, 1);
-        weights.add(CreatureTypeIds.cameraman, 1);
-        weights.add(CreatureTypeIds.hairstylist, 1);
-        weights.add(CreatureTypeIds.fashionDesigner, 1);
-        weights.add(CreatureTypeIds.clerk, 1);
-        weights.add(CreatureTypeIds.thief, 1);
-        weights.add(CreatureTypeIds.actor, 1);
-        weights.add(CreatureTypeIds.yogaInstructor, 1);
-        weights.add(CreatureTypeIds.martialArtist, 1);
-        weights.add(CreatureTypeIds.athlete, 2);
-        weights.add(CreatureTypeIds.locksmith, 1);
+        weights.addAll({
+          CreatureTypeIds.teenager: 10,
+          CreatureTypeIds.liberalJudge: 1,
+          CreatureTypeIds.collegeStudent: 10,
+          CreatureTypeIds.musician: 2,
+          CreatureTypeIds.mathematician: 1,
+          CreatureTypeIds.teacher: 1,
+          CreatureTypeIds.highschoolDropout: 1,
+          CreatureTypeIds.engineer: 1,
+          CreatureTypeIds.fastFoodWorker: 1,
+          CreatureTypeIds.baker: 1,
+          CreatureTypeIds.barista: 1,
+          CreatureTypeIds.bartender: 1,
+          CreatureTypeIds.telemarketer: 1,
+          CreatureTypeIds.carSalesman: 1,
+          CreatureTypeIds.officeWorker: 1,
+          CreatureTypeIds.mailman: 1,
+          CreatureTypeIds.chef: 1,
+          CreatureTypeIds.nurse: 1,
+          CreatureTypeIds.amateurMagician: 1,
+          CreatureTypeIds.hippie: 6,
+          CreatureTypeIds.punk: 1,
+          CreatureTypeIds.emo: 2,
+          CreatureTypeIds.goth: 1,
+          CreatureTypeIds.artCritic: 1,
+          CreatureTypeIds.musicCritic: 1,
+          CreatureTypeIds.author: 1,
+          CreatureTypeIds.journalist: 1,
+          CreatureTypeIds.socialite: 2,
+          CreatureTypeIds.programmer: 1,
+          CreatureTypeIds.retiree: 1,
+          CreatureTypeIds.painter: 1,
+          CreatureTypeIds.sculptor: 1,
+          CreatureTypeIds.dancer: 1,
+          CreatureTypeIds.photographer: 1,
+          CreatureTypeIds.cameraman: 1,
+          CreatureTypeIds.hairstylist: 1,
+          CreatureTypeIds.fashionDesigner: 1,
+          CreatureTypeIds.clerk: 1,
+          CreatureTypeIds.thief: 1,
+          CreatureTypeIds.actor: 1,
+          CreatureTypeIds.yogaInstructor: 1,
+          CreatureTypeIds.martialArtist: 1,
+          CreatureTypeIds.athlete: 2,
+          CreatureTypeIds.locksmith: 1,
+        });
       case SiteType.barAndGrill:
         if (sec || siteAlarm) {
           weights.add(CreatureTypeIds.bouncer, 100);
         } else {
           weights.add(CreatureTypeIds.bouncer, 10);
         }
-        if (sec) weights.add(CreatureTypeIds.guardDog, 25);
-        weights.add(CreatureTypeIds.eminentScientist, 1);
-        weights.add(CreatureTypeIds.corporateManager, 30);
-        weights.add(CreatureTypeIds.cop, 5);
-        if (deathSquadsActive) weights.add(CreatureTypeIds.deathSquad, 2);
-        if (gangUnitsActive) weights.add(CreatureTypeIds.gangUnit, 2);
-        weights.add(CreatureTypeIds.conservativeJudge, 1);
-        weights.add(CreatureTypeIds.radioPersonality, 1);
-        weights.add(CreatureTypeIds.newsAnchor, 1);
-        weights.add(CreatureTypeIds.televangelist, 1);
-        weights.add(CreatureTypeIds.lawyer, 15);
-        weights.add(CreatureTypeIds.doctor, 10);
-        weights.add(CreatureTypeIds.psychologist, 1);
-        weights.add(CreatureTypeIds.musician, 1);
-        weights.add(CreatureTypeIds.engineer, 10);
-        weights.add(CreatureTypeIds.bartender, 10);
-        weights.add(CreatureTypeIds.footballCoach, 1);
-        weights.add(CreatureTypeIds.artCritic, 1);
-        weights.add(CreatureTypeIds.musicCritic, 1);
-        weights.add(CreatureTypeIds.author, 1);
-        weights.add(CreatureTypeIds.journalist, 1);
-        weights.add(CreatureTypeIds.socialite, 2);
-        weights.add(CreatureTypeIds.retiree, 1);
-        weights.add(CreatureTypeIds.painter, 1);
-        weights.add(CreatureTypeIds.sculptor, 1);
-        weights.add(CreatureTypeIds.dancer, 1);
-        weights.add(CreatureTypeIds.photographer, 1);
-        weights.add(CreatureTypeIds.fashionDesigner, 1);
-        weights.add(CreatureTypeIds.thief, 1);
-        weights.add(CreatureTypeIds.actor, 1);
-        weights.add(CreatureTypeIds.athlete, 1);
-        weights.add(CreatureTypeIds.firefighter, 1);
-        weights.add(CreatureTypeIds.locksmith, 1);
-        weights.add(CreatureTypeIds.neoNazi, 10);
-        weights.add(CreatureTypeIds.naziPunk, 1);
-        if (ccsActive && activeSite?.controller != SiteController.lcs) {
-          weights.add(CreatureTypeIds.ccsVigilante, 50);
-        }
+        weights.addAll({
+          if (sec) CreatureTypeIds.guardDog: 25,
+          CreatureTypeIds.eminentScientist: 1,
+          CreatureTypeIds.corporateManager: 30,
+          CreatureTypeIds.cop: 5,
+          if (deathSquadsActive) CreatureTypeIds.deathSquad: 2,
+          if (gangUnitsActive) CreatureTypeIds.gangUnit: 2,
+          CreatureTypeIds.conservativeJudge: 1,
+          CreatureTypeIds.radioPersonality: 1,
+          CreatureTypeIds.newsAnchor: 1,
+          CreatureTypeIds.televangelist: 1,
+          CreatureTypeIds.lawyer: 15,
+          CreatureTypeIds.doctor: 10,
+          CreatureTypeIds.psychologist: 1,
+          CreatureTypeIds.musician: 1,
+          CreatureTypeIds.engineer: 10,
+          CreatureTypeIds.bartender: 10,
+          CreatureTypeIds.footballCoach: 1,
+          CreatureTypeIds.artCritic: 1,
+          CreatureTypeIds.musicCritic: 1,
+          CreatureTypeIds.author: 1,
+          CreatureTypeIds.journalist: 1,
+          CreatureTypeIds.socialite: 2,
+          CreatureTypeIds.retiree: 1,
+          CreatureTypeIds.painter: 1,
+          CreatureTypeIds.sculptor: 1,
+          CreatureTypeIds.dancer: 1,
+          CreatureTypeIds.photographer: 1,
+          CreatureTypeIds.fashionDesigner: 1,
+          CreatureTypeIds.thief: 1,
+          CreatureTypeIds.actor: 1,
+          CreatureTypeIds.athlete: 1,
+          CreatureTypeIds.firefighter: 1,
+          CreatureTypeIds.locksmith: 1,
+          CreatureTypeIds.neoNazi: 10,
+          CreatureTypeIds.naziPunk: 1,
+          if (ccsActive && activeSite?.controller != SiteController.lcs)
+            CreatureTypeIds.ccsVigilante: 50,
+        });
       case SiteType.whiteHouse:
-        weights.add(CreatureTypeIds.eminentScientist, 1);
-        weights.add(CreatureTypeIds.janitor, 2);
-        weights.add(CreatureTypeIds.secretary, 2);
-        weights.add(CreatureTypeIds.teenager, 1);
-        weights.add(CreatureTypeIds.liberalJudge, 1);
-        weights.add(CreatureTypeIds.conservativeJudge, 1);
-        weights.add(CreatureTypeIds.agent, 2);
-        weights.add(CreatureTypeIds.secretService, sec ? 100 : 5);
-        weights.add(CreatureTypeIds.lawyer, 3);
-        weights.add(CreatureTypeIds.doctor, 1);
-        weights.add(CreatureTypeIds.collegeStudent, 1);
-        weights.add(CreatureTypeIds.teacher, 1);
-        weights.add(CreatureTypeIds.officeWorker, 5);
-        weights.add(CreatureTypeIds.footballCoach, 1);
-        weights.add(CreatureTypeIds.chef, 1);
-        weights.add(CreatureTypeIds.veteran, 1);
-        weights.add(CreatureTypeIds.journalist, 2);
-        weights.add(CreatureTypeIds.socialite, 1);
-        weights.add(CreatureTypeIds.photographer, 2);
-        weights.add(CreatureTypeIds.cameraman, 1);
-        weights.add(CreatureTypeIds.hairstylist, 1);
-        weights.add(CreatureTypeIds.clerk, 5);
-        weights.add(CreatureTypeIds.actor, 1);
-        weights.add(CreatureTypeIds.athlete, 1);
+        weights.addAll({
+          CreatureTypeIds.eminentScientist: 1,
+          CreatureTypeIds.janitor: 2,
+          CreatureTypeIds.secretary: 2,
+          CreatureTypeIds.teenager: 1,
+          CreatureTypeIds.liberalJudge: 1,
+          CreatureTypeIds.conservativeJudge: 1,
+          CreatureTypeIds.agent: 2,
+          CreatureTypeIds.secretService: sec ? 100 : 5,
+          CreatureTypeIds.lawyer: 3,
+          CreatureTypeIds.doctor: 1,
+          CreatureTypeIds.collegeStudent: 1,
+          CreatureTypeIds.teacher: 1,
+          CreatureTypeIds.officeWorker: 5,
+          CreatureTypeIds.footballCoach: 1,
+          CreatureTypeIds.chef: 1,
+          CreatureTypeIds.veteran: 1,
+          CreatureTypeIds.journalist: 2,
+          CreatureTypeIds.socialite: 1,
+          CreatureTypeIds.photographer: 2,
+          CreatureTypeIds.cameraman: 1,
+          CreatureTypeIds.hairstylist: 1,
+          CreatureTypeIds.clerk: 5,
+          CreatureTypeIds.actor: 1,
+          CreatureTypeIds.athlete: 1,
+        });
       case SiteType.publicPark:
       case SiteType.latteStand:
-        weights.add(CreatureTypeIds.securityGuard, 5);
-        weights.add(CreatureTypeIds.labTech, 10);
-        weights.add(CreatureTypeIds.eminentScientist, 1);
-        weights.add(CreatureTypeIds.corporateManager, 10);
-        weights.add(CreatureTypeIds.janitor, 5);
-        if (nonUnionWorkers) {
-          weights.add(CreatureTypeIds.nonUnionWorker, 5);
-        }
-        weights.add(CreatureTypeIds.secretary, 15);
-        if (unionWorkers) weights.add(CreatureTypeIds.unionWorker, 5);
-        weights.add(CreatureTypeIds.teenager, 5);
-        weights.add(CreatureTypeIds.cop, 5);
-        if (deathSquadsActive) weights.add(CreatureTypeIds.deathSquad, 2);
-        if (gangUnitsActive) weights.add(CreatureTypeIds.gangUnit, 2);
-        weights.add(CreatureTypeIds.liberalJudge, 1);
-        weights.add(CreatureTypeIds.conservativeJudge, 1);
-        weights.add(CreatureTypeIds.agent, 1);
-        if (ccsActive) weights[CreatureTypeIds.ccsVigilante] = 40;
-        weights.add(CreatureTypeIds.radioPersonality, 1);
-        weights.add(CreatureTypeIds.newsAnchor, 1);
-        weights.add(CreatureTypeIds.lawyer, 5);
-        weights.add(CreatureTypeIds.doctor, 5);
-        weights.add(CreatureTypeIds.psychologist, 1);
-        weights.add(CreatureTypeIds.nurse, 5);
-        weights.add(CreatureTypeIds.sewerWorker, 1);
-        weights.add(CreatureTypeIds.collegeStudent, 30);
-        weights.add(CreatureTypeIds.musician, 5);
-        weights.add(CreatureTypeIds.mathematician, 5);
-        weights.add(CreatureTypeIds.teacher, 5);
-        weights.add(CreatureTypeIds.highschoolDropout, 1);
-        weights.add(CreatureTypeIds.bum, 1);
-        if (mutantsPossible) weights.add(CreatureTypeIds.mutant, 1);
-        if (mutantsCommon) weights.add(CreatureTypeIds.mutant, 2);
-        weights[CreatureTypeIds.gangMember] = 5;
-        weights.add(CreatureTypeIds.crackhead, 1);
-        weights.add(CreatureTypeIds.priest, 1);
-        weights.add(CreatureTypeIds.engineer, 5);
-        weights.add(CreatureTypeIds.fastFoodWorker, 5);
-        weights.add(CreatureTypeIds.baker, 1);
-        weights.add(CreatureTypeIds.barista, 10);
-        weights.add(CreatureTypeIds.bartender, 1);
-        weights.add(CreatureTypeIds.telemarketer, 5);
-        weights.add(CreatureTypeIds.carSalesman, 3);
-        weights.add(CreatureTypeIds.officeWorker, 10);
-        weights.add(CreatureTypeIds.footballCoach, 1);
-        weights.add(CreatureTypeIds.sexWorker, 1);
-        weights.add(CreatureTypeIds.mailman, 1);
-        weights.add(CreatureTypeIds.garbageman, 1);
-        weights.add(CreatureTypeIds.plumber, 1);
-        weights.add(CreatureTypeIds.chef, 1);
-        weights.add(CreatureTypeIds.constructionWorker, 3);
-        weights.add(CreatureTypeIds.amateurMagician, 1);
-        weights.add(CreatureTypeIds.merc, 1);
-        weights.add(CreatureTypeIds.soldier, 1);
-        weights.add(CreatureTypeIds.veteran, 3);
-        if (nineteenEightyFour) {
-          weights.add(CreatureTypeIds.educator, 1);
-        } else {
-          weights.add(CreatureTypeIds.prisonGuard, 1);
-        }
-        weights.add(CreatureTypeIds.hippie, 1);
-        weights.add(CreatureTypeIds.punk, 2);
-        weights.add(CreatureTypeIds.emo, 2);
-        weights.add(CreatureTypeIds.goth, 1);
-        weights.add(CreatureTypeIds.artCritic, 1);
-        weights.add(CreatureTypeIds.musicCritic, 1);
-        weights.add(CreatureTypeIds.author, 1);
-        weights.add(CreatureTypeIds.journalist, 1);
-        weights.add(CreatureTypeIds.socialite, 1);
-        weights.add(CreatureTypeIds.biker, 1);
-        weights.add(CreatureTypeIds.trucker, 1);
-        weights.add(CreatureTypeIds.taxiDriver, 1);
-        weights.add(CreatureTypeIds.programmer, 5);
-        weights.add(CreatureTypeIds.retiree, 3);
-        weights.add(CreatureTypeIds.painter, 1);
-        weights.add(CreatureTypeIds.sculptor, 1);
-        weights.add(CreatureTypeIds.dancer, 1);
-        weights.add(CreatureTypeIds.photographer, 1);
-        weights.add(CreatureTypeIds.cameraman, 1);
-        weights.add(CreatureTypeIds.hairstylist, 1);
-        weights.add(CreatureTypeIds.fashionDesigner, 1);
-        weights.add(CreatureTypeIds.clerk, 1);
-        weights.add(CreatureTypeIds.thief, 1);
-        weights.add(CreatureTypeIds.actor, 1);
-        weights.add(CreatureTypeIds.yogaInstructor, 1);
-        weights.add(CreatureTypeIds.martialArtist, 1);
-        weights.add(CreatureTypeIds.athlete, 1);
-        weights.add(CreatureTypeIds.firefighter, 1);
-        weights.add(CreatureTypeIds.locksmith, 1);
+        weights.addAll({
+          CreatureTypeIds.securityGuard: 5,
+          CreatureTypeIds.labTech: 10,
+          CreatureTypeIds.eminentScientist: 1,
+          CreatureTypeIds.corporateManager: 10,
+          CreatureTypeIds.janitor: 5,
+          if (nonUnionWorkers) CreatureTypeIds.nonUnionWorker: 5,
+          if (unionWorkers) CreatureTypeIds.unionWorker: 5,
+          CreatureTypeIds.secretary: 15,
+          CreatureTypeIds.teenager: 5,
+          CreatureTypeIds.cop: 5,
+          if (deathSquadsActive) CreatureTypeIds.deathSquad: 2,
+          if (gangUnitsActive) CreatureTypeIds.gangUnit: 2,
+          CreatureTypeIds.liberalJudge: 1,
+          CreatureTypeIds.conservativeJudge: 1,
+          CreatureTypeIds.agent: 1,
+          if (ccsActive) CreatureTypeIds.ccsVigilante: 40,
+          CreatureTypeIds.radioPersonality: 1,
+          CreatureTypeIds.newsAnchor: 1,
+          CreatureTypeIds.lawyer: 5,
+          CreatureTypeIds.doctor: 5,
+          CreatureTypeIds.psychologist: 1,
+          CreatureTypeIds.nurse: 5,
+          CreatureTypeIds.sewerWorker: 1,
+          CreatureTypeIds.collegeStudent: 30,
+          CreatureTypeIds.musician: 5,
+          CreatureTypeIds.mathematician: 5,
+          CreatureTypeIds.teacher: 5,
+          CreatureTypeIds.highschoolDropout: 1,
+          CreatureTypeIds.bum: 1,
+          if (mutantsPossible) CreatureTypeIds.mutant: 1,
+          if (mutantsCommon) CreatureTypeIds.mutant: 10,
+          CreatureTypeIds.gangMember: 5,
+          CreatureTypeIds.crackhead: 1,
+          CreatureTypeIds.priest: 1,
+          CreatureTypeIds.engineer: 5,
+          CreatureTypeIds.fastFoodWorker: 5,
+          CreatureTypeIds.baker: 1,
+          CreatureTypeIds.barista: 10,
+          CreatureTypeIds.bartender: 1,
+          CreatureTypeIds.telemarketer: 5,
+          CreatureTypeIds.carSalesman: 3,
+          CreatureTypeIds.officeWorker: 10,
+          CreatureTypeIds.footballCoach: 1,
+          CreatureTypeIds.sexWorker: 1,
+          CreatureTypeIds.mailman: 1,
+          CreatureTypeIds.garbageman: 1,
+          CreatureTypeIds.plumber: 1,
+          CreatureTypeIds.chef: 1,
+          CreatureTypeIds.constructionWorker: 3,
+          CreatureTypeIds.amateurMagician: 1,
+          CreatureTypeIds.merc: 1,
+          CreatureTypeIds.soldier: 1,
+          CreatureTypeIds.veteran: 3,
+          if (nineteenEightyFour) CreatureTypeIds.educator: 1,
+          if (!nineteenEightyFour) CreatureTypeIds.prisonGuard: 1,
+          CreatureTypeIds.hippie: 1,
+          CreatureTypeIds.punk: 2,
+          CreatureTypeIds.emo: 2,
+          CreatureTypeIds.goth: 1,
+          CreatureTypeIds.artCritic: 1,
+          CreatureTypeIds.musicCritic: 1,
+          CreatureTypeIds.author: 1,
+          CreatureTypeIds.journalist: 1,
+          CreatureTypeIds.socialite: 1,
+          CreatureTypeIds.biker: 1,
+          CreatureTypeIds.trucker: 1,
+          CreatureTypeIds.taxiDriver: 1,
+          CreatureTypeIds.programmer: 5,
+          CreatureTypeIds.retiree: 3,
+          CreatureTypeIds.painter: 1,
+          CreatureTypeIds.sculptor: 1,
+          CreatureTypeIds.dancer: 1,
+          CreatureTypeIds.photographer: 1,
+          CreatureTypeIds.cameraman: 1,
+          CreatureTypeIds.hairstylist: 1,
+          CreatureTypeIds.fashionDesigner: 1,
+          CreatureTypeIds.clerk: 1,
+          CreatureTypeIds.thief: 1,
+          CreatureTypeIds.actor: 1,
+          CreatureTypeIds.yogaInstructor: 1,
+          CreatureTypeIds.martialArtist: 1,
+          CreatureTypeIds.athlete: 1,
+          CreatureTypeIds.firefighter: 1,
+          CreatureTypeIds.locksmith: 1,
+        });
       case SiteType.veganCoOp:
-        weights.add(CreatureTypeIds.teenager, 5);
-        weights.add(CreatureTypeIds.liberalJudge, 1);
-        weights.add(CreatureTypeIds.collegeStudent, 50);
-        weights.add(CreatureTypeIds.musician, 20);
-        weights.add(CreatureTypeIds.mathematician, 1);
-        weights.add(CreatureTypeIds.teacher, 1);
-        weights.add(CreatureTypeIds.highschoolDropout, 10);
-        weights.add(CreatureTypeIds.bum, 1);
-        if (mutantsPossible) weights.add(CreatureTypeIds.mutant, 1);
-        if (mutantsCommon) weights.add(CreatureTypeIds.mutant, 10);
-        weights.add(CreatureTypeIds.hippie, 50);
-        weights.add(CreatureTypeIds.punk, 10);
-        weights.add(CreatureTypeIds.emo, 10);
-        weights.add(CreatureTypeIds.goth, 5);
-        weights.add(CreatureTypeIds.artCritic, 1);
-        weights.add(CreatureTypeIds.musicCritic, 1);
-        weights.add(CreatureTypeIds.author, 1);
-        weights.add(CreatureTypeIds.journalist, 1);
-        weights.add(CreatureTypeIds.retiree, 1);
-        weights.add(CreatureTypeIds.painter, 1);
-        weights.add(CreatureTypeIds.sculptor, 1);
-        weights.add(CreatureTypeIds.dancer, 1);
-        weights.add(CreatureTypeIds.photographer, 1);
-        weights.add(CreatureTypeIds.yogaInstructor, 2);
+        weights.addAll({
+          CreatureTypeIds.teenager: 5,
+          CreatureTypeIds.liberalJudge: 1,
+          CreatureTypeIds.collegeStudent: 50,
+          CreatureTypeIds.musician: 20,
+          CreatureTypeIds.mathematician: 1,
+          CreatureTypeIds.teacher: 1,
+          CreatureTypeIds.highschoolDropout: 10,
+          CreatureTypeIds.bum: 1,
+          if (mutantsPossible) CreatureTypeIds.mutant: 1,
+          if (mutantsCommon) CreatureTypeIds.mutant: 10,
+          CreatureTypeIds.hippie: 50,
+          CreatureTypeIds.punk: 10,
+          CreatureTypeIds.emo: 10,
+          CreatureTypeIds.goth: 5,
+          CreatureTypeIds.artCritic: 1,
+          CreatureTypeIds.musicCritic: 1,
+          CreatureTypeIds.author: 1,
+          CreatureTypeIds.journalist: 1,
+          CreatureTypeIds.retiree: 1,
+          CreatureTypeIds.painter: 1,
+          CreatureTypeIds.sculptor: 1,
+          CreatureTypeIds.dancer: 1,
+          CreatureTypeIds.photographer: 1,
+          CreatureTypeIds.yogaInstructor: 2,
+        });
       case SiteType.internetCafe:
-        weights.add(CreatureTypeIds.labTech, 5);
-        weights.add(CreatureTypeIds.corporateManager, 3);
-        weights.add(CreatureTypeIds.teenager, 15);
-        weights.add(CreatureTypeIds.lawyer, 3);
-        weights.add(CreatureTypeIds.collegeStudent, 25);
-        weights.add(CreatureTypeIds.musician, 2);
-        weights.add(CreatureTypeIds.mathematician, 1);
-        weights.add(CreatureTypeIds.teacher, 5);
-        weights.add(CreatureTypeIds.engineer, 5);
-        weights.add(CreatureTypeIds.doctor, 1);
-        weights.add(CreatureTypeIds.barista, 10);
-        weights.add(CreatureTypeIds.carSalesman, 2);
-        weights.add(CreatureTypeIds.officeWorker, 15);
-        weights.add(CreatureTypeIds.secretary, 5);
-        weights.add(CreatureTypeIds.hippie, 1);
-        weights.add(CreatureTypeIds.punk, 3);
-        weights.add(CreatureTypeIds.emo, 3);
-        weights.add(CreatureTypeIds.goth, 3);
-        weights.add(CreatureTypeIds.programmer, 15);
-        weights.add(CreatureTypeIds.retiree, 5);
-        weights.add(CreatureTypeIds.painter, 1);
-        weights.add(CreatureTypeIds.sculptor, 1);
-        weights.add(CreatureTypeIds.dancer, 1);
-        weights.add(CreatureTypeIds.photographer, 1);
-        weights.add(CreatureTypeIds.cameraman, 1);
-        weights.add(CreatureTypeIds.clerk, 1);
-        weights.add(CreatureTypeIds.locksmith, 1);
+        weights.addAll({
+          CreatureTypeIds.labTech: 5,
+          CreatureTypeIds.corporateManager: 3,
+          CreatureTypeIds.teenager: 15,
+          CreatureTypeIds.lawyer: 3,
+          CreatureTypeIds.collegeStudent: 25,
+          CreatureTypeIds.musician: 2,
+          CreatureTypeIds.mathematician: 1,
+          CreatureTypeIds.teacher: 5,
+          CreatureTypeIds.engineer: 5,
+          CreatureTypeIds.doctor: 1,
+          CreatureTypeIds.barista: 10,
+          CreatureTypeIds.carSalesman: 2,
+          CreatureTypeIds.officeWorker: 15,
+          CreatureTypeIds.secretary: 5,
+          CreatureTypeIds.hippie: 1,
+          CreatureTypeIds.punk: 3,
+          CreatureTypeIds.emo: 3,
+          CreatureTypeIds.goth: 3,
+          CreatureTypeIds.programmer: 15,
+          CreatureTypeIds.retiree: 5,
+          CreatureTypeIds.painter: 1,
+          CreatureTypeIds.sculptor: 1,
+          CreatureTypeIds.dancer: 1,
+          CreatureTypeIds.photographer: 1,
+          CreatureTypeIds.cameraman: 1,
+          CreatureTypeIds.clerk: 1,
+          CreatureTypeIds.locksmith: 1,
+        });
       case SiteType.tenement:
-        weights.add(CreatureTypeIds.securityGuard, 1);
-        weights.add(CreatureTypeIds.labTech, 1);
-        weights.add(CreatureTypeIds.janitor, 3);
-        if (nonUnionWorkers) weights.add(CreatureTypeIds.nonUnionWorker, 1);
-        weights.add(CreatureTypeIds.secretary, 2);
-        if (unionWorkers) weights.add(CreatureTypeIds.unionWorker, 1);
-        weights.add(CreatureTypeIds.teenager, 5);
-        weights.add(CreatureTypeIds.sewerWorker, 1);
-        weights.add(CreatureTypeIds.collegeStudent, 1);
-        weights.add(CreatureTypeIds.musician, 1);
-        weights.add(CreatureTypeIds.mathematician, 1);
-        weights.add(CreatureTypeIds.teacher, 1);
-        weights.add(CreatureTypeIds.highschoolDropout, 3);
-        weights.add(CreatureTypeIds.bum, 3);
-        if (mutantsPossible) weights.add(CreatureTypeIds.mutant, 2);
-        if (mutantsCommon) weights.add(CreatureTypeIds.mutant, 5);
-        weights.add(CreatureTypeIds.gangMember, 3);
-        weights.add(CreatureTypeIds.crackhead, 3);
-        weights.add(CreatureTypeIds.punk, 1);
-        weights.add(CreatureTypeIds.fastFoodWorker, 1);
-        weights.add(CreatureTypeIds.barista, 1);
-        weights.add(CreatureTypeIds.bartender, 1);
-        weights.add(CreatureTypeIds.telemarketer, 1);
-        weights.add(CreatureTypeIds.carSalesman, 1);
-        weights.add(CreatureTypeIds.officeWorker, 1);
-        weights.add(CreatureTypeIds.sexWorker, 3);
-        weights.add(CreatureTypeIds.mailman, 1);
-        weights.add(CreatureTypeIds.garbageman, 1);
-        weights.add(CreatureTypeIds.constructionWorker, 1);
-        weights.add(CreatureTypeIds.amateurMagician, 1);
-        weights.add(CreatureTypeIds.angryRuralMob, 1);
-        weights.add(CreatureTypeIds.soldier, 1);
-        weights.add(CreatureTypeIds.veteran, 2);
-        if (nineteenEightyFour) {
-          weights.add(CreatureTypeIds.educator, 1);
-        } else {
-          weights.add(CreatureTypeIds.prisonGuard, 1);
+        encnum = 1;
+        if (mode == GameMode.site && !levelMap[locx][locy][locz].restricted) {
+          encnum = 4;
         }
-        weights.add(CreatureTypeIds.hippie, 1);
-        weights.add(CreatureTypeIds.biker, 1);
-        weights.add(CreatureTypeIds.taxiDriver, 1);
-        weights.add(CreatureTypeIds.retiree, 1);
-        weights.add(CreatureTypeIds.painter, 1);
-        weights.add(CreatureTypeIds.sculptor, 1);
-        weights.add(CreatureTypeIds.dancer, 1);
-        weights.add(CreatureTypeIds.photographer, 1);
-        weights.add(CreatureTypeIds.hairstylist, 1);
-        weights.add(CreatureTypeIds.clerk, 1);
-        weights.add(CreatureTypeIds.thief, 1);
-        weights.add(CreatureTypeIds.actor, 1);
-        weights.add(CreatureTypeIds.firefighter, 1);
-        weights.add(CreatureTypeIds.locksmith, 1);
+        weights.addAll({
+          CreatureTypeIds.securityGuard: 1,
+          CreatureTypeIds.labTech: 1,
+          CreatureTypeIds.janitor: 3,
+          if (nonUnionWorkers) CreatureTypeIds.nonUnionWorker: 1,
+          CreatureTypeIds.secretary: 2,
+          if (unionWorkers) CreatureTypeIds.unionWorker: 1,
+          CreatureTypeIds.teenager: 5,
+          CreatureTypeIds.sewerWorker: 1,
+          CreatureTypeIds.collegeStudent: 1,
+          CreatureTypeIds.musician: 1,
+          CreatureTypeIds.mathematician: 1,
+          CreatureTypeIds.teacher: 1,
+          CreatureTypeIds.highschoolDropout: 3,
+          CreatureTypeIds.bum: 3,
+          if (mutantsPossible) CreatureTypeIds.mutant: 2,
+          if (mutantsCommon) CreatureTypeIds.mutant: 5,
+          CreatureTypeIds.gangMember: 3,
+          CreatureTypeIds.crackhead: 3,
+          CreatureTypeIds.punk: 1,
+          CreatureTypeIds.fastFoodWorker: 1,
+          CreatureTypeIds.barista: 1,
+          CreatureTypeIds.bartender: 1,
+          CreatureTypeIds.telemarketer: 1,
+          CreatureTypeIds.carSalesman: 1,
+          CreatureTypeIds.officeWorker: 1,
+          CreatureTypeIds.sexWorker: 3,
+          CreatureTypeIds.mailman: 1,
+          CreatureTypeIds.garbageman: 1,
+          CreatureTypeIds.constructionWorker: 1,
+          CreatureTypeIds.amateurMagician: 1,
+          CreatureTypeIds.angryRuralMob: 1,
+          CreatureTypeIds.soldier: 1,
+          CreatureTypeIds.veteran: 2,
+          if (nineteenEightyFour) CreatureTypeIds.educator: 1,
+          if (!nineteenEightyFour) CreatureTypeIds.prisonGuard: 1,
+          CreatureTypeIds.hippie: 1,
+          CreatureTypeIds.biker: 1,
+          CreatureTypeIds.taxiDriver: 1,
+          CreatureTypeIds.retiree: 1,
+          CreatureTypeIds.painter: 1,
+          CreatureTypeIds.sculptor: 1,
+          CreatureTypeIds.dancer: 1,
+          CreatureTypeIds.photographer: 1,
+          CreatureTypeIds.hairstylist: 1,
+          CreatureTypeIds.clerk: 1,
+          CreatureTypeIds.thief: 1,
+          CreatureTypeIds.actor: 1,
+          CreatureTypeIds.firefighter: 1,
+          CreatureTypeIds.locksmith: 1,
+        });
       case SiteType.apartment:
-        weights.add(CreatureTypeIds.securityGuard, 1);
-        weights.add(CreatureTypeIds.labTech, 1);
-        weights.add(CreatureTypeIds.corporateManager, 1);
-        weights.add(CreatureTypeIds.janitor, 1);
-        if (nonUnionWorkers) weights.add(CreatureTypeIds.nonUnionWorker, 1);
-        weights.add(CreatureTypeIds.secretary, 1);
-        if (unionWorkers) weights.add(CreatureTypeIds.unionWorker, 1);
-        weights.add(CreatureTypeIds.teenager, 3);
-        weights.add(CreatureTypeIds.cop, 1);
-        if (deathSquadsActive) weights.add(CreatureTypeIds.deathSquad, 1);
-        if (gangUnitsActive) weights.add(CreatureTypeIds.gangUnit, 1);
-        weights.add(CreatureTypeIds.lawyer, 1);
-        weights.add(CreatureTypeIds.sewerWorker, 1);
-        weights.add(CreatureTypeIds.collegeStudent, 1);
-        weights.add(CreatureTypeIds.musician, 1);
-        weights.add(CreatureTypeIds.mathematician, 1);
-        weights.add(CreatureTypeIds.teacher, 1);
-        weights.add(CreatureTypeIds.priest, 1);
-        weights.add(CreatureTypeIds.engineer, 1);
-        weights.add(CreatureTypeIds.fastFoodWorker, 1);
-        weights.add(CreatureTypeIds.baker, 1);
-        weights.add(CreatureTypeIds.barista, 1);
-        weights.add(CreatureTypeIds.bartender, 1);
-        weights.add(CreatureTypeIds.telemarketer, 1);
-        weights.add(CreatureTypeIds.carSalesman, 1);
-        weights.add(CreatureTypeIds.officeWorker, 1);
-        weights.add(CreatureTypeIds.footballCoach, 1);
-        weights.add(CreatureTypeIds.mailman, 1);
-        weights.add(CreatureTypeIds.doctor, 1);
-        weights.add(CreatureTypeIds.psychologist, 1);
-        weights.add(CreatureTypeIds.nurse, 1);
-        weights.add(CreatureTypeIds.garbageman, 1);
-        weights.add(CreatureTypeIds.plumber, 1);
-        weights.add(CreatureTypeIds.chef, 1);
-        weights.add(CreatureTypeIds.constructionWorker, 1);
-        weights.add(CreatureTypeIds.amateurMagician, 1);
-        weights.add(CreatureTypeIds.soldier, 1);
-        weights.add(CreatureTypeIds.veteran, 2);
-        if (nineteenEightyFour) {
-          weights.add(CreatureTypeIds.educator, 1);
-        } else {
-          weights.add(CreatureTypeIds.prisonGuard, 1);
+        encnum = 1;
+        if (mode == GameMode.site && !levelMap[locx][locy][locz].restricted) {
+          encnum = 4;
         }
-        weights.add(CreatureTypeIds.hippie, 1);
-        weights.add(CreatureTypeIds.punk, 1);
-        weights.add(CreatureTypeIds.emo, 1);
-        weights.add(CreatureTypeIds.goth, 1);
-        weights.add(CreatureTypeIds.artCritic, 1);
-        weights.add(CreatureTypeIds.musicCritic, 1);
-        weights.add(CreatureTypeIds.author, 1);
-        weights.add(CreatureTypeIds.journalist, 1);
-        weights.add(CreatureTypeIds.taxiDriver, 1);
-        weights.add(CreatureTypeIds.programmer, 1);
-        weights.add(CreatureTypeIds.retiree, 1);
-        weights.add(CreatureTypeIds.painter, 1);
-        weights.add(CreatureTypeIds.sculptor, 1);
-        weights.add(CreatureTypeIds.dancer, 1);
-        weights.add(CreatureTypeIds.photographer, 1);
-        weights.add(CreatureTypeIds.cameraman, 1);
-        weights.add(CreatureTypeIds.hairstylist, 1);
-        weights.add(CreatureTypeIds.clerk, 1);
-        weights.add(CreatureTypeIds.thief, 1);
-        weights.add(CreatureTypeIds.actor, 1);
-        weights.add(CreatureTypeIds.yogaInstructor, 1);
-        weights.add(CreatureTypeIds.martialArtist, 1);
-        weights.add(CreatureTypeIds.athlete, 1);
-        weights.add(CreatureTypeIds.firefighter, 1);
-        weights.add(CreatureTypeIds.locksmith, 1);
+        weights.addAll({
+          CreatureTypeIds.securityGuard: 1,
+          CreatureTypeIds.labTech: 1,
+          CreatureTypeIds.corporateManager: 1,
+          CreatureTypeIds.janitor: 1,
+          if (nonUnionWorkers) CreatureTypeIds.nonUnionWorker: 1,
+          CreatureTypeIds.secretary: 1,
+          if (unionWorkers) CreatureTypeIds.unionWorker: 1,
+          CreatureTypeIds.teenager: 3,
+          CreatureTypeIds.cop: 1,
+          if (deathSquadsActive) CreatureTypeIds.deathSquad: 1,
+          if (gangUnitsActive) CreatureTypeIds.gangUnit: 1,
+          CreatureTypeIds.lawyer: 1,
+          CreatureTypeIds.sewerWorker: 1,
+          CreatureTypeIds.collegeStudent: 1,
+          CreatureTypeIds.musician: 1,
+          CreatureTypeIds.mathematician: 1,
+          CreatureTypeIds.teacher: 1,
+          CreatureTypeIds.priest: 1,
+          CreatureTypeIds.engineer: 1,
+          CreatureTypeIds.fastFoodWorker: 1,
+          CreatureTypeIds.baker: 1,
+          CreatureTypeIds.barista: 1,
+          CreatureTypeIds.bartender: 1,
+          CreatureTypeIds.telemarketer: 1,
+          CreatureTypeIds.carSalesman: 1,
+          CreatureTypeIds.officeWorker: 1,
+          CreatureTypeIds.footballCoach: 1,
+          CreatureTypeIds.mailman: 1,
+          CreatureTypeIds.doctor: 1,
+          CreatureTypeIds.psychologist: 1,
+          CreatureTypeIds.nurse: 1,
+          CreatureTypeIds.garbageman: 1,
+          CreatureTypeIds.plumber: 1,
+          CreatureTypeIds.chef: 1,
+          CreatureTypeIds.constructionWorker: 1,
+          CreatureTypeIds.amateurMagician: 1,
+          CreatureTypeIds.soldier: 1,
+          CreatureTypeIds.veteran: 2,
+          if (nineteenEightyFour) CreatureTypeIds.educator: 1,
+          if (!nineteenEightyFour) CreatureTypeIds.prisonGuard: 1,
+          CreatureTypeIds.hippie: 1,
+          CreatureTypeIds.punk: 1,
+          CreatureTypeIds.emo: 1,
+          CreatureTypeIds.goth: 1,
+          CreatureTypeIds.artCritic: 1,
+          CreatureTypeIds.musicCritic: 1,
+          CreatureTypeIds.author: 1,
+          CreatureTypeIds.journalist: 1,
+          CreatureTypeIds.taxiDriver: 1,
+          CreatureTypeIds.programmer: 1,
+          CreatureTypeIds.retiree: 1,
+          CreatureTypeIds.painter: 1,
+          CreatureTypeIds.sculptor: 1,
+          CreatureTypeIds.dancer: 1,
+          CreatureTypeIds.photographer: 1,
+          CreatureTypeIds.cameraman: 1,
+          CreatureTypeIds.hairstylist: 1,
+          CreatureTypeIds.clerk: 1,
+          CreatureTypeIds.thief: 1,
+          CreatureTypeIds.actor: 1,
+          CreatureTypeIds.yogaInstructor: 1,
+          CreatureTypeIds.martialArtist: 1,
+          CreatureTypeIds.athlete: 1,
+          CreatureTypeIds.firefighter: 1,
+          CreatureTypeIds.locksmith: 1,
+        });
       case SiteType.bank:
         if (mode == GameMode.site &&
             !(levelMap[locx][locy][locz].flag & SITEBLOCK_RESTRICTED != 0)) {
           encnum = 6;
-          weights.add(CreatureTypeIds.labTech, 1);
-          if (nonUnionWorkers) {
-            weights.add(CreatureTypeIds.nonUnionWorker, 1);
-          }
-          if (unionWorkers) weights.add(CreatureTypeIds.unionWorker, 1);
-          weights.add(CreatureTypeIds.teenager, 3);
-          weights.add(CreatureTypeIds.janitor, 1);
-          weights.add(CreatureTypeIds.secretary, 1);
-          weights.add(CreatureTypeIds.cop, 1);
-          if (deathSquadsActive) weights.add(CreatureTypeIds.deathSquad, 1);
-          if (gangUnitsActive) weights.add(CreatureTypeIds.gangUnit, 1);
-          weights.add(CreatureTypeIds.lawyer, 1);
-          weights.add(CreatureTypeIds.sewerWorker, 1);
-          weights.add(CreatureTypeIds.collegeStudent, 1);
-          weights.add(CreatureTypeIds.musician, 1);
-          weights.add(CreatureTypeIds.mathematician, 1);
-          weights.add(CreatureTypeIds.teacher, 1);
-          weights.add(CreatureTypeIds.priest, 1);
-          weights.add(CreatureTypeIds.engineer, 1);
-          weights.add(CreatureTypeIds.fastFoodWorker, 1);
-          weights.add(CreatureTypeIds.baker, 1);
-          weights.add(CreatureTypeIds.barista, 1);
-          weights.add(CreatureTypeIds.bartender, 1);
-          weights.add(CreatureTypeIds.telemarketer, 1);
-          weights.add(CreatureTypeIds.carSalesman, 1);
-          weights.add(CreatureTypeIds.officeWorker, 1);
-          weights.add(CreatureTypeIds.footballCoach, 1);
-          weights.add(CreatureTypeIds.mailman, 1);
-          weights.add(CreatureTypeIds.doctor, 1);
-          weights.add(CreatureTypeIds.psychologist, 1);
-          weights.add(CreatureTypeIds.nurse, 1);
-          weights.add(CreatureTypeIds.garbageman, 1);
-          weights.add(CreatureTypeIds.plumber, 1);
-          weights.add(CreatureTypeIds.chef, 1);
-          weights.add(CreatureTypeIds.constructionWorker, 1);
-          weights.add(CreatureTypeIds.amateurMagician, 1);
-          weights.add(CreatureTypeIds.soldier, 1);
-          weights.add(CreatureTypeIds.veteran, 2);
-          if (nineteenEightyFour) {
-            weights.add(CreatureTypeIds.educator, 1);
-          } else {
-            weights.add(CreatureTypeIds.prisonGuard, 1);
-          }
-          weights.add(CreatureTypeIds.hippie, 1);
-          weights.add(CreatureTypeIds.artCritic, 1);
-          weights.add(CreatureTypeIds.musicCritic, 1);
-          weights.add(CreatureTypeIds.author, 1);
-          weights.add(CreatureTypeIds.journalist, 1);
-          weights.add(CreatureTypeIds.taxiDriver, 1);
-          weights.add(CreatureTypeIds.programmer, 1);
-          weights.add(CreatureTypeIds.retiree, 1);
-          weights.add(CreatureTypeIds.painter, 1);
-          weights.add(CreatureTypeIds.sculptor, 1);
-          weights.add(CreatureTypeIds.dancer, 1);
-          weights.add(CreatureTypeIds.photographer, 1);
-          weights.add(CreatureTypeIds.cameraman, 1);
-          weights.add(CreatureTypeIds.hairstylist, 1);
-          weights.add(CreatureTypeIds.clerk, 1);
-          weights.add(CreatureTypeIds.thief, 1);
-          weights.add(CreatureTypeIds.actor, 1);
-          weights.add(CreatureTypeIds.yogaInstructor, 1);
-          weights.add(CreatureTypeIds.martialArtist, 1);
-          weights.add(CreatureTypeIds.athlete, 1);
-          weights.add(CreatureTypeIds.firefighter, 1);
-          weights.add(CreatureTypeIds.locksmith, 1);
+          weights.addAll({
+            CreatureTypeIds.labTech: 1,
+            if (nonUnionWorkers) CreatureTypeIds.nonUnionWorker: 1,
+            if (unionWorkers) CreatureTypeIds.unionWorker: 1,
+            CreatureTypeIds.teenager: 3,
+            CreatureTypeIds.janitor: 1,
+            CreatureTypeIds.secretary: 1,
+            CreatureTypeIds.cop: 1,
+            if (deathSquadsActive) CreatureTypeIds.deathSquad: 1,
+            if (gangUnitsActive) CreatureTypeIds.gangUnit: 1,
+            CreatureTypeIds.lawyer: 1,
+            CreatureTypeIds.sewerWorker: 1,
+            CreatureTypeIds.collegeStudent: 1,
+            CreatureTypeIds.musician: 1,
+            CreatureTypeIds.mathematician: 1,
+            CreatureTypeIds.teacher: 1,
+            CreatureTypeIds.priest: 1,
+            CreatureTypeIds.engineer: 1,
+            CreatureTypeIds.fastFoodWorker: 1,
+            CreatureTypeIds.baker: 1,
+            CreatureTypeIds.barista: 1,
+            CreatureTypeIds.bartender: 1,
+            CreatureTypeIds.telemarketer: 1,
+            CreatureTypeIds.carSalesman: 1,
+            CreatureTypeIds.officeWorker: 1,
+            CreatureTypeIds.footballCoach: 1,
+            CreatureTypeIds.mailman: 1,
+            CreatureTypeIds.doctor: 1,
+            CreatureTypeIds.psychologist: 1,
+            CreatureTypeIds.nurse: 1,
+            CreatureTypeIds.garbageman: 1,
+            CreatureTypeIds.plumber: 1,
+            CreatureTypeIds.chef: 1,
+            CreatureTypeIds.constructionWorker: 1,
+            CreatureTypeIds.amateurMagician: 1,
+            CreatureTypeIds.soldier: 1,
+            CreatureTypeIds.veteran: 2,
+            if (nineteenEightyFour) CreatureTypeIds.educator: 1,
+            if (!nineteenEightyFour) CreatureTypeIds.prisonGuard: 1,
+            CreatureTypeIds.hippie: 1,
+            CreatureTypeIds.artCritic: 1,
+            CreatureTypeIds.musicCritic: 1,
+            CreatureTypeIds.author: 1,
+            CreatureTypeIds.journalist: 1,
+            CreatureTypeIds.taxiDriver: 1,
+            CreatureTypeIds.programmer: 1,
+            CreatureTypeIds.retiree: 1,
+            CreatureTypeIds.painter: 1,
+            CreatureTypeIds.sculptor: 1,
+            CreatureTypeIds.dancer: 1,
+            CreatureTypeIds.photographer: 1,
+            CreatureTypeIds.cameraman: 1,
+            CreatureTypeIds.hairstylist: 1,
+            CreatureTypeIds.clerk: 1,
+            CreatureTypeIds.thief: 1,
+            CreatureTypeIds.actor: 1,
+            CreatureTypeIds.yogaInstructor: 1,
+            CreatureTypeIds.martialArtist: 1,
+            CreatureTypeIds.athlete: 1,
+            CreatureTypeIds.firefighter: 1,
+            CreatureTypeIds.locksmith: 1,
+          });
         } else {
-          if (sec) {
-            weights.add(CreatureTypeIds.merc, 2000);
-          } else {
-            weights.add(CreatureTypeIds.securityGuard, 1000);
-          }
-          weights.add(CreatureTypeIds.bankManager, 200);
-          weights.add(CreatureTypeIds.janitor, 100);
-          weights.add(CreatureTypeIds.thief, 5);
+          weights.addAll({
+            if (sec) CreatureTypeIds.merc: 2000,
+            if (!sec) CreatureTypeIds.securityGuard: 1000,
+            CreatureTypeIds.bankManager: 200,
+            CreatureTypeIds.janitor: 100,
+            CreatureTypeIds.thief: 5,
+          });
         }
       case SiteType.upscaleApartment:
         if (mode == GameMode.site &&
             !(levelMap[locx][locy][locz].flag & SITEBLOCK_RESTRICTED != 0)) {
           if (sec) {
-            weights.add(CreatureTypeIds.securityGuard, 100);
+            weights.add(CreatureTypeIds.merc, 2000);
           } else {
-            weights.add(CreatureTypeIds.securityGuard, 10);
+            weights.add(CreatureTypeIds.securityGuard, 100);
           }
           if (sec) weights.add(CreatureTypeIds.guardDog, 50);
         }
-        weights.add(CreatureTypeIds.eminentScientist, 1);
-        weights.add(CreatureTypeIds.corporateManager, 5);
-        weights.add(CreatureTypeIds.janitor, 5);
-        weights.add(CreatureTypeIds.secretary, 1);
-        weights.add(CreatureTypeIds.teenager, 3);
-        weights.add(CreatureTypeIds.liberalJudge, 1);
-        weights.add(CreatureTypeIds.conservativeJudge, 1);
-        weights.add(CreatureTypeIds.radioPersonality, 1);
-        weights.add(CreatureTypeIds.newsAnchor, 1);
-        weights.add(CreatureTypeIds.lawyer, 5);
-        weights.add(CreatureTypeIds.doctor, 5);
-        weights.add(CreatureTypeIds.psychologist, 1);
-        weights.add(CreatureTypeIds.nurse, 1);
-        weights.add(CreatureTypeIds.collegeStudent, 1);
-        weights.add(CreatureTypeIds.musician, 1);
-        weights.add(CreatureTypeIds.sexWorker, 3);
-        weights.add(CreatureTypeIds.mailman, 1);
-        weights.add(CreatureTypeIds.artCritic, 1);
-        weights.add(CreatureTypeIds.musicCritic, 1);
-        weights.add(CreatureTypeIds.author, 1);
-        weights.add(CreatureTypeIds.journalist, 1);
-        weights.add(CreatureTypeIds.socialite, 2);
-        weights.add(CreatureTypeIds.painter, 1);
-        weights.add(CreatureTypeIds.sculptor, 1);
-        weights.add(CreatureTypeIds.dancer, 1);
-        weights.add(CreatureTypeIds.photographer, 1);
-        weights.add(CreatureTypeIds.fashionDesigner, 1);
-        weights.add(CreatureTypeIds.thief, 1);
-        weights.add(CreatureTypeIds.actor, 1);
-        weights.add(CreatureTypeIds.athlete, 1);
-        weights.add(CreatureTypeIds.locksmith, 1);
         encnum = 1;
-        if (mode == GameMode.site &&
-            !(levelMap[locx][locy][locz].flag & SITEBLOCK_RESTRICTED != 0)) {
+        if (mode == GameMode.site && !levelMap[locx][locy][locz].restricted) {
           encnum = 4;
         }
+        weights.addAll({
+          CreatureTypeIds.eminentScientist: 1,
+          CreatureTypeIds.corporateManager: 5,
+          CreatureTypeIds.janitor: 5,
+          CreatureTypeIds.secretary: 1,
+          CreatureTypeIds.teenager: 3,
+          CreatureTypeIds.liberalJudge: 1,
+          CreatureTypeIds.conservativeJudge: 1,
+          CreatureTypeIds.radioPersonality: 1,
+          CreatureTypeIds.newsAnchor: 1,
+          CreatureTypeIds.lawyer: 5,
+          CreatureTypeIds.doctor: 5,
+          CreatureTypeIds.psychologist: 1,
+          CreatureTypeIds.nurse: 1,
+          CreatureTypeIds.collegeStudent: 1,
+          CreatureTypeIds.musician: 1,
+          CreatureTypeIds.sexWorker: 3,
+          CreatureTypeIds.mailman: 1,
+          CreatureTypeIds.artCritic: 1,
+          CreatureTypeIds.musicCritic: 1,
+          CreatureTypeIds.author: 1,
+          CreatureTypeIds.journalist: 1,
+          CreatureTypeIds.socialite: 2,
+          CreatureTypeIds.painter: 1,
+          CreatureTypeIds.sculptor: 1,
+          CreatureTypeIds.dancer: 1,
+          CreatureTypeIds.photographer: 1,
+          CreatureTypeIds.fashionDesigner: 1,
+          CreatureTypeIds.thief: 1,
+          CreatureTypeIds.actor: 1,
+          CreatureTypeIds.athlete: 1,
+          CreatureTypeIds.locksmith: 1,
+        });
       case SiteType.cosmeticsLab:
-        weights.add(CreatureTypeIds.securityGuard, sec ? 100 : 3);
-        weights.add(CreatureTypeIds.labTech, 10);
-        weights.add(CreatureTypeIds.eminentScientist, 1);
-        weights.add(CreatureTypeIds.corporateManager, 1);
-        weights.add(CreatureTypeIds.janitor, 10);
-        weights.add(CreatureTypeIds.secretary, 10);
-        weights.add(CreatureTypeIds.officeWorker, 10);
+        weights.addAll({
+          CreatureTypeIds.securityGuard: sec ? 100 : 3,
+          CreatureTypeIds.labTech: 10,
+          CreatureTypeIds.eminentScientist: 1,
+          CreatureTypeIds.corporateManager: 1,
+          CreatureTypeIds.janitor: 10,
+          CreatureTypeIds.secretary: 10,
+          CreatureTypeIds.officeWorker: 10,
+        });
       case SiteType.nuclearPlant:
-        weights.add(CreatureTypeIds.securityGuard, sec ? 100 : 10);
-        weights.add(CreatureTypeIds.labTech, 10);
-        weights.add(CreatureTypeIds.eminentScientist, 1);
-        weights.add(CreatureTypeIds.corporateManager, 1);
-        weights.add(CreatureTypeIds.janitor, 10);
-        weights.add(CreatureTypeIds.secretary, 10);
-        weights.add(CreatureTypeIds.officeWorker, 10);
+        weights.addAll({
+          CreatureTypeIds.securityGuard: sec ? 100 : 10,
+          CreatureTypeIds.labTech: 10,
+          CreatureTypeIds.eminentScientist: 1,
+          CreatureTypeIds.corporateManager: 1,
+          CreatureTypeIds.janitor: 10,
+          CreatureTypeIds.secretary: 10,
+          CreatureTypeIds.officeWorker: 10,
+        });
       case SiteType.geneticsLab:
-        if (sec) weights.add(CreatureTypeIds.guardDog, 25);
-        weights.add(CreatureTypeIds.securityGuard, sec ? 100 : 3);
-        weights.add(CreatureTypeIds.labTech, 10);
-        weights.add(CreatureTypeIds.eminentScientist, 1);
-        weights.add(CreatureTypeIds.corporateManager, 1);
-        weights.add(CreatureTypeIds.doctor, 1);
-        weights.add(CreatureTypeIds.janitor, 10);
-        weights.add(CreatureTypeIds.secretary, 10);
-        weights.add(CreatureTypeIds.officeWorker, 10);
+        weights.addAll({
+          if (sec) CreatureTypeIds.guardDog: 25,
+          CreatureTypeIds.securityGuard: sec ? 100 : 3,
+          CreatureTypeIds.labTech: 10,
+          CreatureTypeIds.eminentScientist: 1,
+          CreatureTypeIds.corporateManager: 1,
+          CreatureTypeIds.doctor: 1,
+          CreatureTypeIds.janitor: 10,
+          CreatureTypeIds.secretary: 10,
+          CreatureTypeIds.officeWorker: 10,
+        });
       case SiteType.policeStation:
-        weights.add(CreatureTypeIds.policeChief, 20);
-        weights.add(CreatureTypeIds.labTech, 1);
-        weights.add(CreatureTypeIds.corporateManager, 1);
-        weights.add(CreatureTypeIds.janitor, 50);
-        if (nonUnionWorkers) weights.add(CreatureTypeIds.nonUnionWorker, 1);
-        weights.add(CreatureTypeIds.secretary, 1);
-        if (unionWorkers) weights.add(CreatureTypeIds.unionWorker, 1);
-        weights.add(CreatureTypeIds.teenager, 5);
-        weights.add(CreatureTypeIds.cop, sec ? 1000 : 500);
-        if (deathSquadsActive) weights.add(CreatureTypeIds.deathSquad, 400);
-        if (gangUnitsActive) weights.add(CreatureTypeIds.gangUnit, 400);
-        weights.add(CreatureTypeIds.liberalJudge, 1);
-        weights.add(CreatureTypeIds.conservativeJudge, 1);
-        weights.add(CreatureTypeIds.agent, 1);
-        weights.add(CreatureTypeIds.radioPersonality, 1);
-        weights.add(CreatureTypeIds.newsAnchor, 1);
-        weights.add(CreatureTypeIds.lawyer, 1);
-        weights.add(CreatureTypeIds.doctor, 1);
-        weights.add(CreatureTypeIds.psychologist, 1);
-        weights.add(CreatureTypeIds.nurse, 1);
-        weights.add(CreatureTypeIds.sewerWorker, 1);
-        weights.add(CreatureTypeIds.collegeStudent, 1);
-        weights.add(CreatureTypeIds.musician, 1);
-        weights.add(CreatureTypeIds.mathematician, 1);
-        weights.add(CreatureTypeIds.teacher, 1);
-        weights.add(CreatureTypeIds.highschoolDropout, 10);
-        weights.add(CreatureTypeIds.bum, 10);
-        if (mutantsPossible) weights.add(CreatureTypeIds.mutant, 2);
-        if (mutantsCommon) weights.add(CreatureTypeIds.mutant, 5);
-        weights.add(CreatureTypeIds.gangMember, 10);
-        weights.add(CreatureTypeIds.crackhead, 10);
-        weights.add(CreatureTypeIds.cheerleader, 1);
-        weights.add(CreatureTypeIds.punk, 5);
-        weights.add(CreatureTypeIds.goth, 2);
-        weights.add(CreatureTypeIds.emo, 2);
-        weights.add(CreatureTypeIds.priest, 5);
-        weights.add(CreatureTypeIds.engineer, 1);
-        weights.add(CreatureTypeIds.fastFoodWorker, 1);
-        weights.add(CreatureTypeIds.baker, 1);
-        weights.add(CreatureTypeIds.barista, 1);
-        weights.add(CreatureTypeIds.bartender, 1);
-        weights.add(CreatureTypeIds.telemarketer, 1);
-        weights.add(CreatureTypeIds.carSalesman, 1);
-        weights.add(CreatureTypeIds.officeWorker, 1);
-        weights.add(CreatureTypeIds.footballCoach, 1);
-        weights.add(CreatureTypeIds.sexWorker, 10);
-        weights.add(CreatureTypeIds.mailman, 1);
-        weights.add(CreatureTypeIds.garbageman, 1);
-        weights.add(CreatureTypeIds.plumber, 1);
-        weights.add(CreatureTypeIds.chef, 1);
-        weights.add(CreatureTypeIds.constructionWorker, 1);
-        weights.add(CreatureTypeIds.amateurMagician, 1);
-        weights.add(CreatureTypeIds.angryRuralMob, 1);
-        weights.add(CreatureTypeIds.soldier, 1);
-        weights.add(CreatureTypeIds.veteran, 2);
-        if (nineteenEightyFour) {
-          weights.add(CreatureTypeIds.educator, 1);
-        } else {
-          weights.add(CreatureTypeIds.prisonGuard, 1);
-        }
-        weights.add(CreatureTypeIds.hippie, 1);
-        weights.add(CreatureTypeIds.artCritic, 1);
-        weights.add(CreatureTypeIds.musicCritic, 1);
-        weights.add(CreatureTypeIds.author, 1);
-        weights.add(CreatureTypeIds.journalist, 1);
-        weights.add(CreatureTypeIds.socialite, 1);
-        weights.add(CreatureTypeIds.biker, 5);
-        weights.add(CreatureTypeIds.trucker, 1);
-        weights.add(CreatureTypeIds.taxiDriver, 1);
-        weights.add(CreatureTypeIds.programmer, 1);
-        weights.add(CreatureTypeIds.nun, 1);
-        weights.add(CreatureTypeIds.retiree, 1);
-        weights.add(CreatureTypeIds.painter, 1);
-        weights.add(CreatureTypeIds.sculptor, 1);
-        weights.add(CreatureTypeIds.dancer, 1);
-        weights.add(CreatureTypeIds.photographer, 1);
-        weights.add(CreatureTypeIds.cameraman, 1);
-        weights.add(CreatureTypeIds.hairstylist, 1);
-        weights.add(CreatureTypeIds.fashionDesigner, 1);
-        weights.add(CreatureTypeIds.clerk, 1);
-        weights.add(CreatureTypeIds.thief, 10);
-        weights.add(CreatureTypeIds.actor, 1);
-        weights.add(CreatureTypeIds.yogaInstructor, 1);
-        weights.add(CreatureTypeIds.martialArtist, 1);
-        weights.add(CreatureTypeIds.athlete, 1);
-        weights.add(CreatureTypeIds.firefighter, 1);
-        weights.add(CreatureTypeIds.locksmith, 5); //Forensic locksmiths
+        weights.addAll({
+          CreatureTypeIds.policeChief: 20,
+          CreatureTypeIds.labTech: 1,
+          CreatureTypeIds.corporateManager: 1,
+          CreatureTypeIds.janitor: 50,
+          if (nonUnionWorkers) CreatureTypeIds.nonUnionWorker: 1,
+          CreatureTypeIds.secretary: 1,
+          if (unionWorkers) CreatureTypeIds.unionWorker: 1,
+          CreatureTypeIds.teenager: 5,
+          CreatureTypeIds.cop: sec ? 1000 : 500,
+          if (deathSquadsActive) CreatureTypeIds.deathSquad: 400,
+          if (gangUnitsActive) CreatureTypeIds.gangUnit: 400,
+          CreatureTypeIds.liberalJudge: 1,
+          CreatureTypeIds.conservativeJudge: 1,
+          CreatureTypeIds.agent: 1,
+          CreatureTypeIds.radioPersonality: 1,
+          CreatureTypeIds.newsAnchor: 1,
+          CreatureTypeIds.lawyer: 1,
+          CreatureTypeIds.doctor: 1,
+          CreatureTypeIds.psychologist: 1,
+          CreatureTypeIds.nurse: 1,
+          CreatureTypeIds.sewerWorker: 1,
+          CreatureTypeIds.collegeStudent: 1,
+          CreatureTypeIds.musician: 1,
+          CreatureTypeIds.mathematician: 1,
+          CreatureTypeIds.teacher: 1,
+          CreatureTypeIds.highschoolDropout: 10,
+          CreatureTypeIds.bum: 10,
+          if (mutantsPossible) CreatureTypeIds.mutant: 2,
+          if (mutantsCommon) CreatureTypeIds.mutant: 5,
+          CreatureTypeIds.gangMember: 10,
+          CreatureTypeIds.crackhead: 10,
+          CreatureTypeIds.cheerleader: 1,
+          CreatureTypeIds.punk: 5,
+          CreatureTypeIds.goth: 2,
+          CreatureTypeIds.emo: 2,
+          CreatureTypeIds.priest: 5,
+          CreatureTypeIds.engineer: 1,
+          CreatureTypeIds.fastFoodWorker: 1,
+          CreatureTypeIds.baker: 1,
+          CreatureTypeIds.barista: 1,
+          CreatureTypeIds.bartender: 1,
+          CreatureTypeIds.telemarketer: 1,
+          CreatureTypeIds.carSalesman: 1,
+          CreatureTypeIds.officeWorker: 1,
+          CreatureTypeIds.footballCoach: 1,
+          CreatureTypeIds.sexWorker: 10,
+          CreatureTypeIds.mailman: 1,
+          CreatureTypeIds.garbageman: 1,
+          CreatureTypeIds.plumber: 1,
+          CreatureTypeIds.chef: 1,
+          CreatureTypeIds.constructionWorker: 1,
+          CreatureTypeIds.amateurMagician: 1,
+          CreatureTypeIds.angryRuralMob: 1,
+          CreatureTypeIds.soldier: 1,
+          CreatureTypeIds.veteran: 2,
+          if (nineteenEightyFour) CreatureTypeIds.educator: 1,
+          if (!nineteenEightyFour) CreatureTypeIds.prisonGuard: 1,
+          CreatureTypeIds.hippie: 1,
+          CreatureTypeIds.artCritic: 1,
+          CreatureTypeIds.musicCritic: 1,
+          CreatureTypeIds.author: 1,
+          CreatureTypeIds.journalist: 1,
+          CreatureTypeIds.socialite: 1,
+          CreatureTypeIds.biker: 5,
+          CreatureTypeIds.trucker: 1,
+          CreatureTypeIds.taxiDriver: 1,
+          CreatureTypeIds.programmer: 1,
+          CreatureTypeIds.nun: 1,
+          CreatureTypeIds.retiree: 1,
+          CreatureTypeIds.painter: 1,
+          CreatureTypeIds.sculptor: 1,
+          CreatureTypeIds.dancer: 1,
+          CreatureTypeIds.photographer: 1,
+          CreatureTypeIds.cameraman: 1,
+          CreatureTypeIds.hairstylist: 1,
+          CreatureTypeIds.fashionDesigner: 1,
+          CreatureTypeIds.clerk: 1,
+          CreatureTypeIds.thief: 10,
+          CreatureTypeIds.actor: 1,
+          CreatureTypeIds.yogaInstructor: 1,
+          CreatureTypeIds.martialArtist: 1,
+          CreatureTypeIds.athlete: 1,
+          CreatureTypeIds.firefighter: 1,
+          CreatureTypeIds.locksmith: 5, //Forensic locksmiths
+        });
       case SiteType.courthouse:
-        weights.add(CreatureTypeIds.cop, sec ? 2000 : 200);
-        weights.add(CreatureTypeIds.labTech, 1);
-        weights.add(CreatureTypeIds.eminentScientist, 1);
-        weights.add(CreatureTypeIds.corporateManager, 1);
-        weights.add(CreatureTypeIds.janitor, 50);
-        if (nonUnionWorkers) weights.add(CreatureTypeIds.nonUnionWorker, 1);
-        weights.add(CreatureTypeIds.secretary, 50);
-        if (unionWorkers) weights.add(CreatureTypeIds.unionWorker, 1);
-        weights.add(CreatureTypeIds.teenager, 1);
-        if (deathSquadsActive) weights.add(CreatureTypeIds.deathSquad, 80);
-        if (gangUnitsActive) weights.add(CreatureTypeIds.gangUnit, 80);
-        weights.add(CreatureTypeIds.liberalJudge, 20);
-        weights.add(CreatureTypeIds.conservativeJudge, 20);
-        weights.add(CreatureTypeIds.agent, 1);
-        weights.add(CreatureTypeIds.radioPersonality, 1);
-        weights.add(CreatureTypeIds.newsAnchor, 1);
-        weights.add(CreatureTypeIds.lawyer, 200);
-        weights.add(CreatureTypeIds.psychologist, 20);
-        weights.add(CreatureTypeIds.sewerWorker, 1);
-        weights.add(CreatureTypeIds.collegeStudent, 1);
-        weights.add(CreatureTypeIds.musician, 1);
-        weights.add(CreatureTypeIds.mathematician, 1);
-        weights.add(CreatureTypeIds.teacher, 1);
-        weights.add(CreatureTypeIds.highschoolDropout, 1);
-        weights.add(CreatureTypeIds.bum, 1);
-        if (mutantsPossible) weights.add(CreatureTypeIds.mutant, 1);
-        if (mutantsCommon) weights.add(CreatureTypeIds.mutant, 2);
-        weights.add(CreatureTypeIds.gangMember, 1);
-        weights.add(CreatureTypeIds.crackhead, 1);
-        weights.add(CreatureTypeIds.cheerleader, 1);
-        weights.add(CreatureTypeIds.punk, 1);
-        weights.add(CreatureTypeIds.goth, 1);
-        weights.add(CreatureTypeIds.emo, 1);
-        weights.add(CreatureTypeIds.priest, 1);
-        weights.add(CreatureTypeIds.engineer, 1);
-        weights.add(CreatureTypeIds.fastFoodWorker, 1);
-        weights.add(CreatureTypeIds.baker, 1);
-        weights.add(CreatureTypeIds.barista, 1);
-        weights.add(CreatureTypeIds.bartender, 1);
-        weights.add(CreatureTypeIds.telemarketer, 1);
-        weights.add(CreatureTypeIds.carSalesman, 2);
-        weights.add(CreatureTypeIds.officeWorker, 50);
-        weights.add(CreatureTypeIds.footballCoach, 1);
-        weights.add(CreatureTypeIds.sexWorker, 1);
-        weights.add(CreatureTypeIds.mailman, 1);
-        weights.add(CreatureTypeIds.garbageman, 1);
-        weights.add(CreatureTypeIds.plumber, 1);
-        weights.add(CreatureTypeIds.chef, 1);
-        weights.add(CreatureTypeIds.constructionWorker, 1);
-        weights.add(CreatureTypeIds.amateurMagician, 1);
-        weights.add(CreatureTypeIds.angryRuralMob, 1);
-        weights.add(CreatureTypeIds.soldier, 1);
-        weights.add(CreatureTypeIds.veteran, 2);
-        if (nineteenEightyFour) {
-          weights.add(CreatureTypeIds.educator, 1);
-        } else {
-          weights.add(CreatureTypeIds.prisonGuard, 1);
-        }
-        weights.add(CreatureTypeIds.hippie, 1);
-        weights.add(CreatureTypeIds.artCritic, 1);
-        weights.add(CreatureTypeIds.musicCritic, 1);
-        weights.add(CreatureTypeIds.author, 1);
-        weights.add(CreatureTypeIds.journalist, 1);
-        weights.add(CreatureTypeIds.socialite, 1);
-        weights.add(CreatureTypeIds.biker, 1);
-        weights.add(CreatureTypeIds.trucker, 1);
-        weights.add(CreatureTypeIds.taxiDriver, 1);
-        weights.add(CreatureTypeIds.programmer, 1);
-        weights.add(CreatureTypeIds.nun, 1);
-        weights.add(CreatureTypeIds.retiree, 1);
-        weights.add(CreatureTypeIds.painter, 1);
-        weights.add(CreatureTypeIds.sculptor, 1);
-        weights.add(CreatureTypeIds.dancer, 1);
-        weights.add(CreatureTypeIds.photographer, 1);
-        weights.add(CreatureTypeIds.cameraman, 1);
-        weights.add(CreatureTypeIds.hairstylist, 1);
-        weights.add(CreatureTypeIds.fashionDesigner, 1);
-        weights.add(CreatureTypeIds.clerk, 1);
-        weights.add(CreatureTypeIds.thief, 3);
-        weights.add(CreatureTypeIds.actor, 1);
-        weights.add(CreatureTypeIds.yogaInstructor, 1);
-        weights.add(CreatureTypeIds.martialArtist, 1);
-        weights.add(CreatureTypeIds.athlete, 1);
-        weights.add(CreatureTypeIds.firefighter, 1);
-        weights.add(CreatureTypeIds.locksmith, 5);
+        weights.addAll({
+          CreatureTypeIds.cop: sec ? 2000 : 200,
+          CreatureTypeIds.labTech: 1,
+          CreatureTypeIds.eminentScientist: 1,
+          CreatureTypeIds.corporateManager: 1,
+          CreatureTypeIds.janitor: 50,
+          if (nonUnionWorkers) CreatureTypeIds.nonUnionWorker: 1,
+          CreatureTypeIds.secretary: 50,
+          if (unionWorkers) CreatureTypeIds.unionWorker: 1,
+          CreatureTypeIds.teenager: 1,
+          if (deathSquadsActive) CreatureTypeIds.deathSquad: 80,
+          if (gangUnitsActive) CreatureTypeIds.gangUnit: 80,
+          CreatureTypeIds.liberalJudge: 20,
+          CreatureTypeIds.conservativeJudge: 20,
+          CreatureTypeIds.agent: 1,
+          CreatureTypeIds.radioPersonality: 1,
+          CreatureTypeIds.newsAnchor: 1,
+          CreatureTypeIds.lawyer: 200,
+          CreatureTypeIds.psychologist: 20,
+          CreatureTypeIds.sewerWorker: 1,
+          CreatureTypeIds.collegeStudent: 1,
+          CreatureTypeIds.musician: 1,
+          CreatureTypeIds.mathematician: 1,
+          CreatureTypeIds.teacher: 1,
+          CreatureTypeIds.highschoolDropout: 1,
+          CreatureTypeIds.bum: 1,
+          if (mutantsPossible) CreatureTypeIds.mutant: 1,
+          if (mutantsCommon) CreatureTypeIds.mutant: 2,
+          CreatureTypeIds.gangMember: 1,
+          CreatureTypeIds.crackhead: 1,
+          CreatureTypeIds.cheerleader: 1,
+          CreatureTypeIds.punk: 1,
+          CreatureTypeIds.goth: 1,
+          CreatureTypeIds.emo: 1,
+          CreatureTypeIds.priest: 1,
+          CreatureTypeIds.engineer: 1,
+          CreatureTypeIds.fastFoodWorker: 1,
+          CreatureTypeIds.baker: 1,
+          CreatureTypeIds.barista: 1,
+          CreatureTypeIds.bartender: 1,
+          CreatureTypeIds.telemarketer: 1,
+          CreatureTypeIds.carSalesman: 2,
+          CreatureTypeIds.officeWorker: 50,
+          CreatureTypeIds.footballCoach: 1,
+          CreatureTypeIds.sexWorker: 1,
+          CreatureTypeIds.mailman: 1,
+          CreatureTypeIds.garbageman: 1,
+          CreatureTypeIds.plumber: 1,
+          CreatureTypeIds.chef: 1,
+          CreatureTypeIds.constructionWorker: 1,
+          CreatureTypeIds.amateurMagician: 1,
+          CreatureTypeIds.angryRuralMob: 1,
+          CreatureTypeIds.soldier: 1,
+          CreatureTypeIds.veteran: 2,
+          if (nineteenEightyFour) CreatureTypeIds.educator: 1,
+          if (!nineteenEightyFour) CreatureTypeIds.prisonGuard: 1,
+          CreatureTypeIds.hippie: 1,
+          CreatureTypeIds.artCritic: 1,
+          CreatureTypeIds.musicCritic: 1,
+          CreatureTypeIds.author: 1,
+          CreatureTypeIds.journalist: 1,
+          CreatureTypeIds.socialite: 1,
+          CreatureTypeIds.biker: 1,
+          CreatureTypeIds.trucker: 1,
+          CreatureTypeIds.taxiDriver: 1,
+          CreatureTypeIds.programmer: 1,
+          CreatureTypeIds.nun: 1,
+          CreatureTypeIds.retiree: 1,
+          CreatureTypeIds.painter: 1,
+          CreatureTypeIds.sculptor: 1,
+          CreatureTypeIds.dancer: 1,
+          CreatureTypeIds.photographer: 1,
+          CreatureTypeIds.cameraman: 1,
+          CreatureTypeIds.hairstylist: 1,
+          CreatureTypeIds.fashionDesigner: 1,
+          CreatureTypeIds.clerk: 1,
+          CreatureTypeIds.thief: 3,
+          CreatureTypeIds.actor: 1,
+          CreatureTypeIds.yogaInstructor: 1,
+          CreatureTypeIds.martialArtist: 1,
+          CreatureTypeIds.athlete: 1,
+          CreatureTypeIds.firefighter: 1,
+          CreatureTypeIds.locksmith: 5,
+        });
       case SiteType.fireStation:
-        weights.add(CreatureTypeIds.janitor, 5);
-        weights.add(CreatureTypeIds.secretary, 2);
-        if (sec) {
-          if (deathSquadsActive) {
-            weights.add(CreatureTypeIds.deathSquad, 50);
-          } else if (gangUnitsActive) {
-            weights.add(CreatureTypeIds.gangUnit, 50);
-          } else {
-            weights.add(CreatureTypeIds.cop, 50);
-          }
-        }
-        weights.add(CreatureTypeIds.nurse, 2);
-        weights.add(CreatureTypeIds.priest, 5);
-        weights.add(CreatureTypeIds.journalist, 1);
-        weights.add(CreatureTypeIds.photographer, 1);
-        weights.add(CreatureTypeIds.firefighter, 100);
+        weights.addAll({
+          CreatureTypeIds.janitor: 5,
+          CreatureTypeIds.secretary: 2,
+          if (sec && !deathSquadsActive && !gangUnitsActive)
+            CreatureTypeIds.cop: 50,
+          if (sec && deathSquadsActive) CreatureTypeIds.deathSquad: 50,
+          if (sec && gangUnitsActive) CreatureTypeIds.gangUnit: 50,
+          CreatureTypeIds.nurse: 2,
+          CreatureTypeIds.priest: 5,
+          CreatureTypeIds.journalist: 1,
+          CreatureTypeIds.photographer: 1,
+          CreatureTypeIds.firefighter: 100,
+        });
       case SiteType.prison:
         if (levelMap[locx][locy][locz].flag & SITEBLOCK_RESTRICTED != 0) {
           weights.add(CreatureTypeIds.prisoner,
@@ -843,106 +864,123 @@ void prepareEncounter(SiteType type, bool sec,
           weights.add(CreatureTypeIds.prisonGuard, sec ? 3 : 2);
         }
       case SiteType.intelligenceHQ:
-        weights.add(CreatureTypeIds.agent, sec ? 1000 : 100);
-        weights.add(CreatureTypeIds.janitor, 50);
-        weights.add(CreatureTypeIds.secretary, 50);
-        if (nineteenEightyFour) weights.add(CreatureTypeIds.educator, 50);
-        if (sec) weights.add(CreatureTypeIds.guardDog, 450);
-        weights.add(CreatureTypeIds.guardDog, 50);
-        weights.add(CreatureTypeIds.mathematician, 5);
-        weights.add(CreatureTypeIds.programmer, 5);
+        weights.addAll({
+          CreatureTypeIds.agent: sec ? 1000 : 100,
+          CreatureTypeIds.janitor: 50,
+          CreatureTypeIds.secretary: 50,
+          if (nineteenEightyFour) CreatureTypeIds.educator: 50,
+          if (sec) CreatureTypeIds.guardDog: 450,
+          CreatureTypeIds.guardDog: 50,
+          CreatureTypeIds.mathematician: 5,
+          CreatureTypeIds.programmer: 5,
+        });
       case SiteType.armyBase:
-        weights.add(CreatureTypeIds.soldier, 750);
-        if (sec) weights.add(CreatureTypeIds.guardDog, 230);
-        weights.add(CreatureTypeIds.guardDog, 20);
-        weights.add(CreatureTypeIds.militaryPolice, 100);
-        if (sec) weights.add(CreatureTypeIds.militaryPolice, 100);
-        weights.add(CreatureTypeIds.seal, 20);
+        weights.addAll({
+          CreatureTypeIds.soldier: 750,
+          if (sec) CreatureTypeIds.guardDog: 230,
+          CreatureTypeIds.guardDog: 20,
+          CreatureTypeIds.militaryPolice: 100,
+          if (sec) CreatureTypeIds.militaryPolice: 100,
+          CreatureTypeIds.seal: 20,
+        });
       case SiteType.sweatshop:
-        weights.add(CreatureTypeIds.securityGuard, sec ? 1000 : 100);
-        weights.add(CreatureTypeIds.corporateManager, 5);
-        weights.add(CreatureTypeIds.sweatshopWorker, 800);
+        weights.addAll({
+          CreatureTypeIds.securityGuard: sec ? 1000 : 100,
+          CreatureTypeIds.corporateManager: 5,
+          CreatureTypeIds.sweatshopWorker: 800,
+        });
       case SiteType.dirtyIndustry:
-        if (sec) weights.add(CreatureTypeIds.securityGuard, 100);
-        weights.add(CreatureTypeIds.corporateManager, 1);
-        weights.add(CreatureTypeIds.janitor, 10);
-        weights.add(CreatureTypeIds.secretary, 10);
-        weights.add(CreatureTypeIds.engineer, 10);
-        if (laws[Law.labor] == DeepAlignment.archConservative) {
-          weights.add(CreatureTypeIds.childLaborer, 160);
-        } else if (laws[Law.labor] == DeepAlignment.conservative) {
-          weights.add(CreatureTypeIds.nonUnionWorker, 160);
-        } else if (laws[Law.labor] == DeepAlignment.moderate) {
-          weights.add(CreatureTypeIds.nonUnionWorker, 80);
-          weights.add(CreatureTypeIds.unionWorker, 80);
-        } else if (laws[Law.labor] == DeepAlignment.liberal) {
-          weights.add(CreatureTypeIds.nonUnionWorker, 50);
-          weights.add(CreatureTypeIds.unionWorker, 110);
-        } else {
-          weights.add(CreatureTypeIds.unionWorker, 160);
-        }
+        weights.addAll({
+          if (sec) CreatureTypeIds.securityGuard: 100,
+          CreatureTypeIds.corporateManager: 1,
+          CreatureTypeIds.janitor: 10,
+          CreatureTypeIds.secretary: 10,
+          CreatureTypeIds.engineer: 10,
+          if (laws[Law.labor] == DeepAlignment.archConservative)
+            CreatureTypeIds.childLaborer: 160,
+          if (laws[Law.labor] == DeepAlignment.conservative)
+            CreatureTypeIds.nonUnionWorker: 160,
+          if (laws[Law.labor] == DeepAlignment.moderate)
+            CreatureTypeIds.nonUnionWorker: 80,
+          if (laws[Law.labor] == DeepAlignment.liberal)
+            CreatureTypeIds.nonUnionWorker: 50,
+          if (laws[Law.labor] == DeepAlignment.liberal)
+            CreatureTypeIds.unionWorker: 110,
+          if (laws[Law.labor] == DeepAlignment.eliteLiberal)
+            CreatureTypeIds.unionWorker: 160,
+        });
       case SiteType.corporateHQ:
-        if (sec) weights.add(CreatureTypeIds.guardDog, 100);
-        weights.add(CreatureTypeIds.securityGuard, sec ? 400 : 40);
-        weights.add(CreatureTypeIds.corporateManager, 20);
-        weights.add(CreatureTypeIds.janitor, 20);
-        weights.add(CreatureTypeIds.secretary, 40);
-        weights.add(CreatureTypeIds.conservativeJudge, 1);
-        weights.add(CreatureTypeIds.lawyer, 20);
-        weights.add(CreatureTypeIds.priest, 1);
-        weights.add(CreatureTypeIds.officeWorker, 80);
-        weights.add(CreatureTypeIds.sexWorker, 1);
+        weights.addAll({
+          if (sec) CreatureTypeIds.guardDog: 100,
+          CreatureTypeIds.securityGuard: sec ? 400 : 40,
+          CreatureTypeIds.corporateManager: 20,
+          CreatureTypeIds.janitor: 20,
+          CreatureTypeIds.secretary: 40,
+          CreatureTypeIds.conservativeJudge: 1,
+          CreatureTypeIds.lawyer: 20,
+          CreatureTypeIds.priest: 1,
+          CreatureTypeIds.officeWorker: 80,
+          CreatureTypeIds.sexWorker: 1,
+        });
       case SiteType.ceoHouse:
-        if (sec) weights.add(CreatureTypeIds.merc, 100);
-        weights.add(CreatureTypeIds.guardDog, sec ? 50 : 5);
-        weights.add(CreatureTypeIds.servant, 30);
-        weights.add(CreatureTypeIds.secretary, 5);
-        weights.add(CreatureTypeIds.teenager, 5);
-        weights.add(CreatureTypeIds.genetic, 1);
-        weights.add(CreatureTypeIds.lawyer, 5);
-        weights.add(CreatureTypeIds.priest, 1);
-        weights.add(CreatureTypeIds.sexWorker, 1);
+        weights.addAll({
+          if (sec) CreatureTypeIds.merc: 100,
+          CreatureTypeIds.guardDog: sec ? 50 : 5,
+          CreatureTypeIds.servant: 30,
+          CreatureTypeIds.secretary: 5,
+          CreatureTypeIds.teenager: 5,
+          CreatureTypeIds.genetic: 1,
+          CreatureTypeIds.lawyer: 5,
+          CreatureTypeIds.priest: 1,
+          CreatureTypeIds.sexWorker: 1,
+        });
       case SiteType.amRadioStation:
-        weights.add(CreatureTypeIds.securityGuard, sec ? 100 : 10);
-        weights.add(CreatureTypeIds.corporateManager, 2);
-        weights.add(CreatureTypeIds.janitor, 10);
-        weights.add(CreatureTypeIds.secretary, 10);
-        weights.add(CreatureTypeIds.radioPersonality, 2);
-        weights.add(CreatureTypeIds.officeWorker, 40);
+        weights.addAll({
+          CreatureTypeIds.securityGuard: sec ? 100 : 10,
+          CreatureTypeIds.corporateManager: 2,
+          CreatureTypeIds.janitor: 10,
+          CreatureTypeIds.secretary: 10,
+          CreatureTypeIds.radioPersonality: 2,
+          CreatureTypeIds.officeWorker: 40,
+        });
       case SiteType.cableNewsStation:
-        weights.add(CreatureTypeIds.securityGuard, sec ? 100 : 10);
-        weights.add(CreatureTypeIds.corporateManager, 5);
-        weights.add(CreatureTypeIds.janitor, 20);
-        weights.add(CreatureTypeIds.secretary, 20);
-        weights.add(CreatureTypeIds.newsAnchor, 2);
-        weights.add(CreatureTypeIds.officeWorker, 40);
-        weights.add(CreatureTypeIds.photographer, 5);
-        weights.add(CreatureTypeIds.cameraman, 5);
+        weights.addAll({
+          CreatureTypeIds.securityGuard: sec ? 100 : 10,
+          CreatureTypeIds.corporateManager: 5,
+          CreatureTypeIds.janitor: 20,
+          CreatureTypeIds.secretary: 20,
+          CreatureTypeIds.newsAnchor: 2,
+          CreatureTypeIds.officeWorker: 40,
+          CreatureTypeIds.photographer: 5,
+          CreatureTypeIds.cameraman: 5,
+        });
       case SiteType.homelessEncampment:
       default:
-        weights.add(CreatureTypeIds.janitor, 5);
-        weights.add(CreatureTypeIds.teenager, 20);
-        weights.add(CreatureTypeIds.musician, 3);
-        weights.add(CreatureTypeIds.mathematician, 1);
-        weights.add(CreatureTypeIds.bum, 200);
-        if (mutantsPossible) weights.add(CreatureTypeIds.mutant, 2);
-        if (mutantsCommon) weights.add(CreatureTypeIds.mutant, 50);
-        weights.add(CreatureTypeIds.gangMember, 5);
-        weights.add(CreatureTypeIds.crackhead, 50);
-        weights.add(CreatureTypeIds.sexWorker, 10);
-        weights.add(CreatureTypeIds.amateurMagician, 1);
-        weights.add(CreatureTypeIds.hippie, 1);
-        weights.add(CreatureTypeIds.punk, 1);
-        weights.add(CreatureTypeIds.goth, 1);
-        weights.add(CreatureTypeIds.emo, 1);
-        weights.add(CreatureTypeIds.nurse, 5);
-        weights.add(CreatureTypeIds.biker, 1);
-        weights.add(CreatureTypeIds.painter, 1);
-        weights.add(CreatureTypeIds.sculptor, 1);
-        weights.add(CreatureTypeIds.dancer, 1);
-        weights.add(CreatureTypeIds.photographer, 1);
-        weights.add(CreatureTypeIds.thief, 5);
-        weights.add(CreatureTypeIds.actor, 1);
+        weights.addAll({
+          CreatureTypeIds.janitor: 5,
+          CreatureTypeIds.teenager: 20,
+          CreatureTypeIds.musician: 3,
+          CreatureTypeIds.mathematician: 1,
+          CreatureTypeIds.bum: 200,
+          if (mutantsPossible) CreatureTypeIds.mutant: 2,
+          if (mutantsCommon) CreatureTypeIds.mutant: 50,
+          CreatureTypeIds.gangMember: 5,
+          CreatureTypeIds.crackhead: 50,
+          CreatureTypeIds.sexWorker: 10,
+          CreatureTypeIds.amateurMagician: 1,
+          CreatureTypeIds.hippie: 1,
+          CreatureTypeIds.punk: 1,
+          CreatureTypeIds.goth: 1,
+          CreatureTypeIds.emo: 1,
+          CreatureTypeIds.nurse: 5,
+          CreatureTypeIds.biker: 1,
+          CreatureTypeIds.painter: 1,
+          CreatureTypeIds.sculptor: 1,
+          CreatureTypeIds.dancer: 1,
+          CreatureTypeIds.photographer: 1,
+          CreatureTypeIds.thief: 5,
+          CreatureTypeIds.actor: 1,
+        });
     }
     for (int n = 0; n < lcsRandom(encnum - 1) + 1; n++) {
       encounter.add(Creature.fromId(lcsRandomWeighted(weights)));
