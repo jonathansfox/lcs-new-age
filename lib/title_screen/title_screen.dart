@@ -8,6 +8,7 @@ import 'package:lcs_new_age/gamestate/time.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
 import 'package:lcs_new_age/saveload/save_load.dart';
 import 'package:lcs_new_age/title_screen/high_scores.dart';
+import 'package:lcs_new_age/title_screen/map_editor.dart';
 import 'package:lcs_new_age/title_screen/new_game.dart';
 import 'package:lcs_new_age/title_screen/world.dart';
 import 'package:lcs_new_age/utils/colors.dart';
@@ -61,6 +62,7 @@ Future<void> titleScreen() async {
       enabledWhen: hasHighScores);
   addOptionText(14, 48, "V", "V - View Changelog");
   addOptionText(15, 10, "O", "O - Gameplay Options");
+  //addOptionText(15, 48, "M", "M - Mod Tools");
 
   while (true) {
     int c = await getKey();
@@ -104,6 +106,9 @@ Future<void> titleScreen() async {
         return;
       case Key.o:
         await optionsMenu();
+        return;
+      case Key.m:
+        //await moddingMenu();
         return;
     }
   }
@@ -151,6 +156,34 @@ Future<void> optionsMenu() async {
       case Key.m:
         gameOptions.mouseInput = !gameOptions.mouseInput;
         await gameOptions.save();
+      case Key.b:
+        return;
+    }
+  }
+}
+
+Future<void> moddingMenu() async {
+  while (true) {
+    erase();
+    setColor(lightGreen);
+    mvaddstrCenter(2, "MOD TOOLS");
+
+    addOptionText(4, 4, "E", "E - Map Editor");
+    setColor(midGray);
+    addparagraph(
+        console.y + 1,
+        8,
+        x2: 72,
+        "Create and edit custom maps for Liberal Crime Squad. This feature is "
+        "currently under development.");
+
+    addOptionText(console.y + 1, 4, "B", "B - Back to Title Screen");
+
+    int c = await getKey();
+
+    switch (c) {
+      case Key.e:
+        await mapEditor();
       case Key.b:
         return;
     }

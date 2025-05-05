@@ -7,7 +7,7 @@ import 'package:lcs_new_age/utils/interface_options.dart';
 
 Future<int> getKey() async => (await console.getkey()).codePoint;
 Future<String> getKeyCaseSensitive() async => console.getkey();
-String checkKey() => console.checkkey().toLowerCase();
+int checkKey() => console.checkkey().codePoint;
 String checkKeyCaseSensitive() => console.checkkey();
 void setColor(Color foreground, {Color background = black}) =>
     console.setColor(foreground, background);

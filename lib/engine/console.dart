@@ -17,6 +17,8 @@ class Console {
   Color currentBackground = black;
   int y = 0;
   int x = 0;
+  int? hoverX;
+  int? hoverY;
   int get width => CONSOLE_WIDTH;
   int get height => CONSOLE_HEIGHT;
   final List<List<ConsoleChar>> buffer = List.generate(CONSOLE_HEIGHT,

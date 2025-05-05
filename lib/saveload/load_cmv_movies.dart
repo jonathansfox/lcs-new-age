@@ -103,7 +103,7 @@ class CursesMovie {
         await Future.delayed(const Duration(milliseconds: 10));
       }
 
-      int c = checkKey().codePoint;
+      int c = checkKey();
 
       if (isBackKey(c)) timer = finalframe;
     } while (timer <= finalframe);

@@ -44,6 +44,8 @@ class _ConsoleWidgetState extends State<ConsoleWidget> {
         setState(() {
           hoverX = newX;
           hoverY = newY;
+          console.hoverX = newX;
+          console.hoverY = newY;
         });
       }
     } else {
@@ -52,6 +54,8 @@ class _ConsoleWidgetState extends State<ConsoleWidget> {
         setState(() {
           hoverX = null;
           hoverY = null;
+          console.hoverX = null;
+          console.hoverY = null;
         });
       }
     }

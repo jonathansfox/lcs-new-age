@@ -46,6 +46,12 @@ class ColorKey {
   static const String lightGray = 'w';
   static const String white = 'W';
   static const String transparent = 'x';
+
+  static String fromColor(Color color) {
+    // Create a reverse mapping from color to key
+    final reverseMap = colorMap.map((key, value) => MapEntry(value, key));
+    return reverseMap[color] ?? 'p';
+  }
 }
 
 const colorMap = {
