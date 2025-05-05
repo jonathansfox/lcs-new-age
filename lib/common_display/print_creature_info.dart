@@ -467,14 +467,12 @@ void printFullCreatureStats(Creature cr,
     }
   }
 
-  setColor(lightGray);
-
   // Add weapon
-  mvaddstr(13, 0, "Weapon: ");
+  mvaddstrc(13, 0, lightGray, "Weapon: ");
   printWeapon(cr);
 
   // Add clothing
-  mvaddstr(14, 0, "Clothes: ");
+  mvaddstrc(14, 0, lightGray, "Clothes: ");
   cr.clothing.printEquipTitle(full: true, armor: false);
 
   // Add vehicle
