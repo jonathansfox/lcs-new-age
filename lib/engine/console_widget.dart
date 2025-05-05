@@ -4,6 +4,7 @@ import 'package:lcs_new_age/engine/console.dart';
 import 'package:lcs_new_age/engine/console_char.dart';
 import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/utils/colors.dart';
+import 'package:lcs_new_age/utils/game_options.dart';
 import 'package:pixel_snap/material.dart';
 
 class ConsoleWidget extends StatefulWidget {
@@ -154,7 +155,7 @@ class _ConsoleWidgetState extends State<ConsoleWidget> {
       for (int x = 0; x < line.length; x++) {
         Color cellColor = line[x].background;
         // If the cursor is over a cell with the same mouseClickKey, lighten its color
-        if (hoverX != null && hoverY != null) {
+        if (gameOptions.mouseInput && hoverX != null && hoverY != null) {
           String? hoverKey = console.buffer[hoverY!][hoverX!].mouseClickKey;
           if (line[x].mouseClickKey != null &&
               line[x].mouseClickKey == hoverKey) {

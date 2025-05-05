@@ -40,6 +40,7 @@ import 'package:lcs_new_age/sitemode/stealth.dart';
 import 'package:lcs_new_age/talk/talk.dart';
 import 'package:lcs_new_age/title_screen/game_over.dart';
 import 'package:lcs_new_age/utils/colors.dart';
+import 'package:lcs_new_age/utils/game_options.dart';
 import 'package:lcs_new_age/utils/interface_options.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 
@@ -1618,6 +1619,14 @@ Future<void> _siteModeAux() async {
               }
 
               prepareEncounter(siteType, activeSite!.highSecurity > 0);
+
+              if (isApartment && currentTile.restricted) {
+                // Nobody likes you if you're breaking into their home
+                for (var e in encounter) {
+                  conservatize(e);
+                }
+              }
+
               if (currentTile.bloody && !siteAlarm) {
                 Creature? conservative = encounter
                     .firstWhereOrNull((e) => e.align == Alignment.conservative);
@@ -1647,13 +1656,36 @@ Future<void> _siteModeAux() async {
                     ].random}");
                   }
                 }
-              }
+              } else if (gameOptions.encounterWarnings &&
+                  encounter.isNotEmpty) {
+                // Show an encounter warning based on whether the squad moved or not and the size of the encounter
+                clearMessageArea();
 
-              if (isApartment && currentTile.restricted) {
-                // Nobody likes you if you're breaking into their home
-                for (var e in encounter) {
-                  conservatize(e);
+                String message;
+                if (squadmoved) {
+                  switch (encounter.length) {
+                    case 1:
+                      message = "There is someone up ahead.";
+                    case <= 3:
+                      message = "There are a few people up ahead.";
+                    case <= 6:
+                      message = "There is a group of people up ahead.";
+                    default:
+                      message = "There is a crowd of people up ahead.";
+                  }
+                } else {
+                  switch (encounter.length) {
+                    case 1:
+                      message = "There is someone passing by.";
+                    case <= 3:
+                      message = "There are a few people passing by.";
+                    case <= 6:
+                      message = "There is a group of people passing by.";
+                    default:
+                      message = "There is a crowd of people passing by.";
+                  }
                 }
+                await encounterMessage(message);
               }
           }
           hostcheck = true;

@@ -11,6 +11,7 @@ import 'package:lcs_new_age/title_screen/high_scores.dart';
 import 'package:lcs_new_age/title_screen/new_game.dart';
 import 'package:lcs_new_age/title_screen/world.dart';
 import 'package:lcs_new_age/utils/colors.dart';
+import 'package:lcs_new_age/utils/game_options.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -59,7 +60,7 @@ Future<void> titleScreen() async {
   addOptionText(14, 10, "H", "H - View High Scores",
       enabledWhen: hasHighScores);
   addOptionText(14, 48, "V", "V - View Changelog");
-  //rainbowLine(15, 47, 4, '▄', reverse: true);
+  addOptionText(15, 10, "O", "O - Gameplay Options");
 
   while (true) {
     int c = await getKey();
@@ -100,6 +101,57 @@ Future<void> titleScreen() async {
         return;
       case Key.v:
         await showChangelog();
+        return;
+      case Key.o:
+        await optionsMenu();
+        return;
+    }
+  }
+}
+
+Future<void> optionsMenu() async {
+  while (true) {
+    erase();
+    setColor(lightGreen);
+    mvaddstrCenter(2, "GAME OPTIONS");
+    setColor(lightGray);
+    mvaddstrCenter(4, "Configure your Liberal Crime Squad experience");
+
+    addOptionText(6, 4, "E",
+        "E - Encounter Warnings: ${gameOptions.encounterWarnings ? "&GOn&x" : "&ROff&x"}");
+    setColor(midGray);
+    addparagraph(
+        7,
+        8,
+        x2: 72,
+        "When encounter warnings are on, you will be warned when you take a "
+        "step or wait and a new encounter begins. This extra step can help "
+        "you avoid accidentally walking past an encounter or doing something "
+        "else you might not want to do. Default is off.");
+
+    addOptionText(console.y + 1, 4, "M",
+        "M - Experimental Mouse Input: ${gameOptions.mouseInput ? "&GOn&x" : "&ROff&x"}");
+    setColor(midGray);
+    addparagraph(
+        console.y + 1,
+        8,
+        x2: 72,
+        "When mouse input is on, you can use the mouse to select options in "
+        "the game. This feature is not complete and not all screens support "
+        "mouse input. Default is on.");
+
+    addOptionText(console.y + 1, 4, "B", "B - Back to Title Screen");
+
+    int c = await getKey();
+
+    switch (c) {
+      case Key.e:
+        gameOptions.encounterWarnings = !gameOptions.encounterWarnings;
+        await gameOptions.save();
+      case Key.m:
+        gameOptions.mouseInput = !gameOptions.mouseInput;
+        await gameOptions.save();
+      case Key.b:
         return;
     }
   }

@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:lcs_new_age/engine/console_char.dart';
 import 'package:lcs_new_age/engine/console_graphic.dart';
 import 'package:lcs_new_age/utils/colors.dart';
+import 'package:lcs_new_age/utils/game_options.dart';
 
 const CONSOLE_WIDTH = 80;
 const CONSOLE_HEIGHT = 25;
@@ -77,6 +78,7 @@ class Console {
 
   void handleMouseClick(int y, int x) {
     if (y >= buffer.length || x >= buffer[y].length) return;
+    if (!gameOptions.mouseInput) return;
     String? key = buffer[y][x].mouseClickKey;
     if (key != null) {
       keyEvent(KeyDownEvent(
