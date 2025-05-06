@@ -210,7 +210,8 @@ Future<void> kidnapattempt() async {
         await alienationCheck(false);
         siteAlarm = true;
         siteCrime += 5;
-        addPotentialCrime(squad, Crime.kidnapping);
+        addPotentialCrime(squad, Crime.kidnapping,
+            reasonKey: target.id.toString());
         if (target.type.preciousToAngryRuralMobs) offendedAngryRuralMobs = true;
       }
     }
