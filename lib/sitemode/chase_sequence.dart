@@ -1235,7 +1235,7 @@ Future<bool> obstacledrive(
         if (oneIn(5)) {
           mvaddstrc(10, 1, red, "A fruit seller is squashed!");
           await getKey();
-          criminalizeAll(squad, Crime.murder);
+          criminalizeAll(squad.where((p) => p.isDriver), Crime.murder);
           addDramaToSiteStory(Drama.killedSomebody);
           sitestory?.positive = 0;
         }
