@@ -442,6 +442,8 @@ Future<void> _siteModeAux() async {
             for (Creature p in squad) {
               p.offendedAngryRuralMobs++;
             }
+            addPotentialCrime(activeSquad!.livingMembers, Crime.kidnapping,
+                reasonKey: p.prisoner!.id.toString());
           }
         }
       }
@@ -449,7 +451,6 @@ Future<void> _siteModeAux() async {
       if (havehostage) {
         await alienationCheck(false);
         siteCrime += 5;
-        criminalizeAll(activeSquad!.livingMembers, Crime.kidnapping);
       }
       hostcheck = false;
 

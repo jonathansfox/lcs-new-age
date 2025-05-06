@@ -233,7 +233,6 @@ Future<String> selectRansomLocation(Creature lead) async {
 
 Future<void> handleRansomArrest(Creature lead, int y) async {
   // Arrest consequences
-  lead.heat += 100;
   lead.squad = null;
   lead.carId = null;
   lead.location = findSiteInSameCity(lead.base!.city, SiteType.policeStation);
