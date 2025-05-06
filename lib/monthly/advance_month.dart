@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:lcs_new_age/basemode/activities.dart';
 import 'package:lcs_new_age/basemode/disbanding.dart';
 import 'package:lcs_new_age/basemode/liberal_agenda.dart';
@@ -252,28 +254,27 @@ Future<void> advanceMonth() async {
         continue;
       } else {
         //TRY TO GET RACKETEERING CHARGE
-        int copstrength = switch (laws[Law.policeReform]) {
+        int maxCopStrength = switch (laws[Law.policeReform]) {
           DeepAlignment.archConservative => 200,
           DeepAlignment.conservative => 150,
           DeepAlignment.liberal => 75,
           DeepAlignment.eliteLiberal => 50,
           _ => 100,
         };
-        int libstrength = 100;
 
-        copstrength = (copstrength * p.heat) ~/ 4 +
-            p.wantedForCrimes.values.reduce((a, b) => a + b) * 5;
+        int copstrength = min(maxCopStrength, 10 * p.heat);
 
         if (laws[Law.deathPenalty] == DeepAlignment.archConservative) {
-          copstrength += 200;
+          copstrength = 200;
         }
 
         if (copstrength > 200) copstrength = 200;
 
-        libstrength = p.juice +
+        int libstrength = p.juice +
             (p.attribute(Attribute.heart) * 5) -
             (p.attribute(Attribute.wisdom) * 5) +
-            (p.skill(Skill.psychology) * 5);
+            (p.skill(Skill.psychology) * 5) +
+            (p.skill(Skill.law) * 5);
 
         if (p.brainwashed) libstrength = 0;
 
@@ -458,13 +459,13 @@ void renameBuildingsAfterLawChanges(
     Map<Law, DeepAlignment> law, Map<Law, DeepAlignment> oldlaw) {
   void update(
       SiteType siteType, List<Law> lawsToCheck, DeepAlignment alignment) {
-    if (law.entries
-            .where((e) => lawsToCheck.contains(e.key))
-            .every((e) => e.value == alignment) ||
-        oldlaw.entries
+    if ((law.entries
                 .where((e) => lawsToCheck.contains(e.key))
-                .every((e) => e.value == alignment) &&
-            lawsToCheck.any((l) => law[l] != oldlaw[l])) {
+                .every((e) => e.value == alignment) ||
+            oldlaw.entries
+                .where((e) => lawsToCheck.contains(e.key))
+                .every((e) => e.value == alignment)) &&
+        lawsToCheck.any((l) => law[l] != oldlaw[l])) {
       sites
           .where(
               (l) => l.type == siteType && l.controller != SiteController.lcs)
