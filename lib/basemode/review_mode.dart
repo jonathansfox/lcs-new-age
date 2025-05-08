@@ -576,7 +576,11 @@ Future<void> reviewMode(ReviewMode mode) async {
                 boss.confessions++;
 
                 if (boss.heat > 20) {
-                  boss.base?.siege.timeUntilCops = 3;
+                  boss.heat += 10;
+                  boss.base?.heat += 1000;
+                  if (boss.base?.siege.timeUntilCops == -1) {
+                    boss.base?.siege.timeUntilCops = lcsRandom(3) + 1;
+                  }
                 } else {
                   boss.heat += 10;
                 }

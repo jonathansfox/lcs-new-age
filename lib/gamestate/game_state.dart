@@ -290,6 +290,8 @@ bool get corporateFeudalism =>
     laws[Law.corporate] == DeepAlignment.archConservative &&
     laws[Law.taxes] == DeepAlignment.archConservative &&
     laws[Law.labor] == DeepAlignment.archConservative;
+bool get utterNightmare =>
+    !laws.values.any((a) => a != DeepAlignment.archConservative);
 
 bool get offendedAngryRuralMobs => gameState.offendedAngryRuralMobs;
 set offendedAngryRuralMobs(bool value) =>

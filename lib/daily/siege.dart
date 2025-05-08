@@ -1304,15 +1304,9 @@ Future<void> sallyForthPart2(Site loc) async {
         Crime.resistingArrest);
   }
 
-  //DELETE ALL SQUADS IN THIS AREA UNLESS THEY ARE THE activeSquad
-  for (Squad s in squads
-      .where((s) => s != activeSquad && s.members.any((p) => p.location == loc))
-      .toList()) {
-    for (Creature c in s.members.toList()) {
-      c.squad = null;
-    }
-    squads.remove(s);
-  }
+  // Select a squad to use
+  activeSquad ??= squads.firstWhere(
+      (s) => s.members.isNotEmpty && s.members.first.location == loc);
 
   // No squads at the location? Form a new one.
   if (activeSquad == null) {
@@ -1405,16 +1399,8 @@ Future<void> escapeOrEngage() async {
   }
 
   // Select a squad to use
-  if (activeSquad == null) {
-    for (int sq = squads.length - 1; sq >= 0; sq--) {
-      if (squads[sq] != activeSquad && squads[sq].members.isNotEmpty) {
-        if (squads[sq].members.first.location == loc) {
-          activeSquad = squads[sq];
-          break;
-        }
-      }
-    }
-  }
+  activeSquad ??= squads.firstWhere(
+      (s) => s.members.isNotEmpty && s.members.first.location == loc);
 
   // No squads at the location? Form a new one.
   if (activeSquad == null) {
@@ -1672,7 +1658,7 @@ Future<void> stateBrokenLaws(Site loc) async {
 
   move(3, 1);
   if (loc.siege.escalationState.index >= SiegeEscalation.tanks.index &&
-      (politics.publicMood() < 20 || kidnappedThePresident)) {
+      (politics.publicMood() < 20 || kidnappedThePresident || utterNightmare)) {
     addstr("In the name of God, your campaign of terror ends here!");
   } else if (loc.type == SiteType.homelessEncampment) {
     addstr("Everyone in the camp is under arrest!");
