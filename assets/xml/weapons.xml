@@ -494,7 +494,6 @@
         <can_take_hostages>true</can_take_hostages>
         <price>50</price>
         <description>A length of chain.  Could be used as a weapon.</description>
-        <suspicious>false</suspicious>
         <size>2</size>
         <attack>
             <priority>1</priority>
@@ -698,7 +697,6 @@
         <name>Police Baton</name>
         <shortname>Baton</shortname>
         <price>100</price>
-        <suspicious>false</suspicious>
         <size>1</size>
         <attack>
             <priority>1</priority>
@@ -745,7 +743,6 @@
         <graffiti>true</graffiti>
         <price>10</price>
         <description>Can be used to tag walls in site actions.</description>
-        <suspicious>false</suspicious>
         <size>1</size>
         <attack>
             <priority>1</priority>

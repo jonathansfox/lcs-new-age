@@ -5,9 +5,13 @@ import 'package:lcs_new_age/creature/conversion.dart';
 import 'package:lcs_new_age/creature/creature.dart';
 import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/daily/hostages/tend_hostage.dart';
+import 'package:lcs_new_age/daily/siege.dart';
 import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/justice/crimes.dart';
+import 'package:lcs_new_age/location/location.dart';
+import 'package:lcs_new_age/location/location_type.dart';
+import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
 import 'package:lcs_new_age/sitemode/advance.dart';
 import 'package:lcs_new_age/sitemode/fight.dart';
@@ -427,15 +431,18 @@ Future<void> squadHaulImmobileAllies(bool dead) async {
 }
 
 /* names the new hostage and stashes them in your base */
-Future<void> kidnaptransfer(Creature cr) async {
+Future<void> kidnaptransfer(Creature cr, {Creature? kidnapper}) async {
   cr.nameCreature();
 
-  cr.location = squad[0].base;
-  cr.base = squad[0].base;
+  Site? base = kidnapper?.base ??
+      activeSquad?.members[0].base ??
+      findSiteInSameCity(cr.location?.city, SiteType.homelessEncampment);
+  cr.location = base;
+  cr.base = base;
   cr.missing = true;
 
   //disarm them and stash their weapon back at the base
-  cr.dropWeaponAndAmmo(lootPile: cr.site!.loot);
+  cr.dropWeaponAndAmmo(lootPile: cr.site?.loot);
 
   //Create interrogation data
   interrogationSessions.add(InterrogationSession(cr.id));

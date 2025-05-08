@@ -1,3 +1,8 @@
+1.3.10 - 5/8/2025
+- Fixed a crash on fighting during a siege when you have no squads formed
+- Fixed a crash on datenapping with no squad currently selected
+- Made spray paint, batons, and chains suspicious
+
 1.3.9 - 5/7/2025
 - Added an options screen to the main menu where you can enable encounter warnings or disable mouse input
 - Allowed more options during bulk activation

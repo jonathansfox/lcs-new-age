@@ -1305,7 +1305,7 @@ Future<void> sallyForthPart2(Site loc) async {
   }
 
   // Select a squad to use
-  activeSquad ??= squads.firstWhere(
+  activeSquad ??= squads.firstWhereOrNull(
       (s) => s.members.isNotEmpty && s.members.first.location == loc);
 
   // No squads at the location? Form a new one.
@@ -1399,7 +1399,7 @@ Future<void> escapeOrEngage() async {
   }
 
   // Select a squad to use
-  activeSquad ??= squads.firstWhere(
+  activeSquad ??= squads.firstWhereOrNull(
       (s) => s.members.isNotEmpty && s.members.first.location == loc);
 
   // No squads at the location? Form a new one.
