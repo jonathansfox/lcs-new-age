@@ -28,6 +28,7 @@ class _ConsoleWidgetState extends State<ConsoleWidget> {
   final TextEditingController textEditingController = TextEditingController();
   int? hoverX;
   int? hoverY;
+  final GlobalKey mobileKeyboardLayerKey = GlobalKey();
 
   void updateHoverPosition(double dx, double dy) {
     double cellWidth = textSpanWidth / console.width;
@@ -318,6 +319,7 @@ class _ConsoleWidgetState extends State<ConsoleWidget> {
     if (defaultTargetPlatform == TargetPlatform.android ||
         defaultTargetPlatform == TargetPlatform.iOS) {
       return Positioned.fill(
+        key: mobileKeyboardLayerKey,
         child: Visibility(
           visible: false,
           maintainState: true,
