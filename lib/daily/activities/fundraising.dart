@@ -19,14 +19,7 @@ import 'package:lcs_new_age/utils/lcsrandom.dart';
 Future<void> doActivitySolicitDonations(List<Creature> solicit) async {
   for (Creature solicitor in solicit) {
     if (await checkForArrest(solicitor, "soliciting donations")) continue;
-    _earnMoney(
-        solicitor,
-        Income.donations,
-        (_roll(solicitor, [Skill.persuasion, Skill.streetSmarts]) *
-                _multiplierFromPublicMood(highImpact: true) *
-                (solicitor.clothing.type.professionalism + 1) *
-                0.5)
-            .round());
+    _earnMoney(solicitor, Income.donations, estimateDonationsIncome(solicitor));
   }
 }
 
@@ -34,13 +27,7 @@ Future<void> doActivitySellTshirts(List<Creature> tshirts) async {
   for (Creature seller in tshirts) {
     if (await checkForArrest(seller, "selling shirts")) continue;
     _backgroundInfluenceCheck(seller, Skill.tailoring);
-    _earnMoney(
-      seller,
-      Income.tshirts,
-      (_roll(seller, [Skill.tailoring, Skill.business]) *
-              _multiplierFromPublicMood())
-          .round(),
-    );
+    _earnMoney(seller, Income.tshirts, estimateTshirtIncome(seller));
   }
 }
 
@@ -48,12 +35,7 @@ Future<void> doActivitySellArt(List<Creature> art) async {
   for (Creature artist in art) {
     if (await checkForArrest(artist, "selling art")) continue;
     _backgroundInfluenceCheck(artist, Skill.art);
-    _earnMoney(
-      artist,
-      Income.artSales,
-      (_roll(artist, [Skill.art, Skill.business]) * _multiplierFromPublicMood())
-          .round(),
-    );
+    _earnMoney(artist, Income.artSales, estimateArtIncome(artist));
   }
 }
 
@@ -61,14 +43,7 @@ Future<void> doActivitySellMusic(List<Creature> music) async {
   for (Creature musician in music) {
     if (await checkForArrest(musician, "playing music")) continue;
     _backgroundInfluenceCheck(musician, Skill.music);
-    _earnMoney(
-      musician,
-      Income.busking,
-      (_roll(musician, [Skill.music, Skill.streetSmarts]) *
-              _multiplierFromPublicMood() *
-              (musician.weapon.type.instrument ? 1 : 0.25))
-          .round(),
-    );
+    _earnMoney(musician, Income.busking, estimateMusicIncome(musician));
   }
 }
 
@@ -84,12 +59,7 @@ Future<void> doActivitySellBrownies(List<Creature> brownies) async {
       }
     }
 
-    int cash = _roll(
-      baker,
-      [Skill.persuasion, Skill.business, Skill.streetSmarts],
-    );
-    cash = (cash * _multiplierFromBan(Law.drugs) * 3).round();
-    _earnMoney(baker, Income.brownies, cash);
+    _earnMoney(baker, Income.brownies, estimateBrownieIncome(baker));
   }
 }
 
@@ -98,10 +68,8 @@ Future<void> doActivityProstitution(List<Creature> prostitutes) async {
     // Business once every three days or so
     if (!oneIn(3)) continue;
 
-    // Skill determies how much money you get
-    int performance = _roll(prostitute,
-        [Skill.seduction, Skill.seduction, Skill.streetSmarts, Skill.business]);
-    int fundgain = lcsRandom(2 * performance) + 2 * performance;
+    int fundgain = estimateProstitutionIncome(prostitute) *
+        3; // Multiply by 3 since we only do business 1/3 of days
 
     if (oneIn(50)) {
       // Police sting!
@@ -140,7 +108,14 @@ void _earnMoney(Creature c, Income incomeType, int money) {
   ledger.addFunds(money, incomeType);
 }
 
-int _roll(Creature c, List<Skill> skills) {
+int _roll(Creature c, List<Skill> skills, {bool estimate = false}) {
+  if (estimate) {
+    // For estimation, use average skill values and average dice roll (7)
+    return (skills.map((skill) => c.skill(skill)).reduce((a, b) => a + b) /
+                skills.length)
+            .round() +
+        7;
+  }
   return (skills.map((skill) {
                 c.train(skill, 5);
                 return c.skill(skill);
@@ -168,4 +143,59 @@ double _multiplierFromBan(Law law) {
     DeepAlignment.liberal => 1 / 2,
     DeepAlignment.eliteLiberal => 1 / 4,
   };
+}
+
+/// Calculates expected daily income from soliciting donations
+int estimateDonationsIncome(Creature solicitor, {bool estimate = false}) {
+  return (_roll(solicitor, [Skill.persuasion, Skill.streetSmarts],
+              estimate: estimate) *
+          _multiplierFromPublicMood(highImpact: true) *
+          (solicitor.clothing.type.professionalism + 1) *
+          0.5)
+      .round();
+}
+
+/// Calculates expected daily income from selling t-shirts
+int estimateTshirtIncome(Creature seller, {bool estimate = false}) {
+  return (_roll(seller, [Skill.tailoring, Skill.business], estimate: estimate) *
+          _multiplierFromPublicMood())
+      .round();
+}
+
+/// Calculates expected daily income from selling art
+int estimateArtIncome(Creature artist, {bool estimate = false}) {
+  return (_roll(artist, [Skill.art, Skill.business], estimate: estimate) *
+          _multiplierFromPublicMood())
+      .round();
+}
+
+/// Calculates expected daily income from performing music
+int estimateMusicIncome(Creature musician, {bool estimate = false}) {
+  return (_roll(musician, [Skill.music, Skill.streetSmarts],
+              estimate: estimate) *
+          _multiplierFromPublicMood() *
+          (musician.weapon.type.instrument ? 1 : 0.25))
+      .round();
+}
+
+/// Calculates expected daily income from selling brownies
+int estimateBrownieIncome(Creature baker, {bool estimate = false}) {
+  int cash = _roll(
+    baker,
+    [Skill.persuasion, Skill.business, Skill.streetSmarts],
+    estimate: estimate,
+  );
+  return (cash * _multiplierFromBan(Law.drugs) * 3).round();
+}
+
+/// Calculates expected daily income from prostitution
+/// Note: This is an average over multiple days since prostitution only occurs ~1/3 of days
+int estimateProstitutionIncome(Creature prostitute, {bool estimate = false}) {
+  int performance = _roll(prostitute,
+      [Skill.seduction, Skill.seduction, Skill.streetSmarts, Skill.business],
+      estimate: estimate);
+  // Average of 2d(2*performance) + 2*performance
+  int averageRoll = (2 * performance + 1) + 2 * performance;
+  // Only happens 1/3 of days
+  return (averageRoll / 3).round();
 }

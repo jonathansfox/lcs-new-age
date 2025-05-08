@@ -5,10 +5,10 @@ import 'package:lcs_new_age/common_actions/equipment.dart';
 import 'package:lcs_new_age/common_display/common_display.dart';
 import 'package:lcs_new_age/common_display/print_creature_info.dart';
 import 'package:lcs_new_age/common_display/print_party.dart';
-import 'package:lcs_new_age/creature/attributes.dart';
 import 'package:lcs_new_age/creature/creature.dart';
 import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/creature/sort_creatures.dart';
+import 'package:lcs_new_age/daily/activities/fundraising.dart';
 import 'package:lcs_new_age/daily/activities/recruiting.dart';
 import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
@@ -155,7 +155,7 @@ Future<void> _activateOne(Creature c) async {
         grayOut: !canDisposeCorpses);
     setColor(activeSafehouse?.siege.underSiege ?? false ? darkGray : lightGray);
     addOptionText(_y++, 1, "g", "G - Equip This Liberal");
-    _activity(ActivityType.none, "X - Nothing for Now", state != 0);
+    _activity(ActivityType.none, "X - Lay Low for Now", state != 0);
     addOptionText(19, 40, "?", "? - About the Selected Activity");
     addOptionText(20, 40, "Enter", "Enter - Confirm Selection");
     if (state == Key.a) {
@@ -228,7 +228,7 @@ Future<void> _activateOne(Creature c) async {
         _medicalChoice(c, key - Key.num0);
       }
     }
-    if (isBackKey(key)) {
+    if (isBackKey(key) && key != Key.x) {
       break;
     }
     if (key == "?".codePoint) {
@@ -296,8 +296,8 @@ void _activismChoice(Creature c, int choice) {
   }
 }
 
-void _activismDefault(Creature c) {
-  if (c.juice < 0) {
+void _activismDefault(Creature c, {bool noCommunityService = false}) {
+  if (!noCommunityService && c.juice < 0) {
     c.activity = Activity(ActivityType.communityService);
   } else if (c.rawSkill[Skill.computers]! > 2 &&
       c.site?.compound.hackerDen == true) {
@@ -325,14 +325,21 @@ void _legalChoice(Creature c, int choice) {
 }
 
 void _legalDefault(Creature c) {
-  if (c.weapon.type.instrument) {
+  // Calculate estimated income for each legal fundraising method
+  int donationsIncome = estimateDonationsIncome(c, estimate: true);
+  int tshirtIncome = estimateTshirtIncome(c, estimate: true);
+  int artIncome = estimateArtIncome(c, estimate: true);
+  int musicIncome = estimateMusicIncome(c, estimate: true);
+
+  // Choose the method with highest estimated income
+  if (musicIncome >= donationsIncome &&
+      musicIncome >= tshirtIncome &&
+      musicIncome >= artIncome) {
     c.activity = Activity(ActivityType.sellMusic);
-  } else if (c.rawSkill[Skill.art]! > 1) {
+  } else if (artIncome >= donationsIncome && artIncome >= tshirtIncome) {
     c.activity = Activity(ActivityType.sellArt);
-  } else if (c.rawSkill[Skill.tailoring]! > 1) {
+  } else if (tshirtIncome >= donationsIncome) {
     c.activity = Activity(ActivityType.sellTshirts);
-  } else if (c.rawSkill[Skill.music]! > 1) {
-    c.activity = Activity(ActivityType.sellMusic);
   } else {
     c.activity = Activity(ActivityType.donations);
   }
@@ -379,6 +386,10 @@ void _acquisitionSubmenu(Creature c) {
   _subActivity(ActivityType.makeClothing, "3 - Make Clothing");
   _subActivity(ActivityType.wheelchair, "4 - Procure a Wheelchair",
       greyOut: c.canWalk || c.hasWheelchair);
+
+  _y++;
+  mvaddstrc(_y++, 40, midGray, "Laundry and mending clothing are");
+  mvaddstrc(_y++, 40, midGray, "handled by Liberals set to Lay Low.");
 }
 
 Future<void> _acquisitionChoice(Creature c, int choice) async {
@@ -690,7 +701,7 @@ void _activityFooter(Creature cr) {
   mvaddstrc(22, 3, lightGray, "${cr.name} will");
   switch (cr.activity.type) {
     case ActivityType.none:
-      addstr(" lay low and stay out of trouble.");
+      addstr(" lay low and tend to any laundry and mending.");
     case ActivityType.visit:
       addstr(" act with ${cr.gender.hisHer} squad.");
       mvaddstrc(23, 3, midGray,
@@ -795,6 +806,69 @@ void _activityFooter(Creature cr) {
   addOptionText(20, 40, "Enter", "Enter - Confirm Selection");
 }
 
+enum BulkActivity {
+  communityService(
+    name: "Community Service",
+    activityType: ActivityType.communityService,
+  ),
+  liberalActivism(
+    name: "Liberal Activism",
+    activityType: ActivityType.trouble,
+  ),
+  liberalGuardian(
+    name: "Liberal Guardian",
+    activityType: ActivityType.writeGuardian,
+  ),
+  legalFundraising(
+    name: "Legal Fundraising",
+    activityType: ActivityType.donations,
+  ),
+  sellBrownies(
+    name: "Sell Brownies",
+    activityType: ActivityType.sellDrugs,
+  ),
+  prostitution(
+    name: "Prostitution",
+    activityType: ActivityType.prostitution,
+    minAge: 18,
+  ),
+  ccfraud(
+    name: "Credit Card Fraud",
+    activityType: ActivityType.ccfraud,
+    requiresHackerDen: true,
+  ),
+  stealCars(
+    name: "Stealing Cars",
+    activityType: ActivityType.stealCars,
+  ),
+  recruiting(
+    name: "Recruiting",
+    activityType: ActivityType.recruiting,
+  );
+
+  const BulkActivity({
+    required this.name,
+    required this.activityType,
+    this.requiresHackerDen = false,
+    this.minAge,
+  });
+
+  final String name;
+  final ActivityType activityType;
+  final bool requiresHackerDen;
+  final int? minAge;
+
+  bool isEnabledFor(Creature creature) {
+    if (requiresHackerDen && creature.site?.compound.hackerDen != true) {
+      return false;
+    }
+    if (minAge != null && creature.age < minAge!) {
+      return false;
+    }
+    return true;
+  }
+}
+
 Future<void> _activateBulk() async {
   List<Creature> temppool = pool
       .where((p) =>
@@ -804,7 +878,8 @@ Future<void> _activateBulk() async {
 
   if (temppool.isEmpty) return;
 
-  int page = 0, selectedactivity = 0;
+  int page = 0;
+  BulkActivity selectedActivity = BulkActivity.communityService;
 
   while (true) {
     erase();
@@ -815,16 +890,20 @@ Future<void> _activateBulk() async {
     mvaddstr(0, 0, "Assign Tasks in Bulk");
     addHeader({4: "CODE NAME", 25: "CURRENT ACTIVITY", 51: "BULK ACTIVITY"});
 
-    void addOption(int i, String name) {
-      addOptionText(i + 1, 51, "$i", "$i - $name",
-          baseColorKey: selectedactivity == i - 1 ? "W" : "w");
+    void addOption(int i, BulkActivity activity) {
+      addOptionText(i + 1, 51, "$i", "$i - ${activity.name}",
+          baseColorKey: selectedActivity == activity ? "W" : "w");
     }
 
-    addOption(1, "Liberal Activism");
-    addOption(2, "Legal Fundraising");
-    addOption(3, "Illegal Fundraising");
-    addOption(4, "Stealing Cars");
-    addOption(5, "Community Service");
+    addOption(1, BulkActivity.communityService);
+    addOption(2, BulkActivity.liberalActivism);
+    addOption(3, BulkActivity.liberalGuardian);
+    addOption(4, BulkActivity.legalFundraising);
+    addOption(5, BulkActivity.sellBrownies);
+    addOption(6, BulkActivity.prostitution);
+    addOption(7, BulkActivity.ccfraud);
+    addOption(8, BulkActivity.stealCars);
+    addOption(9, BulkActivity.recruiting);
 
     int y = 2;
     for (int p = page * 19;
@@ -832,7 +911,10 @@ Future<void> _activateBulk() async {
         p++, y++) {
       Creature tempp = temppool[p];
       String letter = letterAPlus(p - page * 19);
-      addOptionText(y, 0, letter, "$letter - ${tempp.name}");
+      bool isEnabled = selectedActivity.isEnabledFor(tempp);
+
+      addOptionText(y, 0, letter, "$letter - ${tempp.name}",
+          enabledWhen: isEnabled);
 
       move(y, 25);
       setColor(tempp.activity.type.color);
@@ -859,52 +941,29 @@ Future<void> _activateBulk() async {
       int p = page * 19 + c - Key.a;
       if (p < temppool.length) {
         Creature tempp = temppool[p];
-        switch (selectedactivity) {
-          case 0: //Activism
-            if (tempp.attribute(Attribute.wisdom) > 7 || tempp.juice < 0) {
-              tempp.activity.type = ActivityType.communityService;
-            } else if (tempp.attribute(Attribute.wisdom) > 4) {
-              tempp.activity.type = ActivityType.trouble;
-            } else {
-              if (tempp.skill(Skill.computers) > 2 &&
-                  tempp.site?.compound.hackerDen == true) {
-                tempp.activity.type = ActivityType.hacking;
-              } else if (tempp.skill(Skill.art) > 1) {
-                tempp.activity.type = ActivityType.graffiti;
-                tempp.activity.view = null;
+
+        if (selectedActivity.isEnabledFor(tempp)) {
+          // Handle special cases for activity selection
+          switch (selectedActivity) {
+            case BulkActivity.liberalActivism:
+              _activismDefault(tempp, noCommunityService: true);
+            case BulkActivity.liberalGuardian:
+              if (tempp.site?.compound.videoRoom == true &&
+                  tempp.skill(Skill.persuasion) >= tempp.skill(Skill.writing)) {
+                tempp.activity.type = ActivityType.streamGuardian;
               } else {
-                tempp.activity.type = ActivityType.trouble;
+                tempp.activity.type = ActivityType.writeGuardian;
               }
-            }
-          case 1: //Fundraising
-            if (tempp.weapon.type.instrument) {
-              tempp.activity.type = ActivityType.sellMusic;
-            } else if (tempp.skill(Skill.art) > 1) {
-              tempp.activity.type = ActivityType.sellArt;
-            } else if (tempp.skill(Skill.tailoring) > 1) {
-              tempp.activity.type = ActivityType.sellTshirts;
-            } else if (tempp.skill(Skill.music) > 1) {
-              tempp.activity.type = ActivityType.sellMusic;
-            } else {
-              tempp.activity.type = ActivityType.donations;
-            }
-          case 2: //Illegal Fundraising
-            if (tempp.skill(Skill.computers) > 1) {
-              tempp.activity.type = ActivityType.ccfraud;
-            } else if (tempp.skill(Skill.seduction) > 1 && tempp.age >= 18) {
-              tempp.activity.type = ActivityType.prostitution;
-            } else {
-              tempp.activity.type = ActivityType.sellDrugs;
-            }
-          case 3: //Steal cars
-            tempp.activity.type = ActivityType.stealCars;
-          case 4: //Volunteer
-            tempp.activity.type = ActivityType.communityService;
+            case BulkActivity.legalFundraising:
+              _legalDefault(tempp);
+            default:
+              tempp.activity = Activity(selectedActivity.activityType);
+          }
         }
       }
     }
-    if (c >= Key.num1 && c <= Key.num6) {
-      selectedactivity = c - Key.num1;
+    if (c >= Key.num1 && c <= Key.num9) {
+      selectedActivity = BulkActivity.values[c - Key.num1];
     }
 
     if (isBackKey(c)) break;

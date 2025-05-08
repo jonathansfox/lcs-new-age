@@ -16,12 +16,34 @@ import 'package:lcs_new_age/daily/activities/sleeper_join_lcs.dart';
 import 'package:lcs_new_age/daily/activities/teaching.dart';
 import 'package:lcs_new_age/daily/activities/trouble.dart';
 import 'package:lcs_new_age/daily/shopsnstuff.dart';
+import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/location/location_type.dart';
 import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
 import 'package:lcs_new_age/politics/views.dart';
+import 'package:lcs_new_age/utils/colors.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
+
+Future<void> _selectRecruitTarget(Creature cr) async {
+  erase();
+  cr.activity = Activity(ActivityType.recruiting);
+  await pagedInterface(
+    headerPrompt:
+        "What type of person will ${cr.name} try to meet and recruit?",
+    headerKey: {4: "TYPE", 49: "DIFFICULTY TO ARRANGE MEETING"},
+    footerPrompt: "Press a Letter to select a Profession",
+    count: recruitableCreatures.length,
+    lineBuilder: (y, key, index) {
+      mvaddstrc(y, 0, lightGray, "$key - ${recruitableCreatures[index].name}");
+      addDifficultyText(y, 49, recruitableCreatures[index].difficulty);
+    },
+    onChoice: (index) async {
+      cr.activity.idString = recruitableCreatures[index].type.id;
+      return true;
+    },
+  );
+}
 
 Future<void> soloActivities(bool disbanding) async {
   Map<ActivityType, List<Creature>> activities = {};
@@ -93,6 +115,8 @@ Future<void> soloActivities(bool disbanding) async {
       case ActivityType.recruiting:
         if (disbanding) continue;
         for (Creature p in people) {
+          await _selectRecruitTarget(p);
+          if (p.activity.idString == null) continue;
           await doActivityRecruit(p);
         }
       case ActivityType.stealCars:

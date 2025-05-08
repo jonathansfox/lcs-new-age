@@ -33,7 +33,7 @@ class Activity {
   View? view;
 
   RecruitData? get recruitData =>
-      recruitableCreatures.firstWhere((e) => e.type.id == idString);
+      recruitableCreatures.firstWhereOrNull((e) => e.type.id == idString);
   Creature? get creature => pool.firstWhereOrNull((e) => e.id == idInt);
   ClothingType? get clothingType =>
       clothingTypes[idString?.split(":ARMOR").firstOrNull];
