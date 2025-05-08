@@ -8,6 +8,7 @@ import 'package:lcs_new_age/basemode/activities.dart';
 import 'package:lcs_new_age/common_actions/common_actions.dart';
 import 'package:lcs_new_age/common_display/common_display.dart';
 import 'package:lcs_new_age/creature/attributes.dart';
+import 'package:lcs_new_age/creature/body.dart';
 import 'package:lcs_new_age/creature/creature.dart';
 import 'package:lcs_new_age/creature/creature_type.dart';
 import 'package:lcs_new_age/creature/dice.dart';
@@ -151,15 +152,7 @@ Future<void> siegeCheck() async {
       }
       if (l.siege.timeUntilCops > 0) {
         l.siege.timeUntilCops = l.siege.timeUntilCops - 1;
-      } else if (l.siege.timeUntilCops < -1) {
-        // Reduce the cooldown between raids
-        l.siege.timeUntilCops = l.siege.timeUntilCops + 1;
-      } else if (l.siege.timeUntilCops == -1) {
-        // Begin planning siege if high heat on location
-        if (huntingSpeed > 0 && (oneIn(60 ~/ huntingSpeed))) {
-          // Set time until siege is carried out
-          l.siege.timeUntilCops += 2 + lcsRandom(6);
-
+        if (l.siege.timeUntilCops == 1) {
           bool policeSleeperWarning = pool.any(
               (p) => p.sleeperAgent && p.locationId == policeStation.idString);
 
@@ -216,6 +209,15 @@ Future<void> siegeCheck() async {
               c = await getKey();
             } while (c != Key.x && c != Key.escape);
           }
+        }
+      } else if (l.siege.timeUntilCops < -1) {
+        // Reduce the cooldown between raids
+        l.siege.timeUntilCops = l.siege.timeUntilCops + 1;
+      } else if (l.siege.timeUntilCops == -1) {
+        // Begin planning siege if high heat on location
+        if (huntingSpeed > 0 && (oneIn(60 ~/ huntingSpeed))) {
+          // Set time until siege is carried out
+          l.siege.timeUntilCops += 2 + lcsRandom(6);
         }
       }
 
@@ -774,7 +776,7 @@ Future<void> siegeTurn() async {
           if (hit) {
             await showMessage("Explosions rock the compound!");
 
-            if (hasAAGun && oneIn(3)) {
+            if (hasAAGun && oneIn(5)) {
               await showMessage("The anti-aircraft gun takes a direct hit!");
               await showMessage("There's nothing left but smoking wreckage...");
               l.compound.aaGun = false;
@@ -785,7 +787,7 @@ Future<void> siegeTurn() async {
                 l.siege.lightsOff = true;
               }
               l.compound.solarPanels = false;
-            } else if (hasGenerator && oneIn(3)) {
+            } else if (hasGenerator && oneIn(5)) {
               await showMessage("The generator takes a direct hit!");
               if (!hasSolarPanels) {
                 await showMessage("The lights fade and all goes dark...");
@@ -804,8 +806,19 @@ Future<void> siegeTurn() async {
                   }
                   victim.squad = null;
                   victim.die();
-                } else {
+                } else if (oneIn(2)) {
                   await showMessage("${victim.name} narrowly avoids death!");
+                } else {
+                  await showMessage("${victim.name} is injured in the blast!");
+                  victim.blood -= min(lcsRandom(50) + 50, victim.blood ~/ 2);
+                  for (BodyPart bp in victim.body.parts) {
+                    if (oneIn(2)) {
+                      bp.bleeding++;
+                      bp.cut = true;
+                    } else {
+                      bp.bruised = true;
+                    }
+                  }
                 }
               }
             } else {
@@ -1391,17 +1404,13 @@ Future<void> escapeOrEngage() async {
         Crime.resistingArrest);
   }
 
-  //DELETE ALL SQUADS IN THIS AREA UNLESS THEY ARE THE activeSquad
-  for (int sq = squads.length - 1; sq >= 0; sq--) {
-    if (squads[sq] != activeSquad && squads[sq].members.isNotEmpty) {
-      if (squads[sq].members.first.location == loc) {
-        if (activeSquad != null) {
-          for (Creature p in activeSquad!.members.toList()) {
-            p.squad = null;
-          }
-          squads.removeAt(sq);
-        } else {
+  // Select a squad to use
+  if (activeSquad == null) {
+    for (int sq = squads.length - 1; sq >= 0; sq--) {
+      if (squads[sq] != activeSquad && squads[sq].members.isNotEmpty) {
+        if (squads[sq].members.first.location == loc) {
           activeSquad = squads[sq];
+          break;
         }
       }
     }
@@ -1517,7 +1526,8 @@ Future<void> escapeSiege(bool won) async {
 
   //SET UP NEW SIEGE CHARACTERISTICS, INCLUDING TIMING
   if (won && activeSite!.siege.activeSiegeType == SiegeType.police) {
-    activeSite!.siege.timeUntilCops = lcsRandom(4) + 4;
+    activeSite!.siege.timeUntilCops = -lcsRandom(4) - 4;
+    activeSite!.heat += 1000;
     activeSite!.siege.escalationState =
         activeSite!.siege.escalationState.escalate();
   }
