@@ -18,6 +18,7 @@ import 'package:lcs_new_age/daily/activities/trouble.dart';
 import 'package:lcs_new_age/daily/shopsnstuff.dart';
 import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
+import 'package:lcs_new_age/items/loot_type.dart';
 import 'package:lcs_new_age/location/location_type.dart';
 import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
@@ -76,6 +77,16 @@ Future<void> soloActivities(bool disbanding) async {
         case ActivityType.streamGuardian:
         case ActivityType.writeGuardian:
           if (p.site?.siege.lightsOff == true) {
+            p.activity = Activity.none();
+          }
+        // allow making clothing at home if you have cloth and power isn't cut
+        case ActivityType.makeClothing:
+          if (p.site?.siege.lightsOff == true &&
+              p.site?.loot
+                      .map((l) => l.type)
+                      .whereType<LootType>()
+                      .any((l) => l.cloth) ==
+                  true) {
             p.activity = Activity.none();
           }
         // things that necessitate spending money or touching grass
