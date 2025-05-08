@@ -300,7 +300,7 @@ Elements marked as hardcoded may have their values overridden by the game.
             <attack_description>shows a $1000 bill to</attack_description>
             <attack_description>offers stock options to</attack_description>
             <social_damage>true</social_damage>
-            <skill>PERSUASION</skill>
+            <skill>BUSINESS</skill>
             <stuns>true</stuns>
         </social_attack>
         <social_attack>
@@ -311,7 +311,7 @@ Elements marked as hardcoded may have their values overridden by the game.
             <attack_description>says life isn't about money to</attack_description>
             <attack_description>poses with a pride pin at</attack_description>
             <social_damage>true</social_damage>
-            <skill>PERSUASION</skill>
+            <skill>BUSINESS</skill>
             <stuns>true</stuns>
         </social_attack>
     </creaturetype>
