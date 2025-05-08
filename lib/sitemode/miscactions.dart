@@ -251,7 +251,7 @@ Future<UnlockResult> bash(BashTypes type) async {
 Future<UnlockResult> hack(HackTypes type) async {
   int difficulty = switch (type) {
     HackTypes.supercomputer => Difficulty.heroic,
-    HackTypes.vault => Difficulty.challenging,
+    HackTypes.vault => Difficulty.hard,
   };
 
   int maxattack = -3;
@@ -274,14 +274,20 @@ Future<UnlockResult> hack(HackTypes type) async {
     if (maxattack > difficulty) {
       clearMessageArea();
       mvaddstrc(9, 1, white, hacker.name);
-      if (!blind) addstr(" has");
+      if (hacker.skill(Skill.computers) < 2) {
+        addstr(" presses buttons randomly...");
+        await getKey();
+        mvaddstr(10, 1, "...and this somehow");
+      }
       switch (type) {
         case HackTypes.supercomputer:
-          addstr(" burned a disk of top secret files");
+          addstr(" burns a disk of top secret files");
         case HackTypes.vault:
-          addstr(" disabled the second layer of security");
+          addstr(" disables the second layer of security");
       }
-      if (blind) addstr(" despite being blind");
+      if (blind) {
+        addstr(" despite being blind");
+      }
       addstr("!");
 
       await getKey();
@@ -290,13 +296,33 @@ Future<UnlockResult> hack(HackTypes type) async {
     } else {
       clearMessageArea();
       mvaddstrc(9, 1, white, hacker.name);
-      addstr(" couldn't");
-      if (blind) addstr(" see how to");
-      switch (type) {
-        case HackTypes.supercomputer:
-          addstr(" bypass the supercomputer security.");
-        case HackTypes.vault:
-          addstr(" bypass the vault's electronic lock.");
+      if (hacker.skill(Skill.computers) < 2) {
+        addstr(" presses buttons randomly...");
+        await getKey();
+        mvaddstr(
+            10,
+            1,
+            [
+              "...which doesn't work. Obviously.",
+              "...but now the screen is off and won't turn on.",
+              "...and manages to install DOOM. Which is cool, but unhelpful.",
+              "...and now it's doing a virus scan and locking out input.",
+              "...until a thin line of smoke rises from the computer.",
+              "...until the computer just freezes up.",
+              "...and presses \"enable lockout\" followed by \"confirm\".",
+              "...but now the text is in wingdings.",
+              "...and now the keyboard layout is in Klingon.",
+              "...and now the computer is playing tic-tac-toe against itself.",
+            ].random);
+      } else {
+        addstr(" couldn't");
+        if (blind) addstr(" see how to");
+        switch (type) {
+          case HackTypes.supercomputer:
+            addstr(" bypass the supercomputer security.");
+          case HackTypes.vault:
+            addstr(" bypass the vault's electronic lock.");
+        }
       }
 
       await getKey();
