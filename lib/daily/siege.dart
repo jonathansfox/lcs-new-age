@@ -1524,9 +1524,8 @@ Future<void> escapeSiege(bool won) async {
     await initsite(activeSite!);
   }
 
-  //SET UP NEW SIEGE CHARACTERISTICS, INCLUDING TIMING
+  // If you won, increase the heat and escalate the siege
   if (won && activeSite!.siege.activeSiegeType == SiegeType.police) {
-    activeSite!.siege.timeUntilCops = -lcsRandom(4) - 4;
     activeSite!.heat += 1000;
     activeSite!.siege.escalationState =
         activeSite!.siege.escalationState.escalate();
