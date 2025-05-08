@@ -996,7 +996,7 @@ Future<bool> addsiegeencounter(int type) async {
     case SIEGEFLAG_UNIT:
     case SIEGEFLAG_UNIT_DAMAGED:
       {
-        if (freeslots < 6) return false;
+        if (freeslots < 4) return false;
 
         num = lcsRandom(3) + 4;
 
@@ -1008,7 +1008,11 @@ Future<bool> addsiegeencounter(int type) async {
               case SiegeType.police:
                 if (activeSite!.siege.escalationState ==
                     SiegeEscalation.police) {
-                  e = Creature.fromId(CreatureTypeIds.swat);
+                  if (deathSquadsActive) {
+                    e = Creature.fromId(CreatureTypeIds.deathSquad);
+                  } else {
+                    e = Creature.fromId(CreatureTypeIds.swat);
+                  }
                 } else {
                   if (activeSite!.siege.escalationState.index <
                       SiegeEscalation.bombers.index) {
@@ -1079,8 +1083,6 @@ Future<bool> addsiegeencounter(int type) async {
           encounter.add(e);
 
           if (type == SIEGEFLAG_UNIT_DAMAGED) e.blood = lcsRandom(75) + 1;
-
-          num--;
         }
         break;
       }
