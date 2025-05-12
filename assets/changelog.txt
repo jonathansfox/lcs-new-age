@@ -585,9 +585,9 @@
 
 A few pieces of additional history, with apologies to the many, many contributions of people over the years that I am glossing over:
 
-July 2023 - Jonathan S. Fox starts working on Liberal Crime Squad: New Age, based on a mix of code from Terra Vitae and IssacG's fork
+July 2023 - Jonathan S. Fox starts working on Liberal Crime Squad: New Age, based on a mix of code from Terra Vitae and IsaacG's fork
 June 2018 - The Cheshire Cat uploads the first release of a remake of Liberal Crime Squad with a mouse interface and graphics to itch.io
-August 2017 - IssacG forks Kamal-Sadek's version of Liberal Crime Squad and continues releasing updates for many years, also managing Windows builds of Terra Vitae
+August 2017 - IsaacG forks Kamal-Sadek's version of Liberal Crime Squad and continues releasing updates for many years, also managing Windows builds of Terra Vitae
 June 2015 - Kamal-Sadek forks the Liberal Crime Squad source code onto GitHub, adding some new features over the coming years
 June 2014 - SlatersQuest uploads the first release of Terra Vitae, a long-running and ambitious feature-rich fork of Liberal Crime Squad 4.07
 April 2013 - Jonathan S. Fox's last update as the maintainer for Liberal Crime Squad, version 4.07, before I got a job as a programmer and stopped thinking about LCS as much for almost 10 years

@@ -201,7 +201,7 @@ void printTitleScreen(HighScores? highScores) {
   addstr("NEW AGE");
   setColor(midGray);
   mvaddstrCenter(4, "Maintained by Jonathan S. Fox, with gratitude to:");
-  mvaddstrCenter(5, "Bay 12 Games, IssacG, SlatersQuest, Kamal-Sadek, Grundee");
+  mvaddstrCenter(5, "Bay 12 Games, IsaacG, SlatersQuest, Kamal-Sadek, Grundee");
   mvaddstrCenter(
       6, "and many others who have contributed to LCS over the years");
 

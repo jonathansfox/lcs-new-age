@@ -15,10 +15,10 @@ Liberal Crime Squad: New Age is a complete rewrite and fork of Liberal Crime Squ
 
 ## Branches of Liberal Crime Squad that New Age was based on:
 
-* IssacG's GitHub Fork - https://github.com/King-Drake/Liberal-Crime-Squad
+* IsaacG's GitHub Fork - https://github.com/King-Drake/Liberal-Crime-Squad
 * SlatersQuest's Terra Vitae Mod
 
-## Contributors prior to IssacG's fork (2007-2015):
+## Contributors prior to IsaacG's fork (2007-2015):
 
 * Addie MacGruer / addiemacgruer (2013) - made the Android port
 * Ari Rahikkala / arirahikkala (2009-2011) - direct contributor to main project
@@ -78,7 +78,7 @@ Tarn Adams / Toady One (2002-2004) - original creator of the game
 * wisq (2008) - direct contributor to main project
 * zaroth (2014) - co-maintainer of the GitHub fork with Lasica
 
-## Contributors after IssacG's fork (2016+):
+## Contributors after IsaacG's fork (2016+):
 
 * Alien_AV - contributed to GitHub fork
 * ArrowThunder - contributed to GitHub fork
