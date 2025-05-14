@@ -1497,7 +1497,6 @@ Future<bool> socialAttack(Creature a, Creature t, Attack attackUsed) async {
         liberalize(t);
         if (activeSiteUnderSiege) activeSite!.siege.kills++;
         sitestory?.drama.add(Drama.musicalRampage);
-        t.infiltration /= 2;
         t.justConverted = true;
         t.isWillingToTalk = true;
       }
