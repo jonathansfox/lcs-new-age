@@ -297,7 +297,7 @@ Future<void> characterCreationQuestions(Creature founder, bool choose) async {
               "${forceGenderBinary(Gender.nonbinary).heSheCap} didn't even come close.",
           "+2 Persuasion, +1 Law, +1 Charisma", () {
         founder.adjustSkill(Skill.persuasion, 2);
-        founder.adjustSkill(Skill.streetSmarts, 1);
+        founder.adjustSkill(Skill.law, 1);
         founder.adjustAttribute(Attribute.charisma, 1);
       }),
       _Option("I let people pay me for sex.  I needed the money to survive.",
