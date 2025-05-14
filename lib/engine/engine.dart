@@ -6,6 +6,7 @@ import 'package:lcs_new_age/utils/colors.dart';
 import 'package:lcs_new_age/utils/interface_options.dart';
 
 Future<int> getKey() async => (await console.getkey()).codePoint;
+Future<KeyEvent> getKeyEvent() async => await console.getKeyEvent();
 Future<String> getKeyCaseSensitive() async => console.getkey();
 int checkKey() => console.checkkey().codePoint;
 String checkKeyCaseSensitive() => console.checkkey();
@@ -15,8 +16,8 @@ void addchar(String c) => console.addchar(c);
 void mvaddchar(int y, int x, String c) => console.mvaddchar(y, x, c);
 
 void addstr(String s) => console.addstr(s);
-void addstrc(Color fg, String s) {
-  setColor(fg);
+void addstrc(Color fg, String s, {Color? bg}) {
+  setColor(fg, background: bg ?? black);
   addstr(s);
 }
 
@@ -147,8 +148,8 @@ void addCenteredOptionText(
 }
 
 void mvaddstr(int y, int x, String s) => console.mvaddstr(y, x, s);
-void mvaddstrc(int y, int x, Color fg, String s) {
-  setColor(fg);
+void mvaddstrc(int y, int x, Color fg, String s, {Color? bg}) {
+  setColor(fg, background: bg ?? black);
   mvaddstr(y, x, s);
 }
 

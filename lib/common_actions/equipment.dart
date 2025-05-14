@@ -1,10 +1,12 @@
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:collection/collection.dart';
+import 'package:flutter/material.dart' as material;
+import 'package:flutter/services.dart';
 import 'package:lcs_new_age/common_display/common_display.dart';
 import 'package:lcs_new_age/common_display/print_party.dart';
 import 'package:lcs_new_age/creature/creature.dart';
+import 'package:lcs_new_age/engine/console.dart';
 import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/gamestate/squad.dart';
@@ -401,8 +403,8 @@ Future<void> equipmentBaseAssign() async {
     for (p = pageLoot * 19;
         p < items.length && p < pageLoot * 19 + 19;
         p++, y++) {
-      mvaddstrc(y, 0, lightGray, "${letterAPlus(y - 2)} - ");
-      items[p].printEquipTitle();
+      addOptionText(y, 0, "${letterAPlus(y - 2)} - ",
+          "${letterAPlus(y - 2)} - ${items[p].equipTitle()}${items[p].stackSize > 1 ? " x${items[p].stackSize}" : ""}");
       mvaddstr(y, 25,
           siteFromItem[items[p]]!.getName(short: true, includeCity: true));
     }
@@ -414,31 +416,32 @@ Future<void> equipmentBaseAssign() async {
       } else {
         setColor(lightGray);
       }
-      mvaddstr(y, 51,
-          "${y - 1} - ${bases[p].getName(short: true, includeCity: true)}");
+      addOptionText(y, 51, "${y - 1}",
+          "${y - 1} - ${bases[p].getName(short: true, includeCity: true)}",
+          baseColorKey:
+              p == selectedbase ? ColorKey.white : ColorKey.lightGray);
+    }
+    if (bases.length > 9) {
+      addOptionText(12, 51, "0", "0 - More Bases");
     }
 
     mvaddstrc(22, 0, lightGray,
         "Press a Letter to assign a base.  Press a Number to select a base.");
     move(23, 0);
     if (sortbytype) {
-      addstr("T to sort by location.");
+      addOptionText(24, 0, "T", "T - Sort by location.");
     } else {
-      addstr("T to sort by type.");
+      addOptionText(24, 0, "T", "T - Sort by type.");
     }
-    addstr("  Shift and a Number will move ALL items!");
+    mvaddstr(24, 0, "Shift and a Number will move ALL items!");
 
     move(24, 0); // location for either viewing other base pages or loot pages
-    if (bases.length > 9) {
-      addstr(",. to view other base pages.");
-      move(24,
-          34); // we have base pages, so different location for viewing other loot pages
-    }
     if (items.length > 19) {
       addstr(pageStr);
     }
 
-    int c = await getKey();
+    material.KeyEvent keyEvent = await getKeyEvent();
+    int c = keyEventToString(keyEvent).codePoint;
 
     //PAGE UP (items)
     if ((isPageUp(c) || c == Key.upArrow || c == Key.leftArrow) &&
@@ -450,11 +453,10 @@ Future<void> equipmentBaseAssign() async {
         (pageLoot + 1) * 19 < items.length) {
       pageLoot++;
     }
-
-    //PAGE UP (locations)
-    if (c == ','.codePoint && pageLoc > 0) pageLoc--;
     //PAGE DOWN (locations)
-    if (c == '.'.codePoint && (pageLoc + 1) * 9 < bases.length) pageLoc++;
+    if (c == Key.num0 && (pageLoc + 1) * 9 < bases.length) {
+      pageLoc = (pageLoc + 1) % (bases.length / 9).ceil();
+    }
 
     //Toggle sorting method
     if (c == Key.t) {
@@ -490,27 +492,62 @@ Future<void> equipmentBaseAssign() async {
       int p = pageLoc * 9 + c - '1'.codePoint;
       if (p < bases.length) selectedbase = p;
     }
+    String upnums = "!@#\$%^&*()_+";
     // Check if the player wants to move all items to a new location,
-    // using Shift + a number key.
-    String upnums = "!@#\$%^&*(";
-    for (int upnumi = 0; upnumi < upnums.length; upnumi++) {
-      if (c == upnums.codeUnitAt(upnumi)) {
-        // Set base location
-        int basechoice = pageLoc * 9 + upnumi;
-        if (basechoice < bases.length) {
-          selectedbase = basechoice;
+    // using Shift + a number key. Since this varies by keyboard layout,
+    // we have to check the physical key.
+    Map<int, int> shiftMap = {
+      0x7001e: 0,
+      0x7001f: 1,
+      0x70020: 2,
+      0x70021: 3,
+      0x70022: 4,
+      0x70023: 5,
+      0x70024: 6,
+      0x70025: 7,
+      0x70026: 8,
+      0x70059: 0,
+      0x7005a: 1,
+      0x7005b: 2,
+      0x7005c: 3,
+      0x7005d: 4,
+      0x7005e: 5,
+      0x7005f: 6,
+      0x70060: 7,
+      0x70061: 8,
+    };
+    if (HardwareKeyboard.instance.isShiftPressed) {
+      debugPrint(
+          "Shift pressed with ${keyEvent.physicalKey.usbHidUsage.toRadixString(16)}");
+    }
+    int index = -1;
+    if (HardwareKeyboard.instance.isShiftPressed &&
+        shiftMap.containsKey(keyEvent.physicalKey.usbHidUsage)) {
+      index = shiftMap[keyEvent.physicalKey.usbHidUsage]!;
+    } else if (upnums.contains(keyEvent.character ?? "false")) {
+      index = upnums.indexOf(keyEvent.character!);
+    }
+
+    if (index >= 0 && index < 9) {
+      // Set base location
+      int basechoice = pageLoc * 9 + index;
+      if (basechoice < bases.length) {
+        selectedbase = basechoice;
+        Site newsite = bases[selectedbase];
+        List<Item> newloot = newsite.loot;
+        // Search through the old base's stuff for this item
+        for (int p = 0; p < items.length; p++) {
+          Site oldsite = siteFromItem[items[p]]!;
+          if (oldsite == newsite) continue;
+          List<Item> oldloot = oldsite.loot;
           // Search through the old base's stuff for this item
-          for (int p = 0; p < items.length; p++) {
-            // Search through the old base's stuff for this item
-            for (int l2 = 0; l2 < siteFromItem[items[p]]!.loot.length; l2++) {
-              // Remove it from that inventory and move it to the new one
-              if (siteFromItem[items[p]]!.loot[l2] == items[p]) {
-                siteFromItem[items[p]]!.loot.removeAt(l2);
-                bases[selectedbase].loot.add(items[p]);
-                siteFromItem[items[p]] = bases[selectedbase];
-              }
-            }
+          for (int l2 = 0; l2 < oldloot.length; l2++) {
+            // Remove it from that inventory and move it to the new one
+            Item item = oldloot[l2];
+            newloot.add(item);
+            siteFromItem[item] = newsite;
           }
+          oldsite.loot.clear();
         }
       }
     }

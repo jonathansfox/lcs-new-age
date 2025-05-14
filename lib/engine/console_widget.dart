@@ -41,7 +41,6 @@ class _ConsoleWidgetState extends State<ConsoleWidget> {
         newY >= 0 &&
         newY < console.height) {
       if (newX != hoverX || newY != hoverY) {
-        debugPrint("Hover position updated: ($newX, $newY)");
         setState(() {
           hoverX = newX;
           hoverY = newY;
@@ -89,6 +88,9 @@ class _ConsoleWidgetState extends State<ConsoleWidget> {
           LogicalKeyboardKey.shiftRight,
           LogicalKeyboardKey.controlLeft,
           LogicalKeyboardKey.controlRight,
+          LogicalKeyboardKey.metaLeft,
+          LogicalKeyboardKey.metaRight,
+          LogicalKeyboardKey.altGraph,
         ].contains(value.logicalKey)) {
       //debugPrint("Key event: $value");
       console.keyEvent(value);

@@ -147,40 +147,32 @@ class Console {
 
   Future<String> getkey() async {
     flush();
-    if (lastKey == null) {
-      nextKeyEvent = Completer<KeyEvent>();
-      await nextKeyEvent!.future;
-      nextKeyEvent = null;
+    String character = '';
+    while (character == '') {
+      while (lastKey == null) {
+        nextKeyEvent = Completer<KeyEvent>();
+        await nextKeyEvent!.future;
+        nextKeyEvent = null;
+      }
+      character = keyEventToString(lastKey!);
+      lastKey = null;
     }
-    String character;
-    switch (lastKey?.logicalKey) {
-      case LogicalKeyboardKey.arrowUp:
-        character = "Up";
-      case LogicalKeyboardKey.arrowDown:
-        character = "Down";
-      case LogicalKeyboardKey.arrowLeft:
-        character = "Left";
-      case LogicalKeyboardKey.arrowRight:
-        character = "Right";
-      case LogicalKeyboardKey.tab:
-        character = "Tab";
-      case LogicalKeyboardKey.escape:
-        character = "Escape";
-      case LogicalKeyboardKey.backspace:
-        character = "Backspace";
-      case LogicalKeyboardKey.enter:
-        character = "Enter";
-      case LogicalKeyboardKey.shift:
-        character = "Shift";
-      case LogicalKeyboardKey.less:
-        character = "<";
-      case LogicalKeyboardKey.greater:
-        character = ">";
-      default:
-        character = lastKey?.character ?? '';
-    }
-    lastKey = null;
     return character;
+  }
+
+  Future<KeyEvent> getKeyEvent() async {
+    flush();
+    KeyEvent? result = lastKey;
+    while (result == null || keyEventToString(result) == '') {
+      while (lastKey == null) {
+        nextKeyEvent = Completer<KeyEvent>();
+        await nextKeyEvent!.future;
+        nextKeyEvent = null;
+      }
+      result = lastKey;
+      lastKey = null;
+    }
+    return result!;
   }
 
   String checkkey() {
@@ -192,5 +184,34 @@ class Console {
 
   void addGraphic(ConsoleGraphic graphic) {
     graphics.add(graphic);
+  }
+}
+
+String keyEventToString(KeyEvent event) {
+  switch (event.logicalKey) {
+    case LogicalKeyboardKey.arrowUp:
+      return "Up";
+    case LogicalKeyboardKey.arrowDown:
+      return "Down";
+    case LogicalKeyboardKey.arrowLeft:
+      return "Left";
+    case LogicalKeyboardKey.arrowRight:
+      return "Right";
+    case LogicalKeyboardKey.tab:
+      return "Tab";
+    case LogicalKeyboardKey.escape:
+      return "Escape";
+    case LogicalKeyboardKey.backspace:
+      return "Backspace";
+    case LogicalKeyboardKey.enter:
+      return "Enter";
+    case LogicalKeyboardKey.shift:
+      return "Shift";
+    case LogicalKeyboardKey.less:
+      return "<";
+    case LogicalKeyboardKey.greater:
+      return ">";
+    default:
+      return event.character ?? '';
   }
 }
