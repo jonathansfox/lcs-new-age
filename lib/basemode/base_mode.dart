@@ -99,9 +99,7 @@ Future<bool> baseMode() async {
         }
       case Key.e:
         // equip loot
-        if (partySize > 0 &&
-            !(siege?.underAttack ?? false) &&
-            activeSquad?.site != null) {
+        if (partySize > 0 && activeSquad?.site != null) {
           Creature? oldASM = activeSquadMember;
           activeSquadMember = null;
           await equip(activeSquad?.site?.loot);
