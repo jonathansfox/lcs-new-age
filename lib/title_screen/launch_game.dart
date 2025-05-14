@@ -73,6 +73,8 @@ Future<void> errorScreen(Error e, {bool willContinue = false}) async {
     mvaddstrc(24, 0, lightGreen,
         "Press any key to restart the game after this Conservative interruption.");
   }
+  checkKey();
+  await Future.delayed(const Duration(milliseconds: 250));
   await getKey();
 }
 
