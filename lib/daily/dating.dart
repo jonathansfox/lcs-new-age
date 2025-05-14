@@ -475,7 +475,7 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
           Clothing clothes = Clothing("CLOTHING_CLOTHES");
           e.giveArmor(clothes, null);
 
-          await kidnaptransfer(e);
+          await kidnaptransfer(e, kidnapper: p);
 
           stats.kidnappings++;
           d.dates.remove(e);
