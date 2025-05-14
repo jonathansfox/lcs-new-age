@@ -28,7 +28,7 @@
                 Default: false
         </body_covering>
         <stealth_value> (integer) Stealth bonus given by the clothing. No bonus means the clothing is unusable for sneaking.
-            Default: 0
+            Default: 1
         <name> (string) The name of the clothing type.
             Default: UNDEFINED
         <shortname> (string) A shorter, max 14 characters, name for the clothing type.
@@ -57,7 +57,6 @@
   <clothingtype idname="CLOTHING_CLOTHES">
     <make_difficulty>2</make_difficulty>
     <make_price>10</make_price>
-    <stealth_value>1</stealth_value>
     <name>Clothes</name>
     <shortname>Clothes</shortname>
     <fencevalue>20</fencevalue>
@@ -100,7 +99,6 @@
     <intrinsic_armor>ARMOR_EXTERNALPLATE</intrinsic_armor>
     <make_difficulty>4</make_difficulty>
     <make_price>20</make_price>
-    <stealth_value>1</stealth_value>
     <name>PMC Loadout</name>
     <shortname>PMC Loadout</shortname>
     <fencevalue>40</fencevalue>
@@ -115,7 +113,6 @@
   <clothingtype idname="CLOTHING_TACHARNESS">
     <make_difficulty>4</make_difficulty>
     <make_price>20</make_price>
-    <stealth_value>1</stealth_value>
     <name>Tactical Harness</name>
     <shortname>Tac Harness</shortname>
     <fencevalue>40</fencevalue>
@@ -125,7 +122,7 @@
   <clothingtype idname="CLOTHING_CAMOSUIT">
     <make_difficulty>4</make_difficulty>
     <make_price>20</make_price>
-    <stealth_value>1</stealth_value>
+    <stealth_value>2</stealth_value>
     <name>Camo Outfit</name>
     <shortname>Camo Outfit</shortname>
     <fencevalue>40</fencevalue>
@@ -147,7 +144,6 @@
       <assaultbonus>4</assaultbonus>
     </interrogation>
     <professionalism>2</professionalism>
-    <stealth_value>1</stealth_value>
     <appropriate_weapon>WEAPON_MP5</appropriate_weapon>
     <appropriate_weapon>WEAPON_M4</appropriate_weapon>
     <appropriate_weapon>WEAPON_M7</appropriate_weapon>
@@ -170,7 +166,6 @@
       <assaultbonus>4</assaultbonus>
     </interrogation>
     <professionalism>2</professionalism>
-    <stealth_value>1</stealth_value>
     <appropriate_weapon>WEAPON_MP5</appropriate_weapon>
     <appropriate_weapon>WEAPON_M4</appropriate_weapon>
     <appropriate_weapon>WEAPON_M7</appropriate_weapon>
@@ -221,7 +216,7 @@
     <shortname>Biker Leather</shortname>
     <fencevalue>100</fencevalue>
     <professionalism>1</professionalism>
-    <stealth_value>3</stealth_value>
+    <stealth_value>2</stealth_value>
     <durability>20</durability>
     <culture>BIKER</culture>
   </clothingtype>
@@ -239,7 +234,8 @@
     <shortname>Blck B. Outfit</shortname>
     <fencevalue>5</fencevalue>
     <professionalism>2</professionalism>
-    <stealth_value>3</stealth_value>
+    <armor_allowed>ARMOR_LEATHER</armor_allowed>
+    <stealth_value>2</stealth_value>
     <culture>REBEL</culture>
   </clothingtype>
   <clothingtype idname="CLOTHING_BLACKROBE">
@@ -299,7 +295,6 @@
       <drugbonus>4</drugbonus>
     </interrogation>
     <professionalism>1</professionalism>
-    <stealth_value>1</stealth_value>
     <culture>CHAOS</culture>
   </clothingtype>
   <clothingtype idname="CLOTHING_BUNKERGEAR">
@@ -307,6 +302,7 @@
     <make_price>250</make_price>
     <intrinsic_armor>ARMOR_TURNOUTGEAR</intrinsic_armor>
     <armor_allowed>ARMOR_COSMETIC</armor_allowed>
+    <stealth_value>0</stealth_value>
     <body_covering>
       <head>true</head>
       <conceals_face>true</conceals_face>
@@ -330,7 +326,6 @@
       <basepower>4</basepower>
     </interrogation>
     <professionalism>3</professionalism>
-    <stealth_value>1</stealth_value>
     <culture>FORMAL</culture>
     <gendered>FEMALE</gendered>
   </clothingtype>
@@ -344,7 +339,6 @@
       <basepower>4</basepower>
     </interrogation>
     <professionalism>3</professionalism>
-    <stealth_value>1</stealth_value>
     <culture>FORMAL</culture>
     <gendered>MALE</gendered>
   </clothingtype>
@@ -359,6 +353,7 @@
       <drugbonus>4</drugbonus>
     </interrogation>
     <professionalism>1</professionalism>
+    <stealth_value>0</stealth_value>
     <culture>CHAOS</culture>
   </clothingtype>
   <clothingtype idname="CLOTHING_DEATHSQUADUNIFORM">
@@ -378,7 +373,6 @@
       <assaultbonus>6</assaultbonus>
     </interrogation>
     <professionalism>1</professionalism>
-    <stealth_value>1</stealth_value>
     <appropriate_weapon>WEAPON_MP5</appropriate_weapon>
     <appropriate_weapon>WEAPON_M4</appropriate_weapon>
     <appropriate_weapon>WEAPON_M7</appropriate_weapon>
@@ -404,6 +398,7 @@
       <drugbonus>4</drugbonus>
     </interrogation>
     <professionalism>1</professionalism>
+    <stealth_value>0</stealth_value>
     <conceal_weapon_size>0</conceal_weapon_size>
     <culture>CHAOS</culture>
     <culture>REBEL</culture>
@@ -423,6 +418,7 @@
       <drugbonus>4</drugbonus>
     </interrogation>
     <professionalism>1</professionalism>
+    <stealth_value>0</stealth_value>
     <conceal_weapon_size>0</conceal_weapon_size>
     <culture>CHAOS</culture>
     <culture>FAR RIGHT</culture>
@@ -442,6 +438,7 @@
       <drugbonus>4</drugbonus>
     </interrogation>
     <professionalism>1</professionalism>
+    <stealth_value>0</stealth_value>
     <conceal_weapon_size>0</conceal_weapon_size>
     <culture>CHAOS</culture>
     <culture>FURRY</culture>
@@ -456,7 +453,6 @@
       <basepower>6</basepower>
     </interrogation>
     <professionalism>4</professionalism>
-    <stealth_value>1</stealth_value>
     <culture>FORMAL</culture>
     <culture>RICH</culture>
     <gendered>FEMALE</gendered>
@@ -471,7 +467,6 @@
       <basepower>6</basepower>
     </interrogation>
     <professionalism>4</professionalism>
-    <stealth_value>1</stealth_value>
     <culture>FORMAL</culture>
     <culture>RICH</culture>
     <gendered>MALE</gendered>
@@ -487,7 +482,6 @@
       <assaultbonus>4</assaultbonus>
     </interrogation>
     <professionalism>2</professionalism>
-    <stealth_value>1</stealth_value>
     <appropriate_weapon>WEAPON_MP5</appropriate_weapon>
     <appropriate_weapon>WEAPON_PUMP_SHOTGUN</appropriate_weapon>
     <appropriate_weapon>WEAPON_NIGHTSTICK</appropriate_weapon>
@@ -509,6 +503,7 @@
     </interrogation>
     <upgradable>false</upgradable>
     <professionalism>1</professionalism>
+    <stealth_value>0</stealth_value>
     <durability>10</durability>
     <culture>FAR RIGHT</culture>
   </clothingtype>
@@ -522,7 +517,7 @@
       <basepower>6</basepower>
     </interrogation>
     <professionalism>2</professionalism>
-    <stealth_value>1</stealth_value>
+    <stealth_value>0</stealth_value>
     <appropriate_weapon>WEAPON_SYRINGE</appropriate_weapon>
     <culture>MEDICAL</culture>
   </clothingtype>
@@ -536,6 +531,7 @@
     <shortname>Mithril Mail</shortname>
     <fencevalue>50</fencevalue>
     <professionalism>1</professionalism>
+    <stealth_value>0</stealth_value>
     <durability>30</durability>
     <culture>FANTASY</culture>
   </clothingtype>
@@ -549,6 +545,7 @@
     <shortname>Chainmail</shortname>
     <fencevalue>50</fencevalue>
     <professionalism>1</professionalism>
+    <stealth_value>0</stealth_value>
     <durability>30</durability>
     <culture>FANTASY</culture>
   </clothingtype>
@@ -566,6 +563,7 @@
     <shortname>Ninja Costume</shortname>
     <fencevalue>75</fencevalue>
     <professionalism>1</professionalism>
+    <armor_allowed>ARMOR_LEATHER</armor_allowed>
     <stealth_value>3</stealth_value>
     <culture>FANTASY</culture>
     <culture>ANIME</culture>
@@ -577,6 +575,7 @@
     <shortname>Orange Jmpsuit</shortname>
     <fencevalue>40</fencevalue>
     <professionalism>1</professionalism>
+    <stealth_value>0</stealth_value>
     <appropriate_weapon>WEAPON_SHANK</appropriate_weapon>
     <culture>CHAOS</culture>
   </clothingtype>
@@ -590,7 +589,6 @@
     <shortname>Overalls</shortname>
     <fencevalue>20</fencevalue>
     <professionalism>2</professionalism>
-    <stealth_value>1</stealth_value>
     <appropriate_weapon>WEAPON_TORCH</appropriate_weapon>
     <appropriate_weapon>WEAPON_PITCHFORK</appropriate_weapon>
     <appropriate_weapon>WEAPON_PUMP_SHOTGUN</appropriate_weapon>
@@ -610,7 +608,6 @@
       <assaultbonus>4</assaultbonus>
     </interrogation>
     <professionalism>2</professionalism>
-    <stealth_value>1</stealth_value>
     <appropriate_weapon>WEAPON_22_REVOLVER</appropriate_weapon>
     <appropriate_weapon>WEAPON_44_REVOLVER</appropriate_weapon>
     <appropriate_weapon>WEAPON_DESERT_EAGLE</appropriate_weapon>
@@ -640,7 +637,6 @@
       <assaultbonus>4</assaultbonus>
     </interrogation>
     <professionalism>2</professionalism>
-    <stealth_value>1</stealth_value>
     <appropriate_weapon>WEAPON_22_REVOLVER</appropriate_weapon>
     <appropriate_weapon>WEAPON_44_REVOLVER</appropriate_weapon>
     <appropriate_weapon>WEAPON_DESERT_EAGLE</appropriate_weapon>
@@ -718,7 +714,6 @@
     <shortname>Servant Unif.</shortname>
     <fencevalue>40</fencevalue>
     <professionalism>2</professionalism>
-    <stealth_value>2</stealth_value>
     <culture>FORMAL</culture>
   </clothingtype>
   <clothingtype idname="CLOTHING_SWATARMOR">
@@ -770,6 +765,7 @@
     <interrogation>
       <basepower>2</basepower>
     </interrogation>
+    <armor_allowed>ARMOR_LEATHER</armor_allowed>
     <professionalism>2</professionalism>
     <conceal_weapon_size>2</conceal_weapon_size>
     <culture>REBEL</culture>
@@ -813,13 +809,11 @@
     <shortname>Work Clothes</shortname>
     <fencevalue>20</fencevalue>
     <professionalism>2</professionalism>
-    <stealth_value>1</stealth_value>
     <appropriate_weapon>WEAPON_CHAIN</appropriate_weapon>
   </clothingtype>
   <clothingtype idname="CLOTHING_CHEERLEADER">
     <make_difficulty>4</make_difficulty>
     <make_price>10</make_price>
-    <stealth_value>1</stealth_value>
     <name>Cheer Squad Jacket</name>
     <shortname>Cheer Jacket</shortname>
     <fencevalue>20</fencevalue>
@@ -829,7 +823,6 @@
   <clothingtype idname="CLOTHING_PUNK_JACKET">
     <make_difficulty>2</make_difficulty>
     <make_price>10</make_price>
-    <stealth_value>1</stealth_value>
     <name>Punk Jacket</name>
     <shortname>Punk Jacket</shortname>
     <fencevalue>20</fencevalue>
@@ -841,7 +834,6 @@
   <clothingtype idname="CLOTHING_DUSTER">
     <make_difficulty>5</make_difficulty>
     <make_price>300</make_price>
-    <stealth_value>1</stealth_value>
     <name>Leather Duster</name>
     <shortname>Duster</shortname>
     <fencevalue>100</fencevalue>
@@ -856,7 +848,6 @@
   <clothingtype idname="CLOTHING_JERSEY">
     <make_difficulty>3</make_difficulty>
     <make_price>10</make_price>
-    <stealth_value>1</stealth_value>
     <name>Sports Jersey</name>
     <shortname>Sports Jersey</shortname>
     <fencevalue>40</fencevalue>
@@ -866,7 +857,6 @@
   <clothingtype idname="CLOTHING_CHEF">
     <make_difficulty>4</make_difficulty>
     <make_price>20</make_price>
-    <stealth_value>1</stealth_value>
     <name>Chef's Whites</name>
     <shortname>Chef's Whites</shortname>
     <fencevalue>40</fencevalue>
@@ -875,7 +865,6 @@
   <clothingtype idname="CLOTHING_SCRUBS">
     <make_difficulty>2</make_difficulty>
     <make_price>10</make_price>
-    <stealth_value>1</stealth_value>
     <name>Medical Scrubs</name>
     <shortname>Scrubs</shortname>
     <fencevalue>20</fencevalue>
@@ -888,7 +877,6 @@
   <clothingtype idname="CLOTHING_TRACKSUIT">
     <make_difficulty>2</make_difficulty>
     <make_price>20</make_price>
-    <stealth_value>1</stealth_value>
     <name>Track Suit</name>
     <shortname>Track Suit</shortname>
     <fencevalue>40</fencevalue>
@@ -898,7 +886,6 @@
   <clothingtype idname="CLOTHING_KIMONO">
     <make_difficulty>3</make_difficulty>
     <make_price>20</make_price>
-    <stealth_value>1</stealth_value>
     <name>Kimono</name>
     <shortname>Kimono</shortname>
     <fencevalue>40</fencevalue>
@@ -909,18 +896,17 @@
   <clothingtype idname="CLOTHING_STREETWEAR">
     <make_difficulty>2</make_difficulty>
     <make_price>10</make_price>
-    <stealth_value>1</stealth_value>
     <name>Streetwear</name>
     <shortname>Streetwear</shortname>
     <fencevalue>20</fencevalue>
     <professionalism>1</professionalism>
+    <armor_allowed>ARMOR_LEATHER</armor_allowed>
     <culture>URBAN</culture>
     <culture>HIP HOP</culture>
   </clothingtype>
   <clothingtype idname="CLOTHING_SARONG">
     <make_difficulty>1</make_difficulty>
     <make_price>5</make_price>
-    <stealth_value>1</stealth_value>
     <name>Sarong</name>
     <shortname>Sarong</shortname>
     <fencevalue>10</fencevalue>
@@ -930,7 +916,6 @@
   <clothingtype idname="CLOTHING_SARI">
     <make_difficulty>0</make_difficulty>
     <make_price>10</make_price>
-    <stealth_value>1</stealth_value>
     <name>Sari</name>
     <shortname>Sari</shortname>
     <fencevalue>20</fencevalue>
@@ -940,7 +925,6 @@
   <clothingtype idname="CLOTHING_BOHO">
     <make_difficulty>2</make_difficulty>
     <make_price>20</make_price>
-    <stealth_value>1</stealth_value>
     <name>Bohemian Outfit</name>
     <shortname>Boho Clothes</shortname>
     <fencevalue>40</fencevalue>
@@ -950,7 +934,6 @@
   <clothingtype idname="CLOTHING_CHIC">
     <make_difficulty>4</make_difficulty>
     <make_price>20</make_price>
-    <stealth_value>1</stealth_value>
     <name>Chic Outfit</name>
     <shortname>Chic Outfit</shortname>
     <fencevalue>40</fencevalue>
@@ -960,7 +943,6 @@
   <clothingtype idname="CLOTHING_TIE_DYE">
     <make_difficulty>2</make_difficulty>
     <make_price>10</make_price>
-    <stealth_value>1</stealth_value>
     <name>Tie-Dye</name>
     <shortname>Tie-Dye</shortname>
     <fencevalue>10</fencevalue>
@@ -970,7 +952,6 @@
   <clothingtype idname="CLOTHING_APRON">
     <make_difficulty>2</make_difficulty>
     <make_price>10</make_price>
-    <stealth_value>1</stealth_value>
     <name>Apron</name>
     <shortname>Apron</shortname>
     <fencevalue>10</fencevalue>
@@ -979,7 +960,6 @@
   <clothingtype idname="CLOTHING_HABIT">
     <make_difficulty>3</make_difficulty>
     <make_price>20</make_price>
-    <stealth_value>1</stealth_value>
     <name>Religious Habit</name>
     <shortname>Habit</shortname>
     <fencevalue>40</fencevalue>
@@ -999,7 +979,6 @@
   <clothingtype idname="CLOTHING_BANDTEE">
     <make_difficulty>2</make_difficulty>
     <make_price>10</make_price>
-    <stealth_value>1</stealth_value>
     <name>Band Tee</name>
     <shortname>Band Tee</shortname>
     <fencevalue>20</fencevalue>
