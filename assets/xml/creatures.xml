@@ -205,7 +205,7 @@ Elements marked as hardcoded may have their values overridden by the game.
             <wisdom>6-10</wisdom>
         </attributes>
         <gender>MALE BIAS</gender>
-        <infiltration>80-95</infiltration>
+        <infiltration>100</infiltration>
         <juice>400-800</juice>
         <money>40-80</money>
         <skills>
@@ -717,7 +717,7 @@ Elements marked as hardcoded may have their values overridden by the game.
             <wisdom>5-10</wisdom>
         </attributes>
         <gender>MALE BIAS</gender>
-        <infiltration>0-150</infiltration>
+        <infiltration>50-80</infiltration>
         <juice>200-350</juice>
         <skills>
             <dodge>4-7</dodge>
@@ -748,7 +748,7 @@ Elements marked as hardcoded may have their values overridden by the game.
             <wisdom>5-10</wisdom>
         </attributes>
         <gender>MALE BIAS</gender>
-        <infiltration>0-150</infiltration>
+        <infiltration>50-80</infiltration>
         <juice>200-350</juice>
         <skills>
             <dodge>6-9</dodge>
@@ -1013,7 +1013,7 @@ Elements marked as hardcoded may have their values overridden by the game.
         <recruit_activity_difficulty>2</recruit_activity_difficulty>
     </creaturetype>
     <creaturetype idname="CREATURE_CRACKHEAD">
-        <type_name>Crackhead</type_name>
+        <type_name>Addict</type_name>
         <weapon>CIVILIAN</weapon>
         <weapon>WEAPON_SHANK</weapon>
         <armor>CLOTHING_STREETWEAR</armor>
