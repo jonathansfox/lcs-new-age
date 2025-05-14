@@ -197,7 +197,7 @@ Future<void> siegeCheck() async {
               mvaddstr(y++, 1,
                   "Aircraft will bomb the compound to weaken the defenses.");
               mvaddstr(y++, 1,
-                  "Special forces will be brought in handle the final assault.");
+                  "Special forces will be brought in to handle the final assault.");
             }
 
             y++;
@@ -405,7 +405,7 @@ Future<void> siegeCheck() async {
             erase();
             mvaddstrc(8, 1, white,
                 "You have received warning from ${ccsSleeper.name} that the CCS ");
-            mvaddstr(9, 1, "is gearing up to attack ${l.name}.");
+            mvaddstr(9, 1, "is gearing up to attack ${l.getName()}.");
             await getKey();
           }
         } else if (l.siege.timeuntilccs > 0) {
@@ -1537,7 +1537,7 @@ Future<void> conquerText() async {
         "Liberal Agenda is realized.";
   }
   setColor(lightGray);
-  addparagraph(3, 11, x2: 59, text);
+  addparagraph(3, 11, x2: 69, text);
 
   mvaddstr(7, 19, "Press C to Continue Liberally.");
 
@@ -1588,9 +1588,9 @@ Future<void> conquerTextCCS() async {
           "As your Liberals pick through the remains of the safehouse, it is "
           "increasingly clear that this was the CCS's last safehouse.\n\n";
     } else {
-      text += "The CCS Lieutenant lying dead at their feet, the squad "
+      text += "The CCS Founder lying dead at their feet, the squad "
           "slips away.\n\n"
-          "With even its Lieutenant swearing off Conservatism forever, the last "
+          "With its leadership crushed by the forces of Liberalism, the last "
           "of the CCS's morale and confidence is shattered.\n\n";
     }
 
@@ -1611,7 +1611,7 @@ Future<void> conquerTextCCS() async {
   }
 
   setColor(lightGray);
-  addparagraph(3, 11, x2: 59, text);
+  addparagraph(3, 11, x2: 69, text);
 
   mvaddstr(15, 19, "Press C to Continue Liberally.");
 
