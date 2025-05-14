@@ -694,7 +694,7 @@
     </weapontype>
 
     <weapontype idname="WEAPON_NIGHTSTICK">
-        <name>Police Baton</name>
+        <name>Steel Baton</name>
         <shortname>Baton</shortname>
         <price>100</price>
         <size>1</size>
