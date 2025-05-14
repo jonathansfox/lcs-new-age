@@ -152,7 +152,7 @@ class Politics {
   void addBackgroundInfluence(View view, int power) {
     backgroundInfluence.update(view, (v) => v + power);
     power = power.abs();
-    if (power > publicInterest[view]!) {
+    if (power / 10 > publicInterest[view]!) {
       publicInterest[view] = publicInterest[view]! + 1;
     }
   }
