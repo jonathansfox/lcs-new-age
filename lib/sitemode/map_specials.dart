@@ -1256,30 +1256,35 @@ Future<void> specialSecurity(bool metaldetect) async {
     if (newReason < rejectReason) rejectReason = newReason;
   }
 
-  // Size up the squad for entry
-  for (Creature s in squad) {
-    // Nudity gets blocked always
-    if (s.equippedClothing == null && s.type.animal) reject(REJECTED_NUDE);
-    if (!autoAdmit) {
-      // Having an employee badge will bypass most checks even
-      // if the security guard doesn't work for you
-      if (disguiseQuality(s) == DisguiseQuality.trespassing) {
-        reject(REJECTED_DRESSCODE);
+  void scanSquad() {
+    // Size up the squad for entry
+    for (Creature s in squad) {
+      // Nudity gets blocked always
+      if (s.equippedClothing == null && s.type.animal) reject(REJECTED_NUDE);
+      if (!autoAdmit) {
+        // Having an employee badge will bypass most checks even
+        // if the security guard doesn't work for you
+        if (disguiseQuality(s) == DisguiseQuality.trespassing) {
+          reject(REJECTED_DRESSCODE);
+        }
+        if (s.clothing.bloody) reject(REJECTED_BLOODYCLOTHES);
+        if (s.clothing.damaged) reject(REJECTED_DAMAGEDCLOTHES);
+        if (s.clothing.quality != 1) reject(REJECTED_SECONDRATECLOTHES);
+        if (s.age < 16) reject(REJECTED_UNDERAGE);
       }
-      if (s.clothing.bloody) reject(REJECTED_BLOODYCLOTHES);
-      if (s.clothing.damaged) reject(REJECTED_DAMAGEDCLOTHES);
-      if (s.clothing.quality != 1) reject(REJECTED_SECONDRATECLOTHES);
-      if (s.age < 16) reject(REJECTED_UNDERAGE);
-    }
-    if (sleeper == null) {
-      // Suspicious weapons blocked unless the security guard
-      // works for you
-      if (weaponCheck(s, metalDetector: metaldetect) ==
-          WeaponCheckResult.suspicious) {
-        reject(REJECTED_WEAPONS);
+      if (sleeper == null) {
+        // Suspicious weapons blocked unless the security guard
+        // works for you
+        if (weaponCheck(s, metalDetector: metaldetect) ==
+            WeaponCheckResult.suspicious) {
+          reject(REJECTED_WEAPONS);
+        }
       }
     }
   }
+
+  scanSquad();
+
   move(10, 1);
   setColor(rejectReason == NOT_REJECTED ? lightGreen : red);
   switch (rejectReason) {
@@ -1336,8 +1341,7 @@ Future<void> specialSecurity(bool metaldetect) async {
           await getKey();
           clearMessageArea();
           mvaddstrc(9, 1, white,
-              "The guard disables the alarm and doesn't even look up at the squad.");
-          await getKey();
+              "The guard sounds incredibly bored and doesn't even glance at the squad.");
           mvaddstrc(
               10,
               1,
@@ -1351,6 +1355,29 @@ Future<void> specialSecurity(bool metaldetect) async {
                 "\"Constitution says you can carry guns anywhere you want.\"",
                 "\"You've a right to bear arms here or anywhere else.\"",
               ].random);
+          rejectReason = NOT_REJECTED;
+          metaldetect = false;
+          scanSquad();
+          switch (rejectReason) {
+            case REJECTED_NUDE:
+              await encounterMessage(
+                  "Better keep moving before the guard notices you're naked...");
+            case REJECTED_WEAPONS:
+              await encounterMessage(
+                  "Better keep moving before the guard notices what you're carrying...");
+            case REJECTED_DAMAGEDCLOTHES:
+            case REJECTED_BLOODYCLOTHES:
+            case REJECTED_DRESSCODE:
+            case REJECTED_SECONDRATECLOTHES:
+              await encounterMessage(
+                  "Better keep moving before the guard notices what you're wearing...");
+            case REJECTED_SMELLFUNNY:
+            case REJECTED_TRANS:
+            case REJECTED_FEMALE:
+            case REJECTED_UNDERAGE:
+            case REJECTED_GUESTLIST:
+            case NOT_REJECTED:
+          }
           rejectReason = NOT_REJECTED;
         } else {
           siteAlarm = true;
