@@ -346,7 +346,7 @@ Future<bool> ratifyConstitutionalAmendment(DeepAlignment level,
       if (level.index == vote) yesVotesHouse++;
 
       if (l == house.length - 1) {
-        if (yesVotesHouse >= house.length * 2 / 3) {
+        if (yesVotesHouse >= house.length * 3 / 4) {
           yesWinHouse = true;
         }
       }
