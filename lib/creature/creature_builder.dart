@@ -111,8 +111,15 @@ void _giveGender(Creature creature, CreatureType type) {
     DeepAlignment.liberal => oneIn(2),
     DeepAlignment.eliteLiberal => false,
   };
+  int nbChance = switch (laws[Law.lgbtRights]!) {
+    DeepAlignment.archConservative => 20,
+    DeepAlignment.conservative => 20,
+    DeepAlignment.moderate => 16,
+    DeepAlignment.liberal => 12,
+    DeepAlignment.eliteLiberal => 8,
+  };
   Gender any() {
-    if (creature.isLiberal && oneIn(20)) {
+    if (creature.isLiberal && oneIn(nbChance)) {
       return Gender.nonbinary;
     } else {
       return [Gender.male, Gender.female].random;
@@ -129,7 +136,11 @@ void _giveGender(Creature creature, CreatureType type) {
     case Gender.female:
       creature.gender = Gender.female;
     case Gender.femaleBias:
-      creature.gender = conforming ? Gender.female : any();
+      if (type.id == CreatureTypeIds.sexWorker && oneIn(4)) {
+        creature.gender = any();
+      } else {
+        creature.gender = conforming ? Gender.female : any();
+      }
     case Gender.maleBias:
       creature.gender = conforming ? Gender.male : any();
   }
