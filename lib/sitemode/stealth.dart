@@ -18,7 +18,10 @@ import 'package:lcs_new_age/utils/lcsrandom.dart';
 
 /* checks if your liberal activity is noticed */
 Future<void> noticeCheck(
-    {int difficulty = Difficulty.average, Creature? exclude}) async {
+    {int difficulty = Difficulty.average,
+    Creature? exclude,
+    bool includeModerates = true,
+    bool includeLiberals = false}) async {
   if (siteAlarm) return;
 
   int sneak = -1;
@@ -33,6 +36,8 @@ Future<void> noticeCheck(
   }
   if (sneaker == null) return;
   for (Creature e in encounter) {
+    if (e.align == Alignment.liberal && !includeLiberals) continue;
+    if (e.align == Alignment.moderate && !includeModerates) continue;
     //Prisoners shouldn't shout for help.
     if (e.name == "Prisoner" ||
         e == exclude ||
@@ -210,6 +215,7 @@ Future<void> disguisecheck(int timer) async {
         case CreatureTypeIds.conservativeJudge:
         case CreatureTypeIds.ccsArchConservative:
         case CreatureTypeIds.eminentScientist:
+        case CreatureTypeIds.televangelist:
           stealthDifficulty = Difficulty.easy;
           disguiseDifficulty = Difficulty.hard;
         case CreatureTypeIds.guardDog:

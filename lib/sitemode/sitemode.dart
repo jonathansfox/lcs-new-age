@@ -940,7 +940,7 @@ Future<void> _siteModeAux() async {
 
         if (tookground) {
           juiceparty(1, 50);
-          await noticeCheck();
+          await noticeCheck(includeModerates: false);
           siteCrime++;
           addDramaToSiteStory(Drama.stoleSomething);
           addPotentialCrime(squad, Crime.theft);
