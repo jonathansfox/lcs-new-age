@@ -277,7 +277,7 @@ Future<UnlockResult> hack(HackTypes type) async {
       if (hacker.skill(Skill.computers) < 2) {
         addstr(" presses buttons randomly...");
         await getKey();
-        mvaddstr(10, 1, "...and this somehow");
+        mvaddstr(10, 1, "...and accidentally");
       }
       switch (type) {
         case HackTypes.supercomputer:

@@ -656,8 +656,6 @@ Future<void> specialCourthouseJury() async {
           line2: "concludes that $crime wasn't really wrong here.");
       addjuice(maxp, 25, 200);
     }
-
-    await noticeCheck();
   } else {
     await encounterMessage("${maxp.name} wasn't quite convincing...");
 
