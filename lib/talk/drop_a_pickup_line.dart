@@ -253,7 +253,21 @@ Future<bool> doYouComeHereOften(Creature a, Creature tk) async {
     setColor(red);
     move(y++, 1);
 
-    addstr("\"Dirty. You know that's illegal, officer.\"");
+    String guyGirl = switch (a.gender) {
+      Gender.male => "guy",
+      Gender.female => "girl",
+      _ => "person",
+    };
+
+    addstr([
+      "\"Dirty. You know that's illegal, officer.\"",
+      "\"Sorry, I don't date cops.\"",
+      "\"I think you've mistaken me for someone else, sir.\"",
+      "\"I'm not that kind of $guyGirl, officer.\"",
+      "\"Nope. I don't do police roleplay.\"",
+      "\"I'm not interested, officer.\"",
+      "\"Um, officer, isn't that illegal?\"",
+    ].random);
 
     await getKey();
 
@@ -271,6 +285,7 @@ Future<bool> doYouComeHereOften(Creature a, Creature tk) async {
       "\"Why are you talking to me?\"",
       "\"Get a load of this idiot.\"",
     ].random);
+    tk.isWillingToTalk = false;
   } else if (succeeded || tk.type.id == CreatureTypeIds.sexWorker) {
     String responds = "responds";
     if (a.indecent) {
