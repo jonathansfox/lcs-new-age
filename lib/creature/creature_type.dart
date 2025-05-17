@@ -103,7 +103,8 @@ class CreatureType {
       id == CreatureTypeIds.conservativeJudge ||
       id == CreatureTypeIds.ccsArchConservative ||
       id == CreatureTypeIds.policeChief ||
-      id == CreatureTypeIds.televangelist;
+      id == CreatureTypeIds.televangelist ||
+      id == CreatureTypeIds.president;
 
   bool get preciousToAngryRuralMobs =>
       id == CreatureTypeIds.radioPersonality ||
