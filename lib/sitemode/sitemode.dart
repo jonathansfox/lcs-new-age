@@ -1222,7 +1222,6 @@ Future<void> _siteModeAux() async {
 
               //Get torched
               if (currentTile.firePeak) {
-                currentTile.megaBloody = true;
                 currentTile.siegeUnitDamaged = true;
               }
 
@@ -1230,7 +1229,9 @@ Future<void> _siteModeAux() async {
               if (currentTile.siegeTrap) {
                 currentTile.siegeTrap = false;
                 currentTile.megaBloody = true;
-                currentTile.siegeUnitDamaged = true;
+                if (!damaged) {
+                  currentTile.siegeUnitDamaged = true;
+                }
               } else {
                 if (damaged) {
                   currentTile.siegeUnitDamaged = true;
@@ -1291,7 +1292,9 @@ Future<void> _siteModeAux() async {
                     if (tile.siegeTrap) {
                       tile.siegeTrap = false;
                       tile.megaBloody = true;
-                      tile.siegeUnitDamaged = true;
+                      if (!damaged) {
+                        tile.siegeUnitDamaged = true;
+                      }
                     } else {
                       if (damaged) {
                         tile.siegeUnitDamaged = true;
