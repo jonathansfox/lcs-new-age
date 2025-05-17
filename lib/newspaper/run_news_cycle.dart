@@ -229,6 +229,11 @@ Future<void> displayNewsStories() async {
       await displayStory(n, issueFocus);
       n.positive += 1;
     } else {
+      if ((n.type == NewsStories.ccsSiteAction ||
+              n.type == NewsStories.ccsKilledInSiteAction) &&
+          n.publicationAlignment == DeepAlignment.archConservative) {
+        n.positive = 1;
+      }
       await displayStory(n, null);
     }
 
@@ -466,10 +471,14 @@ void handlePublicOpinionImpact(NewsStory ns, bool liberalguardian) {
       changePublicOpinion(View.lcsLiked, -impact);
       extraMoralAuthority = -10;
     }
-    if (ns.legalGunUsed) {
-      changePublicOpinion(View.gunControl, impact);
-    } else if (ns.illegalGunUsed) {
-      changePublicOpinion(View.gunControl, impact ~/ 5);
+    if (ns.publicationAlignment != DeepAlignment.archConservative) {
+      if (ns.legalGunUsed) {
+        changePublicOpinion(View.gunControl, impact);
+      } else if (ns.illegalGunUsed) {
+        changePublicOpinion(View.gunControl, impact ~/ 5);
+      }
+    } else {
+      changePublicOpinion(View.gunControl, -impact ~/ 5);
     }
     for (View issue in issues) {
       changePublicOpinion(issue, impact,
@@ -481,7 +490,11 @@ void handlePublicOpinionImpact(NewsStory ns, bool liberalguardian) {
       changePublicOpinion(View.ccsHated, impact);
     } else {
       changePublicOpinion(View.ccsHated, -impact);
-      changePublicOpinion(View.gunControl, -impact ~/ 5);
+      if (ns.publicationAlignment != DeepAlignment.archConservative) {
+        changePublicOpinion(View.gunControl, -impact ~/ 5);
+      } else {
+        changePublicOpinion(View.gunControl, impact ~/ 5);
+      }
       extraMoralAuthority = 10;
     }
     for (View issue in issues) {

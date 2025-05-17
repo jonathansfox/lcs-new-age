@@ -210,25 +210,25 @@ Future<void> displayStory(NewsStory ns, View? header) async {
           if (did(Drama.shutDownReactor)) {
             if (laws[Law.nuclearPower] == DeepAlignment.eliteLiberal) {
               if (!liberalguardian) {
-                story += "   According to sources that were at the scene, "
+                story += "  According to sources that were at the scene, "
                     "the Liberal Crime Squad contaminated the state's water supply"
                     "yesterday by tampering with equipment on the site."
                     "&r";
               } else {
                 story +=
-                    "   The Liberal Crime Squad tampered with the state's water supply yesterday, "
+                    "  The Liberal Crime Squad tampered with the state's water supply yesterday, "
                     "demonstrating the extreme dangers of Nuclear Waste. "
                     "&r";
               }
             } else {
               if (!liberalguardian) {
-                story += "   According to sources that were at the scene, "
+                story += "  According to sources that were at the scene, "
                     "the Liberal Crime Squad nearly caused a catastrophic meltdown of the nuclear "
                     "reactor."
                     "&r";
               } else {
                 story +=
-                    "   The Liberal Crime Squad brought the reactor to the verge of a nuclear meltdown, "
+                    "  The Liberal Crime Squad brought the reactor to the verge of a nuclear meltdown, "
                     "demonstrating the extreme vulnerability and danger of Nuclear Power Plants. "
                     "&r";
               }
@@ -236,127 +236,127 @@ Future<void> displayStory(NewsStory ns, View? header) async {
           }
           if (did(Drama.openedPoliceLockup)) {
             if (!liberalguardian) {
-              story += "   According to sources that were at the scene, "
+              story += "  According to sources that were at the scene, "
                   "the Liberal Crime Squad allegedly freed or attempted to free prisoners from the police lockup."
                   "&r";
             } else {
               story +=
-                  "   The Liberal Crime Squad attempted to rescue innocent people from the police lockup, "
+                  "  The Liberal Crime Squad attempted to rescue innocent people from the police lockup, "
                   "saving them from torture and brutality at the hands of Conservative police interrogators."
                   "&r";
             }
           }
           if (did(Drama.bankVaultRobbery)) {
             if (!liberalguardian) {
-              story += "   According to sources that were at the scene, "
+              story += "  According to sources that were at the scene, "
                   "the Liberal Crime Squad opened the bank vault, which held more than \$100,000 at the time."
                   "&r";
             } else {
-              story += "   The Liberal Crime Squad opened the bank vault, "
+              story += "  The Liberal Crime Squad opened the bank vault, "
                   "showing the triumph of Liberal ideals over Conservative economics."
                   "&r";
             }
           } else if (did(Drama.bankStickup)) {
             if (!liberalguardian) {
-              story += "   According to sources that were at the scene, "
+              story += "  According to sources that were at the scene, "
                   "the Liberal Crime Squad threatened innocent bystanders in order to rob the bank vault."
                   "&r";
             } else {
               story +=
-                  "   The Liberal Crime Squad demanded access to the bank vault, "
+                  "  The Liberal Crime Squad demanded access to the bank vault, "
                   "hoping to acquire the resources to overcome evil."
                   "&r";
             }
           }
           if (did(Drama.openedCourthouseLockup)) {
             if (!liberalguardian) {
-              story += "   According to sources that were at the scene, "
+              story += "  According to sources that were at the scene, "
                   "the Liberal Crime Squad allegedly freed or attempted to free prisoners from the courthouse lockup."
                   "&r";
             } else {
               story +=
-                  "   The Liberal Crime Squad attempted to rescue innocent people from the courthouse lockup, "
+                  "  The Liberal Crime Squad attempted to rescue innocent people from the courthouse lockup, "
                   "saving them from the highly corrupt Conservative justice system."
                   "&r";
             }
           }
           if (did(Drama.releasedPrisoners)) {
             if (!liberalguardian) {
-              story += "   According to sources that were at the scene, "
+              story += "  According to sources that were at the scene, "
                   "the Liberal Crime Squad allegedly freed prisoners while in the facility."
                   "&r";
             } else {
               story +=
-                  "   The Liberal Crime Squad attempted to rescue innocent people from the abusive Conservative conditions "
+                  "  The Liberal Crime Squad attempted to rescue innocent people from the abusive Conservative conditions "
                   "at the prison."
                   "&r";
             }
           }
           if (did(Drama.juryTampering)) {
             if (!liberalguardian) {
-              story += "   According to police sources that were at the scene, "
+              story += "  According to police sources that were at the scene, "
                   "the Liberal Crime Squad allegedly violated the sacred "
                   "trust and attempted to influence a jury."
                   "&r";
             } else {
               story +=
-                  "   The Liberal Crime Squad has apologized over reports that the operation "
+                  "  The Liberal Crime Squad has apologized over reports that the operation "
                   "may have interfered with jury deliberations."
                   "&r";
             }
           }
           if (did(Drama.hackedIntelSupercomputer)) {
             if (!liberalguardian) {
-              story += "   According to police sources that were at the scene, "
+              story += "  According to police sources that were at the scene, "
                   "intelligence officials seemed very nervous about something."
                   "&r";
             } else {
               story +=
-                  "   Liberal Crime Squad computer specialists worked to liberate information from CIA computers."
+                  "  Liberal Crime Squad computer specialists worked to liberate information from CIA computers."
                   "&r";
             }
           }
           if (did(Drama.openedArmory)) {
             if (!liberalguardian) {
-              story += "   According to sources, "
+              story += "  According to sources, "
                   "the Liberal Crime Squad attempted to break into the armory."
                   "&r";
             } else {
               story +=
-                  "   Liberal Crime Squad infiltration specialists worked to liberate weapons from the oppressors."
+                  "  Liberal Crime Squad infiltration specialists worked to liberate weapons from the oppressors."
                   "&r";
             }
           }
           if (did(Drama.openedCEOSafe)) {
             if (!liberalguardian) {
-              story += "   According to police sources that were at the scene, "
+              story += "  According to police sources that were at the scene, "
                   "the owner of the house seemed very frantic about some missing property."
                   "&r";
             } else {
               story +=
-                  "   The Liberal Crime Squad was attempting to uncover the CEO's Conservative corruption."
+                  "  The Liberal Crime Squad was attempting to uncover the CEO's Conservative corruption."
                   "&r";
             }
           }
           if (did(Drama.stoleCorpFiles)) {
             if (!liberalguardian) {
-              story += "   According to police sources that were at the scene, "
+              story += "  According to police sources that were at the scene, "
                   "executives on the scene seemed very nervous about something."
                   "&r";
             } else {
               story +=
-                  "   The Liberal Crime Squad was attempting to uncover the company's Conservative corruption."
+                  "  The Liberal Crime Squad was attempting to uncover the company's Conservative corruption."
                   "&r";
             }
           }
           if (did(Drama.hijackedBroadcast)) {
             if (!liberalguardian) {
-              story += "   The Liberal Crime Squad hijacked a news broadcast, "
+              story += "  The Liberal Crime Squad hijacked a news broadcast, "
                   "interrupting regular programming."
                   "&r";
             } else {
               story +=
-                  "   The Liberal Crime Squad delivered its message to the masses today."
+                  "  The Liberal Crime Squad delivered its message to the masses today."
                   "&r";
             }
           }
@@ -369,14 +369,14 @@ Future<void> displayStory(NewsStory ns, View? header) async {
             if (!ccs) {
               if (!liberalguardian) {
                 story +=
-                    "   Further details are sketchy, but police sources suggest that the LCS "
+                    "  Further details are sketchy, but police sources suggest that the LCS "
                     "engaged in ";
               } else {
-                story += "   The Liberal Crime Squad ";
+                story += "  The Liberal Crime Squad ";
               }
             } else {
               story +=
-                  "   Further details are sketchy, but police sources suggest that the CCS "
+                  "  Further details are sketchy, but police sources suggest that the CCS "
                   "engaged in ";
             }
             debugPrint("typesum: $typesum");
@@ -470,6 +470,36 @@ Future<void> displayStory(NewsStory ns, View? header) async {
             }
             story += "&r";
           }
+
+          String culprit = ccs ? "CCS" : "LCS";
+          if (ns.publicationAlignment == DeepAlignment.archConservative) {
+            if (ns.type == NewsStories.squadKilledInSiteAction) {
+              story +=
+                  "  A prominent gun advocacy group remarked that it was only "
+                  "thanks to the bravery of people carrying guns that this "
+                  "didn't turn out worse, and those who stood by and did nothing "
+                  "were just as guilty as the ones who committed the crime.&r";
+            } else {
+              if (ccs) {
+                story +=
+                    "  A prominent gun advocacy group noted that increased "
+                    "gun ownership would help to bring violence like this to "
+                    "an end.&r";
+              } else {
+                story += "  A prominent gun advocacy group noted that it was "
+                    "unfortunate that there weren't more armed citizens in "
+                    "the area to stop this from happening.&r";
+              }
+            }
+          } else if (did(Drama.legalGunUsed)) {
+            story +=
+                "  The $culprit was seen to use firearms that are commonly "
+                "sold in the state.&r";
+          } else if (did(Drama.illegalGunUsed)) {
+            story += "  The $culprit was seen to use firearms that are "
+                "illegal for civilians to own in this state.&r";
+          }
+
           if (!ccs) {
             if (oneIn(8)) {
               if (did(Drama.tagging)) {
@@ -839,8 +869,9 @@ void displayNewsStory(String story, List<int> storyXStart, List<int> storyXEnd,
         while (spacesNeeded > 0) {
           for (int i = 0; i < line.length - 1; i++) {
             int remainingInLine = line.length - 1 - i;
-            if (spacesNeeded > remainingInLine ||
-                lcsRandom(remainingInLine) <= spacesNeeded) {
+            if (line[i] != " " &&
+                (spacesNeeded > remainingInLine ||
+                    lcsRandom(remainingInLine) <= spacesNeeded)) {
               line[i] += " ";
               spacesNeeded--;
               if (spacesNeeded == 0) break;
