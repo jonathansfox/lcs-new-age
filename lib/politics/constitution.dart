@@ -373,7 +373,15 @@ Future<bool> ratifyConstitutionalAmendment(DeepAlignment level,
 
       if (l % 4 == 0 && s < senate.length) {
         vote = senate[s++].index;
-        if (vote >= 1 && vote <= 3) vote += lcsRandom(3) - 1;
+        if (vote >= 1 && vote <= 3) {
+          if (politics.publicMood() < 15) {
+            vote += lcsRandom(2) - 1;
+          } else if (politics.publicMood() > 85) {
+            vote += lcsRandom(2);
+          } else {
+            vote += lcsRandom(3) - 1;
+          }
+        }
 
         if (level.index == vote) yesVotesSenate++;
       }
@@ -443,7 +451,7 @@ Future<bool> ratifyConstitutionalAmendment(DeepAlignment level,
 
     Stopwatch sw = Stopwatch()..start();
     for (int s = 0; s < states.length; s++) {
-      double smood = mood + states[s].rollMood;
+      double smood = states[s].rollMood(mood);
 
       int vote = 0;
       if (lcsRandom(100) < smood) vote++;

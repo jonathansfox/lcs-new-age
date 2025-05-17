@@ -4,7 +4,20 @@ class State {
   State(this.name, this.politicalLeaning);
   final String name;
   final int politicalLeaning;
-  int get rollMood => politicalLeaning * 4 + lcsRandom(3 * politicalLeaning);
+  double rollMood(double baseMood) {
+    double leaningMitigaton = 1;
+    if (politicalLeaning > 0 && baseMood < 10) {
+      leaningMitigaton = 0.75;
+      if (baseMood < 5) leaningMitigaton = 0.25;
+    }
+    if (politicalLeaning < 0 && baseMood > 90) {
+      leaningMitigaton = 0.75;
+      if (baseMood > 95) leaningMitigaton = 0.25;
+    }
+    return baseMood +
+        politicalLeaning * 4 * leaningMitigaton +
+        lcsRandom(3 * politicalLeaning) * leaningMitigaton;
+  }
 }
 
 final List<State> states = [
