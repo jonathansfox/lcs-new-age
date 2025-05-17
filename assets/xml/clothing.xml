@@ -269,6 +269,11 @@
     <culture>RELIGIOUS</culture>
     <gendered>MALE</gendered>
   </clothingtype>
+  <clothingtype idname="CLOTHING_BLACKSUIT_AGENT">
+    <modification_of>CLOTHING_BLACKSUIT</modification_of>
+    <make_difficulty>-1</make_difficulty>
+    <intrinsic_armor>ARMOR_SOFTSYSTEM</intrinsic_armor>
+  </clothingtype>
   <clothingtype idname="CLOTHING_BLACKCLOTHES">
     <make_difficulty>2</make_difficulty>
     <make_price>15</make_price>

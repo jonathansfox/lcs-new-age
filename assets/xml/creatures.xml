@@ -706,7 +706,7 @@ Elements marked as hardcoded may have their values overridden by the game.
         <weapon>WEAPON_M4</weapon>
         <weapon>WEAPON_PUMP_SHOTGUN</weapon>
         <weapon>WEAPON_MP5</weapon>
-        <armor>CLOTHING_BLACKSUIT</armor>
+        <armor>CLOTHING_BLACKSUIT_AGENT</armor>
         <age>MATURE</age>
         <alignment>CONSERVATIVE</alignment>
         <attributes>
@@ -718,13 +718,13 @@ Elements marked as hardcoded may have their values overridden by the game.
         </attributes>
         <gender>MALE BIAS</gender>
         <infiltration>50-80</infiltration>
-        <juice>200-350</juice>
+        <juice>500-750</juice>
         <skills>
-            <dodge>4-7</dodge>
-            <driving>4-9</driving>
-            <martialArts>2-9</martialArts>
-            <firearms>2-9</firearms>
-            <psychology>4-9</psychology>
+            <dodge>6-10</dodge>
+            <driving>6-10</driving>
+            <martialArts>6-10</martialArts>
+            <firearms>6-10</firearms>
+            <psychology>6-10</psychology>
         </skills>
         <seethroughstealth>  7</seethroughstealth>
         <seethroughdisguise>  7</seethroughdisguise>
@@ -1275,7 +1275,7 @@ Elements marked as hardcoded may have their values overridden by the game.
             <wisdom>200</wisdom>
         </attributes>
         <skills>
-            <heavyweapons>6</heavyweapons>
+            <heavyweapons>10</heavyweapons>
         </skills>
     </creaturetype>
     <creaturetype idname="CREATURE_MERC">
