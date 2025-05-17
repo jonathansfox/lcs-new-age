@@ -9,6 +9,7 @@ import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/gamestate/squad.dart';
 import 'package:lcs_new_age/location/city.dart';
+import 'package:lcs_new_age/location/location_type.dart';
 import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
 import 'package:lcs_new_age/politics/laws.dart';
@@ -19,8 +20,8 @@ import 'package:lcs_new_age/title_screen/title_screen.dart';
 import 'package:lcs_new_age/utils/colors.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 
-// Debug flag to start with the President as a sleeper agent
 const bool debugPresidentSleeper = false;
+const bool debugSiege = false;
 
 Future<void> setupNewGame() async {
   gameState = GameState();
@@ -221,6 +222,44 @@ Future<void> makeCharacter() async {
   founder.location = sites.firstWhere(
       (l) => l.city == startingCity && l.controller == SiteController.lcs);
   founder.base = founder.site;
+
+  if (debugSiege) {
+    founder.base =
+        findSiteInSameCity(founder.location!.city, SiteType.warehouse);
+    founder.base?.siege.timeUntilCops = 0;
+    founder.base?.compound.fortified = true;
+    founder.base?.compound.rations = 1000;
+    founder.base?.compound.aaGun = true;
+    founder.base?.compound.bollards = true;
+    founder.base?.compound.boobyTraps = true;
+    founder.base?.compound.cameras = true;
+    founder.base?.compound.generator = true;
+    founder.base?.compound.diesel = 1000;
+    founder.base?.compound.hackerDen = true;
+    founder.base?.compound.videoRoom = true;
+    founder.base?.heat = 9000;
+    founder.juice = 1000;
+    founder.rawSkill[Skill.firearms] = founder.skillCap(Skill.firearms);
+    founder.rawSkill[Skill.dodge] = founder.skillCap(Skill.dodge);
+    founder.giveWeaponAndAmmo("WEAPON_M7", 9);
+
+    for (int i = 0; i < 10; i++) {
+      Creature c = Creature.fromId(CreatureTypeIds.agent);
+      liberalize(c);
+      c.nameCreature();
+      c.juice = 1000;
+      c.rawSkill[Skill.firearms] = c.skillCap(Skill.firearms);
+      c.rawSkill[Skill.dodge] = c.skillCap(Skill.dodge);
+      c.hireId = founder.id;
+      c.base = founder.base;
+      c.location = founder.location;
+      c.giveWeaponAndAmmo("WEAPON_M7", 9);
+      pool.add(c);
+      if (founder.squad!.members.length < 6) {
+        c.squad = founder.squad;
+      }
+    }
+  }
 
   await characterCreationQuestions(founder, letMeChoose);
 
