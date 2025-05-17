@@ -1085,7 +1085,10 @@ Future<bool> addsiegeencounter(int type) async {
 
           encounter.add(e);
 
-          if (type == SIEGEFLAG_UNIT_DAMAGED) e.blood = lcsRandom(75) + 1;
+          if (type == SIEGEFLAG_UNIT_DAMAGED) {
+            e.blood -= lcsRandom(50) + 1;
+            e.body.parts.random.bleeding = 1;
+          }
         }
         break;
       }

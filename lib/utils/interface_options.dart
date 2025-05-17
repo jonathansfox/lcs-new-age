@@ -118,24 +118,5 @@ String pageStrWithCurrentAndMaxX(int current, int max) {
       .join(" ");
 }
 
-String get pageStrShort {
-  String str;
-  if (interfacePgUp == "[") {
-    str = "[]";
-  } else if (interfacePgUp == ".") {
-    str = ";:";
-  } else {
-    str = "PGUP/PGDN";
-  }
-  return "$str - Other pages";
-}
-
-String get pageStrShortX {
-  return pageStrShort
-      .split(" ")
-      .mapIndexed((i, s) => i == 0 ? "&B$s&x" : s)
-      .join(" ");
-}
-
 bool isBackKey(int c) =>
     c == Key.x || c == Key.enter || c == Key.escape || c == Key.space;
