@@ -1221,6 +1221,10 @@ Future<SallyForthResult> sallyForthPart3(Site loc) async {
 
   encounter.clear();
 
+  // M1 Tank
+  if (siege.escalationState.index >= SiegeEscalation.tanks.index) {
+    encounter.add(Creature.fromId(CreatureTypeIds.tank));
+  }
   if (siege.escalationState == SiegeEscalation.police) {
     if (loc.type == SiteType.homelessEncampment) {
       // Regular cops sweeping the homeless camp
@@ -1244,21 +1248,24 @@ Future<SallyForthResult> sallyForthPart3(Site loc) async {
       }
     } else {
       // SWAT teams
-      for (int e = 0; e < 6; e++) {
+      for (int e = 0; e < ENCMAX; e++) {
         encounter.add(Creature.fromId(CreatureTypeIds.swat));
       }
     }
   } else if (siege.escalationState.index >=
       SiegeEscalation.nationalGuard.index) {
     // Military
-    for (int e = 0; e < 6; e++) {
-      encounter.add(Creature.fromId(CreatureTypeIds.soldier));
+    for (int e = 0; e < ENCMAX; e++) {
+      if (siege.escalationState.index >= SiegeEscalation.bombers.index) {
+        if (e < 2) {
+          encounter.add(Creature.fromId(CreatureTypeIds.tank));
+        } else {
+          encounter.add(Creature.fromId(CreatureTypeIds.soldier));
+        }
+      } else {
+        encounter.add(Creature.fromId(CreatureTypeIds.soldier));
+      }
     }
-  }
-  // M1 Tank
-  if (siege.escalationState.index >= SiegeEscalation.tanks.index &&
-      !loc.compound.bollards) {
-    encounter.add(Creature.fromId(CreatureTypeIds.tank));
   }
 
   chaseSequence = ChaseSequence(loc);
@@ -1592,7 +1599,7 @@ Future<void> conquerText() async {
   setColor(lightGray);
   addparagraph(3, 11, x2: 69, text);
 
-  mvaddstr(7, 19, "Press C to Continue Liberally.");
+  addOptionText(7, 19, "C", "Press C to Continue Liberally.");
 
   while (await getKey() != Key.c) {}
 }
@@ -1666,7 +1673,7 @@ Future<void> conquerTextCCS() async {
   setColor(lightGray);
   addparagraph(3, 11, x2: 69, text);
 
-  mvaddstr(15, 19, "Press C to Continue Liberally.");
+  addOptionText(15, 19, "C", "Press C to Continue Liberally.");
 
   while (await getKey() != Key.c) {}
 }
