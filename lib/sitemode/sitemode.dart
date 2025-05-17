@@ -1190,7 +1190,8 @@ Future<void> _siteModeAux() async {
           for (x = 0; x < MAPX; x++) {
             for (int y = 0; y < MAPY; y++) {
               for (int z = 0; z < MAPZ; z++) {
-                if (levelMap[x][y][z].siegeUnit) {
+                if (levelMap[x][y][z].siegeUnit ||
+                    levelMap[x][y][z].siegeUnitDamaged) {
                   unitx.add(x);
                   unity.add(y);
                   unitz.add(z);
@@ -1201,6 +1202,8 @@ Future<void> _siteModeAux() async {
 
           int sx = 0, sy = 0, sz = 0;
           for (u = 0; u < unitx.length; u++) {
+            bool damaged =
+                levelMap[unitx[u]][unity[u]][unitz[u]].siegeUnitDamaged;
             // don't leave tile if player is here
             if (unitx[u] == locx && unity[u] == locy && unitz[u] == locz) {
               continue;
@@ -1211,19 +1214,30 @@ Future<void> _siteModeAux() async {
                     ((unity[u] == locy - 1 || unity[u] == locy + 1) &&
                         unitx[u] == locx)) &&
                 unitz[u] == locz) {
-              levelMap[unitx[u]][unity[u]][unitz[u]].siegeUnit = false;
+              if (damaged) {
+                levelMap[unitx[u]][unity[u]][unitz[u]].siegeUnitDamaged = false;
+              } else {
+                levelMap[unitx[u]][unity[u]][unitz[u]].siegeUnit = false;
+              }
 
               //Get torched
               if (currentTile.firePeak) {
+                currentTile.megaBloody = true;
                 currentTile.siegeUnitDamaged = true;
               }
 
               //BLOW TRAPS
               if (currentTile.siegeTrap) {
                 currentTile.siegeTrap = false;
+                currentTile.megaBloody = true;
                 currentTile.siegeUnitDamaged = true;
               } else {
-                currentTile.siegeUnit = true;
+                if (damaged) {
+                  currentTile.siegeUnitDamaged = true;
+                  currentTile.bloody = true;
+                } else {
+                  currentTile.siegeUnit = true;
+                }
               }
               continue;
             }
@@ -1264,14 +1278,27 @@ Future<void> _siteModeAux() async {
                   if (!(tile.siegeUnit ||
                       tile.siegeHeavyUnit ||
                       tile.siegeUnitDamaged)) {
-                    levelMap[unitx[u]][unity[u]][unitz[u]].siegeUnit = false;
+                    bool damaged =
+                        levelMap[unitx[u]][unity[u]][unitz[u]].siegeUnitDamaged;
+                    if (damaged) {
+                      levelMap[unitx[u]][unity[u]][unitz[u]].siegeUnitDamaged =
+                          false;
+                    } else {
+                      levelMap[unitx[u]][unity[u]][unitz[u]].siegeUnit = false;
+                    }
 
                     //BLOW TRAPS
                     if (tile.siegeTrap) {
                       tile.siegeTrap = false;
+                      tile.megaBloody = true;
                       tile.siegeUnitDamaged = true;
                     } else {
-                      tile.siegeUnit = true;
+                      if (damaged) {
+                        tile.siegeUnitDamaged = true;
+                        tile.bloody = true;
+                      } else {
+                        tile.siegeUnit = true;
+                      }
                     }
                   }
                 }
@@ -1331,7 +1358,7 @@ Future<void> _siteModeAux() async {
           //but not as bad as it used to get,
           //since the extra waves are small
           activeSite!.siege.attackTime++;
-          if (activeSite!.siege.attackTime >= 100 + lcsRandom(10) &&
+          if (activeSite!.siege.attackTime >= 30 + lcsRandom(10) &&
               (locz != 0 ||
                   locx < (MAPX / 2 - 3) ||
                   locx > (MAPX / 2 + 3) ||
