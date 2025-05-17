@@ -463,6 +463,9 @@ class Creature {
     if (skill == Skill.stealth) {
       roll = stealthMod(roll);
     }
+    if (skill == Skill.dodge) {
+      roll -= clothing.armor?.dodgePenalty ?? 0;
+    }
     return roll;
   }
 
@@ -475,6 +478,10 @@ class Creature {
       if (clothing.damaged) {
         stealth *= 0.5;
       }
+    }
+    // Sneaking around with a lit torch lol
+    if (weapon.type.idName == "WEAPON_TORCH") {
+      stealth = 0;
     }
 
     value = value + (stealth * 5).round();
@@ -804,7 +811,12 @@ class Creature {
         courage += 100;
       }
     }
-    if (isEnemy) courage += armedConservatives * 50;
+    if (isEnemy) {
+      courage += armedConservatives * 50;
+      if (activeSiteUnderSiege) {
+        courage += 200;
+      }
+    }
     if (!siteAlarm) courage += 100;
     if (type.canPerformArrests || type.lawEnforcement) courage += 200;
     if (type.intimidationResistant) courage += 200;
@@ -819,7 +831,7 @@ class Creature {
         skill(Skill.martialArts) > 2) {
       courage += 400 * (blood / maxBlood).round();
     }
-    if (type.tank) courage += 2000;
+    if (type.tank) courage += 4000;
     if (type.animal) courage += 200;
     if (type.freeable && !isEnemy) courage += 1000;
     if (type.majorEnemy) courage += 2000;
