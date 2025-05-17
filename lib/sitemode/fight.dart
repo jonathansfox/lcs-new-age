@@ -9,6 +9,7 @@ import 'package:lcs_new_age/creature/body.dart';
 import 'package:lcs_new_age/creature/conversion.dart';
 import 'package:lcs_new_age/creature/creature.dart';
 import 'package:lcs_new_age/creature/creature_type.dart';
+import 'package:lcs_new_age/creature/dice.dart';
 import 'package:lcs_new_age/creature/difficulty.dart';
 import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/engine/engine.dart';
@@ -474,8 +475,13 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
   Skill wsk = attackUsed.skill;
 
   // Basic roll
-  int aroll = a.skillRoll(wsk);
-  int droll = t.skillRoll(Skill.dodge, take10: true, advantage: targetIsLeader);
+  int aroll = a.skillRoll(wsk, dice: Dice.d20);
+  int droll = t.skill(Skill.dodge);
+  if (attackUsed.ranged) {
+    droll += 10;
+  } else {
+    droll += t.attribute(Attribute.agility);
+  }
   if (mode == GameMode.carChase) {
     droll = 0;
     if (t.car != null && a.car != null) {
@@ -487,16 +493,16 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
     a.train(wsk, droll + 5);
   } else {
     if (sneakAttack) {
-      droll = (t.attributeRoll(Attribute.wisdom, take10: true) / 2).round();
+      droll = t.attribute(Attribute.wisdom);
       if (siteAlarmTimer == 0) {
-        droll += DifficultyModifier.aLittleHarder;
+        droll += DifficultyModifier.aLotHarder;
       }
       // Current tile bloody? People are more on guard
       if (mode == GameMode.site) {
         if (levelMap[locx][locy][locz].megaBloody) {
-          droll += DifficultyModifier.moderatelyHarder;
+          droll += DifficultyModifier.aLotHarder;
         } else if (levelMap[locx][locy][locz].bloody) {
-          droll += DifficultyModifier.aLittleHarder;
+          droll += DifficultyModifier.moderatelyHarder;
         }
       }
       aroll += a.skill(Skill.stealth);
@@ -949,7 +955,7 @@ Future<void> hit(Creature a, Creature t, Attack attackUsed, BodyPart hitPart,
           }
           addjuice(a, killjuice, 1000); // Instant juice
         } else {
-          addjuice(a, -killjuice, -50);
+          addjuice(a, -25, -50);
         }
 
         if (target.isEnemy && (!t.type.animal || animalsArePeopleToo)) {
