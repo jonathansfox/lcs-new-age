@@ -16,7 +16,7 @@ NewsStory ccsStrikesStory() {
   return NewsStory.prepare(
       oneIn(10) ? NewsStories.ccsKilledInSiteAction : NewsStories.ccsSiteAction)
     ..positive = 1
-    ..loc = sites.where((s) => s.controller != SiteController.ccs).random;
+    ..loc = sites.where((s) => s.controller == SiteController.unaligned).random;
 }
 
 Future<void> advanceCCSDefeatStoryline() async {
