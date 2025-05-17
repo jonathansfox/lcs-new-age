@@ -78,10 +78,21 @@ class Console {
     x++;
   }
 
+  void registerMouseRegion(int y, int x, int width, int height, String key,
+      {bool noHighlight = false}) {
+    for (int i = 0; i < height; i++) {
+      for (int j = 0; j < width; j++) {
+        buffer[y + i][x + j].mouseClickKey = key;
+        buffer[y + i][x + j].noHighlight = noHighlight;
+      }
+    }
+  }
+
   void handleMouseClick(int y, int x) {
     if (y >= buffer.length || x >= buffer[y].length) return;
     if (!gameOptions.mouseInput) return;
     String? key = buffer[y][x].mouseClickKey;
+    key ??= "Enter";
     if (key != null) {
       keyEvent(KeyDownEvent(
         logicalKey: LogicalKeyboardKey.keyA,
@@ -172,7 +183,7 @@ class Console {
       result = lastKey;
       lastKey = null;
     }
-    return result!;
+    return result;
   }
 
   String checkkey() {

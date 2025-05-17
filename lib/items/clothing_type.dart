@@ -81,7 +81,7 @@ class ClothingType extends ItemType {
       traits.add("Hides Face");
     }
     if (stealthValue > 1 &&
-        (allowVisibleArmor || (specifiedArmorUpgrade?.visible == false))) {
+        (allowVisibleArmor || (specifiedArmorUpgrade?.visible != true))) {
       if (stealthValue == 2) {
         traits.add("Sneaky");
       } else {

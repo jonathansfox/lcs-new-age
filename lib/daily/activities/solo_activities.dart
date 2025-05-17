@@ -23,7 +23,6 @@ import 'package:lcs_new_age/location/location_type.dart';
 import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
 import 'package:lcs_new_age/politics/views.dart';
-import 'package:lcs_new_age/utils/colors.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 
 Future<void> _selectRecruitTarget(Creature cr) async {
@@ -36,7 +35,7 @@ Future<void> _selectRecruitTarget(Creature cr) async {
     footerPrompt: "Press a Letter to select a Profession",
     count: recruitableCreatures.length,
     lineBuilder: (y, key, index) {
-      mvaddstrc(y, 0, lightGray, "$key - ${recruitableCreatures[index].name}");
+      addOptionText(y, 0, key, "$key - ${recruitableCreatures[index].name}");
       addDifficultyText(y, 49, recruitableCreatures[index].difficulty);
     },
     onChoice: (index) async {

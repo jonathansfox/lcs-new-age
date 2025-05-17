@@ -165,7 +165,8 @@ class _ConsoleWidgetState extends State<ConsoleWidget> {
         if (gameOptions.mouseInput && hoverX != null && hoverY != null) {
           String? hoverKey = console.buffer[hoverY!][hoverX!].mouseClickKey;
           if (line[x].mouseClickKey != null &&
-              line[x].mouseClickKey == hoverKey) {
+              line[x].mouseClickKey == hoverKey &&
+              !line[x].noHighlight) {
             cellColor = Color.lerp(cellColor, Colors.white, 0.2)!;
           }
         }

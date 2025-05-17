@@ -9,4 +9,5 @@ class ConsoleChar {
   Color foreground = lightGray;
   Color background = black;
   String? mouseClickKey;
+  bool noHighlight = false;
 }

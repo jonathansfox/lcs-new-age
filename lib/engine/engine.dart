@@ -90,6 +90,8 @@ void addInlineOptionText(
       mouseClickKey = String.fromCharCode(Key.leftArrow);
     } else if (key.toLowerCase().startsWith("space")) {
       mouseClickKey = String.fromCharCode(Key.space);
+    } else if (key.toLowerCase().startsWith("esc")) {
+      mouseClickKey = String.fromCharCode(Key.escape);
     }
   }
   String beforeKey = "";
@@ -109,6 +111,15 @@ void addInlineOptionText(
   } else {
     addstrx("&$disabledColorKey$text");
   }
+}
+
+void registerFullScreenMouseRegion(String key) {
+  console.registerMouseRegion(0, 0, CONSOLE_WIDTH, CONSOLE_HEIGHT, key,
+      noHighlight: true);
+}
+
+void registerMouseRegion(int y, int x, int width, int height, String key) {
+  console.registerMouseRegion(y, x, width, height, key);
 }
 
 void addOptionText(
