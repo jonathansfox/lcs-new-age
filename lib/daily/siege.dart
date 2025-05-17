@@ -24,6 +24,7 @@ import 'package:lcs_new_age/location/city.dart';
 import 'package:lcs_new_age/location/location_type.dart';
 import 'package:lcs_new_age/location/siege.dart';
 import 'package:lcs_new_age/location/site.dart';
+import 'package:lcs_new_age/newspaper/display_news.dart';
 import 'package:lcs_new_age/newspaper/news_story.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
 import 'package:lcs_new_age/politics/laws.dart';
@@ -138,7 +139,10 @@ Future<void> siegeCheck() async {
 
       int huntingSpeed = 0;
       if (l.heat > l.heatProtection) {
-        if (l.creaturesPresent
+        if (l.siege.escalationState.index >=
+            SiegeEscalation.nationalGuard.index) {
+          huntingSpeed = 30;
+        } else if (l.creaturesPresent
             .any((p) => p.kidnapped && p.align == Alignment.conservative)) {
           huntingSpeed = 30;
         } else if (l.heatProtection == 0) {
@@ -146,7 +150,9 @@ Future<void> siegeCheck() async {
         } else {
           huntingSpeed = max(1, min(l.heat ~/ l.heatProtection, 5));
         }
-        if (policeChiefCompromised) {
+        if (policeChiefCompromised &&
+            l.siege.escalationState.index <
+                SiegeEscalation.nationalGuard.index) {
           huntingSpeed = (huntingSpeed / 5).ceil();
         }
       }
@@ -203,7 +209,7 @@ Future<void> siegeCheck() async {
             y++;
             mvaddstr(y++, 1,
                 "The operation is scheduled to take place some time in the next week.");
-            mvaddstr(y++, 1, "Press Esc to ponder the situation...");
+            addOptionText(y++, 1, "X", "Press X to ponder the situation...");
             int c;
             do {
               c = await getKey();
@@ -829,7 +835,7 @@ Future<void> siegeTurn() async {
 
         if (l.compound.bollards &&
             l.siege.escalationState.index >= SiegeEscalation.tanks.index &&
-            oneIn(15)) {
+            oneIn(5)) {
           nothingBadHappened = false;
 
           //ENGINEERS
@@ -843,7 +849,7 @@ Future<void> siegeTurn() async {
         //NEED GOOD THINGS TO BALANCE THE BAD
 
         // ELITE REPORTER SNEAKS IN
-        if (oneIn(20) && nothingBadHappened && liberalcount > 0) {
+        if (oneIn(10) && nothingBadHappened && liberalcount > 0) {
           FullName repname = generateFullName();
           String newsType = [
             "news program",
@@ -865,11 +871,19 @@ Future<void> siegeTurn() async {
 
           erase();
           setColor(lightGray);
-          mvaddstr(
-              1, 1, "Elite Journalist ${repname.firstLast} from the $newsType");
-          mvaddstr(
-              2, 1, "$newsNameA $newsNameB got into the compound somehow!");
+          String publicationName = "$newsNameA $newsNameB";
+          String newsBody =
+              "Elite Journalist ${repname.firstLast} from the $newsType $publicationName "
+              "got into the compound somehow!";
+          addparagraph(1, 1, newsBody);
           await getKey();
+
+          NewsStory ns = NewsStory.unpublished(NewsStories.majorEvent);
+          ns.loc = l;
+          ns.byline = "By ${repname.firstLast}";
+          ns.publicationName = publicationName;
+          ns.publicationAlignment = DeepAlignment.moderate;
+          ns.headline = "INTERVIEW: LCS UNDER SIEGE";
 
           int best = 0;
           int bestvalue = -1000;
@@ -880,8 +894,7 @@ Future<void> siegeTurn() async {
             }
 
             int sum = p.attribute(Attribute.intelligence) +
-                p.attribute(Attribute.heart) * 2 +
-                p.skill(Skill.persuasion) * 2 +
+                p.skill(Skill.persuasion) +
                 p.skill(Skill.business) +
                 p.skill(Skill.science) +
                 p.skill(Skill.religion) +
@@ -894,16 +907,23 @@ Future<void> siegeTurn() async {
             }
           }
 
-          mvaddstr(4, 1, "${pool[best].name} decides to give an interview.");
+          String paragraph = "${pool[best].name} decides to give an interview.";
+          newsBody += "\n\n$paragraph";
+          addparagraph(console.y + 1, 1, paragraph);
           await getKey();
 
-          mvaddstr(6, 1,
-              "The interview is wide-ranging, covering a variety of topics.");
+          paragraph =
+              "The interview is wide-ranging, covering a variety of topics.";
+          newsBody += "\n\n$paragraph";
+          addparagraph(console.y + 1, 1, paragraph);
           await getKey();
+
+          debugPrint("bestvalue: $bestvalue");
 
           int segmentpower = bestvalue + Dice.d20.roll();
+          debugPrint("segmentpower: $segmentpower");
+          bool itsAboutDrugs = false;
 
-          move(8, 1);
           if (segmentpower < 15) {
             String playName = "${[
               "Ridiculous",
@@ -913,9 +933,6 @@ Future<void> siegeTurn() async {
               "The Wrong",
               "Semiconscious",
               "Empty-Headed",
-              "Fake",
-              "Hypocrite",
-              "Infantile",
               "Half-Baked",
               "Pot-Smoking",
               "Stoned",
@@ -932,40 +949,76 @@ Future<void> siegeTurn() async {
               "Radical",
               "Stoner",
             ].random}";
-            addstr(repname.firstLast);
-            addstr(" canceled the interview halfway through");
-            mvaddstr(
-                9, 1, "and later used the material for a Broadway play called");
-            mvaddstr(10, 1, "$playName.");
+            ns.headline = playName.toUpperCase();
+            ns.publicationName = "On Broadway";
+            newsBody = "&G${pool[best].name.toUpperCase()} (singing):\n"
+                "&wBarricaded tight, my snacks running low,\n"
+                "They're banging at the door, yelling \"Time to go!\"\n"
+                "The revolution's here, and the fight's at my door,\n"
+                "But I'd rather just get high and let my mind explore";
+            String paragraph =
+                "${repname.firstLast} canceled the interview halfway through "
+                "and later used the material for a Broadway play called "
+                "$playName.";
+            addparagraph(console.y + 1, 1, paragraph);
+            itsAboutDrugs = true;
           } else if (segmentpower < 20) {
-            addstr(
-                "But the interview is so boring that ${repname.firstLast} falls asleep.");
+            String paragraph =
+                "But the interview is so boring that ${repname.firstLast} falls asleep.";
+            newsBody += "\n\n$paragraph";
+            addparagraph(console.y + 1, 1, paragraph);
           } else if (segmentpower < 25) {
-            addstr("But ${pool[best].name} stutters nervously the whole time.");
+            String paragraph =
+                "But ${pool[best].name} stutters nervously the whole time.";
+            newsBody += "\n\n$paragraph";
+            addparagraph(console.y + 1, 1, paragraph);
           } else if (segmentpower < 30) {
-            addstr(
-                "${pool[best].name}'s verbal finesse leaves something to be desired.");
+            String paragraph =
+                "${pool[best].name}'s verbal finesse leaves something to be desired.";
+            newsBody += "\n\n$paragraph";
+            addparagraph(console.y + 1, 1, paragraph);
           } else if (segmentpower < 35) {
-            addstr("${pool[best].name} represents the LCS well.");
+            String paragraph = "${pool[best].name} represents the LCS well.";
+            newsBody += "\n\n$paragraph";
+            addparagraph(console.y + 1, 1, paragraph);
           } else if (segmentpower < 50) {
-            addstr("The discussion was exciting and dynamic.");
-            mvaddstr(9, 1,
-                "Even the Cable News and AM Radio spend days talking about it.");
+            String paragraph = "The discussion was exciting and dynamic. "
+                "Even the Cable News and AM Radio spend days talking about it.";
+            newsBody += "\n\n$paragraph";
+            addparagraph(console.y + 1, 1, paragraph);
           } else {
-            addstr(
-                "${repname.firstLast} later went on to win a Pulitzer for it.");
-            mvaddstr(9, 1,
-                "Virtually everyone in America was moved by ${pool[best].name}'s words.");
+            String paragraph =
+                "${repname.firstLast} later went on to win a Pulitzer for it. "
+                "Virtually everyone in America was moved by ${pool[best].name}'s words.";
+            newsBody += "\n\n$paragraph";
+            addparagraph(console.y + 1, 1, paragraph);
           }
 
           await getKey();
 
           //CHECK PUBLIC OPINION
+          Map<View, double> before =
+              Map.fromEntries(politics.publicOpinion.entries);
           changePublicOpinion(View.lcsKnown, 20);
           changePublicOpinion(View.lcsLiked, (segmentpower - 25) ~/ 2);
-          for (int v = 0; v < 5; v++) {
-            changePublicOpinion(View.issues.random, (segmentpower - 25) ~/ 2);
+          if (!itsAboutDrugs) {
+            for (int v = 0; v < 5; v++) {
+              changePublicOpinion(View.issues.random, (segmentpower - 25) ~/ 2);
+            }
+          } else {
+            changePublicOpinion(View.drugs, -25);
           }
+          Map<View, double> after =
+              Map.fromEntries(politics.publicOpinion.entries);
+          Map<View, double> changes = {};
+          for (View v in before.keys) {
+            if (after[v] != before[v]) {
+              changes[v] = after[v]! - before[v]!;
+            }
+          }
+          ns.effects = changes;
+          ns.body = newsBody;
+          archiveNewsStory(ns);
         }
       }
       // single blank line after every siege day
