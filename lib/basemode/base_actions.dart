@@ -20,11 +20,11 @@ Future<void> setVehicles() async {
     setColor(lightGray);
     //PAGE UP
     if (page > 0) {
-      mvaddstr(17, 1, previousPageStr);
+      addOptionText(17, 1, previousPageStr.split(" ").first, previousPageStr);
     }
     //PAGE DOWN
     if ((page + 1) * carsPerPage < vehiclePool.length) {
-      mvaddstr(17, 53, nextPageStr);
+      addOptionText(17, 53, nextPageStr.split(" ").first, nextPageStr);
     }
 
     mvaddstr(18, 1,

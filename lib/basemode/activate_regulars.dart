@@ -56,9 +56,9 @@ Future<void> activateRegulars() async {
       y++;
     }
     mvaddstrc(22, 0, lightGray, "Press a Letter to Assign an Activity.");
-    mvaddstrx(23, 0, "$pageStrX.  ");
-    addInlineOptionText("T", "T - Sorting options");
-    addOptionText(24, 0, "Z", "Z - Assign simple tasks in bulk");
+    addPageButtons(y: 23, x: 0);
+    addOptionText(24, 0, "T", "T - Sorting options");
+    addOptionText(24, 21, "Z", "Z - Assign simple tasks in bulk");
     int c = await getKey();
     if (isPageUp(c) && page > 0) page--;
     if (isPageDown(c) && (page + 1) * 19 < tempPool.length) page++;
@@ -393,7 +393,7 @@ void _acquisitionSubmenu(Creature c) {
 }
 
 Future<void> _acquisitionChoice(Creature c, int choice) async {
-  if (choice == 1) await _selectRecruitTarget(c);
+  if (choice == 1) c.activity = Activity(ActivityType.recruiting);
   if (choice == 2) c.activity = Activity(ActivityType.stealCars);
   if (choice == 3) await _selectClothingToMake(c);
   if (choice == 4 && !c.canWalk && !c.hasWheelchair) {
@@ -463,26 +463,6 @@ void _medicalDefault(Creature c) {
   }
 }
 
-Future<void> _selectRecruitTarget(Creature cr) async {
-  erase();
-  await pagedInterface(
-    headerPrompt:
-        "What type of person will ${cr.name} try to meet and recruit?",
-    headerKey: {4: "TYPE", 49: "DIFFICULTY TO ARRANGE MEETING"},
-    footerPrompt: "Press a Letter to select a Profession",
-    count: recruitableCreatures.length,
-    lineBuilder: (y, key, index) {
-      mvaddstrc(y, 0, lightGray, "$key - ${recruitableCreatures[index].name}");
-      addDifficultyText(y, 49, recruitableCreatures[index].difficulty);
-    },
-    onChoice: (index) async {
-      cr.activity = Activity(ActivityType.recruiting,
-          idString: recruitableCreatures[index].type.id);
-      return true;
-    },
-  );
-}
-
 Future<void> _selectClothingToMake(Creature cr) async {
   int minDifficulty(ClothingType c) =>
       c.makeDifficulty +
@@ -518,6 +498,7 @@ Future<void> _selectClothingToMake(Creature cr) async {
     footerPrompt: "Press a Letter to select a Type of Clothing",
     pageSize: 12,
     count: craftable.length,
+    showBackButton: selectedClothingIndex != -1,
     lineBuilder: (y, key, index) {
       int difficulty = minDifficulty(craftable[index]);
       bool selected = selectedClothingIndex == index;
@@ -584,11 +565,8 @@ void _clothingDetailFooter(
           clothing.intrinsicArmorId != armor.idName);
   for (int i = 0; i < 2; i++) {
     eraseLine(17);
-    if (armorIndex > 0) {
-      addstrc(white, "< ");
-    } else {
-      addstrc(darkGray, "< ");
-    }
+    addInlineOptionText("<", " < ",
+        enabledWhen: armorIndex > 0, highlightColorKey: "W");
     addstrc(lightGray, "${clothing.name}, ");
     addstrc(lightBlue, armor.name);
     addstrc(lightGreen, " \$${clothing.makePrice + armor.makePrice}");
@@ -597,11 +575,9 @@ void _clothingDetailFooter(
       addstrc(
           lightGray, " (${armorIndex + 1}/${clothing.allowedArmor.length})");
     }
-    if (clothing.allowedArmor.length > armorIndex + 1) {
-      addstrc(white, " >");
-    } else {
-      addstrc(darkGray, " >");
-    }
+    addInlineOptionText(">", " > ",
+        enabledWhen: armorIndex < clothing.allowedArmor.length - 1,
+        highlightColorKey: "W");
     move(console.y, (console.width - console.x) ~/ 2);
   }
 
@@ -679,7 +655,7 @@ Future<void> _selectSkillForEducation(
     count: skills.length,
     lineBuilder: (y, key, index) {
       Skill skill = skills[index];
-      mvaddstrc(y, 0, lightGray, "$key - ${skill.displayName}");
+      addOptionText(y, 0, key, "$key - ${skill.displayName}");
       highlightColorForSkill(cr, skill);
       printSkillValue(cr, skill, y, 20, emphasizePotential: true);
       mvaddstrc(
@@ -923,7 +899,7 @@ Future<void> _activateBulk() async {
 
     mvaddstrc(22, 0, lightGray,
         "Press a Letter to Assign an Activity.  Press a Number to select an Activity.");
-    mvaddstrx(23, 0, pageStrX);
+    addPageButtons(y: 23, x: 0);
 
     int c = await getKey();
 

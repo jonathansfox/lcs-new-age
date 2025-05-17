@@ -39,11 +39,9 @@ Future<bool> liberalAgenda([AgendaVibe vibe = AgendaVibe.ongoing]) async {
       addOptionText(24, 0, "L", "L - View the high score list");
     } else {
       mvaddstrc(0, 0, white, "The Status of the Liberal Agenda");
-      addOptionText(24, 0, "D", "D - Disband and Wait",
-          baseColorKey: ColorKey.white);
-      mvaddstrx(24, 27, pageStrShortX);
-      addOptionText(24, 50, "Any other key", "Any Other Key - Exit",
-          baseColorKey: ColorKey.white);
+      addOptionText(24, 0, "D", "D - Disband and Wait");
+      addPageButtons(y: 24, x: console.x + 4, short: true);
+      addOptionText(24, console.x + 4, "Any other key", "Any Other Key - Exit");
     }
     _agendaPage(page, vibe);
     if (vibe == AgendaVibe.ongoing) {

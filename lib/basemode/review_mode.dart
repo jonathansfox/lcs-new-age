@@ -132,7 +132,8 @@ Future<void> reviewAssetsAndFormSquads() async {
 
     setColor(lightGray);
     addOptionText(22, 0, "V", "V - Inspect Liberal finances.");
-    mvaddstrx(23, 0, "$pageStrX.  ");
+    addPageButtons(y: 23, x: 0);
+    move(console.y, console.x + 3);
     addInlineOptionText("U", "U - Promote Liberals.");
     addOptionText(24, 0, "Z", "Z - Assemble a New Squad.  ");
     addInlineOptionText("T", "T - Assign New Bases to the Squadless.");
@@ -414,7 +415,7 @@ Future<void> reviewMode(ReviewMode mode) async {
       addOptionText(22, 38, "Z", "Z - Reorder Liberals",
           enabledWhen: temppool.length > 1);
     }
-    mvaddstrx(23, 0, pageStrX);
+    addPageButtons(y: 23, x: 0);
     addOptionText(23, 38, "T", "T - Sort Liberals");
 
     int c = await getKey();
@@ -527,8 +528,6 @@ Future<void> reviewMode(ReviewMode mode) async {
               tempp.isActiveLiberal &&
               tempp.hireId != null) // If alive and not own boss?
           {
-            Creature boss = pool.firstWhere((p) => p.id == tempp.hireId);
-
             eraseArea(startY: 22);
 
             move(22, 0);
@@ -547,17 +546,16 @@ Future<void> reviewMode(ReviewMode mode) async {
             if (c == Key.c) {
               eraseArea(startY: 22);
               // Release squad member
-              move(22, 0);
-              addstr(tempp.name);
-              addstr(" has been released.");
+              addOptionText(22, 0, "Enter", "${tempp.name} has been released.");
 
               await getKey();
 
+              Creature? boss = tempp.boss;
               // Chance of member going to police if boss has criminal record and
               // if they have low heart
               if (tempp.attribute(Attribute.heart) <
                       tempp.attribute(Attribute.wisdom) - lcsRandom(5) &&
-                  boss.isCriminal) {
+                  boss?.isCriminal == true) {
                 setColor(lightBlue);
                 move(22, 0);
                 addstr("A Liberal friend tips you off on ");
@@ -568,7 +566,7 @@ Future<void> reviewMode(ReviewMode mode) async {
                     "The Conservative traitor has ratted you out to the police, and sworn");
                 move(25, 0);
                 addstr("to testify against ");
-                addstr(boss.name);
+                addstr(boss!.name);
                 addstr(" in court.");
                 await getKey();
 
@@ -591,6 +589,7 @@ Future<void> reviewMode(ReviewMode mode) async {
               cleanGoneSquads();
 
               pool.remove(tempp);
+              await dispersalCheck();
               return reviewMode(mode);
             }
           } else if (c == Key.k &&
@@ -801,7 +800,7 @@ Future<void> assembleSquad(Squad? cursquad) async {
 
     mvaddstrc(22, 0, lightGray,
         "Press a Letter to add or remove a Liberal from the squads.");
-    mvaddstrx(23, 0, pageStrX);
+    addPageButtons(y: 23, x: 0);
     addOptionText(23, 40, "v", "V - View a Liberal");
     if (partysize > 0) {
       addOptionText(24, 0, "Enter", "Enter - The squad is ready.");
@@ -976,12 +975,10 @@ Future<void> assignNewBasesToTheSquadless() async {
     mvaddstr(
         22, 0, "Liberals must be moved in squads to transfer between cities.");
     if (temppool.length > 19) {
-      move(23, 0);
-      addstr(pageStr);
+      addPageButtons(y: 24, x: 0);
     }
     if (temploc.length > 9) {
-      move(12, 51);
-      addstr("&B,.&x - Change Base pages.");
+      addOptionText(12, 51, "0", "0 - More Bases");
     }
 
     int c = await getKey();
@@ -996,12 +993,10 @@ Future<void> assignNewBasesToTheSquadless() async {
         (pageLib + 1) * 19 < temppool.length) {
       pageLib++;
     }
-
-    //PAGE UP (locations)
-    if (c == ','.codePoint && pageLoc > 0) pageLoc--;
     //PAGE DOWN (locations)
-    if (c == '.'.codePoint && (pageLoc + 1) * 9 < temploc.length) pageLoc++;
-
+    if (c == Key.num0 && (pageLoc + 1) * 9 < temploc.length) {
+      pageLoc = (pageLoc + 1) % (temploc.length / 9).ceil();
+    }
     if (c >= Key.a && c <= Key.s) {
       int p = pageLib * 19 + c - Key.a;
       if (p >= temppool.length) continue;

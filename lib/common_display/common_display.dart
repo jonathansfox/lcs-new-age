@@ -602,6 +602,7 @@ Future<void> pagedInterface({
   int pageSize = 20,
   int linesPerOption = 1,
   int topY = 0,
+  bool showBackButton = true,
   required int count,
   required void Function(int y, String key, int index) lineBuilder,
   required Future<bool> Function(int index) onChoice,
@@ -618,11 +619,18 @@ Future<void> pagedInterface({
     for (int i = 0; i + page * pageSize < count && i < pageSize; i++) {
       lineBuilder(i + 2 + topY, letterAPlus(i), i + page * pageSize);
     }
+    setColor(lightGray);
+    eraseLine(pageSize + 3 + topY);
     if (pageCount > 1) {
-      setColor(lightGray);
-      eraseLine(pageSize + 3 + topY);
-      mvaddstr(pageSize + 3 + topY, 0,
-          pageStrWithCurrentAndMax(page + 1, pageCount));
+      addPageButtons(
+          y: pageSize + 3 + topY, x: 0, current: page + 1, max: pageCount);
+      if (showBackButton) {
+        addBackButton(y: pageSize + 3 + topY, x: 40);
+      }
+    } else {
+      if (showBackButton) {
+        addBackButton(y: pageSize + 3 + topY, x: 0);
+      }
     }
 
     int c = await getKey();

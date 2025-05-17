@@ -31,12 +31,10 @@ void printParty({
       70: "TRANSPORT",
     });
     for (int p = 0; p < party.length; p++) {
-      setColor(blue);
-      mvaddchar(p + 2, 0, String.fromCharCode('1'.codePoint + p));
-
-      setColor(party[p].isHoldingBody ? pink : white);
-      mvaddstr(p + 2, 2, party[p].name);
-      if (party[p].isHoldingBody) addstr("+H");
+      addOptionText(p + 2, 0, String.fromCharCode('1'.codePoint + p),
+          "${String.fromCharCode('1'.codePoint + p)} ${party[p].name}",
+          baseColorKey: ColorKey.white);
+      if (party[p].isHoldingBody) addstrc(pink, "+H");
       printSkillSummary(p + 2, 23, party[p], showWeaponSkill: true);
       move(p + 2, 29);
       setWeaponColor(party[p]);

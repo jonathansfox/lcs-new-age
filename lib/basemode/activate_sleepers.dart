@@ -76,10 +76,12 @@ Future<void> activateSleepers() async {
     }
 
     mvaddstrc(22, 0, lightGray, "Press a Letter to Assign an Activity.");
-    move(23, 0);
-    addstr(pageStr);
+    addPageButtons(y: 23, x: 0);
     addOptionText(24, 0, "T", "T - Sorting options");
-    addOptionText(24, 20, "Z", "Z - Assign tasks in bulk");
+    console.x += 2;
+    addInlineOptionText("Z", "Z - Assign tasks in bulk");
+    console.x += 2;
+    addInlineOptionText("Enter", "Enter - Done");
 
     setColor(lightGray);
 
@@ -342,7 +344,7 @@ Future<void> activateSleepersBulk() async {
 
     mvaddstrc(22, 0, lightGray,
         "Press a Letter to Assign an Activity.  Press a Number to select an Activity.");
-    mvaddstrx(23, 0, pageStrX);
+    addPageButtons(y: 23, x: 0);
 
     int c = await getKey();
 
