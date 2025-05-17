@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:lcs_new_age/basemode/activities.dart';
 import 'package:lcs_new_age/creature/creature.dart';
 import 'package:lcs_new_age/creature/creature_type.dart';
@@ -19,11 +21,128 @@ import 'package:lcs_new_age/utils/lcsrandom.dart';
 Future<void> runNewsCycle() async {
   await generateRandomEventNewsStories();
   cleanUpEmptyNewsStories();
+  assignPublicationsToNewspaperStories();
   if (canSeeThings) await runTelevisionNewsStories();
   assignPageNumbersToNewspaperStories();
 
   if (canSeeThings) await displayNewsStories();
   newsStories.clear();
+}
+
+void assignPublicationsToNewspaperStories() {
+  double cableNewsChance = 100 - politics.publicOpinion[View.cableNews]!;
+  double amRadioChance = 100 - politics.publicOpinion[View.amRadio]!;
+  double newspaperChance = 200 - cableNewsChance - amRadioChance;
+  double conservativeStarChance = 100;
+  switch (ccsState) {
+    case CCSStrength.inHiding:
+      conservativeStarChance = 0;
+    case CCSStrength.active:
+      conservativeStarChance =
+          max(0, 30 * politics.publicOpinion[View.ccsHated]! / 100);
+    case CCSStrength.attacks:
+      conservativeStarChance =
+          max(0, 70 * politics.publicOpinion[View.ccsHated]! / 100);
+    case CCSStrength.sieges:
+      conservativeStarChance =
+          max(0, 100 * politics.publicOpinion[View.ccsHated]! / 100);
+    case CCSStrength.defeated:
+      conservativeStarChance = 0;
+  }
+  double liberalGuardianChance = 0;
+  int cumulativeLiberalGuardianSkill = pool
+          .where((c) =>
+              c.isActiveLiberal &&
+              c.activity.type == ActivityType.writeGuardian)
+          .fold(
+              0,
+              (sum, c) =>
+                  sum +
+                  c.skill(Skill.writing) +
+                  c.skill(Skill.religion) +
+                  c.skill(Skill.law) +
+                  c.skill(Skill.science) +
+                  c.skill(Skill.business)) +
+      pool
+          .where((c) =>
+              c.isActiveLiberal &&
+              c.activity.type == ActivityType.streamGuardian)
+          .fold(
+              0,
+              (sum, c) =>
+                  sum +
+                  c.skill(Skill.persuasion) +
+                  c.skill(Skill.religion) +
+                  c.skill(Skill.law) +
+                  c.skill(Skill.science) +
+                  c.skill(Skill.business));
+  liberalGuardianChance =
+      min(100, cumulativeLiberalGuardianSkill) * politics.lcsApproval() / 100;
+  //politics.lcsApproval();
+  for (NewsStory ns in newsStories) {
+    double csChance = conservativeStarChance;
+    double lgChance = liberalGuardianChance;
+    switch (ns.type) {
+      case NewsStories.ccsSiteAction:
+        csChance = csChance * 2;
+      case NewsStories.ccsNoBackers:
+      case NewsStories.ccsDefeated:
+      case NewsStories.ccsDefended:
+      case NewsStories.ccsKilledInSiegeAttack:
+      case NewsStories.ccsKilledInSiteAction:
+        csChance = 0;
+      case NewsStories.squadBrokeSiege:
+      case NewsStories.squadDefended:
+      case NewsStories.squadSiteAction:
+        lgChance = lgChance * 2;
+      case NewsStories.carTheft:
+      case NewsStories.kidnapReport:
+      case NewsStories.arrestGoneWrong:
+      case NewsStories.raidCorpsesFound:
+      case NewsStories.raidGunsFound:
+      case NewsStories.hostageRescued:
+      case NewsStories.hostageEscapes:
+      case NewsStories.presidentImpeached:
+      case NewsStories.presidentBelievedDead:
+      case NewsStories.presidentFoundDead:
+      case NewsStories.presidentFound:
+      case NewsStories.presidentKidnapped:
+      case NewsStories.presidentMissing:
+      case NewsStories.presidentAssassinated:
+      case NewsStories.squadFledAttack:
+      case NewsStories.squadKilledInSiegeAttack:
+      case NewsStories.squadKilledInSiegeEscape:
+      case NewsStories.squadKilledInSiteAction:
+      case NewsStories.squadEscapedSiege:
+      case NewsStories.massacre:
+        lgChance = 0;
+        csChance = 0;
+      case NewsStories.majorEvent:
+        break;
+    }
+    ns.publication = lcsRandomWeighted({
+      Publication.cableNews: cableNewsChance,
+      Publication.amRadio: amRadioChance,
+      Publication.times: newspaperChance / 5,
+      Publication.herald: newspaperChance / 5,
+      Publication.post: newspaperChance / 5,
+      Publication.globe: newspaperChance / 5,
+      Publication.daily: newspaperChance / 5,
+      Publication.liberalGuardian: lgChance,
+      Publication.conservativeStar: csChance,
+    });
+    if (ns.publicationAlignment == DeepAlignment.eliteLiberal) {
+      switch (ns.type) {
+        case NewsStories.ccsSiteAction:
+        case NewsStories.ccsKilledInSiteAction:
+          ns.positive = 0;
+        default:
+          ns.positive = 1;
+      }
+    } else if (ns.publicationAlignment == DeepAlignment.archConservative) {
+      ns.positive = 0;
+    }
+  }
 }
 
 Future<void> generateRandomEventNewsStories() async {
@@ -41,7 +160,7 @@ Future<void> generateRandomEventNewsStories() async {
   }
 
   // Random major event news stories
-  if (oneIn(60)) {
+  if (oneIn(15)) {
     newsStories.add(randomMajorEventStory());
   }
 }
@@ -107,10 +226,10 @@ Future<void> displayNewsStories() async {
           n.type == NewsStories.ccsKilledInSiteAction) {
         n.positive = 0;
       }
-      await displayStory(n, liberalguardian, issueFocus);
+      await displayStory(n, issueFocus);
       n.positive += 1;
     } else {
-      await displayStory(n, false, null);
+      await displayStory(n, null);
     }
 
     handlePublicOpinionImpact(n, liberalguardian);
@@ -281,7 +400,12 @@ void handlePublicOpinionImpact(NewsStory ns, bool liberalguardian) {
   List<View> issues = switch (ns.loc?.type) {
     SiteType.cosmeticsLab => [View.animalResearch, View.womensRights],
     SiteType.geneticsLab => [View.animalResearch, View.genetics],
-    SiteType.policeStation => [View.policeBehavior, View.prisons, View.drugs],
+    SiteType.policeStation => [
+        View.policeBehavior,
+        View.prisons,
+        View.drugs,
+        View.gunControl
+      ],
     SiteType.fireStation => [if (noProfanity) View.freeSpeech],
     SiteType.courthouse || SiteType.whiteHouse => [
         View.deathPenalty,
@@ -297,7 +421,7 @@ void handlePublicOpinionImpact(NewsStory ns, bool liberalguardian) {
         View.torture,
         View.prisons,
       ],
-    SiteType.armyBase => [View.torture, View.military],
+    SiteType.armyBase => [View.torture, View.military, View.gunControl],
     SiteType.intelligenceHQ => [View.intelligence, View.torture, View.prisons],
     SiteType.sweatshop => [View.sweatshops, View.immigration],
     SiteType.dirtyIndustry => [View.sweatshops, View.pollution],
@@ -333,6 +457,7 @@ void handlePublicOpinionImpact(NewsStory ns, bool liberalguardian) {
     SiteType.bank => [View.taxes, View.ceoSalary, View.corporateCulture],
     _ => [],
   };
+
   if (lcsResponsible) {
     int extraMoralAuthority = 0;
     if (ns.positive > 0 || liberalguardian) {

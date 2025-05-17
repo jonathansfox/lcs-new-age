@@ -5,7 +5,7 @@ import 'package:lcs_new_age/newspaper/news_story.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 
 void displaysinglead(bool liberalguardian, List<(int, int)> addplace,
-    List<int> storyXStart, List<int> storyXEnd) {
+    List<int> storyXStart, List<int> storyXEnd, NewsStory ns) {
   int x, y;
   (x, y) = addplace.random;
   addplace.remove((x, y));
@@ -178,7 +178,7 @@ void displaysinglead(bool liberalguardian, List<(int, int)> addplace,
       }
     }
 
-    displayNewsStory(ad, storyXStart, storyXEnd, sy + 1, null);
+    displayNewsStory(ad, storyXStart, storyXEnd, sy + 1, ns);
   }
 }
 
@@ -200,7 +200,7 @@ void displayAds(NewsStory ns, bool liberalguardian, List<int> storyXStart,
   }
   List<(int, int)> addplace = [(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2)];
   for (adnumber = (adnumber > 6 ? 6 : adnumber); adnumber > 0; adnumber--) {
-    displaysinglead(liberalguardian, addplace, storyXStart, storyXEnd);
+    displaysinglead(liberalguardian, addplace, storyXStart, storyXEnd, ns);
   }
 }
 

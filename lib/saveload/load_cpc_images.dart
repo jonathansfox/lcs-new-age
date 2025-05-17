@@ -8,14 +8,112 @@ import 'package:lcs_new_age/utils/colors.dart';
 late List<List<List<List<int>>>> bigletters;
 late List<List<List<List<int>>>> newstops;
 late List<List<List<List<int>>>> newspic;
+late Map<String, List<List<int>>> letters5x5;
+late Map<String, List<List<int>>> letters4x5;
+late Map<String, List<List<int>>> letters3x5;
+late Map<String, List<List<int>>> letters3x3;
 
 Future<void> loadCpcGraphics() async {
   loadingFeedback("largecap.cpc");
   bigletters = await readCPCFile("assets/art/largecap.cpc");
+  loadingFeedback("5x5caps.txt");
+  letters5x5 = await readCapTextFile("assets/art/5x5caps.txt", 5, 5);
+  loadingFeedback("4x5caps.txt");
+  letters4x5 = await readCapTextFile("assets/art/4x5caps.txt", 4, 5);
+  loadingFeedback("3x5caps.txt");
+  letters3x5 = await readCapTextFile("assets/art/3x5caps.txt", 3, 5);
+  loadingFeedback("3x3caps.txt");
+  letters3x3 = await readCapTextFile("assets/art/3x3caps.txt", 3, 3);
   loadingFeedback("newstops.cpc");
   newstops = await readCPCFile("assets/art/newstops.cpc");
   loadingFeedback("newspic.cpc");
   newspic = await readCPCFile("assets/art/newspic.cpc");
+}
+
+List<String> getLetters() {
+  return List.generate(26, (i) => String.fromCharCode(i + 65));
+}
+
+Future<Map<String, List<List<int>>>> readCapTextFile(
+    String s, int y, int x) async {
+  String text = await rootBundle.loadString(s);
+  List<String> lines = text.split('\n');
+  List<String> letters = getLetters();
+  Map<String, List<List<int>>> letterData = {};
+  for (int i = 0; i < letters.length; i++) {
+    String letter = letters[i];
+    letterData[letter] = List.generate(y, (j) => List.generate(x, (k) => 0));
+    for (int x1 = 0; x1 < x; x1++) {
+      for (int y1 = 0; y1 < y; y1++) {
+        letterData[letter]![y1][x1] = lines[y1].codeUnitAt(i * (x + 1) + x1);
+      }
+    }
+    /*
+    debugPrint(letters[i]);
+    for (int y1 = 0; y1 < y; y1++) {
+      String line = "";
+      for (int x1 = 0; x1 < x; x1++) {
+        line += String.fromCharCode(letterData[letter]![y1][x1]);
+      }
+      debugPrint(line);
+    }
+    */
+  }
+  return letterData;
+}
+
+void print3x3NewsText(int y, int x, String s) {
+  move(y, x);
+  printNewsText(s, letters3x3);
+}
+
+void print3x5NewsText(int y, int x, String s) {
+  move(y, x);
+  printNewsText(s, letters3x5);
+}
+
+void print4x5NewsText(int y, int x, String s) {
+  move(y, x);
+  printNewsText(s, letters4x5);
+}
+
+void print5x5NewsText(int y, int x, String s) {
+  move(y, x);
+  printNewsText(s, letters5x5);
+}
+
+void printNewsText(String s, Map<String, List<List<int>>> letters) {
+  s = s.toUpperCase();
+  int startX = console.x;
+  int startY = console.y;
+  int posX = startX;
+  int posY = startY;
+  for (int i = 0; i < s.length; i++) {
+    String letter = s[i];
+    if (letter == ' ') {
+      if (letters['A']![0].length > 3) {
+        posX = posX + 3;
+      } else {
+        posX = posX + 2;
+      }
+      continue;
+    }
+    if (letter == '\'') {
+      mvaddchar(posY, posX, '█');
+      mvaddchar(posY + 1, posX, '▀');
+      posX = posX + 2;
+      continue;
+    }
+    List<List<int>> glyph = letters[letter]!;
+    for (int y = 0; y < glyph.length; y++) {
+      for (int x = 0; x < glyph[y].length; x++) {
+        //debugPrint(
+        //    "${s[i]} glyph[$y][$x]: ${glyph[y][x]} ${String.fromCharCode(glyph[y][x])}");
+        mvaddchar(posY + y, posX + x, String.fromCharCode(glyph[y][x]));
+      }
+    }
+    posX = posX + glyph[0].length + 1;
+  }
 }
 
 Future<List<List<List<List<int>>>>> readCPCFile(String s) async {
@@ -47,7 +145,7 @@ List<List<List<List<int>>>> readCPCData(ByteData h, [int pos = 0]) {
 }
 
 Color translateGraphicsColor(int c, bool bright,
-        {bool remapSkinTones = false}) =>
+        {bool remapSkinTones = false, Color? remapLightGray}) =>
     switch ((c, bright)) {
       (0, true) => darkGray,
       (0, false) => black,
@@ -64,16 +162,17 @@ Color translateGraphicsColor(int c, bool bright,
       (6, true) => remapSkinTones ? Skin.f : yellow,
       (6, false) => remapSkinTones ? Skin.b : halfYellow,
       (7, true) => white,
-      (7, false) => lightGray,
+      (7, false) => remapLightGray ?? lightGray,
       _ => purple,
     };
 
-void drawCPCGlyph(List<int> glyph, {bool remapSkinTones = false}) {
+void drawCPCGlyph(List<int> glyph,
+    {bool remapSkinTones = false, Color? remapLightGray}) {
   bool bright = glyph[3] > 0;
-  Color fgColor =
-      translateGraphicsColor(glyph[1], bright, remapSkinTones: remapSkinTones);
-  Color bgColor =
-      translateGraphicsColor(glyph[2], false, remapSkinTones: remapSkinTones);
+  Color fgColor = translateGraphicsColor(glyph[1], bright,
+      remapSkinTones: remapSkinTones, remapLightGray: remapLightGray);
+  Color bgColor = translateGraphicsColor(glyph[2], false,
+      remapSkinTones: remapSkinTones, remapLightGray: remapLightGray);
   String char = String.fromCharCode(convert437ToUTF(glyph[0]));
   if (char == '█') {
     Color swap = fgColor;

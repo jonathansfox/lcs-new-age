@@ -2,11 +2,12 @@ import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/location/location_type.dart';
 import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/newspaper/news_story.dart';
+import 'package:lcs_new_age/politics/alignment.dart';
 
 String squadStoryTextLocation(NewsStory ns, bool liberalguardian, bool ccs,
     {bool includeOpening = true}) {
   String story = "";
-  if (includeOpening) story += "  The events took place ";
+  if (includeOpening) story += "   The events took place ";
   String placename = ns.loc!.getName();
   if (placename.substring(0, 4) == "The ") {
     placename = placename.substring(4);
@@ -134,7 +135,7 @@ String squadStoryTextOpening(NewsStory ns, bool liberalguardian, bool ccs) {
         story += "&r";
       } else {
         story +=
-            "A group of terrorists calling itself the Liberal Crime Squad ";
+            "A group of terrorists calling themselves the Liberal Crime Squad ";
         story += "went on a rampage yesterday, according ";
         story += "to a spokesperson from the police department.";
       }
@@ -143,7 +144,20 @@ String squadStoryTextOpening(NewsStory ns, bool liberalguardian, bool ccs) {
         story += "The Liberal Crime Squad has struck again.  ";
         story += "&r";
       } else {
-        story += "The Liberal Crime Squad has gone on a rampage.  ";
+        String notorious =
+            ns.publicationAlignment == DeepAlignment.archConservative
+                ? "notorious "
+                : "";
+        String terroristsHave =
+            ns.publicationAlignment == DeepAlignment.archConservative
+                ? "terrorists have"
+                : "has";
+        String another =
+            ns.publicationAlignment == DeepAlignment.archConservative
+                ? "another"
+                : "a";
+        story +=
+            "The ${notorious}Liberal Crime Squad $terroristsHave gone on $another rampage.  ";
         story += "&r";
       }
     }

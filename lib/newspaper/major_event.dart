@@ -87,15 +87,15 @@ void displayMajorEventStory(
       case View.womensRights:
         displayCenteredNewsFont("CLINIC MURDER", 5, ns);
         displayNewsStory(majorEventStoryText(ns.view, ns.positive > 0),
-            storyXStart, storyXEnd, 13, ns);
+            storyXStart, storyXEnd, 11, ns);
       case View.lgbtRights:
         displayCenteredNewsFont("CRIME OF HATE", 5, ns);
         displayNewsStory(majorEventStoryText(ns.view, ns.positive > 0),
-            storyXStart, storyXEnd, 13, ns);
+            storyXStart, storyXEnd, 11, ns);
       case View.deathPenalty:
         displayCenteredNewsFont("JUSTICE DEAD", 5, ns);
         displayNewsStory(majorEventStoryText(ns.view, ns.positive > 0),
-            storyXStart, storyXEnd, 13, ns);
+            storyXStart, storyXEnd, 11, ns);
       /*
          case View.MILITARY:
             displaycenterednewsfont("CASUALTIES MOUNT",5);
@@ -116,10 +116,10 @@ void displayMajorEventStory(
       case View.gunControl:
         displayCenteredNewsFont("MASS SHOOTING", 5, ns);
         displayNewsStory(majorEventStoryText(ns.view, ns.positive > 0),
-            storyXStart, storyXEnd, 13, ns);
+            storyXStart, storyXEnd, 11, ns);
       case View.taxes:
-        displayCenteredNewsFont(
-            "REAGAN FLAWED", 5, ns); //XXX: "Reagan was wrong" or something?
+        displayCenteredNewsFont("REAGAN FLAWED", 5, ns,
+            useBigFont: true); //XXX: "Reagan was wrong" or something?
         String str =
             "${["Dark", "Shadow", "Abyssal", "Orwellian", "Craggy"].random} ${[
           "Actor",
@@ -131,12 +131,12 @@ void displayMajorEventStory(
         displayCenteredSmallNews(str, 12, ns);
         displayNewsPicture(pictureReaganBook, 13, ns);
       case View.nuclearPower:
-        displayCenteredNewsFont("MELTDOWN", 5, ns);
+        displayCenteredNewsFont("MELTDOWN", 5, ns, useBigFont: true);
         displayCenteredSmallNews(
             "A nuclear power plant suffers a catastrophic meltdown.", 12, ns);
         displayNewsPicture(pictureNuclearMeltdown, 13, ns);
       case View.animalResearch:
-        displayCenteredNewsFont("HELL ON EARTH", 5, ns);
+        displayCenteredNewsFont("HELL ON EARTH", 5, ns, useBigFont: true);
         displayCenteredSmallNews(
             "A mutant animal has escaped from a lab and killed thirty people.",
             12,
@@ -145,17 +145,17 @@ void displayMajorEventStory(
       case View.prisons:
         displayCenteredNewsFont("ON THE INSIDE", 5, ns);
         displayNewsStory(majorEventStoryText(ns.view, ns.positive > 0),
-            storyXStart, storyXEnd, 13, ns);
+            storyXStart, storyXEnd, 11, ns);
       case View.intelligence:
         displayCenteredNewsFont("THE FBI FILES", 5, ns);
         displayNewsStory(majorEventStoryText(ns.view, ns.positive > 0),
-            storyXStart, storyXEnd, 13, ns);
+            storyXStart, storyXEnd, 11, ns);
       case View.freeSpeech:
         displayCenteredNewsFont("BOOK BANNED", 5, ns);
         displayNewsStory(majorEventStoryText(ns.view, ns.positive > 0),
-            storyXStart, storyXEnd, 13, ns);
+            storyXStart, storyXEnd, 11, ns);
       case View.genetics:
-        displayCenteredNewsFont("KILLER FOOD", 5, ns);
+        displayCenteredNewsFont("KILLER FOOD", 5, ns, useBigFont: true);
         displayCenteredSmallNews(
             "Over a hundred people become sick from genetically modified food.",
             12,
@@ -164,16 +164,16 @@ void displayMajorEventStory(
       case View.justices:
         displayCenteredNewsFont("IN CONTEMPT", 5, ns);
         displayNewsStory(majorEventStoryText(ns.view, ns.positive > 0),
-            storyXStart, storyXEnd, 13, ns);
+            storyXStart, storyXEnd, 11, ns);
       case View.sweatshops:
-        displayCenteredNewsFont("CHILD'S PLEA", 5, ns);
+        displayCenteredNewsFont("CHILD'S PLEA", 5, ns, useBigFont: true);
         displayCenteredSmallNews(
             "A T-shirt in a store is found scrawled with a message from a sweatshop worker.",
             12,
             ns);
         displayNewsPicture(pictureTshirtWithPleaForHelp, 13, ns);
       case View.pollution:
-        displayCenteredNewsFont("RIVER ON FIRE", 5, ns);
+        displayCenteredNewsFont("RIVER ON FIRE", 5, ns, useBigFont: true);
         displayCenteredSmallNews(
             "The Cuyahoga River is ablaze as pollution increases.", 12, ns);
         displayNewsPicture(pictureRiverFire, 13, ns);
@@ -187,10 +187,10 @@ void displayMajorEventStory(
           "Industries", "Enterprises", "Holdings", "Group", "International", //
         ].random}";
         displayCenteredSmallNews(
-            "Investors out billions as $companyName collapses.", 12, ns);
-        displayNewsPicture(pictureDollarsDisappearing, 13, ns);
+            "Investors out billions as $companyName collapses.", 10, ns);
+        displayNewsPicture(pictureDollarsDisappearing, 11, ns);
       case View.ceoSalary:
-        displayCenteredNewsFont("AMERICAN CEO", 5, ns);
+        displayCenteredNewsFont("AMERICAN CEO", 5, ns, useBigFont: true);
         String str = "This major CEO ${[
           "wants you to worship him like a god",
           "only works one day a week",
@@ -208,17 +208,17 @@ void displayMajorEventStory(
       case View.amRadio:
         displayCenteredNewsFont("AM IMPLOSION", 5, ns);
         displayNewsStory(majorEventStoryText(ns.view, ns.positive > 0),
-            storyXStart, storyXEnd, 13, ns);
+            storyXStart, storyXEnd, 11, ns);
       default:
         displayCenteredNewsFont("BUGGY GAME", 5, ns);
         displayCenteredSmallNews(
-            "There's no good news story for ${ns.view}", 12, ns);
-        displayNewsStory(generateFiller(200), storyXStart, storyXEnd, 15, ns);
+            "There's no good news story for ${ns.view}", 10, ns);
+        displayNewsStory(generateFiller(200), storyXStart, storyXEnd, 13, ns);
     }
   } else {
     switch (ns.view) {
       case View.lgbtRights:
-        displayCenteredNewsFont("KINKY WINKY", 5, ns);
+        displayCenteredNewsFont("KINKY WINKY", 5, ns, useBigFont: true);
         displayCenteredSmallNews(
             "Jerry Falwell's zombie rises to warn us about Tinky Winky.  Again.",
             12,
@@ -227,7 +227,7 @@ void displayMajorEventStory(
       case View.deathPenalty:
         displayCenteredNewsFont("LET'S FRY 'EM", 5, ns);
         displayNewsStory(majorEventStoryText(ns.view, ns.positive > 0),
-            storyXStart, storyXEnd, 13, ns);
+            storyXStart, storyXEnd, 11, ns);
       /*
          case View.MILITARY:
             displaycenterednewsfont("BIG VICTORY",5);
@@ -247,18 +247,22 @@ void displayMajorEventStory(
             */
       case View.gunControl:
         displayCenteredNewsFont("ARMED CITIZEN", 5, ns);
-        displayCenteredNewsFont("SAVES LIVES", 13, ns);
+        displayCenteredNewsFont("SAVES LIVES", 11, ns);
         displayNewsStory(majorEventStoryText(ns.view, ns.positive > 0),
-            storyXStart, storyXEnd, 21, ns);
+            storyXStart, storyXEnd, 17, ns);
+      case View.womensRights:
+        displayCenteredNewsFont("CLINIC REGRET", 5, ns);
+        displayNewsStory(majorEventStoryText(ns.view, ns.positive > 0),
+            storyXStart, storyXEnd, 11, ns);
       case View.taxes:
-        displayCenteredNewsFont("REAGAN THE MAN", 5, ns);
+        displayCenteredNewsFont("REAGAN THE MAN", 5, ns, useBigFont: true);
         String str = "${["Great", "Noble", "True", "Pure", "Golden"].random} ${[
           "Leadership", "Courage", "Pioneer", "Communicator", "Faith" //
         ].random}: A new book lauding Reagan and the greatest generation.";
         displayCenteredSmallNews(str, 12, ns);
         displayNewsPicture(pictureReaganBook, 13, ns);
       case View.nuclearPower:
-        displayCenteredNewsFont("OIL CRUNCH", 5, ns);
+        displayCenteredNewsFont("OIL CRUNCH", 5, ns, useBigFont: true);
         displayCenteredSmallNews(
             "OPEC cuts oil production sharply in response to a US foreign policy decision.",
             12,
@@ -267,24 +271,24 @@ void displayMajorEventStory(
       case View.animalResearch:
         displayCenteredNewsFont("APE EXPLORERS", 5, ns);
         displayNewsStory(majorEventStoryText(ns.view, ns.positive > 0),
-            storyXStart, storyXEnd, 13, ns);
+            storyXStart, storyXEnd, 11, ns);
       case View.policeBehavior:
         if (noProfanity) {
-          displayCenteredNewsFont("[JERKS]", 5, ns);
+          displayCenteredNewsFont("[JERKS]", 5, ns, useBigFont: true);
         } else {
-          displayCenteredNewsFont("BASTARDS", 5, ns);
+          displayCenteredNewsFont("BASTARDS", 5, ns, useBigFont: true);
         }
         displayNewsPicture(pictureTerroristAttack, 13, ns);
       case View.prisons:
         displayCenteredNewsFont("HOSTAGE SLAIN", 5, ns);
         displayNewsStory(majorEventStoryText(ns.view, ns.positive > 0),
-            storyXStart, storyXEnd, 13, ns);
+            storyXStart, storyXEnd, 11, ns);
       case View.intelligence:
         displayCenteredNewsFont("DODGED BULLET", 5, ns);
         displayNewsStory(majorEventStoryText(ns.view, ns.positive > 0),
-            storyXStart, storyXEnd, 13, ns);
+            storyXStart, storyXEnd, 11, ns);
       case View.freeSpeech:
-        displayCenteredNewsFont("HATE RALLY", 5, ns);
+        displayCenteredNewsFont("HATE RALLY", 5, ns, useBigFont: true);
         displayCenteredSmallNews(
             "Free speech advocates fight hard to let a white supremacist rally take place.",
             12,
@@ -293,13 +297,13 @@ void displayMajorEventStory(
       case View.genetics:
         displayCenteredNewsFont("GM FOOD FAIRE", 5, ns);
         displayNewsStory(majorEventStoryText(ns.view, ns.positive > 0),
-            storyXStart, storyXEnd, 13, ns);
+            storyXStart, storyXEnd, 11, ns);
       case View.justices:
         displayCenteredNewsFont("JUSTICE AMOK", 5, ns);
         displayNewsStory(majorEventStoryText(ns.view, ns.positive > 0),
-            storyXStart, storyXEnd, 13, ns);
+            storyXStart, storyXEnd, 11, ns);
       case View.sweatshops:
-        displayCenteredNewsFont("THEY ARE HERE", 5, ns);
+        displayCenteredNewsFont("THEY ARE HERE", 5, ns, useBigFont: true);
         if (month >= 8 && month <= 11) {
           displayCenteredSmallNews(
               "Fall fashions hit the stores across the country.", 12, ns);
@@ -313,20 +317,20 @@ void displayMajorEventStory(
       case View.pollution:
         displayCenteredNewsFont("LOOKING UP", 5, ns);
         displayNewsStory(majorEventStoryText(ns.view, ns.positive > 0),
-            storyXStart, storyXEnd, 13, ns);
+            storyXStart, storyXEnd, 11, ns);
       case View.corporateCulture:
         displayCenteredNewsFont("NEW JOBS", 5, ns);
         displayNewsStory(majorEventStoryText(ns.view, ns.positive > 0),
-            storyXStart, storyXEnd, 13, ns);
+            storyXStart, storyXEnd, 11, ns);
       case View.amRadio:
         displayCenteredNewsFont("FM OBSCENITY", 5, ns);
         displayNewsStory(majorEventStoryText(ns.view, ns.positive > 0),
-            storyXStart, storyXEnd, 13, ns);
+            storyXStart, storyXEnd, 11, ns);
       default:
         displayCenteredNewsFont("BUGGY GAME", 5, ns);
         displayCenteredSmallNews(
-            "There's no bad news story for ${ns.view}", 12, ns);
-        displayNewsStory(generateFiller(200), storyXStart, storyXEnd, 15, ns);
+            "There's no bad news story for ${ns.view}", 10, ns);
+        displayNewsStory(generateFiller(200), storyXStart, storyXEnd, 12, ns);
     }
   }
 }
@@ -510,9 +514,12 @@ String majorEventStoryText(View? view, bool positive) {
         ].random;
         String childMisbehavior = [
           "swore in class",
+          "cried because the story was too scary",
           "said a magic spell at her parents",
+          "refused to eat her vegetables",
+          "threw a tantrum and refused to go to bed on time",
           "${["pushed", "hit", "slapped", "insulted", "tripped"].random} "
-              "${["his", "her"].random} ${["older", "younger"].random}"
+              "${["his", "her"].random} ${["older", "younger"].random} "
               "${["brother", "sister"].random}",
         ].random;
         String sadChildQuote = [
@@ -680,6 +687,32 @@ String majorEventStoryText(View? view, bool positive) {
     }
   } else {
     switch (view) {
+      case View.womensRights:
+        FullName author = generateFullName();
+        String bookTitle = "${author.first} ${author.last}'s "
+            "memoir, \"${[
+          "Aborted Regret", "The Abortion Chronicles", "The Abortion Diaries",
+          "The Abortion Papers", "The Abortion Files", //
+        ].random}\"";
+        FullName politician = generateFullName();
+        String politicianName = "${politician.first} ${politician.last}";
+        String callToAction = switch (laws[Law.abortion]) {
+          DeepAlignment.archConservative => "resisting any attempt by the "
+              "soulless elite to legalize the murder of children",
+          _ => "pass new laws to protect the most vulnerable children "
+              "in our society from being slaughtered by Liberals",
+        };
+        story = "${randomCityName()} - A new book has quickly risen to the top "
+            "of the bestseller lists, $bookTitle.  The author, a former "
+            "abortion doctor, has dedicated ${author.gender.hisHer} retirement "
+            "to discouraging women from having abortions.  The book includes many "
+            "stories about women who regret having abortions and interviews with "
+            "adult survivors of failed abortions.  Reviews say that the book is "
+            "powerful and moving, and many readers have changed the way they "
+            "think about the morality of abortion.&r"
+            "   According to U.S. Representative $politicianName, one of "
+            "the most vocal pro-life representatives in Congress, the book is "
+            "\"a clear message to Americans, calling on us to $callToAction.\"&r";
       case View.deathPenalty:
         FullName serialKiller = generateFullName(Gender.whiteMalePatriarch);
         String heWasFoundInPosessionOf = [
@@ -715,8 +748,8 @@ String majorEventStoryText(View? view, bool positive) {
             "${randomCityName()} - Perhaps parents can rest easier tonight.  "
             "The authorities have apprehended their primary suspect in the "
             "String of brutal child killings that has kept everyone in the area on edge, "
-            "according to a spokesperson for the police department here.  "
-            "$serialKiller was detained yesterday afternoon, reportedly in "
+            "according to a spokesperson for the police department here.&r"
+            "   $serialKiller was detained yesterday afternoon, reportedly in "
             "possession of $heWasFoundInPosessionOf.  Over twenty children in "
             "the past two years have gone missing, only to turn up later "
             "$victimsFound.  Sources say that the police got a break in the "
@@ -755,8 +788,8 @@ String majorEventStoryText(View? view, bool positive) {
 
         story = "${randomCityName()} - Researchers $fromCountry "
             "report that they have discovered an amazing new wonder drug.  "
-            "Called $drugName, the drug apparently $drugEffect.  "
-            "Fielding questions about the ethics of their experiments from "
+            "Called $drugName, the drug apparently $drugEffect.&r"
+            "   Fielding questions about the ethics of their experiments from "
             "reporters during a press conference yesterday, a spokesperson for "
             "the research team stated that, \"It really isn't so bad as all "
             "that.  Chimpanzees are very resilient creatures.  "
@@ -966,7 +999,8 @@ String majorEventStoryText(View? view, bool positive) {
             "Given the state of the economy recently and in light of the "
             "tendency of large corporations to export jobs overseas these "
             "days, this welcome news is bound to be a pleasant surprise to "
-            "those in the unemployment lines.  The markets reportedly "
+            "those in the unemployment lines.&r"
+            "   The markets reportedly "
             "responded to the announcement with mild interest, although the "
             "dampened movement might be expected due to the uncertain futures "
             "of some of the companies in the tech sector.  On the whole, "
@@ -1009,8 +1043,8 @@ String majorEventStoryText(View? view, bool positive) {
             " - Infamous FM radio shock jock ${shockJock.firstLast} has "
             "brought radio entertainment to a new low.  During yesterday's "
             "broadcast of the program \"${shockJock.first}'s $showName\", "
-            "${shockJock.firstLast} reportedly $shockingBehavior on the air.  "
-            "Although ${shockJock.firstLast} later apologized, the FCC "
+            "${shockJock.firstLast} reportedly $shockingBehavior on the air.&r"
+            "   Although ${shockJock.firstLast} later apologized, the FCC "
             "received several hundred complaints from irate listeners from "
             "all over the state.  A spokesperson for the FCC stated that the "
             "incident is under investigation.&r";
@@ -1034,18 +1068,18 @@ String majorEventStoryText(View? view, bool positive) {
         };
 
         story = "${randomCityName()}"
-            " - In a surprising turn, a $massShooting was prevented "
+            " - In an uplifting turn, a $massShooting was prevented "
             "by a bystander with a gun.  After ${shooter.firstLast} opened "
-            "fire at $venue, ${hero.firstLast} sprung into action.  "
+            "fire at $venue, ${hero.firstLast} sprang into action.  "
             "The citizen pulled a concealed handgun and fired once at the "
             "shooter, forcing ${shooter.last} to take cover while others "
             "called the police.&r"
-            "  Initially, $heroTitle${hero.last} attempted to talk down the "
+            "   Initially, $heroTitle${hero.last} attempted to talk down the "
             "shooter, but as ${shooter.last} became more agitated, the heroic "
             "citizen was forced to engage the shooter in a firefight, "
             "$heroAction before ${shooterGender.heShe} could hurt anyone "
             "else.&r"
-            "  The spokesperson for the police department said, \"We'd have "
+            "   The spokesperson for the police department said, \"We'd have "
             "yet another $massShooting if not for $heroTitle${hero.last}'s "
             "heroic actions.\"&r";
 
@@ -1126,7 +1160,8 @@ String majorEventStoryText(View? view, bool positive) {
             "Authorities locked down the prison and attempted to negotiate by "
             "phone for ${lcsRandom(18) + 5} days, but talks were cut short when "
             "${perp.firstLast} reportedly screamed into the receiver, \""
-            "$imKillingThisPig\"  The tower was breached in an attempt to "
+            "$imKillingThisPig\"&r"
+            "   The tower was breached in an attempt to "
             "reach the hostage, but ${perp.last} had already $killedTheGuard.  "
             "The prisoner was $beatenToDeath while \"resisting capture\", "
             "according to a prison spokesperson.&r";

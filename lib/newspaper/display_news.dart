@@ -1,6 +1,7 @@
 /* news - show major news story */
 
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:collection/collection.dart';
 import 'package:lcs_new_age/common_display/common_display.dart';
@@ -25,8 +26,8 @@ import 'package:lcs_new_age/utils/colors.dart';
 import 'package:lcs_new_age/utils/interface_options.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 
-Future<void> displayStory(
-    NewsStory ns, bool liberalguardian, View? header) async {
+Future<void> displayStory(NewsStory ns, View? header) async {
+  bool liberalguardian = ns.publication == Publication.liberalGuardian;
   erase();
   preparePage(ns, liberalguardian);
 
@@ -209,25 +210,25 @@ Future<void> displayStory(
           if (did(Drama.shutDownReactor)) {
             if (laws[Law.nuclearPower] == DeepAlignment.eliteLiberal) {
               if (!liberalguardian) {
-                story += "  According to sources that were at the scene, "
+                story += "   According to sources that were at the scene, "
                     "the Liberal Crime Squad contaminated the state's water supply"
                     "yesterday by tampering with equipment on the site."
                     "&r";
               } else {
                 story +=
-                    "  The Liberal Crime Squad tampered with the state's water supply yesterday, "
+                    "   The Liberal Crime Squad tampered with the state's water supply yesterday, "
                     "demonstrating the extreme dangers of Nuclear Waste. "
                     "&r";
               }
             } else {
               if (!liberalguardian) {
-                story += "  According to sources that were at the scene, "
+                story += "   According to sources that were at the scene, "
                     "the Liberal Crime Squad nearly caused a catastrophic meltdown of the nuclear "
                     "reactor."
                     "&r";
               } else {
                 story +=
-                    "  The Liberal Crime Squad brought the reactor to the verge of a nuclear meltdown, "
+                    "   The Liberal Crime Squad brought the reactor to the verge of a nuclear meltdown, "
                     "demonstrating the extreme vulnerability and danger of Nuclear Power Plants. "
                     "&r";
               }
@@ -235,127 +236,127 @@ Future<void> displayStory(
           }
           if (did(Drama.openedPoliceLockup)) {
             if (!liberalguardian) {
-              story += "  According to sources that were at the scene, "
+              story += "   According to sources that were at the scene, "
                   "the Liberal Crime Squad allegedly freed or attempted to free prisoners from the police lockup."
                   "&r";
             } else {
               story +=
-                  "  The Liberal Crime Squad attempted to rescue innocent people from the police lockup, "
+                  "   The Liberal Crime Squad attempted to rescue innocent people from the police lockup, "
                   "saving them from torture and brutality at the hands of Conservative police interrogators."
                   "&r";
             }
           }
           if (did(Drama.bankVaultRobbery)) {
             if (!liberalguardian) {
-              story += "  According to sources that were at the scene, "
+              story += "   According to sources that were at the scene, "
                   "the Liberal Crime Squad opened the bank vault, which held more than \$100,000 at the time."
                   "&r";
             } else {
-              story += "  The Liberal Crime Squad opened the bank vault, "
+              story += "   The Liberal Crime Squad opened the bank vault, "
                   "showing the triumph of Liberal ideals over Conservative economics."
                   "&r";
             }
           } else if (did(Drama.bankStickup)) {
             if (!liberalguardian) {
-              story += "  According to sources that were at the scene, "
+              story += "   According to sources that were at the scene, "
                   "the Liberal Crime Squad threatened innocent bystanders in order to rob the bank vault."
                   "&r";
             } else {
               story +=
-                  "  The Liberal Crime Squad demanded access to the bank vault, "
+                  "   The Liberal Crime Squad demanded access to the bank vault, "
                   "hoping to acquire the resources to overcome evil."
                   "&r";
             }
           }
           if (did(Drama.openedCourthouseLockup)) {
             if (!liberalguardian) {
-              story += "  According to sources that were at the scene, "
+              story += "   According to sources that were at the scene, "
                   "the Liberal Crime Squad allegedly freed or attempted to free prisoners from the courthouse lockup."
                   "&r";
             } else {
               story +=
-                  "  The Liberal Crime Squad attempted to rescue innocent people from the courthouse lockup, "
+                  "   The Liberal Crime Squad attempted to rescue innocent people from the courthouse lockup, "
                   "saving them from the highly corrupt Conservative justice system."
                   "&r";
             }
           }
           if (did(Drama.releasedPrisoners)) {
             if (!liberalguardian) {
-              story += "  According to sources that were at the scene, "
+              story += "   According to sources that were at the scene, "
                   "the Liberal Crime Squad allegedly freed prisoners while in the facility."
                   "&r";
             } else {
               story +=
-                  "  The Liberal Crime Squad attempted to rescue innocent people from the abusive Conservative conditions "
+                  "   The Liberal Crime Squad attempted to rescue innocent people from the abusive Conservative conditions "
                   "at the prison."
                   "&r";
             }
           }
           if (did(Drama.juryTampering)) {
             if (!liberalguardian) {
-              story += "  According to police sources that were at the scene, "
+              story += "   According to police sources that were at the scene, "
                   "the Liberal Crime Squad allegedly violated the sacred "
                   "trust and attempted to influence a jury."
                   "&r";
             } else {
               story +=
-                  "  The Liberal Crime Squad has apologized over reports that the operation "
+                  "   The Liberal Crime Squad has apologized over reports that the operation "
                   "may have interfered with jury deliberations."
                   "&r";
             }
           }
           if (did(Drama.hackedIntelSupercomputer)) {
             if (!liberalguardian) {
-              story += "  According to police sources that were at the scene, "
+              story += "   According to police sources that were at the scene, "
                   "intelligence officials seemed very nervous about something."
                   "&r";
             } else {
               story +=
-                  "  Liberal Crime Squad computer specialists worked to liberate information from CIA computers."
+                  "   Liberal Crime Squad computer specialists worked to liberate information from CIA computers."
                   "&r";
             }
           }
           if (did(Drama.openedArmory)) {
             if (!liberalguardian) {
-              story += "  According to sources, "
+              story += "   According to sources, "
                   "the Liberal Crime Squad attempted to break into the armory."
                   "&r";
             } else {
               story +=
-                  "  Liberal Crime Squad infiltration specialists worked to liberate weapons from the oppressors."
+                  "   Liberal Crime Squad infiltration specialists worked to liberate weapons from the oppressors."
                   "&r";
             }
           }
           if (did(Drama.openedCEOSafe)) {
             if (!liberalguardian) {
-              story += "  According to police sources that were at the scene, "
+              story += "   According to police sources that were at the scene, "
                   "the owner of the house seemed very frantic about some missing property."
                   "&r";
             } else {
               story +=
-                  "  The Liberal Crime Squad was attempting to uncover the CEO's Conservative corruption."
+                  "   The Liberal Crime Squad was attempting to uncover the CEO's Conservative corruption."
                   "&r";
             }
           }
           if (did(Drama.stoleCorpFiles)) {
             if (!liberalguardian) {
-              story += "  According to police sources that were at the scene, "
+              story += "   According to police sources that were at the scene, "
                   "executives on the scene seemed very nervous about something."
                   "&r";
             } else {
               story +=
-                  "  The Liberal Crime Squad was attempting to uncover the company's Conservative corruption."
+                  "   The Liberal Crime Squad was attempting to uncover the company's Conservative corruption."
                   "&r";
             }
           }
           if (did(Drama.hijackedBroadcast)) {
             if (!liberalguardian) {
-              story += "  The Liberal Crime Squad hijacked a news broadcast, "
+              story += "   The Liberal Crime Squad hijacked a news broadcast, "
                   "interrupting regular programming."
                   "&r";
             } else {
               story +=
-                  "  The Liberal Crime Squad delivered its message to the masses today."
+                  "   The Liberal Crime Squad delivered its message to the masses today."
                   "&r";
             }
           }
@@ -368,14 +369,14 @@ Future<void> displayStory(
             if (!ccs) {
               if (!liberalguardian) {
                 story +=
-                    "  Further details are sketchy, but police sources suggest that the LCS "
+                    "   Further details are sketchy, but police sources suggest that the LCS "
                     "engaged in ";
               } else {
-                story += "  The Liberal Crime Squad ";
+                story += "   The Liberal Crime Squad ";
               }
             } else {
               story +=
-                  "  Further details are sketchy, but police sources suggest that the CCS "
+                  "   Further details are sketchy, but police sources suggest that the CCS "
                   "engaged in ";
             }
             debugPrint("typesum: $typesum");
@@ -509,15 +510,15 @@ Future<void> displayStory(
     case NewsStories.massacre:
       int y = 3;
       if (ns.page == 1) {
-        y = 21;
+        y = 19;
         if (ns.siegetype == SiegeType.ccs) {
           displayCenteredNewsFont("CCS MASSACRE", 5, ns);
         } else if (!liberalguardian) {
           displayCenteredNewsFont("MYSTERIOUS", 5, ns);
-          displayCenteredNewsFont("MASSACRE", 13, ns);
+          displayCenteredNewsFont("MASSACRE", 10, ns);
         } else {
           displayCenteredNewsFont("CONSERVATIVE", 5, ns);
-          displayCenteredNewsFont("MASSACRE", 13, ns);
+          displayCenteredNewsFont("MASSACRE", 10, ns);
         }
       }
 
@@ -630,15 +631,15 @@ Future<void> displayStory(
       int y = 2;
 
       if (ns.page == 1) {
-        y = 21;
+        y = 19;
         if (liberalguardian) {
           displayCenteredNewsFont("LCS DENIES", 5, ns);
-          displayCenteredNewsFont("KIDNAPPING", 13, ns);
+          displayCenteredNewsFont("KIDNAPPING", 10, ns);
         } else {
           switch (ns.cr!.type.id) {
             case CreatureTypeIds.president:
               displayCenteredNewsFont("PRESIDENT", 5, ns);
-              displayCenteredNewsFont("KIDNAPPED", 13, ns);
+              displayCenteredNewsFont("KIDNAPPED", 10, ns);
               // Instantly bring a max military siege to the site
               if (ns.cr!.typeId == CreatureTypeIds.president) {
                 ns.cr!.heat += 1000;
@@ -648,36 +649,36 @@ Future<void> displayStory(
               }
             case CreatureTypeIds.corporateCEO:
               displayCenteredNewsFont("CEO", 5, ns);
-              displayCenteredNewsFont("KIDNAPPED", 13, ns);
+              displayCenteredNewsFont("KIDNAPPED", 10, ns);
             case CreatureTypeIds.radioPersonality:
               displayCenteredNewsFont("RADIO HOST", 5, ns);
-              displayCenteredNewsFont("KIDNAPPED", 13, ns);
+              displayCenteredNewsFont("KIDNAPPED", 10, ns);
             case CreatureTypeIds.newsAnchor:
               displayCenteredNewsFont("NEWS ANCHOR", 5, ns);
-              displayCenteredNewsFont("KIDNAPPED", 13, ns);
+              displayCenteredNewsFont("KIDNAPPED", 10, ns);
             case CreatureTypeIds.eminentScientist:
               displayCenteredNewsFont("SCIENTIST", 5, ns);
-              displayCenteredNewsFont("KIDNAPPED", 13, ns);
+              displayCenteredNewsFont("KIDNAPPED", 10, ns);
             case CreatureTypeIds.liberalJudge:
             case CreatureTypeIds.conservativeJudge:
               displayCenteredNewsFont("JUDGE", 5, ns);
-              displayCenteredNewsFont("KIDNAPPED", 13, ns);
+              displayCenteredNewsFont("KIDNAPPED", 10, ns);
             case CreatureTypeIds.policeChief:
               displayCenteredNewsFont("POLICE CHIEF", 5, ns);
-              displayCenteredNewsFont("KIDNAPPED", 13, ns);
+              displayCenteredNewsFont("KIDNAPPED", 10, ns);
             case CreatureTypeIds.cop:
             case CreatureTypeIds.gangUnit:
               displayCenteredNewsFont("POLICE", 5, ns);
-              displayCenteredNewsFont("KIDNAPPED", 13, ns);
+              displayCenteredNewsFont("KIDNAPPED", 10, ns);
             case CreatureTypeIds.deathSquad:
               displayCenteredNewsFont("DEATH COP", 5, ns);
-              displayCenteredNewsFont("KIDNAPPED", 13, ns);
+              displayCenteredNewsFont("KIDNAPPED", 10, ns);
             case CreatureTypeIds.actor:
               displayCenteredNewsFont("ACTOR", 5, ns);
-              displayCenteredNewsFont("KIDNAPPED", 13, ns);
+              displayCenteredNewsFont("KIDNAPPED", 10, ns);
             default:
               displayCenteredNewsFont("SUSPECTED", 5, ns);
-              displayCenteredNewsFont("KIDNAPPING", 13, ns);
+              displayCenteredNewsFont("KIDNAPPING", 10, ns);
           }
         }
       }
@@ -718,7 +719,8 @@ Future<void> displayStory(
   } while (!isBackKey(c));
 }
 
-void displayCenteredNewsFont(String str, int y, NewsStory ns) {
+void displayCenteredNewsFont(String str, int y, NewsStory ns,
+    {bool? useBigFont}) {
   if (ns.headline == "") {
     ns.headline = str;
   } else {
@@ -729,7 +731,7 @@ void displayCenteredNewsFont(String str, int y, NewsStory ns) {
   bool isLetter(String letter) =>
       letter.codePoint >= 'A'.codePoint && letter.codePoint <= 'Z'.codePoint;
   for (s = 0; s < str.length; s++) {
-    if (isLetter(str[s])) {
+    if (isLetter(str[s].toUpperCase())) {
       width += 6;
     } else if (str[s] == '\'') {
       width += 4;
@@ -740,40 +742,49 @@ void displayCenteredNewsFont(String str, int y, NewsStory ns) {
 
   int x = 39 - width ~/ 2;
 
-  for (s = 0; s < str.length; s++) {
-    if (isLetter(str[s]) || str[s] == '\'') {
-      int p;
-      if (isLetter(str[s])) {
-        p = str[s].codePoint - 'A'.codePoint;
-      } else {
-        p = 26;
-      }
-      int lim = 6;
-      if (str[s] == '\'') lim = 4;
-      if (s == str.length - 1) lim--;
-      for (int x2 = 0; x2 < lim; x2++) {
-        for (int y2 = 0; y2 < 7; y2++) {
-          move(y + y2, x + x2);
-          if (x2 == 5) {
-            setColor(lightGray, background: lightGray);
-            addchar(' ');
-          } else {
-            drawCPCGlyph(bigletters[p][x2][y2]);
+  if (useBigFont == true) {
+    for (s = 0; s < str.length; s++) {
+      if (isLetter(str[s]) || str[s] == '\'') {
+        int p;
+        if (isLetter(str[s])) {
+          p = str[s].codePoint - 'A'.codePoint;
+        } else {
+          p = 26;
+        }
+        int lim = 6;
+        if (str[s] == '\'') lim = 4;
+        if (s == str.length - 1) lim--;
+        for (int x2 = 0; x2 < lim; x2++) {
+          for (int y2 = 0; y2 < 7; y2++) {
+            move(y + y2, x + x2);
+            if (x2 == 5) {
+              setColor(ns.publication.backgroundColor,
+                  background: ns.publication.backgroundColor);
+              addchar(' ');
+            } else {
+              drawCPCGlyph(bigletters[p][x2][y2],
+                  remapLightGray: ns.publication.backgroundColor);
+            }
           }
         }
-      }
-      refresh();
-      x += lim;
-    } else {
-      setColor(lightGray, background: lightGray);
-      for (int x2 = 0; x2 < 3; x2++) {
-        for (int y2 = 0; y2 < 7; y2++) {
-          move(y + y2, x + x2);
-          addchar(' ');
+        refresh();
+        x += lim;
+      } else {
+        setColor(ns.publication.backgroundColor,
+            background: ns.publication.backgroundColor);
+        for (int x2 = 0; x2 < 3; x2++) {
+          for (int y2 = 0; y2 < 7; y2++) {
+            move(y + y2, x + x2);
+            addchar(' ');
+          }
         }
+        x += 3;
       }
-      x += 3;
     }
+  } else {
+    // Print using 4x5 font
+    setColor(black, background: ns.publication.backgroundColor);
+    print5x5NewsText(y, x, str);
   }
 }
 
@@ -781,7 +792,7 @@ void displayCenteredSmallNews(String str, int y, NewsStory ns) {
   ns.body = str;
   int x = 39 - ((str.length - 1) >> 1);
   move(y, x);
-  setColor(black, background: lightGray);
+  setColor(black, background: ns.publication.backgroundColor);
   addstr(str);
 }
 
@@ -849,7 +860,8 @@ void displayNewsStory(String story, List<int> storyXStart, List<int> storyXEnd,
     centered.add(isCentered);
   }
 
-  setColor(black, background: lightGray);
+  Color bgColor = (ns?.publication ?? Publication.times).backgroundColor;
+  setColor(black, background: bgColor);
   for (int cury = y; cury < 25; cury++) {
     if (lines.isEmpty) break;
     if (lines.first.isEmpty) {
@@ -869,7 +881,7 @@ void displayNewsStory(String story, List<int> storyXStart, List<int> storyXEnd,
     centered.removeAt(0);
   }
 
-  setColor(black, background: lightGray);
+  setColor(black, background: bgColor);
   for (int t = 0; t < text.length; t++) {
     if (y + t >= 25) break;
     if (text[t].endsWith(' ')) {

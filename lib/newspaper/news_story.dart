@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:collection/collection.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:lcs_new_age/creature/creature.dart';
@@ -6,8 +8,29 @@ import 'package:lcs_new_age/location/siege.dart';
 import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
 import 'package:lcs_new_age/politics/views.dart';
+import 'package:lcs_new_age/utils/colors.dart';
 
 part 'news_story.g.dart';
+
+enum Publication {
+  times("The Times", DeepAlignment.moderate, lightGray),
+  herald("The Herald", DeepAlignment.moderate, lightGray),
+  post("The Post", DeepAlignment.moderate, lightGray),
+  globe("The Globe", DeepAlignment.moderate, lightGray),
+  daily("The Daily", DeepAlignment.moderate, lightGray),
+  liberalGuardian("Liberal Guardian", DeepAlignment.eliteLiberal,
+      liberalGuardianBackground),
+  cableNews("Cable News", DeepAlignment.archConservative, cableNewsBackground),
+  amRadio("AM Radio", DeepAlignment.archConservative, amRadioBackground),
+  conservativeStar("Conservative Star", DeepAlignment.archConservative,
+      conservativeCrusaderBackground);
+
+  const Publication(this.name, this.alignment, this.backgroundColor);
+
+  final String name;
+  final DeepAlignment alignment;
+  final Color backgroundColor;
+}
 
 @JsonSerializable()
 class NewsStory {
@@ -52,6 +75,21 @@ class NewsStory {
   String publicationName = "";
   @JsonKey(defaultValue: DeepAlignment.moderate)
   DeepAlignment publicationAlignment = DeepAlignment.moderate;
+  Publication? _publication;
+  @JsonKey(includeToJson: false, includeFromJson: false)
+  Publication get publication {
+    _publication ??= Publication.values
+            .firstWhereOrNull((element) => element.name == publicationName) ??
+        Publication.times;
+    return _publication!;
+  }
+
+  set publication(Publication p) {
+    _publication = p;
+    publicationName = p.name;
+    publicationAlignment = p.alignment;
+  }
+
   @JsonKey(includeToJson: true, includeFromJson: true)
   DateTime? _date;
   @JsonKey(includeFromJson: false, includeToJson: false)

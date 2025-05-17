@@ -21,6 +21,11 @@ const Color pink = Color(0xFFFA98FF); // not used
 
 const Color transparent = Color(0x00000000);
 
+const Color amRadioBackground = Color(0xFFE8DACC);
+const Color cableNewsBackground = Color(0xFFf7e0e9);
+const Color liberalGuardianBackground = Color(0xFFe0f7e0);
+const Color conservativeCrusaderBackground = Color(0xFFf7e0e0);
+
 // Reversed colorMap
 class ColorKey {
   static const String green = 'g';

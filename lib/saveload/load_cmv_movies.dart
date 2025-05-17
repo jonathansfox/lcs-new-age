@@ -99,8 +99,8 @@ class CursesMovie {
 
       timer++;
       //while(time+10>GetTickCount);
-      if (timer * 10 > sw.elapsedMilliseconds) {
-        await Future.delayed(const Duration(milliseconds: 10));
+      if (timer * 8 > sw.elapsedMilliseconds) {
+        await Future.delayed(const Duration(milliseconds: 8));
       }
 
       int c = checkKey();
