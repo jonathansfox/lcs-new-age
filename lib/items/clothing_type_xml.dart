@@ -3,7 +3,13 @@ import 'package:lcs_new_age/items/clothing_type.dart';
 import 'package:lcs_new_age/saveload/parse_value.dart';
 import 'package:xml/xml.dart';
 
-void parseClothingType(ClothingType clothing, XmlElement xml) {
+Map<String, XmlElement> originalXml = {};
+
+void parseClothingType(ClothingType clothing, XmlElement xml,
+    {bool modifying = false}) {
+  if (!modifying) {
+    originalXml[clothing.idName] = xml;
+  }
   for (XmlElement element in xml.childElements) {
     String key = element.name.local;
     switch (key) {
@@ -61,6 +67,15 @@ void parseClothingType(ClothingType clothing, XmlElement xml) {
             clothing.interrogationDrugBonus =
                 int.tryParse(e.innerText) ?? clothing.interrogationDrugBonus;
           }
+        }
+      case "modification_of":
+        if (originalXml.containsKey(element.innerText)) {
+          parseClothingType(clothing, originalXml[element.innerText]!,
+              modifying: true);
+          debugPrint(originalXml[element.innerText]!.outerXml);
+        } else {
+          debugPrint("Modification of ${element.innerText} could not be "
+              "completed because ${element.innerText} was not found");
         }
       case "professionalism":
         clothing.professionalism =

@@ -162,19 +162,17 @@ int get partysize => squad.length;
 int get partyalive => squad.where((s) => s.alive).length;
 
 void printChaseOptions() {
-  mvaddstrc(10, 1, blue, "D");
-  addstrc(lightGray, "-Try to lose them, ");
-  addstrc(blue, "F");
-  addstrc(lightGray, "ight, ");
-  addstrc(blue, "E");
-  addstrc(lightGray, "quip, ");
-  addstrc(partysize > 1 ? blue : darkGray, "O");
-  addstrc(partysize > 1 ? lightGray : darkGray, "rder, ");
+  setColor(lightGray);
+  addOptionText(10, 1, "D", "D-Try to lose them");
+  addstr(", ");
+  addInlineOptionText("F", "Fight");
+  addstr(", ");
+  addInlineOptionText("E", "Equip");
+  addstr(", ");
+  addInlineOptionText("O", "Order", enabledWhen: partysize > 1);
+  addstr(", ");
   bool surrenderIsAnOption = chaseSequence?.canpullover ?? false;
-  addstrc(surrenderIsAnOption ? blue : darkGray, "G");
-  addstrc(surrenderIsAnOption ? lightGray : darkGray, "-Give up");
-  //addstrc(lightGray, ", ");
-  //addstrc(blue, "?");
+  addInlineOptionText("G", "Give up", enabledWhen: surrenderIsAnOption);
 }
 
 void printCarChaseOptions({
@@ -183,27 +181,22 @@ void printCarChaseOptions({
   String? gOption,
   bool canBailOut = true,
 }) {
-  mvaddstrc(12, 1, blue, "D");
-  addstrc(lightGray, "$dOption, ");
-  addstrc(blue, "F");
-  addstrc(lightGray, fOption);
+  setColor(lightGray);
+  addOptionText(12, 1, "D", "D$dOption");
+  addstr(", ");
+  addInlineOptionText("F", "F$fOption");
   if (gOption != null) {
     addstr(", ");
-    addstrc(blue, "G");
-    addstrc(lightGray, gOption);
+    addInlineOptionText("G", "G$gOption");
   }
   if (canBailOut) {
     addstr(", ");
-    addstrc(blue, "B");
-    addstrc(lightGray, "ail out and run");
+    addInlineOptionText("B", "Bail out and run");
     if (chaseSequence!.canpullover) {
       addstr(", ");
-      addstrc(blue, "P");
-      addstrc(lightGray, "ull over and surrender");
+      addInlineOptionText("P", "Pull over and surrender");
     }
   }
-  //addstr(", ");
-  //addstrc(blue, "?");
 }
 
 Future<void> handleChaseSquadOptions(int c) async {

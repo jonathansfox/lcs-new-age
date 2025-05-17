@@ -31,7 +31,7 @@ class WeaponType extends ItemType {
   bool canThreatenHostages = true;
   bool protectsAgainstKidnapping = true;
   bool carriedByCivilians = false;
-  bool musicalAttack = false;
+  bool get musicalAttack => attacks.any((a) => a.socialDamage) && instrument;
   bool instrument = false;
   DeepAlignment? bannedAtGunControl;
   bool suspicious = true;

@@ -72,13 +72,6 @@ String get pageStr {
   return "$str - View other Liberal pages";
 }
 
-String get pageStrX {
-  return pageStr
-      .split(" ")
-      .mapIndexed((i, s) => i == 0 ? "&B$s&x" : s)
-      .join(" ");
-}
-
 String pageStrWithCurrentAndMax(int current, int max) {
   String str;
   if (interfacePgUp == "[") {
@@ -89,6 +82,33 @@ String pageStrWithCurrentAndMax(int current, int max) {
     str = "PGUP/PGDN";
   }
   return "$str - View other Liberal pages ($current/$max)";
+}
+
+void addPageButtons(
+    {int? y, int? x, int? current, int? max, bool short = false}) {
+  y ??= console.y;
+  x ??= console.x;
+  move(y, x);
+  if (short) {
+    addInlineOptionText("[", "[ - Prev");
+    console.x += 2;
+    addInlineOptionText("]", "] - Next");
+  } else {
+    addInlineOptionText("[", "[ - Previous Page");
+    console.x += 2;
+    addInlineOptionText("]", "] - Next Page");
+  }
+  if (current != null && max != null) {
+    console.x += 1;
+    addstr("($current/$max)");
+  }
+}
+
+void addBackButton({int? y, int? x}) {
+  y ??= console.y;
+  x ??= console.x;
+  move(y, x);
+  addInlineOptionText("Enter", "Enter - Back");
 }
 
 String pageStrWithCurrentAndMaxX(int current, int max) {
