@@ -1,3 +1,11 @@
+## 1.4.1 - 5/18/2025
+* Major news stories scooped by the Liberal Guardian will no longer have a chance to include some Conservative flavor text when the laws are very Conservative
+* The news story about a book written by a former inmate will now be a story about violence from abusive guards rather than a story about sexual assault from other inmates
+* Fixed a bug where hostages freed from captivity didn't go back to work if they offered to be a sleeper
+* Fixed a crash on buying guns from gang members through the recruitment activity
+* It is now always a good place to buy guns from gang members when approaching them through the recruitment activity
+* The recruiting screen now allows mouse input for who to talk to
+
 ## 1.4.0 - 5/17/2025
 
 ### Media Update
@@ -9,7 +17,8 @@
 * Conservative outlets will now push Gun Control more conservative with every story about a Crime Squad regardless of what they were doing
 * Major event news stories now fire four times as frequently
 * Cable News and AM Radio are dependent on public opinion for their share of the media
-* The Liberal Guardian is dependent on your writers as well as public opinion of the LCS for its share of the media
+* The Liberal Guardian is depend
+ent on your writers as well as public opinion of the LCS for its share of the media
 * The Conservative Star is dependent on the CCS's strength as well as public opinion of the CCS for its share of the media
 * Liberal Guardian special editions will now show up in the news history
 
