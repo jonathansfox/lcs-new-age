@@ -66,8 +66,9 @@ Future<void> doActivityRecruit(Creature cr) async {
       mvaddstrc(10, 0, lightGray,
           "${cr.name} was able to get information on multiple people.");
       for (int i = 0; i < recruitCount; i++) {
-        mvaddstrc(12 + i, 0, lightGray, "${letterAPlus(i)} - ");
-        addstrc(encounter[i].align.color, encounter[i].name);
+        String letter = letterAPlus(i);
+        addOptionText(12 + i, 0, letter,
+            "$letter - &${ColorKey.fromColor(encounter[i].align.color)}${encounter[i].name}");
         printCreatureAgeAndGender(encounter[i]);
       }
       addOptionText(12 + recruitCount + 1, 0, "Enter/Escape",
