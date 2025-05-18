@@ -1,3 +1,12 @@
+## 1.4.2 - 5/18/2025
+* Fixed page options not correctly allowing , ; and . for paging
+* Added option from the title screen for changing the display of page keys to reflect alternative options
+* Fixed the options on the Liberal Agenda screen being too far to the right
+* Enemies that just attacked you should now wait to run away until after your next round of combat
+* Increased the difficulty of executing mythical martial arts attacks
+* Increased the efficacy of mythical martial arts attacks
+* Added several new mythical martial arts attacks
+
 ## 1.4.1 - 5/18/2025
 * Major news stories scooped by the Liberal Guardian will no longer have a chance to include some Conservative flavor text when the laws are very Conservative
 * The news story about a book written by a former inmate will now be a story about violence from abusive guards rather than a story about sexual assault from other inmates

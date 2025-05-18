@@ -13,10 +13,11 @@ import 'package:lcs_new_age/title_screen/new_game.dart';
 import 'package:lcs_new_age/title_screen/world.dart';
 import 'package:lcs_new_age/utils/colors.dart';
 import 'package:lcs_new_age/utils/game_options.dart';
+import 'package:lcs_new_age/utils/interface_options.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const String gameVersion = "1.4.1";
+const String gameVersion = "1.4.2";
 bool megaFounderCheat = false;
 
 Future<void> titleScreen() async {
@@ -145,6 +146,18 @@ Future<void> optionsMenu() async {
         "the game. This feature is not complete and not all screens support "
         "mouse input. Default is on.");
 
+    addOptionText(console.y + 1, 4, "P",
+        "P - Default Page Up/Down Keys: &G$interfacePgUp&x and &G$interfacePgDown&x");
+    setColor(midGray);
+    addparagraph(
+        console.y + 1,
+        8,
+        x2: 72,
+        "Any of these options can be used to page up and down on paged "
+        "interfaces in the game, regardless of how this option is set. "
+        "This option changes which set of keys is shown in the in-game "
+        "prompts. Default is [ and ].");
+
     addOptionText(console.y + 1, 4, "B", "B - Back to Title Screen");
 
     int c = await getKey();
@@ -155,6 +168,16 @@ Future<void> optionsMenu() async {
         await gameOptions.save();
       case Key.m:
         gameOptions.mouseInput = !gameOptions.mouseInput;
+        await gameOptions.save();
+      case Key.p:
+        switch (interfacePgUp) {
+          case "[":
+            gameOptions.interfacePgUp = ";";
+          case ";":
+            gameOptions.interfacePgUp = ",";
+          case ",":
+            gameOptions.interfacePgUp = "[";
+        }
         await gameOptions.save();
       case Key.b:
         return;

@@ -271,6 +271,10 @@ class Creature {
   @JsonKey(includeFromJson: false, includeToJson: false)
   bool nonCombatant = false;
   @JsonKey(includeFromJson: false, includeToJson: false)
+  bool justAttacked = false;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  bool cantRunAway = false;
+  @JsonKey(includeFromJson: false, includeToJson: false)
   bool get isHoldingBody => prisoner != null;
   @JsonKey(includeFromJson: false, includeToJson: false)
   bool get canWalk => alive && body.canWalk;
@@ -839,6 +843,7 @@ class Creature {
     if (mode == GameMode.carChase) {
       courage += 10000;
     }
+    if (justAttacked) courage += 10000;
 
     debugPrint("$name - Fear: $fear, Courage: $courage");
 

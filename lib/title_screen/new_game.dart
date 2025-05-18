@@ -22,6 +22,7 @@ import 'package:lcs_new_age/utils/lcsrandom.dart';
 
 const bool debugPresidentSleeper = false;
 const bool debugSiege = false;
+const bool debugMartialArtsMaster = false;
 
 Future<void> setupNewGame() async {
   gameState = GameState();
@@ -262,6 +263,15 @@ Future<void> makeCharacter() async {
   }
 
   await characterCreationQuestions(founder, letMeChoose);
+
+  if (debugMartialArtsMaster) {
+    founder.rawAttributes[Attribute.heart] = 15;
+    founder.rawAttributes[Attribute.agility] = 15;
+    founder.rawAttributes[Attribute.strength] = 15;
+    founder.juice = 1000;
+    founder.rawSkill[Skill.martialArts] = founder.skillCap(Skill.martialArts);
+    founder.rawSkill[Skill.dodge] = founder.skillCap(Skill.dodge);
+  }
 
   await aNewConservativeEra();
 

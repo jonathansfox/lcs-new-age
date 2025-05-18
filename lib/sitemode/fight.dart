@@ -186,10 +186,18 @@ const List<String> escapeRunning = [
   " bolts out of there!",
   " runs away screaming!",
 ];
+const List<String> cowerInCombat = [
+  " cowers in fear.",
+  " cowers in the corner.",
+  " stays in cover.",
+  " looks around in panic.",
+  " stays low to the ground.",
+];
 
 Future<void> enemyattack(List<Creature> possibleEnemies) async {
   for (int i = possibleEnemies.length - 1; i >= 0; i--) {
     Creature e = possibleEnemies[i];
+    e.justAttacked = false;
     if (!e.alive) continue;
 
     // Moderate bouncers are converted to conservatives
@@ -208,6 +216,7 @@ Future<void> enemyattack(List<Creature> possibleEnemies) async {
     if (mode != GameMode.carChase) {
       bool runsAway = e.calculateWillRunAway() || e.nonCombatant;
       if (mode == GameMode.carChase) runsAway = false;
+      if (e.cantRunAway) runsAway = false;
 
       if (runsAway && e.body is HumanoidBody) {
         clearMessageArea();
@@ -228,6 +237,16 @@ Future<void> enemyattack(List<Creature> possibleEnemies) async {
 
         await getKey();
 
+        continue;
+      } else if (e.nonCombatant && e.cantRunAway) {
+        if (await incapacitated(e, false)) {
+          e.incapacitatedThisRound = true;
+        } else if (e.equippedWeapon != null) {
+          clearMessageArea();
+          mvaddstrc(9, 1, white, e.name);
+          addstr(cowerInCombat.random);
+          await getKey();
+        }
         continue;
       }
     }
@@ -254,7 +273,7 @@ Future<void> enemyattack(List<Creature> possibleEnemies) async {
       }
     } else {
       for (Creature e2 in possibleEnemies) {
-        if (e2.alive && e2.isEnemy) {
+        if (e2.alive && e2.isEnemy && !e2.nonCombatant && e2.stunned <= 0) {
           goodtarg.add(e2);
         } else if (e2.alive && e2 != e) {
           badtarg.add(e2);
@@ -269,7 +288,8 @@ Future<void> enemyattack(List<Creature> possibleEnemies) async {
 
     // If the attack will be a social attack, it can't have friendly fire
     bool canmistake = true;
-    if (e.attack.socialDamage && encounter.length < ENCMAX) canmistake = false;
+    if (e.attack.socialDamage) canmistake = false;
+    if (!e.attack.ranged) canmistake = false;
     if (mode == GameMode.carChase) canmistake = false;
 
     if (canmistake) {
@@ -338,8 +358,11 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
   a.incapacitatedThisRound = false;
   if (await incapacitated(a, false)) {
     a.incapacitatedThisRound = true;
-
+    a.justAttacked = false;
     return false;
+  } else {
+    a.justAttacked = true;
+    a.cantRunAway = true;
   }
 
   //RELOAD
@@ -381,6 +404,9 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
   bool melee = !attackUsed.ranged && !attackUsed.socialDamage;
   bool sneakAttack = false;
   bool addNastyOff = false;
+  bool addStun = false;
+  bool addAutoConvert = false;
+  bool torsoOnly = false;
   int maxNumberOfAttacks = attackUsed.numberOfAttacks;
   double damageMultiplier = 1;
 
@@ -401,7 +427,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
         addstr("kicks");
         maxNumberOfAttacks = 1;
         damageMultiplier = 1;
-      } else if (result < Difficulty.heroic) {
+      } else if (result < Difficulty.mythic) {
         switch (lcsRandom(3)) {
           case 0:
             addstr("pummels");
@@ -417,20 +443,48 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
             damageMultiplier = 5;
         }
       } else {
-        switch (lcsRandom(3)) {
+        switch (lcsRandom(9)) {
           case 0:
             addstr("unleashes ${a.gender.hisHer} Stand on");
             maxNumberOfAttacks = 12;
-            damageMultiplier = 1;
+            damageMultiplier = 1.5;
           case 1:
-            addstr("launches a flurry of blows at");
-            maxNumberOfAttacks = 6;
+            addstr("launches a flurry of kicks at");
+            maxNumberOfAttacks = 8;
             damageMultiplier = 2;
           case 2:
             addstr("slows time and touches");
             addNastyOff = true;
             maxNumberOfAttacks = 1;
-            damageMultiplier = 10;
+            damageMultiplier = 12;
+          case 3:
+            addstr("leaps into the air and descends upon");
+            maxNumberOfAttacks = 3;
+            damageMultiplier = 5;
+          case 4:
+            addstr("suddenly appears behind");
+            maxNumberOfAttacks = 4;
+            damageMultiplier = 4;
+          case 5:
+            addstr("hurls a ball of energy at");
+            addNastyOff = true;
+            maxNumberOfAttacks = 1;
+            damageMultiplier = 12;
+          case 6:
+            addstr("throws a stunning palm strike at");
+            addStun = true;
+            maxNumberOfAttacks = 1;
+            damageMultiplier = 0.5;
+          case 7:
+            addstr("leaps into a spinning kick against");
+            maxNumberOfAttacks = 2;
+            damageMultiplier = 6;
+          case 8:
+            addstr("delivers the Bleeding Heart punch to");
+            addAutoConvert = true;
+            torsoOnly = true;
+            maxNumberOfAttacks = 1;
+            damageMultiplier = 0;
         }
       }
     } else if (a.weapon.typeName == "WEAPON_BITE") {
@@ -667,19 +721,26 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
   }
 
   hitPart = rollHitLocation();
+  if (torsoOnly) {
+    hitPart = t.body.parts.firstWhere((p) => p.critical && !p.weakSpot);
+  }
 
   if (hitPart != null && aroll + bonus > droll) {
     //HIT!
     String str = a.name;
-    if (sneakAttack) {
+    if (addAutoConvert) {
+      str += " punches the ${t.align.ism} out of ${t.name}";
+    } else if (sneakAttack) {
       str += " stabs the ";
     } else if (bursthits == 1 || attackUsed.ranged) {
-      str += " hits the ";
+      str += " hits ";
     }
 
-    if (bursthits > 1 && !attackUsed.ranged) {
+    if (addAutoConvert) {
+    } else if (bursthits > 1 && !attackUsed.ranged) {
       str += " strikes true";
     } else if (t.clothing.covers(hitPart)) {
+      str += "${t.name}'s ";
       if (hitPart.weakSpot && t.human) {
         if (t.clothing.headArmor > 4) {
           str += "helmet";
@@ -709,14 +770,55 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
       };
       str += ", ${attackUsed.hitDescription}$multiHit";
     }
-    addstr("$str.");
+    if (addAutoConvert) {
+      addstr("$str!");
+    } else {
+      addstr("$str.");
+    }
     await getKey();
 
     bool aliveBefore = t.alive;
     for (int i = 0; i < bursthits; i++) {
       await hit(a, t, attackUsed, hitPart!, sneakAttack, addNastyOff,
           damageMultiplier);
+      if (hitPart.critical && addStun) {
+        t.stunned = 10;
+      } else if (addStun) {
+        t.stunned = 1;
+      }
+      if (addAutoConvert && !t.type.tank) {
+        void swapAttributes(Attribute a, Attribute b) {
+          int aValue = t.rawAttributes[a]!;
+          int bValue = t.rawAttributes[b]!;
+          t.rawAttributes[a] = bValue;
+          t.rawAttributes[b] = aValue;
+        }
+
+        if (a.align == Alignment.conservative) {
+          if (t.rawAttributes[Attribute.heart]! >
+              t.rawAttributes[Attribute.wisdom]!) {
+            swapAttributes(Attribute.heart, Attribute.wisdom);
+          }
+          if (!encounter.contains(t)) encounter.add(t);
+          pool.remove(t);
+          conservatize(t);
+          t.noticedParty = true;
+          t.isWillingToTalk = true;
+        } else if (a.align == Alignment.liberal) {
+          if (t.rawAttributes[Attribute.wisdom]! >
+              t.rawAttributes[Attribute.heart]!) {
+            swapAttributes(Attribute.heart, Attribute.wisdom);
+          }
+          liberalize(t);
+          t.isWillingToTalk = true;
+        }
+        t.justConverted = true;
+        printEncounter();
+      }
       if (!attackUsed.ranged) hitPart = rollHitLocation();
+      if (torsoOnly) {
+        hitPart = t.body.parts.firstWhere((p) => p.critical && !p.weakSpot);
+      }
       if (hitPart == null) break;
     }
 

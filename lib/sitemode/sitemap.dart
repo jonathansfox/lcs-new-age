@@ -284,6 +284,7 @@ Future<void> initsite(Site loc) async {
   if (activeSquad == null) return;
   for (Creature p in squad) {
     p.incapacitatedThisRound = false;
+    p.justAttacked = false;
   }
   groundLoot.clear();
 
