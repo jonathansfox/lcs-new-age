@@ -285,6 +285,9 @@ Future<bool> doYouComeHereOften(Creature a, Creature tk) async {
       "\"Why are you talking to me?\"",
       "\"Get a load of this idiot.\"",
     ].random);
+
+    await getKey();
+
     tk.isWillingToTalk = false;
   } else if (succeeded || tk.type.id == CreatureTypeIds.sexWorker) {
     String responds = "responds";
