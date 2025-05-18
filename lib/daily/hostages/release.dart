@@ -119,6 +119,7 @@ Future<void> handleRelease(
     cr.hireId = lead.id;
     cr.brainwashed = true;
     cr.base = cr.workLocation is Site ? cr.workLocation as Site : null;
+    cr.location = cr.workLocation;
     cr.sleeperAgent = true;
     liberalize(cr);
     stats.recruits++;
