@@ -1013,7 +1013,7 @@ Elements marked as hardcoded may have their values overridden by the game.
         <recruit_activity_difficulty>2</recruit_activity_difficulty>
     </creaturetype>
     <creaturetype idname="CREATURE_CRACKHEAD">
-        <type_name>Addict</type_name>
+        <type_name>Drug Addict</type_name>
         <weapon>CIVILIAN</weapon>
         <weapon>WEAPON_SHANK</weapon>
         <armor>CLOTHING_STREETWEAR</armor>

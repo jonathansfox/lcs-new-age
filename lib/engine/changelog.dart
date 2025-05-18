@@ -1,9 +1,11 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lcs_new_age/engine/console_widget.dart';
 import 'package:lcs_new_age/utils/colors.dart';
+import 'package:markdown_widget/markdown_widget.dart';
 
 class ChangelogWidget extends StatefulWidget {
   const ChangelogWidget({super.key});
@@ -17,21 +19,21 @@ class ChangelogWidget extends StatefulWidget {
 
 class ChangelogWidgetState extends State<ChangelogWidget> {
   String? _content;
-  bool _show = false;
+  bool showing = false;
   final ScrollController _scrollController = ScrollController();
   final FocusNode _focusNode = FocusNode();
 
   void show(String content) {
     setState(() {
       _content = content;
-      _show = true;
+      showing = true;
     });
     _focusNode.requestFocus();
   }
 
   void hide() {
     setState(() {
-      _show = false;
+      showing = false;
       _content = null;
     });
     _focusNode.unfocus();
@@ -48,7 +50,7 @@ class ChangelogWidgetState extends State<ChangelogWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (!_show || _content == null) return const SizedBox();
+    if (!showing || _content == null) return const SizedBox();
 
     return Center(
       child: KeyboardListener(
@@ -128,13 +130,16 @@ class ChangelogWidgetState extends State<ChangelogWidget> {
                     child: SingleChildScrollView(
                       controller: _scrollController,
                       padding: const EdgeInsets.all(16),
-                      child: Text(
-                        _content!,
-                        style: const TextStyle(
-                          color: lightGray,
-                          fontSize: 16,
-                          fontFamily: 'SourceCodePro',
-                        ),
+                      child: MarkdownBlock(
+                        selectable: false,
+                        data: _content!,
+                        config: MarkdownConfig.darkConfig.copy(configs: [
+                          const H1Config(),
+                          const H2Config(),
+                          const H3Config(),
+                          MyPConfig(),
+                          const MyListConfig(),
+                        ]),
                       ),
                     ),
                   ),
@@ -146,4 +151,79 @@ class ChangelogWidgetState extends State<ChangelogWidget> {
       ),
     );
   }
+}
+
+class H1Config extends HeadingConfig {
+  const H1Config(
+      {this.style = const TextStyle(
+        fontFamily: 'SourceCodePro',
+        fontSize: 30,
+        fontWeight: FontWeight.bold,
+        color: lightGreen,
+      )});
+
+  @override
+  final TextStyle style;
+
+  @nonVirtual
+  @override
+  String get tag => MarkdownTag.h1.name;
+}
+
+class H2Config extends HeadingConfig {
+  const H2Config(
+      {this.style = const TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+        color: lightGray,
+        fontFamily: 'SourceCodePro',
+      )});
+
+  @override
+  final TextStyle style;
+
+  @nonVirtual
+  @override
+  String get tag => MarkdownTag.h2.name;
+}
+
+class H3Config extends HeadingConfig {
+  const H3Config(
+      {this.style = const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+        color: lightGray,
+        fontFamily: 'SourceCodePro',
+      )});
+
+  @override
+  final TextStyle style;
+
+  @nonVirtual
+  @override
+  String get tag => MarkdownTag.h3.name;
+}
+
+class MyPConfig extends PConfig {
+  MyPConfig(
+      {super.textStyle = const TextStyle(
+        fontSize: 16,
+        color: lightGray,
+        fontFamily: 'SourceCodePro',
+      )});
+}
+
+class MyListConfig extends ListConfig {
+  const MyListConfig({
+    super.marker = _defaultMarker,
+  });
+
+  static Widget? _defaultMarker(bool isOrdered, int depth, int index) =>
+      const Text(
+        ' •',
+        style: TextStyle(
+          color: lightGreen,
+          fontFamily: 'SourceCodePro',
+        ),
+      );
 }

@@ -203,7 +203,7 @@ Future<void> pause(int milliseconds) async {
 }
 
 Future<void> showChangelog() async {
-  String content = await rootBundle.loadString('assets/changelog.txt');
+  String content = await rootBundle.loadString('assets/changelog.md');
   ChangelogWidget.globalKey.currentState?.show(content);
 }
 

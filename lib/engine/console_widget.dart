@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:lcs_new_age/engine/changelog.dart';
 import 'package:lcs_new_age/engine/console.dart';
 import 'package:lcs_new_age/engine/console_char.dart';
 import 'package:lcs_new_age/engine/engine.dart';
@@ -286,9 +287,12 @@ class _ConsoleWidgetState extends State<ConsoleWidget> {
                     console.handleMouseClick(y, x);
                   },
                   onTap: () {
-                    debugPrint("Requesting focus");
-                    focusNode.requestFocus();
-                    debugPrint("Widget has focus: ${focusNode.hasFocus}");
+                    if (ChangelogWidget.globalKey.currentState?.showing !=
+                        true) {
+                      debugPrint("Requesting focus");
+                      focusNode.requestFocus();
+                      debugPrint("Widget has focus: ${focusNode.hasFocus}");
+                    }
                   },
                   child: Stack(
                     children: [

@@ -23,6 +23,7 @@ dependencies:
   http: ^1.3.0
   cupertino_icons: ^1.0.8
   web: ^1.1.1
+  markdown_widget: ^2.3.2
 
 dev_dependencies:
   flutter_test:
@@ -38,7 +39,7 @@ flutter:
    - assets/flags/
    - assets/maps/
    - assets/art/
-   - assets/changelog.txt
+   - assets/changelog.md
   uses-material-design: true
   fonts:
    - family: SourceCodePro

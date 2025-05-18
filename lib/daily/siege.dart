@@ -78,12 +78,8 @@ Future<void> siegeCheck() async {
     List<Site> safehouses =
         sites.where((s) => s.controller == SiteController.lcs).toList();
     for (Site l in safehouses) {
-      if (policeStation.isClosed) {
-        l.heat = (l.heat * 0.95).floor();
-        continue;
-      }
       if (l.siege.underSiege) continue;
-      if (policeChiefCompromised) {
+      if (policeChiefCompromised || policeStation.isClosed) {
         l.heat = (l.heat * 0.95).floor();
       }
       numpres = 0;

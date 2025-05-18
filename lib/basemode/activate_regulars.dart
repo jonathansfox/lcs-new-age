@@ -9,7 +9,6 @@ import 'package:lcs_new_age/creature/creature.dart';
 import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/creature/sort_creatures.dart';
 import 'package:lcs_new_age/daily/activities/fundraising.dart';
-import 'package:lcs_new_age/daily/activities/recruiting.dart';
 import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/gamestate/squad.dart';

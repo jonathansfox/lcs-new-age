@@ -93,14 +93,12 @@ class Console {
     if (!gameOptions.mouseInput) return;
     String? key = buffer[y][x].mouseClickKey;
     key ??= "Enter";
-    if (key != null) {
-      keyEvent(KeyDownEvent(
-        logicalKey: LogicalKeyboardKey.keyA,
-        physicalKey: PhysicalKeyboardKey.keyA,
-        character: key,
-        timeStamp: const Duration(),
-      ));
-    }
+    keyEvent(KeyDownEvent(
+      logicalKey: LogicalKeyboardKey.keyA,
+      physicalKey: PhysicalKeyboardKey.keyA,
+      character: key,
+      timeStamp: const Duration(),
+    ));
   }
 
   void mvaddchar(int y, int x, String c, {String? mouseClickKey}) {
