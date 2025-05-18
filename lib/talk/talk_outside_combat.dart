@@ -6,6 +6,7 @@ import 'package:lcs_new_age/creature/difficulty.dart';
 import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/daily/shopsnstuff.dart';
 import 'package:lcs_new_age/engine/engine.dart';
+import 'package:lcs_new_age/gamestate/game_mode.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/gamestate/ledger.dart';
 import 'package:lcs_new_age/gamestate/squad.dart';
@@ -384,7 +385,9 @@ Future<bool> heyINeedAGun(Creature a, Creature tk) async {
     await getKey();
     return true;
   }
-  switch (activeSite?.type) {
+  SiteType? siteType = activeSite?.type;
+  if (mode != GameMode.site) siteType = null;
+  switch (siteType) {
     case SiteType.bunker:
     case SiteType.drugHouse:
     case SiteType.barAndGrill:
@@ -392,15 +395,18 @@ Future<bool> heyINeedAGun(Creature a, Creature tk) async {
     case SiteType.tenement:
     case SiteType.bombShelter:
     case SiteType.homelessEncampment:
+    case SiteType.warehouse:
     case null:
       mvaddstrc(12, 1, white, tk.name);
       addstr(" responds, ");
       mvaddstrc(13, 1, lightBlue, "\"What exactly do you need?\"");
       await getKey();
       Squad? oldSquad;
+      Squad? newSquad;
       if (activeSquad == null) {
         oldSquad = tk.squad;
-        tk.squad = Squad();
+        newSquad = Squad();
+        tk.squad = newSquad;
         activeSquad = tk.squad;
       }
       await armsdealer(activeSite ??
@@ -409,6 +415,7 @@ Future<bool> heyINeedAGun(Creature a, Creature tk) async {
       if (oldSquad != null) {
         tk.squad = oldSquad;
         activeSquad = null;
+        newSquad = null;
       }
       return true;
     default:
