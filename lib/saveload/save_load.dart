@@ -70,6 +70,14 @@ class SaveFile {
   final GameState? gameState;
 }
 
+String _nameOfFounder(GameState gameState) {
+  return gameState.lcs.pool
+      .firstWhereOrNull(
+          (e) => e.hireId == null && e.align == Alignment.liberal)
+      ?.name ??
+    "Unknown";
+}
+
 Future<bool> loadGameMenu() async {
   while (true) {
     List<SaveFile> saveFiles = await loadGameList();
@@ -112,11 +120,7 @@ Future<bool> loadGameMenu() async {
             inGameDate =
                 "${getMonthShort(saveFile.gameState!.date.month)} ${saveFile.gameState!.date.day}, ${saveFile.gameState!.date.year}";
 
-            founder = saveFile.gameState!.lcs.pool
-                    .firstWhereOrNull(
-                        (e) => e.hireId == null && e.align == Alignment.liberal)
-                    ?.name ??
-                "Unknown";
+            founder = _nameOfFounder(saveFile.gameState!);
           } else {
             inGameDate = "Error";
             founder = "Error - Crash Expected";
@@ -240,10 +244,27 @@ Future<void> deleteSaveGameId(String gameId) async {
 }
 
 Future<void> backupSave(SaveFile selectedSave) async {
+  // When trying to figure out which save is which, your founder's
+  // name is probably the most memorable thing we've got to offer.
+  // If your founder's name is " ", this will return "", but honestly
+  // at that point it's your fault.
+  final founderFirstName = _nameOfFounder(selectedSave.gameState!)
+      .toLowerCase()
+      .split(" ")
+      .first
+  ;
+  final now = DateTime.now().toIso8601String()
+      .replaceAll("-", "_") // - in YYYY-MM-DD
+      .replaceAll("T", "-") // T between date and time
+      .replaceAll(":", "_") // : in HH:MM:SS
+      .replaceAll(".", "-") // . before ms and us
+      .replaceAll("Z", "")  // Z at the end if the clock is in UTC
+  ;
+
   String json = jsonEncode(selectedSave.toJson());
   await FileSaver.instance.saveFile(
+    name: "lcsna_${founderFirstName}_${now}.json",
     bytes: const Utf8Encoder().convert(json),
-    name: "lcsna_backup_${selectedSave.gameId}.json",
   );
 }
 
