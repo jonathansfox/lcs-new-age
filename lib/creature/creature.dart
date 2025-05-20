@@ -800,8 +800,9 @@ class Creature {
                 (weaponCheck(s) != WeaponCheckResult.ok))
             .length ??
         0;
-    int armedConservatives =
-        encounter.where((e) => e.isEnemy && e.equippedWeapon != null).length;
+    int armedConservatives = encounter
+        .where((e) => e.isEnemy && (e.equippedWeapon != null || e.type.animal))
+        .length;
     int fear = maxBlood - blood;
     if (isEnemy) fear += armedLiberals * 50;
     if (blood < maxBlood * 0.45) fear += 100;
@@ -821,6 +822,9 @@ class Creature {
         courage += 200;
       }
     }
+    if (weapon.type.attacks.any((a) => a.burns)) {
+      courage += 100;
+    }
     if (!siteAlarm) courage += 100;
     if (type.canPerformArrests || type.lawEnforcement) courage += 200;
     if (type.intimidationResistant) courage += 200;
@@ -836,7 +840,7 @@ class Creature {
       courage += 400 * (blood / maxBlood).round();
     }
     if (type.tank) courage += 4000;
-    if (type.animal) courage += 200;
+    if (type.animal) courage += 200 * (blood / maxBlood).round();
     if (type.freeable && !isEnemy) courage += 1000;
     if (type.majorEnemy) courage += 2000;
     if (justConverted) courage += 2000;

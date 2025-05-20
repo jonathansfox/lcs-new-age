@@ -830,14 +830,18 @@ Elements marked as hardcoded may have their values overridden by the game.
         <age>DOGYEARS</age>
         <alignment>CONSERVATIVE</alignment>
         <attributes>
-            <agility>1-20</agility>
+            <agility>6-20</agility>
             <charisma>1-2</charisma>
             <!-- Max is hardcoded to 10 for pets. -->
             <heart>1-6</heart>
             <intelligence>1</intelligence>
-            <strength>1-20</strength>
+            <strength>6-20</strength>
             <wisdom>1-6</wisdom>
         </attributes>
+        <skills>
+            <martialArts>4-6</martialArts>
+            <dodge>4-6</dodge>
+        </skills>
         <animal>true</animal>
         <!--<money> Hardcoded to 0 if animal research law is not L+.-->
     </creaturetype>
