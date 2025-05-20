@@ -28,7 +28,7 @@ String aOrAn(String word) {
 }
 
 bool isPageUp(int c) {
-  return c == "[".codePoint || c == ";".codePoint;
+  return c == "[".codePoint || c == ";".codePoint || c == ",".codePoint;
 }
 
 bool isPageDown(int c) {
