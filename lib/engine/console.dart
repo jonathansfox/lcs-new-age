@@ -30,6 +30,26 @@ class Console {
   bool stale = true;
   void Function() flush = () {};
 
+  // Mouse event handling
+  bool mouseEventMode = false;
+  void Function(int y, int x, bool isDown)? onMouseEvent;
+
+  void enableMouseEvents(void Function(int y, int x, bool isDown) callback) {
+    mouseEventMode = true;
+    onMouseEvent = callback;
+  }
+
+  void disableMouseEvents() {
+    mouseEventMode = false;
+    onMouseEvent = null;
+  }
+
+  void handleMouseEvent(int y, int x, bool isDown) {
+    if (mouseEventMode && onMouseEvent != null) {
+      onMouseEvent!(y, x, isDown);
+    }
+  }
+
   void setColor(Color foreground, Color background) {
     currentForeground = foreground;
     currentBackground = background;

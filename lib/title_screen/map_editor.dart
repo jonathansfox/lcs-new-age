@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:file_saver/file_saver.dart';
 import 'package:flutter/services.dart';
 import 'package:lcs_new_age/common_display/common_display.dart';
 import 'package:lcs_new_age/engine/engine.dart';
@@ -121,6 +124,55 @@ final List<SpecialType> specialTypes = [
   const SpecialType("No Special", ".", yellow, TileSpecial.none, "no_special"),
 ];
 
+// Add this function before the editMap function
+(int id, String symbol) getSpecialInfo(TileSpecial special) {
+  return switch (special) {
+    TileSpecial.cagedRabbits => (1, 'r'),
+    TileSpecial.cagedMonsters => (2, 'm'),
+    TileSpecial.policeStationLockup => (3, 'L'),
+    TileSpecial.courthouseLockup => (4, 'L'),
+    TileSpecial.courthouseJuryRoom => (5, 'J'),
+    TileSpecial.prisonControl => (6, 'P'),
+    TileSpecial.prisonControlLow => (7, 'P'),
+    TileSpecial.prisonControlMedium => (8, 'P'),
+    TileSpecial.prisonControlHigh => (9, 'P'),
+    TileSpecial.intelSupercomputer => (10, 'I'),
+    TileSpecial.sweatshopEquipment => (11, 'E'),
+    TileSpecial.polluterEquipment => (12, 'E'),
+    TileSpecial.nuclearControlRoom => (13, 'N'),
+    TileSpecial.ceoSafe => (14, 'S'),
+    TileSpecial.ceoOffice => (15, 'O'),
+    TileSpecial.corporateFiles => (16, 'F'),
+    TileSpecial.radioBroadcastStudio => (17, 'R'),
+    TileSpecial.cableBroadcastStudio => (18, 'C'),
+    TileSpecial.apartmentLandlord => (19, 'L'),
+    TileSpecial.signOne => (20, '1'),
+    TileSpecial.table => (21, '='),
+    TileSpecial.computer => (22, 'C'),
+    TileSpecial.parkBench => (23, 'B'),
+    TileSpecial.stairsUp => (24, '^'),
+    TileSpecial.stairsDown => (25, 'v'),
+    TileSpecial.clubBouncer => (26, 'B'),
+    TileSpecial.clubBouncerSecondVisit => (27, 'B'),
+    TileSpecial.armory => (28, 'A'),
+    TileSpecial.displayCase => (29, 'D'),
+    TileSpecial.signTwo => (30, '2'),
+    TileSpecial.signThree => (31, '3'),
+    TileSpecial.securityCheckpoint => (32, 'C'),
+    TileSpecial.securityMetalDetectors => (33, 'M'),
+    TileSpecial.securitySecondVisit => (34, 'S'),
+    TileSpecial.bankVault => (35, 'V'),
+    TileSpecial.bankTeller => (36, 'T'),
+    TileSpecial.bankMoney => (37, '\$'),
+    TileSpecial.ccsBoss => (38, 'B'),
+    TileSpecial.ovalOfficeNW => (39, 'O'),
+    TileSpecial.ovalOfficeNE => (40, 'O'),
+    TileSpecial.ovalOfficeSW => (41, 'O'),
+    TileSpecial.ovalOfficeSE => (42, 'O'),
+    _ => (0, '?'),
+  };
+}
+
 Future<void> editMap(String mapName) async {
   // Clear any old map data
   for (SiteTile tile in levelMap.all) {
@@ -141,6 +193,28 @@ Future<void> editMap(String mapName) async {
   int currentFloor = 0;
   TileType? selectedTileType;
   SpecialType? selectedSpecialType;
+  bool isDragging = false;
+
+  // Enable mouse events for drag functionality
+  console.enableMouseEvents((y, x, isDown) {
+    if (x >= 0 && x < MAPX && y - 1 >= 0 && y - 1 < MAPY) {
+      if (isDown) {
+        isDragging = true;
+      } else {
+        isDragging = false;
+      }
+
+      if (isDragging &&
+          (selectedTileType != null || selectedSpecialType != null)) {
+        SiteTile tile = levelMap[x][y - 1][currentFloor];
+        if (selectedTileType != null) {
+          selectedTileType.setter(tile);
+        } else if (selectedSpecialType != null) {
+          tile.special = selectedSpecialType.special;
+        }
+      }
+    }
+  });
 
   while (true) {
     erase();
@@ -175,47 +249,7 @@ Future<void> editMap(String mapName) async {
           char = 'H';
           color = lightGray;
         } else if (tile.special != TileSpecial.none) {
-          char = switch (tile.special) {
-            TileSpecial.stairsUp => '^',
-            TileSpecial.stairsDown => 'v',
-            TileSpecial.table => '=',
-            TileSpecial.computer => 'C',
-            TileSpecial.parkBench => 'B',
-            TileSpecial.signOne => '1',
-            TileSpecial.signTwo => '2',
-            TileSpecial.signThree => '3',
-            TileSpecial.bankVault => 'V',
-            TileSpecial.bankTeller => 'T',
-            TileSpecial.bankMoney => '\$',
-            TileSpecial.armory => 'A',
-            TileSpecial.ceoSafe => 'S',
-            TileSpecial.ceoOffice => 'O',
-            TileSpecial.corporateFiles => 'F',
-            TileSpecial.radioBroadcastStudio => 'R',
-            TileSpecial.cableBroadcastStudio => 'C',
-            TileSpecial.apartmentLandlord => 'L',
-            TileSpecial.clubBouncer => 'B',
-            TileSpecial.clubBouncerSecondVisit => 'B',
-            TileSpecial.securityCheckpoint => 'C',
-            TileSpecial.securityMetalDetectors => 'M',
-            TileSpecial.securitySecondVisit => 'S',
-            TileSpecial.cagedRabbits => 'r',
-            TileSpecial.cagedMonsters => 'm',
-            TileSpecial.policeStationLockup => 'L',
-            TileSpecial.courthouseLockup => 'L',
-            TileSpecial.courthouseJuryRoom => 'J',
-            TileSpecial.prisonControl => 'P',
-            TileSpecial.prisonControlLow => 'P',
-            TileSpecial.prisonControlMedium => 'P',
-            TileSpecial.prisonControlHigh => 'P',
-            TileSpecial.intelSupercomputer => 'I',
-            TileSpecial.sweatshopEquipment => 'E',
-            TileSpecial.polluterEquipment => 'E',
-            TileSpecial.labEquipment => 'E',
-            TileSpecial.nuclearControlRoom => 'N',
-            TileSpecial.tent => 'T',
-            _ => '?',
-          };
+          var (_, char) = getSpecialInfo(tile.special);
           color = yellow;
         } else if (tile.restricted) {
           char = '.';
@@ -223,18 +257,19 @@ Future<void> editMap(String mapName) async {
         }
 
         setColor(color);
-        mvaddstrx(y, x, char, mouseClickKey: mouseClickKey);
+        mvaddstrx(y, x, char);
       }
     }
 
     // Add floor display and controls
     setColor(lightGray);
     mvaddstr(0, 0, "Floor ${currentFloor + 1}");
-    addOptionText(24, 0, "Enter", "Enter - Exit Map Editor");
+    addOptionText(24, 0, "X", "X - Exit Map Editor");
     addOptionText(24, 24, nextPageStr.split(" ").first, "$nextPageStr Floor");
     addstr(" / ");
     addInlineOptionText(
         previousPageStr.split(" ").first, "$previousPageStr Floor");
+    addOptionText(24, 60, "E", "E - Export Map");
 
     // Add tile buttons
     setColor(lightGray);
@@ -339,8 +374,11 @@ Future<void> editMap(String mapName) async {
 
     // Check for key press without blocking
     String key = checkKeyCaseSensitive();
-    if (key.codePoint == Key.enter) {
+    if (key == "X") {
+      console.disableMouseEvents();
       return;
+    } else if (key == "E" || key == "export_map") {
+      await exportMap(mapName, currentFloor);
     } else if (isPageUp(key.codePoint) && currentFloor > 0) {
       currentFloor--;
     } else if (isPageDown(key.codePoint) && currentFloor < MAPZ - 1) {
@@ -496,4 +534,83 @@ Future<void> mapEditor() async {
     },
     onOtherKey: (key) => key == Key.enter,
   );
+}
+
+Future<void> exportMap(String mapName, int floor) async {
+  try {
+    // Create tile data
+    StringBuffer tileCsv = StringBuffer();
+
+    // Create special data
+    StringBuffer specialCsv = StringBuffer();
+
+    // Add data for both files
+    for (int y = 0; y < MAPY; y++) {
+      List<String> tileRow = [];
+      List<String> specialRow = [];
+
+      for (int x = 0; x < MAPX; x++) {
+        SiteTile tile = levelMap[x][y][floor];
+
+        // Add tile data - using numeric IDs that match readMapCBTiles
+        int tileId = 0; // default floor
+        if (tile.wall) {
+          tileId = 2; // SITEBLOCK_BLOCK
+        } else if (tile.exit) {
+          tileId = 3; // SITEBLOCK_EXIT
+        } else if (tile.grass) {
+          tileId = 4; // SITEBLOCK_GRASSY
+        } else if (tile.door) {
+          tileId = tile.locked ? 6 : 5; // 6 for locked door, 5 for normal door
+        } else if (tile.restricted) {
+          tileId = 7; // SITEBLOCK_RESTRICTED
+        } else if (tile.chainlink) {
+          tileId = 8; // SITEBLOCK_CHAINLINK
+        } else if (tile.metal) {
+          tileId = 10; // SITEBLOCK_BLOCK | SITEBLOCK_METAL
+        }
+        tileRow.add(tileId.toString());
+
+        // Add special data if there is one - using numeric IDs that match readMapCBSpecials
+        if (tile.special != TileSpecial.none) {
+          var (specialId, _) = getSpecialInfo(tile.special);
+          specialRow.add(specialId.toString());
+        } else {
+          specialRow.add("0");
+        }
+      }
+
+      // Write the rows
+      tileCsv.writeln(tileRow.join(","));
+      specialCsv.writeln(specialRow.join(","));
+    }
+
+    // Save tile file
+    String tileFilename =
+        "mapCSV_$mapName${floor == 0 ? "" : floor + 1}_Tiles.csv";
+    await FileSaver.instance.saveFile(
+      name: tileFilename,
+      bytes: Uint8List.fromList(utf8.encode(tileCsv.toString())),
+      mimeType: MimeType.csv,
+    );
+
+    // Save special file
+    String specialFilename =
+        "mapCSV_$mapName${floor == 0 ? "" : floor + 1}_Specials.csv";
+    await FileSaver.instance.saveFile(
+      name: specialFilename,
+      bytes: Uint8List.fromList(utf8.encode(specialCsv.toString())),
+      mimeType: MimeType.csv,
+    );
+
+    // Show success message
+    setColor(lightGreen);
+    mvaddstr(22, 0, "Map exported successfully!");
+    await Future.delayed(const Duration(seconds: 2));
+  } catch (e) {
+    // Show error message
+    setColor(red);
+    mvaddstr(22, 0, "Error exporting map: $e");
+    await Future.delayed(const Duration(seconds: 2));
+  }
 }

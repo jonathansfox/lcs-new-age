@@ -102,7 +102,6 @@ class _ConsoleWidgetState extends State<ConsoleWidget> {
 
   void _handleFocusChange() {
     if (focusNode.hasFocus != hasFocus) {
-      debugPrint("Focus changed: ${focusNode.hasFocus}");
       setState(() {
         hasFocus = focusNode.hasFocus;
       });
@@ -285,13 +284,33 @@ class _ConsoleWidgetState extends State<ConsoleWidget> {
                     int x = (details.localPosition.dx / cellWidth).floor();
                     int y = (details.localPosition.dy / cellHeight).floor();
                     console.handleMouseClick(y, x);
+                    console.handleMouseEvent(y, x, true);
+                  },
+                  onPanUpdate: (details) {
+                    // Convert pan coordinates to console coordinates
+                    double cellWidth = textSpanWidth / console.width;
+                    double cellHeight = textSpanHeight / console.height;
+                    int x = (details.localPosition.dx / cellWidth).floor();
+                    int y = (details.localPosition.dy / cellHeight).floor();
+                    console.handleMouseEvent(y, x, true);
+                  },
+                  onTapUp: (details) {
+                    double cellWidth = textSpanWidth / console.width;
+                    double cellHeight = textSpanHeight / console.height;
+                    int x = (details.localPosition.dx / cellWidth).floor();
+                    int y = (details.localPosition.dy / cellHeight).floor();
+                    console.handleMouseEvent(y, x, false);
+                  },
+                  onTapCancel: () {
+                    if (console.hoverX != null && console.hoverY != null) {
+                      console.handleMouseEvent(
+                          console.hoverY!, console.hoverX!, false);
+                    }
                   },
                   onTap: () {
                     if (ChangelogWidget.globalKey.currentState?.showing !=
                         true) {
-                      debugPrint("Requesting focus");
                       focusNode.requestFocus();
-                      debugPrint("Widget has focus: ${focusNode.hasFocus}");
                     }
                   },
                   child: Stack(
