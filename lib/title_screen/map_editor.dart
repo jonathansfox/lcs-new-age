@@ -225,7 +225,6 @@ Future<void> editMap(String mapName) async {
         SiteTile tile = levelMap[x][y - 1][currentFloor];
         String char = '.';
         Color color = lightGray;
-        String mouseClickKey = "map_${x}_${y - 1}_$currentFloor";
 
         if (tile.wall) {
           char = '#';
@@ -249,7 +248,7 @@ Future<void> editMap(String mapName) async {
           char = 'H';
           color = lightGray;
         } else if (tile.special != TileSpecial.none) {
-          var (_, char) = getSpecialInfo(tile.special);
+          (_, char) = getSpecialInfo(tile.special);
           color = yellow;
         } else if (tile.restricted) {
           char = '.';
