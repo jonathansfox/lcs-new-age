@@ -352,34 +352,18 @@ Future<bool> completeRecruitMeeting(RecruitmentSession r, Creature p) async {
 // Prompt to turn new recruit into a sleeper
 Future<void> sleeperizePrompt(
     Creature converted, Creature recruiter, int y) async {
-  bool selection = false;
   while (true) {
     move(y, 0);
     setColor(lightGray);
-    addstr("In what capacity will ");
-    addstr(converted.name);
-    addstr(" best serve the Liberal cause?");
-    move(y + 2, 0);
-    setColor(selection ? lightGray : white);
-    addstr(selection ? "   " : "-> ");
     addstr(
-        "Come to ${recruiter.location!.getName(short: false, includeCity: true)} as a ");
-    setColor(selection ? green : lightGreen);
-    addstr("regular member");
-    setColor(selection ? lightGray : white);
-    addstr(".");
-    move(y + 3, 0);
-    setColor(selection ? white : lightGray);
-    addstr(selection ? "-> " : "   ");
-    addstr(
-        "Stay at ${converted.workLocation.getName(short: false, includeCity: true)} as a ");
-    setColor(selection ? lightBlue : blue);
-    addstr("sleeper agent");
-    setColor(selection ? white : lightGray);
-    addstr(".");
+        "In what capacity will ${converted.name} best serve the Liberal cause?");
+    addOptionText(y + 2, 0, "A",
+        "A - Come to ${recruiter.location!.getName(short: false, includeCity: true)} as a &Gregular member&x.");
+    addOptionText(y + 3, 0, "B",
+        "B - Stay at ${converted.workLocation.getName(short: false, includeCity: true)} as a &Bsleeper agent&x.");
 
     int c = await getKey();
-    if ((isBackKey(c)) && selection) {
+    if (c == Key.b) {
       converted.sleeperAgent = true;
       converted.location = converted.workLocation;
       converted.site?.mapped = true;
@@ -390,7 +374,7 @@ Future<void> sleeperizePrompt(
         politics.exec[Exec.president] = DeepAlignment.eliteLiberal;
       }
       break;
-    } else if ((isBackKey(c)) && !selection) {
+    } else if (c == Key.a) {
       converted.location = recruiter.base;
       converted.base = recruiter.base;
       liberalize(converted);
@@ -399,17 +383,6 @@ Future<void> sleeperizePrompt(
         politics.promoteVP();
       }
       break;
-    } else if (isPageUp(c) ||
-        c == Key.upArrow ||
-        c == Key.leftArrow ||
-        c == Key.w ||
-        c == Key.a ||
-        c == Key.x ||
-        c == Key.d ||
-        isPageDown(c) ||
-        c == Key.downArrow ||
-        c == Key.rightArrow) {
-      selection = !selection;
     }
   }
 }
