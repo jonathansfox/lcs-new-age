@@ -207,7 +207,7 @@ void _executives(AgendaVibe vibe) {
   } else if (politics.execTerm == 1) {
     president = "President (1st Term):";
   } else if (politics.execTerm == 2) {
-    president = "Persident (2nd Term):";
+    president = "President (2nd Term):";
   } else {
     president = "President:";
   }
