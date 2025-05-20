@@ -405,7 +405,7 @@ Future<void> equipmentBaseAssign() async {
         p++, y++) {
       addOptionText(y, 0, "${letterAPlus(y - 2)} - ",
           "${letterAPlus(y - 2)} - ${items[p].equipTitle()}${items[p].stackSize > 1 ? " x${items[p].stackSize}" : ""}");
-      mvaddstr(y, 25,
+      mvaddstrc(y, 25, lightGray,
           siteFromItem[items[p]]!.getName(short: true, includeCity: true));
     }
 
