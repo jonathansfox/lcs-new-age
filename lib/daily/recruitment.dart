@@ -14,7 +14,6 @@ import 'package:lcs_new_age/politics/laws.dart';
 import 'package:lcs_new_age/politics/politics.dart';
 import 'package:lcs_new_age/politics/views.dart';
 import 'package:lcs_new_age/utils/colors.dart';
-import 'package:lcs_new_age/utils/interface_options.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 
 part 'recruitment.g.dart';

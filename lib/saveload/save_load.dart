@@ -72,10 +72,10 @@ class SaveFile {
 
 String _nameOfFounder(GameState gameState) {
   return gameState.lcs.pool
-      .firstWhereOrNull(
-          (e) => e.hireId == null && e.align == Alignment.liberal)
-      ?.name ??
-    "Unknown";
+          .firstWhereOrNull(
+              (e) => e.hireId == null && e.align == Alignment.liberal)
+          ?.name ??
+      "Unknown";
 }
 
 Future<bool> loadGameMenu() async {
@@ -248,22 +248,20 @@ Future<void> backupSave(SaveFile selectedSave) async {
   // name is probably the most memorable thing we've got to offer.
   // If your founder's name is " ", this will return "", but honestly
   // at that point it's your fault.
-  final founderFirstName = _nameOfFounder(selectedSave.gameState!)
-      .toLowerCase()
-      .split(" ")
-      .first
-  ;
-  final now = DateTime.now().toIso8601String()
-      .replaceAll("-", "_") // - in YYYY-MM-DD
-      .replaceAll("T", "-") // T between date and time
-      .replaceAll(":", "_") // : in HH:MM:SS
-      .replaceAll(".", "-") // . before ms and us
-      .replaceAll("Z", "")  // Z at the end if the clock is in UTC
-  ;
+  final founderFirstName =
+      _nameOfFounder(selectedSave.gameState!).toLowerCase().split(" ").first;
+  final now = DateTime.now()
+          .toIso8601String()
+          .replaceAll("-", "_") // - in YYYY-MM-DD
+          .replaceAll("T", "-") // T between date and time
+          .replaceAll(":", "_") // : in HH:MM:SS
+          .replaceAll(".", "-") // . before ms and us
+          .replaceAll("Z", "") // Z at the end if the clock is in UTC
+      ;
 
   String json = jsonEncode(selectedSave.toJson());
   await FileSaver.instance.saveFile(
-    name: "lcsna_${founderFirstName}_${now}.json",
+    name: "lcsna_${founderFirstName}_$now.json",
     bytes: const Utf8Encoder().convert(json),
   );
 }

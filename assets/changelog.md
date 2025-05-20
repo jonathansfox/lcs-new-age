@@ -1,3 +1,12 @@
+## 1.4.3 - 5/19/2025
+* Changed the regular/sleeper prompt on recruitment to use the standard hotkey UI and not up/down to select
+* Fixed a bug with colors when moving equipment between safehouses
+* Datenapping is safer with superior strength and martial arts skills
+* Genetic monsters will be stronger, faster, start with initial combat skills, and less inclined to run away from combat
+* Fixed enlightened sleepers being reported as missing and vanishing on disband
+* Fixed , not working for page up, again, because it apparently wasn't fixed before
+* Updated the naming convention for savefile backups (thanks to Odin H B)
+
 ## 1.4.2 - 5/18/2025
 * Fixed page options not correctly allowing , ; and . for paging
 * Added option from the title screen for changing the display of page keys to reflect alternative options
