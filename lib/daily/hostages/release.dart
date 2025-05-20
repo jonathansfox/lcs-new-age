@@ -120,6 +120,8 @@ Future<void> handleRelease(
     cr.brainwashed = true;
     cr.base = cr.workLocation is Site ? cr.workLocation as Site : null;
     cr.location = cr.workLocation;
+    cr.missing = false;
+    cr.kidnapped = false;
     cr.sleeperAgent = true;
     liberalize(cr);
     stats.recruits++;

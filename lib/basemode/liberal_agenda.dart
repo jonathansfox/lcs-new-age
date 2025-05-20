@@ -138,7 +138,7 @@ Future<bool> _confirmDisband() async {
   }
   for (int i = pool.length - 1; i >= 0; i--) {
     Creature p = pool[i];
-    if (!p.alive || p.missing || p.kidnapped) {
+    if (!p.alive || p.align != Alignment.liberal) {
       pool.removeAt(i);
     } else {
       p.squad = null;
