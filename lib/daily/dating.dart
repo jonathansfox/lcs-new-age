@@ -8,6 +8,7 @@ import 'package:lcs_new_age/common_display/print_creature_info.dart';
 import 'package:lcs_new_age/creature/attributes.dart';
 import 'package:lcs_new_age/creature/creature.dart';
 import 'package:lcs_new_age/creature/creature_type.dart';
+import 'package:lcs_new_age/creature/dice.dart';
 import 'package:lcs_new_age/creature/difficulty.dart';
 import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/daily/recruitment.dart';
@@ -413,8 +414,7 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
 
         if (p.weapon.type.rangedAttack != null) {
           weapon = p.weapon.getName(sidearm: true);
-          addstr(" comes back from the bathroom toting the ");
-          addstr(weapon);
+          addstr(" comes back from the bathroom toting the $weapon");
           move(18, 0);
           addstr("and threatens to blow the Conservative's brains out!");
 
@@ -422,8 +422,7 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
           ranged = true;
         } else if (p.equippedWeapon != null) {
           weapon = p.weapon.getName(sidearm: true);
-          addstr(" grabs the Conservative from behind, holding the ");
-          addstr(weapon);
+          addstr(" grabs the Conservative from behind, holding the $weapon");
           move(18, 0);
           addstr("to the corporate slave's throat!");
 
@@ -436,7 +435,7 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
             unseriousWeapon = true;
           }
         } else {
-          addstr(" seizes the Conservative swine from behind and warns it");
+          addstr(" seizes ${e.name} from behind and warns ${e.gender.himHer}");
           move(18, 0);
           if (!noProfanity) {
             addstr("not to fuck around!");
@@ -444,27 +443,13 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
             addstr("not to [resist]!");
           }
 
-          bonus += p.skill(Skill.martialArts) - 1;
+          bonus += min(5, p.skill(Skill.martialArts) - 1);
         }
 
         await getKey();
 
-        // Kidnap probably succeeds if the conservative isn't very dangerous,
-        // but fails 15 times as often if the conservative is tough stuff.
-        if ((!e.type.kidnapResistant && lcsRandom(15) > 0) ||
-            lcsRandom(2 + bonus) > 0) {
-          setColor(lightGreen);
-          move(19, 0);
-          addstr(e.name);
-          if (bonus > 0) {
-            addstr(" doesn't resist.");
-          } else {
-            addstr(" struggles and yells for help, but nobody comes.");
-          }
-
-          await getKey();
-
-          move(20, 0);
+        Future<void> successfulKidnap(int y) async {
+          move(y++, 0);
           addstr(p.name);
           addstr(" kidnaps the Conservative!");
 
@@ -479,6 +464,25 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
 
           stats.kidnappings++;
           d.dates.remove(e);
+        }
+
+        // Kidnap probably succeeds if the conservative isn't very dangerous,
+        // but fails 15 times as often if the conservative is tough stuff.
+        if ((!e.type.kidnapResistant && lcsRandom(15) > 0) ||
+            lcsRandom(2 + bonus) > 0) {
+          int y = 19;
+          setColor(lightGreen);
+          move(y++, 0);
+          addstr(e.name);
+          if (bonus > 0) {
+            addstr(" doesn't resist.");
+          } else {
+            addstr(" struggles and yells for help, but nobody comes.");
+          }
+
+          await getKey();
+
+          await successfulKidnap(y);
           break;
         } else {
           int y = 19;
@@ -501,7 +505,22 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
           }
           await getKey();
 
-          if (lcsRandom(p.skill(Skill.martialArts) + 1) > 0) {
+          int martialArtsDiff =
+              p.skill(Skill.martialArts) - e.skill(Skill.martialArts);
+          int strengthDiff =
+              p.attribute(Attribute.strength) - e.attribute(Attribute.strength);
+          int roll = Dice.r2d6.roll() + martialArtsDiff + strengthDiff;
+
+          if (roll > Difficulty.easy) {
+            // Success: Conservative kidnapped by winning the fight
+            setColor(lightGreen);
+            move(y++, 0);
+            addstr("${p.name} overpowers ${e.name} after a struggle.");
+            await getKey();
+            await successfulKidnap(y);
+            break;
+          } else if (roll > Difficulty.automatic) {
+            // Failure: Kidnap failed
             setColor(yellow);
             move(y++, 0);
             addstr("${p.name} breaks free after a wild struggle.");
@@ -516,6 +535,7 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
             d.dates.remove(e);
             break;
           } else {
+            // Critical failure: Kidnapper overpowered and arrested
             move(y++, 0);
             if (weapon != "" && !unseriousWeapon) {
               addstrc(
