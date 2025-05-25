@@ -552,6 +552,8 @@ void cleanInterrogationSidebar() {
 void showInterrogationSidebar(InterrogationSession intr, Creature a) {
   cleanInterrogationSidebar();
 
+  if (!pool.any((e) => e.id == intr.hostageId)) return;
+
   Creature cr = intr.hostage;
   var rapport = intr.rapport;
   int y = 4;

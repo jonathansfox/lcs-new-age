@@ -155,7 +155,9 @@ Future<bool> handleRansomPayment(
   }
 
   // Check for ambush based on street sense
-  String location = await selectRansomLocation(lead);
+  String location;
+  bool pickedGoodLocation;
+  (location, pickedGoodLocation) = await selectRansomLocation(lead);
   bool approachedCarefully =
       lead.skillCheck(Skill.streetSmarts, Difficulty.average);
 
@@ -192,42 +194,49 @@ Future<bool> handleRansomPayment(
 
   await getKey();
 
-  bool success = await handleRansomAmbush(intr, lead, cr, y);
+  bool success = await handleRansomAmbush(
+      intr, lead, cr, y, pickedGoodLocation, approachedCarefully);
   return success;
 }
 
-Future<String> selectRansomLocation(Creature lead) async {
+Future<(String, bool)> selectRansomLocation(Creature lead) async {
   bool pickedGoodLocation =
       lead.skillCheck(Skill.streetSmarts, Difficulty.average);
 
   if (pickedGoodLocation) {
     // Public locations are actually safer for exchanges
-    return [
-      "a busy coffee shop during rush hour",
-      "a crowded shopping mall food court",
-      "a packed transit station during commute",
-      "a popular fast food restaurant at lunchtime",
-      "a busy park on a weekend afternoon",
-      "a crowded movie theater lobby",
-      "a bustling train station",
-      "a busy downtown intersection",
-      "a popular tourist spot",
-      "a crowded public square",
-    ].random;
+    return (
+      [
+        "a busy coffee shop during rush hour",
+        "a crowded shopping mall food court",
+        "a packed transit station during commute",
+        "a popular fast food restaurant at lunchtime",
+        "a busy park on a weekend afternoon",
+        "a crowded movie theater lobby",
+        "a bustling train station",
+        "a busy downtown intersection",
+        "a popular tourist spot",
+        "a crowded public square",
+      ].random,
+      true
+    );
   } else {
     // Less experienced leads pick secluded spots
-    return [
-      "a quiet alleyway behind a 24-hour diner",
-      "an abandoned parking garage",
-      "a secluded park bench at night",
-      "a run-down motel room",
-      "a deserted transit station",
-      "a back entrance to a shopping mall",
-      "a storage unit facility",
-      "a construction site after hours",
-      "a loading dock behind a warehouse",
-      "a public restroom in a train station",
-    ].random;
+    return (
+      [
+        "a quiet alleyway behind a 24-hour diner",
+        "an abandoned parking garage",
+        "a secluded park bench at night",
+        "a run-down motel room",
+        "a deserted transit station",
+        "a back entrance to a shopping mall",
+        "a storage unit facility",
+        "a construction site after hours",
+        "a loading dock behind a warehouse",
+        "a public restroom in a train station",
+      ].random,
+      false
+    );
   }
 }
 
@@ -242,12 +251,12 @@ Future<void> handleRansomArrest(Creature lead, int y) async {
 }
 
 Future<bool> handleRansomAmbush(
-    InterrogationSession intr, Creature lead, Creature cr, int y) async {
-  bool pickedGoodLocation =
-      lead.skillCheck(Skill.streetSmarts, Difficulty.average);
-  bool approachedCarefully =
-      lead.skillCheck(Skill.streetSmarts, Difficulty.average);
-
+    InterrogationSession intr,
+    Creature lead,
+    Creature cr,
+    int y,
+    bool pickedGoodLocation,
+    bool approachedCarefully) async {
   // Street sense check to avoid ambush - difficulty scales with ransom amount
   int difficulty = Difficulty.average;
   if (intr.ransomAmount >= 100000) {
