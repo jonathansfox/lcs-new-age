@@ -157,32 +157,32 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
   if (dateCount > 1 && lcsRandom(dateCount > 2 ? 4 : 6) == 0) {
     switch (lcsRandom(3)) {
       case 0:
-        move(2, 0);
+        move(console.y + 1, 0);
         if (dateCount > 2) {
           addstr(
               "Unfortunately, they all know each other and had been discussing");
         } else {
           addstr("Unfortunately, they know each other and had been discussing");
         }
-        move(3, 0);
+        move(console.y + 1, 0);
         addstr(p.name);
         addstr(".  An ambush was set for the lying dog...");
 
         await getKey();
       case 1:
-        move(2, 0);
+        move(console.y + 1, 0);
         if (dateCount > 2) {
           addstr("Unfortunately, they all turn up at the same time.");
         } else {
           addstr("Unfortunately, they turn up at the same time.");
         }
 
-        move(3, 0);
+        move(console.y + 1, 0);
         addstr("Ruh roh...");
 
         await getKey();
       default:
-        move(2, 0);
+        move(console.y + 1, 0);
         addstr(p.name);
         if (d.dates.length > 2) {
           if (city != null) {
@@ -199,7 +199,7 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
           addstr(d.dates[1].name);
           addstr(".");
         }
-        move(3, 0);
+        move(console.y + 1, 0);
         addstr("Things go downhill fast.");
 
         await getKey();
@@ -226,7 +226,7 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
       " gets lit up on social media."
     ];
     List<String> dateFailList = city == null ? dateFailOnline : dateFail;
-    move(5, 0);
+    move(console.y + 1, 0);
     addstr(p.name);
     addstr(dateFailList.random);
 
