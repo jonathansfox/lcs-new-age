@@ -15,7 +15,7 @@ Future<void> runTelevisionNewsStories() async {
     Map<View, double> beforeOpinion =
         Map.from(gameState.politics.publicOpinion);
     if (newsStories[n].type == NewsStories.majorEvent) {
-      if (newsStories[n].positive > 0) {
+      if (newsStories[n].liberalSpin) {
         switch (newsStories[n].view) {
           case View.policeBehavior:
             newsStories[n].headline = "POLICE BRUTALITY";
@@ -171,7 +171,7 @@ Future<void> runTelevisionNewsStories() async {
       }
     }
     if (del) {
-      if (newsStories[n].positive > 0) {
+      if (newsStories[n].liberalSpin) {
         changePublicOpinion(newsStories[n].view!, 20);
       } else {
         changePublicOpinion(newsStories[n].view!, -20);

@@ -603,6 +603,7 @@ Future<void> pagedInterface({
   int linesPerOption = 1,
   int topY = 0,
   bool showBackButton = true,
+  String? backButtonText,
   required int count,
   required void Function(int y, String key, int index) lineBuilder,
   required Future<bool> Function(int index) onChoice,
@@ -629,7 +630,7 @@ Future<void> pagedInterface({
       }
     } else {
       if (showBackButton) {
-        addBackButton(y: pageSize + 3 + topY, x: 0);
+        addBackButton(y: pageSize + 3 + topY, x: 0, text: backButtonText);
       }
     }
 

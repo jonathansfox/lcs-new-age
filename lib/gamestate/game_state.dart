@@ -331,10 +331,10 @@ set lcsGotM249(bool value) => gameState.lcsGotM249 = value;
 bool get ccsActive =>
     ccsState != CCSStrength.inHiding && ccsState != CCSStrength.defeated;
 
-bool get ccscherrybusted => gameState.ccscherrybusted;
-set ccscherrybusted(bool value) => gameState.ccscherrybusted = value;
-bool get lcscherrybusted => gameState.lcscherrybusted;
-set lcscherrybusted(bool value) => gameState.lcscherrybusted = value;
+bool get ccsInPublicEye => gameState.ccscherrybusted;
+set ccsInPublicEye(bool value) => gameState.ccscherrybusted = value;
+bool get lcsInPublicEye => gameState.lcscherrybusted;
+set lcsInPublicEye(bool value) => gameState.lcscherrybusted = value;
 
 List<RecruitmentSession> get recruitmentSessions =>
     gameState.recruitmentSessions;

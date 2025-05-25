@@ -261,7 +261,7 @@ Future<bool> heyIWantToRentARoom(Creature a, Creature tk) async {
         int roll = a.skillRoll(Skill.persuasion);
         int difficulty = Difficulty.formidable;
 
-        if (!lcscherrybusted) {
+        if (!lcsInPublicEye) {
           difficulty += DifficultyModifier.aLittleHarder;
         }
         if (armedLiberal == null) {

@@ -52,3 +52,42 @@ String firstName([Gender gender = Gender.nonbinary, bool forceBinary = true]) {
       return genderNeutralFirstNames.random;
   }
 }
+
+class CountryName {
+  CountryName(this.name, this.shortName, this.capital, this.leader);
+  String name;
+  String shortName;
+  String capital;
+  FullName leader;
+}
+
+CountryName generateCountryName() {
+  String shortName =
+      "${countryPrefixes.random}${countryMiddle.random}${countrySuffixes.random}";
+  String longName = oneIn(2)
+      ? "${countryTitles.random} of $shortName"
+      : "$shortName ${countryTitles.random}";
+  String capital = switch (lcsRandom(3)) {
+    1 => "St. ${lastName()}",
+    2 => "${["New", "Green", "Bright", "Fort", "High"].random} "
+        "${["Haven", "Hill", "Bridge", "Bull", "Lake"].random}",
+    _ => "${countryPrefixes.random}${countrySuffixes.random}",
+  };
+  FullName leader = generateFullName(Gender.male);
+  return CountryName(
+    longName,
+    shortName,
+    capital,
+    leader,
+  );
+}
+
+String generateCompanyName() {
+  return "${[
+    "Anti", "Dis", "Fore", "Uni", "Sub", "Pre", "Under", "Inter", //
+  ].random}${[
+    "bolt", "card", "fold", "run", "star", "flow", "wind", "fire", //
+  ].random} ${[
+    "Industries", "Enterprises", "Holdings", "Group", "International", //
+  ].random}";
+}

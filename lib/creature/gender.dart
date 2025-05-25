@@ -18,6 +18,17 @@ enum Gender {
   final String himselfHerself;
   final String s;
   final String manWoman;
+
+  Gender get simplified {
+    return switch (this) {
+      Gender.nonbinary => Gender.nonbinary,
+      Gender.male ||
+      Gender.maleBias ||
+      Gender.whiteMalePatriarch =>
+        Gender.male,
+      Gender.female || Gender.femaleBias => Gender.female,
+    };
+  }
 }
 
 Gender forceGenderBinary(Gender gender) {

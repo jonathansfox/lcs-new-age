@@ -58,7 +58,7 @@ Future<void> displayStory(NewsStory ns, View? header) async {
       int y = 2;
       if ((!liberalguardian && ns.page == 1) ||
           (liberalguardian && ns.guardianpage == 1)) {
-        y = displayStoryHeader(ns, liberalguardian, header);
+        y = displayStoryHeader(ns, header);
       }
 
       story = city;
@@ -179,7 +179,7 @@ Future<void> displayStory(NewsStory ns, View? header) async {
           bool ccs = ns.type == NewsStories.ccsKilledInSiteAction ||
               ns.type == NewsStories.ccsSiteAction;
 
-          story += squadStoryTextOpening(ns, liberalguardian, ccs);
+          story += squadStoryTextOpening(ns, ccs);
 
           bool did(Drama d) => drama[d]! > 0;
 
@@ -532,9 +532,9 @@ Future<void> displayStory(NewsStory ns, View? header) async {
 
       if (ns.type == NewsStories.ccsSiteAction ||
           ns.type == NewsStories.ccsKilledInSiteAction) {
-        ccscherrybusted = true;
-      } else if (!lcscherrybusted) {
-        lcscherrybusted = true;
+        ccsInPublicEye = true;
+      } else if (!lcsInPublicEye) {
+        lcsInPublicEye = true;
       }
 
     case NewsStories.massacre:

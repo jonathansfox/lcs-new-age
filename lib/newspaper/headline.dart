@@ -4,6 +4,7 @@ import 'package:lcs_new_age/location/location_type.dart';
 import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/newspaper/display_news.dart';
 import 'package:lcs_new_age/newspaper/news_story.dart';
+import 'package:lcs_new_age/politics/alignment.dart';
 import 'package:lcs_new_age/politics/views.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 
@@ -11,7 +12,7 @@ String getLastNameForHeadline(String fullName) {
   return fullName.split(' ').last.toUpperCase();
 }
 
-int displayStoryHeader(NewsStory ns, bool liberalguardian, View? header) {
+int displayStoryHeader(NewsStory ns, View? header) {
   int y = 17;
   switch (ns.type) {
     case NewsStories.presidentImpeached:
@@ -74,7 +75,7 @@ int displayStoryHeader(NewsStory ns, bool liberalguardian, View? header) {
       }
     case NewsStories.squadKilledInSiegeAttack:
     case NewsStories.squadKilledInSiegeEscape:
-      if (!liberalguardian) {
+      if (ns.publicationAlignment != DeepAlignment.eliteLiberal) {
         displayCenteredNewsFont("LCS SIEGE", 5, ns);
         displayCenteredNewsFont("TRAGIC END", 11, ns);
       } else {
@@ -83,11 +84,11 @@ int displayStoryHeader(NewsStory ns, bool liberalguardian, View? header) {
       }
     case NewsStories.ccsSiteAction:
     case NewsStories.ccsKilledInSiteAction:
-      if (!ccscherrybusted) {
+      if (!ccsInPublicEye) {
         displayCenteredNewsFont("CONSERVATIVE", 5, ns);
         displayCenteredNewsFont("CRIME SQUAD", 11, ns);
       } else {
-        if (ns.positive > 0) {
+        if (!ns.liberalSpin) {
           displayCenteredNewsFont("CCS STRIKES", 5, ns);
         } else {
           displayCenteredNewsFont("CCS RAMPAGE", 5, ns);
@@ -95,9 +96,9 @@ int displayStoryHeader(NewsStory ns, bool liberalguardian, View? header) {
         y = 11;
       }
     default:
-      if (ns.positive > 0 || liberalguardian) {
-        if (lcscherrybusted || liberalguardian) {
-          if (!liberalguardian) {
+      if (ns.liberalSpin) {
+        if (lcsInPublicEye || ns.publication == Publication.liberalGuardian) {
+          if (ns.publication != Publication.liberalGuardian) {
             if (ns.priority > 250) {
               y = 11;
               displayCenteredNewsFont(
@@ -115,41 +116,97 @@ int displayStoryHeader(NewsStory ns, bool liberalguardian, View? header) {
               }
               switch (header) {
                 case View.taxes:
+                  displayCenteredNewsFont(
+                      ["TAX EVASION", "TAX THE RICH", "INEQUALITY"].random,
+                      5,
+                      ns);
                 case View.sweatshops:
+                  displayCenteredNewsFont(
+                      ["HUMAN TOLL", "BROKEN LIVES", "FORCED LABOR"].random,
+                      5,
+                      ns);
                 case View.ceoSalary:
-                  displayCenteredNewsFont("THE CLASS WAR", 5, ns);
+                  displayCenteredNewsFont(
+                      ["WEALTH HOARDED", "LAVISH LIES", "RICH TYRANT"].random,
+                      5,
+                      ns);
                 case View.nuclearPower:
-                  displayCenteredNewsFont("MELTDOWN RISK", 5, ns);
+                  displayCenteredNewsFont(
+                      ["MELTDOWN RISK", "TOXIC LEGACY", "NUCLEAR DREAD"].random,
+                      5,
+                      ns);
                 case View.policeBehavior:
-                  displayCenteredNewsFont("FUCK THE COPS", 5, ns);
+                  displayCenteredNewsFont(
+                      ["FUCK THE COPS", "PUBLIC FEAR", "NO AUTHORITY"].random,
+                      5,
+                      ns);
                 case View.prisons:
                 case View.deathPenalty:
-                  displayCenteredNewsFont("FREE THEM NOW", 5, ns);
+                  displayCenteredNewsFont(
+                      ["FREE THEM NOW", "FREEDOM SOLD", "INMATE ABUSE"].random,
+                      5,
+                      ns);
                 case View.intelligence:
                   if (nineteenEightyFour) {
-                    displayCenteredNewsFont("FUCK THE LOVE", 5, ns);
+                    displayCenteredNewsFont(
+                        ["NO LOVE LOST", "LOVE OR FEAR", "LOVE IS DEAD"].random,
+                        5,
+                        ns);
                   } else {
-                    displayCenteredNewsFont("FUCK THE CIA", 5, ns);
+                    displayCenteredNewsFont(
+                        ["FUCK THE CIA", "COVERT CHAOS", "SPY WARS"].random,
+                        5,
+                        ns);
                   }
                 case View.animalResearch:
                 case View.genetics:
-                  displayCenteredNewsFont("ANIMAL RIGHTS", 5, ns);
+                  displayCenteredNewsFont(
+                      ["ANIMAL RIGHTS", "LAB CRUELTY", "ETHICS IGNORED"].random,
+                      5,
+                      ns);
                 case View.freeSpeech:
                 case View.lgbtRights:
                 case View.justices:
-                  displayCenteredNewsFont("FOR JUSTICE", 5, ns);
+                  displayCenteredNewsFont(
+                      ["FOR JUSTICE", "FOR RIGHTS", "INJUSTICE"].random, 5, ns);
                 case View.pollution:
-                  displayCenteredNewsFont("SAVING EARTH", 5, ns);
+                  displayCenteredNewsFont(
+                      ["SAVING EARTH", "TOXIC PROFIT", "CHOKED SKIES"].random,
+                      5,
+                      ns);
                 case View.corporateCulture:
-                  displayCenteredNewsFont("CAPITALISM", 5, ns);
+                  displayCenteredNewsFont(
+                      ["GREED REIGNS", "WHAT ETHICS", "WAGE THEFT"].random,
+                      5,
+                      ns);
                 case View.amRadio:
+                  displayCenteredNewsFont(
+                      ["DEAD AIR", "NO SIGNAL", "TUNING OUT"].random, 5, ns);
                 case View.cableNews:
-                  displayCenteredNewsFont("PROPAGANDISTS", 5, ns);
+                  displayCenteredNewsFont(
+                      ["SPIN CYCLE", "BIAS TOWN", "PUNDITS DOWN"].random,
+                      5,
+                      ns);
                 default:
-                  displayCenteredNewsFont("HEROIC STRIKE", 5, ns);
+                  displayCenteredNewsFont(
+                      [
+                        "HEROIC STRIKE",
+                        "BOLD STRIKE",
+                        "JUSTICE WON",
+                        "SPARK OF HOPE",
+                        "LIBERAL WIN",
+                        "BOLD DEFIANCE",
+                        "HEROIC ACTION",
+                        "HOPE IGNITED",
+                        "TRUTH WINS",
+                        "HEROES RISE",
+                        "LIBERTY TODAY",
+                      ].random,
+                      5,
+                      ns);
               }
             } else {
-              displayCenteredNewsFont("LCS STRIKES", 5, ns);
+              displayCenteredNewsFont(["LCS STRIKES"].random, 5, ns);
             }
           }
         } else {
@@ -157,7 +214,7 @@ int displayStoryHeader(NewsStory ns, bool liberalguardian, View? header) {
           displayCenteredNewsFont("SQUAD STRIKES", 11, ns);
         }
       } else {
-        if (lcscherrybusted) {
+        if (lcsInPublicEye && ns.priority < 250) {
           displayCenteredNewsFont("LCS RAMPAGE", 5, ns);
           y = 11;
         } else {

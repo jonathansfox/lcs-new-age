@@ -124,11 +124,11 @@ void addPageButtons(
   }
 }
 
-void addBackButton({int? y, int? x}) {
+void addBackButton({int? y, int? x, String? text}) {
   y ??= console.y;
   x ??= console.x;
   move(y, x);
-  addInlineOptionText("Enter", "Enter - Back");
+  addInlineOptionText("Enter", text ?? "Enter - Back");
 }
 
 String pageStrWithCurrentAndMaxX(int current, int max) {

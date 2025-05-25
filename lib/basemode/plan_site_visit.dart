@@ -68,7 +68,7 @@ Future<void> planSiteVisit() async {
           }
         }
       } else if (thisSite?.controller == SiteController.ccs &&
-          (ccscherrybusted || thisSite?.mapped == true)) {
+          (ccsInPublicEye || thisSite?.mapped == true)) {
         addstrc(red, " (CCS Safehouse)");
       } else if (thisSite?.isClosed == true) {
         addstrc(red, " (Closed Down)");

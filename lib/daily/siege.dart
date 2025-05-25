@@ -1386,7 +1386,7 @@ Future<void> sallyForthPart2(Site loc) async {
 
   //START FIGHTING
   sitestory = NewsStory.prepare(NewsStories.squadEscapedSiege)
-    ..positive = 1
+    ..liberalSpin = true
     ..loc = loc
     ..siegetype = loc.siege.activeSiegeType;
   SallyForthResult result = await sallyForthPart3(loc);
@@ -1480,7 +1480,7 @@ Future<void> escapeOrEngage() async {
   sitestory = NewsStory.prepare(loc.siege.underAttack
       ? NewsStories.squadFledAttack
       : NewsStories.squadEscapedSiege)
-    ..positive = 1
+    ..liberalSpin = true
     ..loc = loc
     ..siegetype = loc.siege.activeSiegeType;
   await siteMode(loc);

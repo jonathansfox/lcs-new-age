@@ -2794,3 +2794,53 @@ List<String> monsterLastNames = [
   "scale",
   "talon",
 ];
+
+List<String> countryPrefixes = [
+  "Ark",
+  "Bel",
+  "Vex",
+  "Drak",
+  "Forn",
+  "Vor",
+  "Jun",
+  "Sun",
+  "Zen",
+  "Kor",
+  "Wan",
+];
+
+List<String> countryMiddle = [
+  "",
+  "rek",
+  "saz",
+  "tov",
+  "in",
+  "iak",
+  "ast",
+];
+
+List<String> countrySuffixes = [
+  "avia",
+  "istan",
+  "ovia",
+  "lan",
+  "ost",
+  "osia",
+  "thar",
+  "ia",
+  "ijan",
+  "ea",
+  "eau",
+  "ax",
+  "ary",
+];
+
+List<String> countryTitles = [
+  "Republic",
+  "Federation",
+  "Islands",
+  "Kingdom",
+  "Union",
+  "Commonwealth",
+  "Emirate",
+];

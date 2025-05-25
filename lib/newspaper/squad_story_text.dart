@@ -4,7 +4,7 @@ import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/newspaper/news_story.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
 
-String squadStoryTextLocation(NewsStory ns, bool liberalguardian, bool ccs,
+String squadStoryTextLocation(NewsStory ns, bool ccs,
     {bool includeOpening = true}) {
   String story = "";
   if (includeOpening) story += "  The events took place ";
@@ -52,27 +52,35 @@ String squadStoryTextLocation(NewsStory ns, bool liberalguardian, bool ccs,
     case SiteType.pawnShop:
       if (placename.contains("'s")) {
         story += "at ";
-        if (liberalguardian && !ccs) story += "the notorious ";
+        if (ns.publicationAlignment == DeepAlignment.eliteLiberal && !ccs) {
+          story += "the notorious ";
+        }
       } else {
         story += "at the ";
-        if (liberalguardian && !ccs) story += "notorious ";
+        if (ns.publicationAlignment == DeepAlignment.eliteLiberal && !ccs) {
+          story += "notorious ";
+        }
       }
     case SiteType.apartment:
     case SiteType.carDealership:
     case SiteType.departmentStore:
     case SiteType.publicPark:
       story += "at ";
-      if (liberalguardian && !ccs) story += "the notorious ";
+      if (ns.publicationAlignment == DeepAlignment.eliteLiberal && !ccs) {
+        story += "the notorious ";
+      }
     default:
       story += "at the ";
-      if (liberalguardian && !ccs) story += "notorious ";
+      if (ns.publicationAlignment == DeepAlignment.eliteLiberal && !ccs) {
+        story += "notorious ";
+      }
   }
   if (ccs) {
     story += mapCCSPlace(ns.loc!, placename);
   } else {
     story += placename;
   }
-  if (liberalguardian && !ccs) {
+  if (ns.publicationAlignment == DeepAlignment.eliteLiberal && !ccs) {
     switch (ns.loc!.type) {
       case SiteType.upscaleApartment:
         story += ", known for its rich and snooty residents.  ";
@@ -123,12 +131,13 @@ String squadStoryTextLocation(NewsStory ns, bool liberalguardian, bool ccs,
   return story;
 }
 
-String squadStoryTextOpening(NewsStory ns, bool liberalguardian, bool ccs) {
+String squadStoryTextOpening(NewsStory ns, bool ccs) {
   String story = "";
   if (ns.type == NewsStories.squadSiteAction ||
       ns.type == NewsStories.squadKilledInSiteAction) {
-    if (!lcscherrybusted && !liberalguardian) {
-      if (ns.positive > 0) {
+    if (!lcsInPublicEye &&
+        ns.publicationAlignment != DeepAlignment.eliteLiberal) {
+      if (ns.liberalSpin) {
         String briefly =
             ns.type == NewsStories.squadKilledInSiteAction ? "briefly " : "";
         story += "A group calling itself the Liberal Crime Squad ";
@@ -143,7 +152,7 @@ String squadStoryTextOpening(NewsStory ns, bool liberalguardian, bool ccs) {
         story += "to a spokesperson from the police department.";
       }
     } else {
-      if (ns.positive > 0 || liberalguardian) {
+      if (ns.liberalSpin) {
         String albietWithTragicEnd =
             ns.type == NewsStories.squadKilledInSiteAction
                 ? ", albiet with a tragic end"
@@ -173,8 +182,8 @@ String squadStoryTextOpening(NewsStory ns, bool liberalguardian, bool ccs) {
     }
   } else if (ns.type == NewsStories.ccsSiteAction ||
       ns.type == NewsStories.ccsKilledInSiteAction) {
-    if (!ccscherrybusted) {
-      if (ns.positive > 0) {
+    if (!ccsInPublicEye) {
+      if (ns.liberalSpin) {
         String wouldBe =
             ns.type == NewsStories.ccsKilledInSiteAction ? "would-be " : "";
         String vigilantes =
@@ -210,7 +219,8 @@ String squadStoryTextOpening(NewsStory ns, bool liberalguardian, bool ccs) {
         story += "went on a $violent rampage yesterday$accordingToThePolice.&r";
       }
     } else {
-      if (ns.positive > 0 && !liberalguardian) {
+      if (!ns.liberalSpin &&
+          ns.publicationAlignment != DeepAlignment.eliteLiberal) {
         String patriotsHave =
             ns.publicationAlignment == DeepAlignment.archConservative
                 ? "patriots have"
@@ -227,13 +237,13 @@ String squadStoryTextOpening(NewsStory ns, bool liberalguardian, bool ccs) {
     }
   }
 
-  story += squadStoryTextLocation(ns, liberalguardian, ccs);
+  story += squadStoryTextLocation(ns, ccs);
 
   if (ns.type == NewsStories.squadKilledInSiteAction) {
-    if (liberalguardian) {
+    if (ns.publicationAlignment == DeepAlignment.eliteLiberal) {
       story +=
           "Unfortunately, the LCS group was defeated by the forces of evil.";
-    } else if (ns.positive > 0) {
+    } else if (ns.liberalSpin) {
       story += "Everyone in the LCS group was arrested or killed.";
     } else {
       story += "Fortunately, the LCS thugs were stopped by brave citizens.";
@@ -243,7 +253,7 @@ String squadStoryTextOpening(NewsStory ns, bool liberalguardian, bool ccs) {
     if (ns.publicationAlignment == DeepAlignment.archConservative) {
       story +=
           "Unfortunately, the CCS patriots were defeated by the forces of evil.";
-    } else if (ns.positive > 0 && !liberalguardian) {
+    } else if (!ns.liberalSpin) {
       story += "Everyone in the CCS group was arrested or killed.";
     } else {
       story += "Fortunately, the CCS brutes were stopped by brave citizens.";

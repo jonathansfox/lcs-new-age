@@ -23,6 +23,7 @@ import 'package:lcs_new_age/utils/lcsrandom.dart';
 const bool debugPresidentSleeper = false;
 const bool debugSiege = false;
 const bool debugMartialArtsMaster = false;
+const bool debugEliteLiberalPublicOpinion = false;
 
 Future<void> setupNewGame() async {
   gameState = GameState();
@@ -113,6 +114,11 @@ Future<void> setupNewGame() async {
     ccsState = CCSStrength.defeated;
   } else if (strongccs) {
     ccsState = CCSStrength.attacks;
+  }
+  if (debugEliteLiberalPublicOpinion) {
+    for (int v = 0; v < View.values.length; v++) {
+      politics.publicOpinion[View.values[v]] = 100;
+    }
   }
 }
 

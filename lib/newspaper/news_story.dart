@@ -61,8 +61,8 @@ class NewsStory {
   int page = 0;
   @JsonKey(defaultValue: 0)
   int guardianpage = 0;
-  @JsonKey(defaultValue: 0)
-  int positive = 0;
+  @JsonKey(defaultValue: false)
+  bool liberalSpin = false;
   @JsonKey(defaultValue: SiegeType.none)
   SiegeType siegetype = SiegeType.none;
   @JsonKey(defaultValue: 0)

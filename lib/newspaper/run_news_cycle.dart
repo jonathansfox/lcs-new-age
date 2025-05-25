@@ -15,6 +15,7 @@ import 'package:lcs_new_age/newspaper/major_event.dart';
 import 'package:lcs_new_age/newspaper/news_story.dart';
 import 'package:lcs_new_age/newspaper/television.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
+import 'package:lcs_new_age/politics/laws.dart';
 import 'package:lcs_new_age/politics/views.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 
@@ -49,6 +50,8 @@ void assignPublicationsToNewspaperStories() {
     case CCSStrength.defeated:
       conservativeStarChance = 0;
   }
+
+  // Calculate Liberal Guardian chance based on active liberals' skills
   double liberalGuardianChance = 0;
   int cumulativeLiberalGuardianSkill = pool
           .where((c) =>
@@ -76,12 +79,24 @@ void assignPublicationsToNewspaperStories() {
                   c.skill(Skill.law) +
                   c.skill(Skill.science) +
                   c.skill(Skill.business));
+
+  // Train skills for active liberals
+  for (Creature c in pool.where((c) => c.isActiveLiberal)) {
+    if (c.activity.type == ActivityType.writeGuardian) {
+      c.train(Skill.writing, 10);
+    } else if (c.activity.type == ActivityType.streamGuardian) {
+      c.train(Skill.persuasion, 10);
+    }
+  }
+
   liberalGuardianChance =
       min(100, cumulativeLiberalGuardianSkill) * politics.lcsApproval() / 100;
-  //politics.lcsApproval();
+
   for (NewsStory ns in newsStories) {
     double csChance = conservativeStarChance;
     double lgChance = liberalGuardianChance;
+
+    // Adjust chances based on story type
     switch (ns.type) {
       case NewsStories.ccsSiteAction:
         csChance = csChance * 2;
@@ -120,6 +135,8 @@ void assignPublicationsToNewspaperStories() {
       case NewsStories.majorEvent:
         break;
     }
+
+    // Assign publication
     ns.publication = lcsRandomWeighted({
       Publication.cableNews: cableNewsChance,
       Publication.amRadio: amRadioChance,
@@ -131,16 +148,32 @@ void assignPublicationsToNewspaperStories() {
       Publication.liberalGuardian: lgChance,
       Publication.conservativeStar: csChance,
     });
-    if (ns.publicationAlignment == DeepAlignment.eliteLiberal) {
-      switch (ns.type) {
-        case NewsStories.ccsSiteAction:
-        case NewsStories.ccsKilledInSiteAction:
-          ns.positive = 0;
-        default:
-          ns.positive = 1;
+
+    // Criminalize for profanity only if published by Liberal Guardian
+    if (ns.publication == Publication.liberalGuardian && noProfanity) {
+      for (Creature c in pool.where((c) => c.isActiveLiberal)) {
+        if (c.activity.type == ActivityType.writeGuardian ||
+            c.activity.type == ActivityType.streamGuardian) {
+          criminalize(c, Crime.unlawfulSpeech);
+        }
       }
+    }
+
+    // Set positive value based on publication alignment and story type
+    if (ns.publicationAlignment == DeepAlignment.eliteLiberal) {
+      // Liberal publications always have liberal bias
+      ns.liberalSpin = true;
     } else if (ns.publicationAlignment == DeepAlignment.archConservative) {
-      ns.positive = 0;
+      // Conservative publications always have conservative bias
+      ns.liberalSpin = false;
+    } else if (ns.publicationAlignment == DeepAlignment.moderate) {
+      // For neutral publications, site actions are portrayed based on violence
+      if (ns.type == NewsStories.ccsSiteAction ||
+          ns.type == NewsStories.ccsKilledInSiteAction ||
+          ns.type == NewsStories.squadSiteAction ||
+          ns.type == NewsStories.squadKilledInSiteAction) {
+        setSiteStoryPositive(ns);
+      }
     }
   }
 }
@@ -166,32 +199,13 @@ Future<void> generateRandomEventNewsStories() async {
 }
 
 Future<void> displayNewsStories() async {
-  int guardianPower = 0;
-  for (Creature c in pool.where((c) => c.isActiveLiberal)) {
-    Skill? skill;
-    if (c.activity.type == ActivityType.writeGuardian) {
-      skill = Skill.writing;
-    } else if (c.activity.type == ActivityType.streamGuardian) {
-      skill = Skill.persuasion;
-    }
-    if (skill != null) {
-      guardianPower += c.skillRoll(skill);
-      c.train(skill, 10);
-      if (noProfanity) criminalize(c, Crime.unlawfulSpeech);
-    }
-  }
-
   for (NewsStory n in newsStories) {
     Map<View, double> beforeOpinion =
         Map.from(gameState.politics.publicOpinion);
-    bool liberalguardian = false;
     View? issueFocus;
-    if (guardianPower > lcsRandom(100) && n.type != NewsStories.majorEvent) {
-      liberalguardian = true;
-    }
 
     if (n.type == NewsStories.majorEvent) {
-      if (n.positive > 0) {
+      if (n.liberalSpin) {
         changePublicOpinion(n.view!, 20);
       } else {
         changePublicOpinion(n.view!, -20);
@@ -221,23 +235,9 @@ Future<void> displayNewsStories() async {
         _ => null,
       };
     }
-    if (liberalguardian) {
-      if (n.type == NewsStories.ccsSiteAction ||
-          n.type == NewsStories.ccsKilledInSiteAction) {
-        n.positive = 0;
-      }
-      await displayStory(n, issueFocus);
-      n.positive += 1;
-    } else {
-      if ((n.type == NewsStories.ccsSiteAction ||
-              n.type == NewsStories.ccsKilledInSiteAction) &&
-          n.publicationAlignment == DeepAlignment.archConservative) {
-        n.positive = 1;
-      }
-      await displayStory(n, null);
-    }
 
-    handlePublicOpinionImpact(n, liberalguardian);
+    await displayStory(n, issueFocus);
+    handlePublicOpinionImpact(n);
 
     n.effects = Map.fromEntries(gameState.politics.publicOpinion.entries
         .where((entry) => entry.value != beforeOpinion[entry.key])
@@ -336,7 +336,7 @@ void assignPageNumbersToNewspaperStories() {
   } while (acted);
 }
 
-void handlePublicOpinionImpact(NewsStory ns, bool liberalguardian) {
+void handlePublicOpinionImpact(NewsStory ns) {
   // Check if this function is meant to handle public opinion impact
   // for this type of news story (primarily deals with squad/site actions)
   List<NewsStories> okayTypes = [
@@ -356,7 +356,12 @@ void handlePublicOpinionImpact(NewsStory ns, bool liberalguardian) {
     return; // No impact for this news story type
   }
 
-  int impact = ns.priority;
+  // Determine if this is a CCS or LCS story
+  bool isCCSStory = ns.type == NewsStories.ccsSiteAction ||
+      ns.type == NewsStories.ccsKilledInSiteAction;
+
+  // Calculate base impact
+  int baseImpact = ns.priority;
 
   // Magnitude of impact will be limited based on which page of the newspaper the story appears on
   int maxpower = switch (ns.page) {
@@ -369,35 +374,13 @@ void handlePublicOpinionImpact(NewsStory ns, bool liberalguardian) {
     _ => 1,
   };
 
-  // Increase cap if claimed
-  if (ns.claimed == 2) maxpower *= 2;
-
-  // Double effectiveness with the Liberal Guardian
-  if (ns.positive == 2) {
-    impact *= 2;
+  // Double effectiveness for Liberal Guardian stories
+  if (!isCCSStory && ns.publication == Publication.liberalGuardian) {
+    baseImpact *= 2;
     maxpower *= 2;
   }
-  // Cap power
-  if (impact > maxpower) impact = maxpower;
 
-  impact = (impact / 10).round();
-  impact++;
-
-  // Account for squad responsible, rampages, and Liberal Guardian bias
-  bool ccsResponsible = false;
-  bool lcsResponsible = false;
-  Alignment impactDirection = Alignment.liberal;
-  if (ns.type == NewsStories.ccsSiteAction ||
-      ns.type == NewsStories.ccsKilledInSiteAction) {
-    ccsResponsible = true;
-    impactDirection = Alignment.conservative;
-  } else {
-    lcsResponsible = true;
-    changePublicOpinion(View.lcsKnown, impact);
-    impactDirection = Alignment.liberal;
-  }
-  if (impactDirection == Alignment.conservative) impact = -impact;
-  if (impactDirection == Alignment.moderate) impact = 0;
+  int finalImpact = (min(maxpower, baseImpact) / 10).round() + 1;
 
   if (ns.loc == null) return;
 
@@ -463,53 +446,56 @@ void handlePublicOpinionImpact(NewsStory ns, bool liberalguardian) {
     _ => [],
   };
 
-  if (lcsResponsible) {
+  if (isCCSStory) {
+    // Handle CCS story impact
     int extraMoralAuthority = 0;
-    if (ns.positive > 0 || liberalguardian) {
-      changePublicOpinion(View.lcsLiked, impact);
+    if (ns.liberalSpin) {
+      changePublicOpinion(View.ccsHated, finalImpact);
+      extraMoralAuthority = 10;
     } else {
-      changePublicOpinion(View.lcsLiked, -impact);
+      changePublicOpinion(View.ccsHated, -finalImpact);
+    }
+    if (ns.publicationAlignment != DeepAlignment.archConservative) {
+      changePublicOpinion(View.gunControl, -finalImpact ~/ 5);
+    } else {
+      changePublicOpinion(View.gunControl, finalImpact ~/ 5);
+    }
+    for (View issue in issues) {
+      changePublicOpinion(issue, -finalImpact,
+          coloredByCcsOpinions: true, extraMoralAuthority: extraMoralAuthority);
+    }
+  } else {
+    // Handle LCS story impact
+    changePublicOpinion(View.lcsKnown, finalImpact);
+    int extraMoralAuthority = 0;
+    if (ns.liberalSpin) {
+      changePublicOpinion(View.lcsLiked, finalImpact);
+    } else {
+      changePublicOpinion(View.lcsLiked, -finalImpact);
       extraMoralAuthority = -10;
     }
     if (ns.publicationAlignment != DeepAlignment.archConservative) {
       if (ns.legalGunUsed) {
-        changePublicOpinion(View.gunControl, impact);
+        changePublicOpinion(View.gunControl, finalImpact);
       } else if (ns.illegalGunUsed) {
-        changePublicOpinion(View.gunControl, impact ~/ 5);
+        changePublicOpinion(View.gunControl, finalImpact ~/ 5);
       }
     } else {
-      changePublicOpinion(View.gunControl, -impact ~/ 5);
+      changePublicOpinion(View.gunControl, -finalImpact ~/ 5);
     }
     for (View issue in issues) {
-      changePublicOpinion(issue, impact,
+      changePublicOpinion(issue, finalImpact,
           coloredByLcsOpinions: true, extraMoralAuthority: extraMoralAuthority);
-    }
-  } else if (ccsResponsible) {
-    int extraMoralAuthority = 0;
-    if (ns.positive > 0 && !liberalguardian) {
-      changePublicOpinion(View.ccsHated, impact);
-    } else {
-      changePublicOpinion(View.ccsHated, -impact);
-      if (ns.publicationAlignment != DeepAlignment.archConservative) {
-        changePublicOpinion(View.gunControl, -impact ~/ 5);
-      } else {
-        changePublicOpinion(View.gunControl, impact ~/ 5);
-      }
-      extraMoralAuthority = 10;
-    }
-    for (View issue in issues) {
-      changePublicOpinion(issue, impact,
-          coloredByCcsOpinions: true, extraMoralAuthority: extraMoralAuthority);
     }
   }
   for (View issue in issues) {
-    if (lcsResponsible) {
+    if (!isCCSStory) {
       double swayed =
           publicOpinion[issue]! / 10 - publicOpinion[View.lcsLiked]!;
       if (swayed > 0) {
         changePublicOpinion(View.lcsLiked, swayed.round());
       }
-    } else if (ccsResponsible) {
+    } else {
       double swayed = (100 - publicOpinion[issue]!) / 10 -
           (100 - publicOpinion[View.ccsHated]!);
       if (swayed > 0) {
@@ -601,7 +587,7 @@ void setpriority(NewsStory ns) {
         NewsStories.squadKilledInSiteAction => fame + 10,
         _ => 0,
       };
-      if (!lcscherrybusted) ns.priority *= 5;
+      if (!lcsInPublicEye) ns.priority *= 5;
 
       // Suppress actions at CCS safehouses
       if (ns.loc?.controller == SiteController.ccs) {
@@ -680,10 +666,20 @@ void setpriority(NewsStory ns) {
       ns.priority = 1;
       ns.drama.add(Drama.attacked);
       ns.priority += 4 * (lcsRandom(10) + 1);
+
+      // Always add gun use based on gun control laws
+      if (gameState.politics.laws[Law.gunControl]!.index <
+          DeepAlignment.conservative.index) {
+        // If gun control is conservative, CCS uses legal guns
+        ns.drama.add(Drama.legalGunUsed);
+      } else {
+        // If gun control is liberal or moderate, CCS uses illegal guns
+        ns.drama.add(Drama.illegalGunUsed);
+      }
+
       if (lcsRandom(ccsState.index + 1) > 0) {
         ns.drama.add(Drama.killedSomebody);
         ns.priority += lcsRandom(10) * 30;
-        ns.positive = 0;
       }
       if (lcsRandom(ccsState.index + 1) > 0) {
         ns.drama.add(Drama.stoleSomething);
@@ -701,5 +697,20 @@ void setpriority(NewsStory ns) {
       ns.priority = 40 + publicOpinion[View.lcsKnown]! ~/ 3;
     default:
       break;
+  }
+}
+
+void setSiteStoryPositive(NewsStory ns) {
+  // Using guns, or killing people, is frowned upon by moderate media
+  bool hasViolence = ns.drama.any((d) =>
+      d == Drama.killedSomebody ||
+      d == Drama.legalGunUsed ||
+      d == Drama.illegalGunUsed);
+
+  if (ns.type == NewsStories.ccsSiteAction ||
+      ns.type == NewsStories.ccsKilledInSiteAction) {
+    ns.liberalSpin = hasViolence;
+  } else {
+    ns.liberalSpin = !hasViolence;
   }
 }

@@ -332,7 +332,7 @@ Future<LootType?> chooseSpecialEdition() async {
   await pagedInterface(
     headerPrompt: "Do you want to publish secrets in the Liberal Guardian?",
     headerKey: {4: "SECRETS POSSESSED"},
-    footerPrompt:
+    backButtonText:
         "Enter - Now is not the time to attract this sort of attention",
     count: lootTypesAvailable.length,
     lineBuilder: (y, key, index) {
@@ -799,7 +799,7 @@ Future<void> printNews(LootType li, Iterable<Creature> publishers) async {
   NewsStory archiveStory = NewsStory.unpublished(NewsStories.majorEvent);
   archiveStory.publication = Publication.liberalGuardian;
   archiveStory.view = View.lcsKnown;
-  archiveStory.positive = 1;
+  archiveStory.liberalSpin = true;
   archiveStory.priority = potency;
   archiveStory.body = story;
 
