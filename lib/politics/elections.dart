@@ -41,7 +41,13 @@ DeepAlignment getVoter([PoliticalParty? party]) {
 
 Future<void> elections() async {
   if (canSeeThings) {
-    await showMessage("The Elections are being held today!");
+    if (year % 4 == 0 && month == 11) {
+      await showMessage("The Presidential Election is being held today!");
+    } else if (year % 2 == 0 && month == 11) {
+      await showMessage("Congressional Elections are being held today!");
+    } else {
+      await showMessage("Local elections are being held today!");
+    }
   }
 
   if ((year % 4 == 0) && (month == 11)) {
