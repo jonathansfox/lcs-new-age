@@ -112,7 +112,7 @@ class Console {
     if (y >= buffer.length || x >= buffer[y].length) return;
     if (!gameOptions.mouseInput) return;
     String? key = buffer[y][x].mouseClickKey;
-    key ??= "Enter";
+    key ??= "`";
     keyEvent(KeyDownEvent(
       logicalKey: LogicalKeyboardKey.keyA,
       physicalKey: PhysicalKeyboardKey.keyA,
