@@ -134,7 +134,7 @@ Future<void> equip(List<Item>? loot) async {
           if (decreaseammo) {
             Item? ammo = squaddie.spareAmmo;
             if (ammo != null) {
-              loot.add(ammo.split(1));
+              loot.add(ammo.split(squaddie.weapon.type.ammoCapacity));
               if (ammo.stackSize == 0) squaddie.spareAmmo = null;
             } else if (!squaddie.weapon.type.usesAmmo) {
               errmsg = "No ammo to drop!";
@@ -209,6 +209,10 @@ Future<void> equip(List<Item>? loot) async {
                 amount =
                     await promptAmount(0, min(loot[slot].stackSize, space));
               }
+              if (increaseammo) {
+                amount = min(
+                    loot[slot].stackSize, squaddie.weapon.type.ammoCapacity);
+              }
 
               squaddie.takeAmmo(loot[slot] as Ammo, loot, amount);
 
@@ -261,11 +265,11 @@ Future<void> equip(List<Item>? loot) async {
     }
 
     //PAGE UP
-    if ((isPageUp(c) || c == Key.upArrow || c == Key.leftArrow) && page > 0) {
+    if ((isPageUp(c) || c == Key.leftArrow) && page > 0) {
       page--;
     }
     //PAGE DOWN
-    if ((isPageDown(c) || c == Key.downArrow || c == Key.rightArrow) &&
+    if ((isPageDown(c) || c == Key.rightArrow) &&
         (page + 1) * 18 < loot.length) {
       page++;
     }
