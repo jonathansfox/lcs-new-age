@@ -406,12 +406,16 @@ Future<bool> heyINeedAGun(Creature a, Creature tk) async {
       if (activeSquad == null) {
         oldSquad = tk.squad;
         newSquad = Squad();
+        squads.add(newSquad);
         tk.squad = newSquad;
         activeSquad = tk.squad;
       }
       await armsdealer(activeSite ??
           Site(SiteType.armsDealer, tk.base!.city, tk.base!.district)
         ..name = "Secluded Alley");
+      if (newSquad != null) {
+        squads.remove(newSquad);
+      }
       if (oldSquad != null) {
         tk.squad = oldSquad;
         activeSquad = null;

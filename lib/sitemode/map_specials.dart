@@ -154,6 +154,7 @@ Future<void> specialBouncerAssessSquad() async {
   encounter.clear();
 
   specialBouncerGreetSquad();
+  if (encounter.isEmpty) return;
 
   printEncounter();
   Creature? sleeper = pool.firstWhereOrNull(
@@ -511,11 +512,13 @@ Future<void> specialLabGeneticCagedAnimals() async {
     sitestory!.drama.add(Drama.freeMonsters);
     if (oneIn(2)) {
       fillEncounter(CreatureTypeIds.genetic, lcsRandom(6) + 1);
-      await talk(squad.first, encounter.first);
-      if (encounter.first.align == Alignment.conservative) {
-        siteAlarm = true;
-      } else if (siteAlarmTimer > 1) {
-        siteAlarmTimer = 1;
+      if (squad.isNotEmpty && encounter.isNotEmpty) {
+        await talk(squad.first, encounter.first);
+        if (encounter.first.align == Alignment.conservative) {
+          siteAlarm = true;
+        } else if (siteAlarmTimer > 1) {
+          siteAlarmTimer = 1;
+        }
       }
     }
   } else if (result != UnlockResult.noAttempt) {
