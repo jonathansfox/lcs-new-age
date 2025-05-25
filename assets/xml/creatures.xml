@@ -161,6 +161,7 @@ Elements marked as hardcoded may have their values overridden by the game.
         </attributes>
         <gender>MALE BIAS</gender>
         <infiltration>0-30</infiltration>
+        <recruit_activity_difficulty>4</recruit_activity_difficulty>
         <skills>
             <computers>1-2</computers>
             <science>3-6</science>
@@ -330,6 +331,7 @@ Elements marked as hardcoded may have their values overridden by the game.
         <weapon>CIVILIAN</weapon>
         <armor>CLOTHING_OVERALLS</armor>
         <age>MATURE</age>
+        <recruit_activity_difficulty>2</recruit_activity_difficulty>
         <talkreceptive>1</talkreceptive>
     </creaturetype>
     <creaturetype idname="CREATURE_WORKER_SWEATSHOP">
@@ -377,6 +379,7 @@ Elements marked as hardcoded may have their values overridden by the game.
         <attributes>
             <intelligence>2-10</intelligence>
         </attributes>
+        <recruit_activity_difficulty>2</recruit_activity_difficulty>
         <skills>
             <writing>1-2</writing>
         </skills>
@@ -470,7 +473,6 @@ Elements marked as hardcoded may have their values overridden by the game.
         <kidnap_resistant>1</kidnap_resistant>
         <intimidation_resistant>true</intimidation_resistant>
         <can_perform_arrests>true</can_perform_arrests>
-        <recruit_activity_difficulty>4</recruit_activity_difficulty>
         <social_attack>
             <priority>1</priority>
             <alignment_restriction>MODERATE</alignment_restriction>
@@ -858,6 +860,9 @@ Elements marked as hardcoded may have their values overridden by the game.
             <strength>7-12</strength>
             <wisdom>1-6</wisdom>
         </attributes>
+        <skill>
+            <martialArts>2-3</martialArts>
+        </skill>
         <seethroughstealth>  15</seethroughstealth>
         <seethroughdisguise>  7</seethroughdisguise>
         <animal>true</animal>
@@ -901,7 +906,7 @@ Elements marked as hardcoded may have their values overridden by the game.
             <law>4-7</law>
             <persuasion>2-5</persuasion>
         </skills>
-        <recruit_activity_difficulty>4</recruit_activity_difficulty>
+        <recruit_activity_difficulty>6</recruit_activity_difficulty>
     </creaturetype>
     <creaturetype idname="CREATURE_SEWERWORKER">
         <type_name>Sewer Worker</type_name>
@@ -964,6 +969,7 @@ Elements marked as hardcoded may have their values overridden by the game.
             <science>1-3</science>
         </skills>
         <talkreceptive>1</talkreceptive>
+        <recruit_activity_difficulty>6</recruit_activity_difficulty>
     </creaturetype>
     <creaturetype idname="CREATURE_TEACHER">
         <type_name>Teacher</type_name>
@@ -976,6 +982,7 @@ Elements marked as hardcoded may have their values overridden by the game.
             <teaching>3-6</teaching>
         </skills>
         <talkreceptive>1</talkreceptive>
+        <recruit_activity_difficulty>4</recruit_activity_difficulty>
     </creaturetype>
     <creaturetype idname="CREATURE_HSDROPOUT">
         <type_name>Highschool Dropout</type_name>
@@ -984,6 +991,7 @@ Elements marked as hardcoded may have their values overridden by the game.
         <age>TEENAGER</age>
         <money>20-50</money>
         <talkreceptive>1</talkreceptive>
+        <recruit_activity_difficulty>1</recruit_activity_difficulty>
     </creaturetype>
     <creaturetype idname="CREATURE_BUM">
         <type_name>Homeless</type_name>
@@ -995,6 +1003,7 @@ Elements marked as hardcoded may have their values overridden by the game.
         <alignment>LIBERAL</alignment>
         <money>20-50</money>
         <talkreceptive>1</talkreceptive>
+        <recruit_activity_difficulty>1</recruit_activity_difficulty>
     </creaturetype>
     <creaturetype idname="CREATURE_GANGMEMBER">
         <type_name>Gang Member</type_name>
@@ -1030,6 +1039,7 @@ Elements marked as hardcoded may have their values overridden by the game.
         <juice>-20</juice>
         <money>20-50</money>
         <talkreceptive>1</talkreceptive>
+        <recruit_activity_difficulty>1</recruit_activity_difficulty>
     </creaturetype>
     <creaturetype idname="CREATURE_PRIEST">
         <type_name>Priest</type_name>
@@ -1049,6 +1059,7 @@ Elements marked as hardcoded may have their values overridden by the game.
             <persuasion>3-6</persuasion>
             <religion>4-7</religion>
         </skills>
+        <recruit_activity_difficulty>4</recruit_activity_difficulty>
     </creaturetype>
     <creaturetype idname="CREATURE_TELEVANGELIST">
         <type_name>Televangelist</type_name>
@@ -1095,6 +1106,7 @@ Elements marked as hardcoded may have their values overridden by the game.
             <computers>2</computers>
             <science>3</science>
         </skills>
+        <recruit_activity_difficulty>4</recruit_activity_difficulty>
     </creaturetype>
     <creaturetype idname="CREATURE_FASTFOODWORKER">
         <type_name>Fast Food Worker</type_name>
@@ -1118,6 +1130,10 @@ Elements marked as hardcoded may have their values overridden by the game.
         <age>YOUNGADULT</age>
         <money>20-50</money>
         <talkreceptive>1</talkreceptive>
+        <alignment>LIBERAL</alignment>
+        <attributes>
+            <charisma>4-10</charisma>
+        </attributes>
     </creaturetype>
     <creaturetype idname="CREATURE_BARTENDER">
         <type_name>Bartender</type_name>
@@ -1128,6 +1144,9 @@ Elements marked as hardcoded may have their values overridden by the game.
         <gender>MALE BIAS</gender>
         <money>20-50</money>
         <talkreceptive>1</talkreceptive>
+        <attributes>
+            <charisma>4-10</charisma>
+        </attributes>
     </creaturetype>
     <creaturetype idname="CREATURE_TELEMARKETER">
         <type_name>Telemarketer</type_name>
@@ -1155,6 +1174,7 @@ Elements marked as hardcoded may have their values overridden by the game.
             <driving>1-3</driving>
             <persuasion>3-6</persuasion>
         </skills>
+        <recruit_activity_difficulty>4</recruit_activity_difficulty>
     </creaturetype>
     <creaturetype idname="CREATURE_OFFICEWORKER">
         <type_name>Office Worker</type_name>
@@ -1166,6 +1186,7 @@ Elements marked as hardcoded may have their values overridden by the game.
         <skills>
             <business>0-2</business>
         </skills>
+        <recruit_activity_difficulty>4</recruit_activity_difficulty>
     </creaturetype>
     <creaturetype idname="CREATURE_FOOTBALLCOACH">
         <type_name>Football Coach</type_name>
@@ -1183,6 +1204,7 @@ Elements marked as hardcoded may have their values overridden by the game.
             <persuasion>2-5</persuasion>
             <teaching>2-4</teaching>
         </skills>
+        <recruit_activity_difficulty>6</recruit_activity_difficulty>
     </creaturetype>
     <creaturetype idname="CREATURE_SEXWORKER">
         <type_name>Sex Worker</type_name>
@@ -1454,6 +1476,7 @@ Elements marked as hardcoded may have their values overridden by the game.
             <persuasion>2-5</persuasion>
             <writing>2-5</writing>
         </skills>
+        <recruit_activity_difficulty>4</recruit_activity_difficulty>
     </creaturetype>
     <creaturetype idname="CREATURE_CRITIC_MUSIC">
         <type_name>Music Critic</type_name>
@@ -1466,6 +1489,7 @@ Elements marked as hardcoded may have their values overridden by the game.
             <persuasion>2-5</persuasion>
             <writing>2-5</writing>
         </skills>
+        <recruit_activity_difficulty>6</recruit_activity_difficulty>
     </creaturetype>
     <creaturetype idname="CREATURE_SOCIALITE">
         <type_name>Socialite</type_name>
@@ -1512,6 +1536,7 @@ Elements marked as hardcoded may have their values overridden by the game.
         <skills>
             <art>3-6</art>
         </skills>
+        <recruit_activity_difficulty>8</recruit_activity_difficulty>
     </creaturetype>
     <creaturetype idname="CREATURE_SCULPTOR">
         <type_name>Sculptor</type_name>
@@ -1521,6 +1546,7 @@ Elements marked as hardcoded may have their values overridden by the game.
         <skills>
             <art>3-6</art>
         </skills>
+        <recruit_activity_difficulty>8</recruit_activity_difficulty>
     </creaturetype>
     <creaturetype idname="CREATURE_AUTHOR">
         <type_name>Author</type_name>
@@ -1532,6 +1558,7 @@ Elements marked as hardcoded may have their values overridden by the game.
             <persuasion>0-3</persuasion>
             <writing>4-7</writing>
         </skills>
+        <recruit_activity_difficulty>8</recruit_activity_difficulty>
     </creaturetype>
     <creaturetype idname="CREATURE_JOURNALIST">
         <type_name>Journalist</type_name>
@@ -1581,6 +1608,7 @@ Elements marked as hardcoded may have their values overridden by the game.
         <skills>
             <art>2-3</art>
         </skills>
+        <recruit_activity_difficulty>4</recruit_activity_difficulty>
     </creaturetype>
     <creaturetype idname="CREATURE_CAMERAMAN">
         <type_name>Camera Operator</type_name>
@@ -1616,7 +1644,7 @@ Elements marked as hardcoded may have their values overridden by the game.
             <art>2-4</art>
             <tailoring>3-10</tailoring>
         </skills>
-        <recruit_activity_difficulty>4</recruit_activity_difficulty>
+        <recruit_activity_difficulty>8</recruit_activity_difficulty>
     </creaturetype>
     <creaturetype idname="CREATURE_CLERK">
         <type_name>Clerk</type_name>
@@ -1625,6 +1653,7 @@ Elements marked as hardcoded may have their values overridden by the game.
         <armor>CLOTHING_WORKCLOTHES</armor>
         <age>MATURE</age>
         <talkreceptive>1</talkreceptive>
+        <recruit_activity_difficulty>4</recruit_activity_difficulty>
     </creaturetype>
     <creaturetype idname="CREATURE_THIEF">
         <type_name>Professional Thief</type_name>
@@ -1661,6 +1690,7 @@ Elements marked as hardcoded may have their values overridden by the game.
             <persuasion>0-4</persuasion>
             <seduction>0-4</seduction>
         </skills>
+        <recruit_activity_difficulty>8</recruit_activity_difficulty>
     </creaturetype>
     <creaturetype idname="CREATURE_YOGAINSTRUCTOR">
         <type_name>Yoga Instructor</type_name>
@@ -1675,7 +1705,9 @@ Elements marked as hardcoded may have their values overridden by the game.
         <gender>FEMALE BIAS</gender>
         <skills>
             <teaching>2-5</teaching>
+            <dodge>2-5</dodge>
         </skills>
+        <recruit_activity_difficulty>6</recruit_activity_difficulty>
     </creaturetype>
     <creaturetype idname="CREATURE_MARTIALARTIST">
         <type_name>Martial Artist</type_name>
@@ -1690,6 +1722,7 @@ Elements marked as hardcoded may have their values overridden by the game.
         <gender>MALE BIAS</gender>
         <skills>
             <martialArts>4-7</martialArts>
+            <dodge>2-5</dodge>
             <teaching>1-3</teaching>
         </skills>
         <recruit_activity_difficulty>6</recruit_activity_difficulty>
@@ -1708,7 +1741,7 @@ Elements marked as hardcoded may have their values overridden by the game.
             <dodge>2-7</dodge>
         </skills>
         <gender>MALE BIAS</gender>
-        <recruit_activity_difficulty>4</recruit_activity_difficulty>
+        <recruit_activity_difficulty>6</recruit_activity_difficulty>
     </creaturetype>
     <creaturetype idname="CREATURE_BIKER">
         <type_name>Biker</type_name>
@@ -1722,6 +1755,7 @@ Elements marked as hardcoded may have their values overridden by the game.
         <skills>
             <driving>3-5</driving>
         </skills>
+        <recruit_activity_difficulty>6</recruit_activity_difficulty>
     </creaturetype>
     <creaturetype idname="CREATURE_TRUCKER">
         <type_name>Trucker</type_name>
@@ -1734,6 +1768,7 @@ Elements marked as hardcoded may have their values overridden by the game.
         <skills>
             <driving>3-5</driving>
         </skills>
+        <recruit_activity_difficulty>6</recruit_activity_difficulty>
     </creaturetype>
     <creaturetype idname="CREATURE_TAXIDRIVER">
         <type_name>Taxi Driver</type_name>
@@ -1745,6 +1780,7 @@ Elements marked as hardcoded may have their values overridden by the game.
         <skills>
             <driving>3-5</driving>
         </skills>
+        <recruit_activity_difficulty>6</recruit_activity_difficulty>
     </creaturetype>
     <creaturetype idname="CREATURE_NUN">
         <type_name>Nun</type_name>
@@ -1789,7 +1825,7 @@ Elements marked as hardcoded may have their values overridden by the game.
         <skills>
             <firstAid>4-7</firstAid>
         </skills>
-        <recruit_activity_difficulty>4</recruit_activity_difficulty>
+        <recruit_activity_difficulty>6</recruit_activity_difficulty>
     </creaturetype>
     <creaturetype idname="CREATURE_NURSE">
         <type_name>Nurse</type_name>
@@ -1799,6 +1835,8 @@ Elements marked as hardcoded may have their values overridden by the game.
         <skills>
             <firstAid>1-4</firstAid>
         </skills>
+        <talkreceptive>1</talkreceptive>
+        <recruit_activity_difficulty>4</recruit_activity_difficulty>
     </creaturetype>
     <creaturetype idname="CREATURE_CCS_VIGILANTE">
         <type_name>CCS Member</type_name>
@@ -1902,7 +1940,7 @@ Elements marked as hardcoded may have their values overridden by the game.
         <skills>
             <psychology>4-7</psychology>
         </skills>
-        <recruit_activity_difficulty>4</recruit_activity_difficulty>
+        <recruit_activity_difficulty>6</recruit_activity_difficulty>
     </creaturetype>
     <creaturetype idname="CREATURE_LOCKSMITH">
         <type_name>Locksmith</type_name>
@@ -1954,13 +1992,13 @@ Elements marked as hardcoded may have their values overridden by the game.
         </attributes>
         <gender>MALE BIAS</gender>
         <infiltration>10-40</infiltration>
-        <juice>100-150</juice>
+        <juice>500-750</juice>
         <money>0</money>
         <skills>
-            <dodge>2-5</dodge>
+            <dodge>4-7</dodge>
             <martialArts>3-5</martialArts>
             <psychology>3-5</psychology>
-            <firearms>4-7</firearms>
+            <firearms>7-10</firearms>
         </skills>
         <kidnap_resistant>1</kidnap_resistant>
         <intimidation_resistant>true</intimidation_resistant>
@@ -2006,6 +2044,7 @@ Elements marked as hardcoded may have their values overridden by the game.
             <dodge>2-6</dodge>
             <seduction>0-4</seduction>
         </skills>
+        <recruit_activity_difficulty>4</recruit_activity_difficulty>
     </creaturetype>
     <creaturetype idname="CREATURE_GOTH">
         <type_name>Goth</type_name>
