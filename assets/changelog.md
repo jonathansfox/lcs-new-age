@@ -1,3 +1,25 @@
+## 1.4.4 - 5/25/2025
+* Added 23 new major news stories
+* Changed max hit point formula to now use both Strength and Heart instead of just Heart
+* Many pickup lines now vary depending on the gender of the people involved 
+* Pickup lines are now easier on Liberals and Moderates
+* Pickup lines are now more difficult on Conservatives if approaching with a trans liberal or a liberal of the same gender, with the size of the penalty depending on the state of LGBT laws (ranging from -6 seduction at C+ laws to to no penalty at L+ laws)
+* Added the ability to assign a task from a character's individual page on the review screen
+* Increased the ammo allocated when pressing up or down on the equipment screen to one full magazine worth instead of one bullet
+* Changed the key that a stray mouse click passes so screens expecting specific keys will not think you are submitting or canceling just because you clicked randomly
+* Lab Techs, Janitors, Secretaries, Mathematicians, Teachers, High School Dropouts, Homeless, Drug Addicts, Priests, Engineers, Car Salespeople, Office Workers, Football Coaches, Art Critics, Music Critics, Painters, Sculptors, Authors, Photographers, Clerks, Actors, Yoga Instructors, Bikers, Truckers, Taxi Drivers, and Cheerleaders are now recruitable through the recruitment activity
+* Police Officers are no longer available through the recruitment activity
+* Lawyers, Fashion Designers, Athletes, Doctors, and Psychologists are now less plentiful when met through the recruitment activity
+* Dogs now start with a few points in Martial Arts
+* Baristas are now always Liberal and will always have at least 4 Charisma
+* Yoga Instructors and Martial Artists will now start with a few points in Dodge
+* Nurses are now much easier to talk to about the issues
+* Navy SEALs now start with more Juice, Dodge, and Firearms
+* Fixed a bug that allowed Liberal and Conservative media to sometimes report on Crime Squad actions with a more positive or negative spin than is appropriate for their publication's bias, such as the Liberal Guardian reporting on an LCS action as a "rampage"
+* Fixed a display issue that could come up when dating large numbers of people at once
+* Fixed a bug with ransoming hostages that would result in risk factors being based on a different roll for caution than the flavor text
+* Fixed a few crash bugs that could come up in different situations
+
 ## 1.4.3 - 5/19/2025
 * Changed the regular/sleeper prompt on recruitment to use the standard hotkey UI and not up/down to select
 * Fixed a bug with colors when moving equipment between safehouses
