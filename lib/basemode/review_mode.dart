@@ -2,6 +2,7 @@
 import 'dart:ui';
 
 import 'package:collection/collection.dart';
+import 'package:lcs_new_age/basemode/activate_regulars.dart';
 import 'package:lcs_new_age/basemode/activities.dart';
 import 'package:lcs_new_age/common_actions/equipment.dart';
 import 'package:lcs_new_age/common_display/common_display.dart';
@@ -464,7 +465,7 @@ Future<void> reviewMode(ReviewMode mode) async {
               addOptionText(22, 26, "K", "K - Kill LCS Member");
             }
           }
-
+          addOptionText(22, 52, "A", "A - Assign a Task");
           addOptionText(23, 0, "N", "N - Change Name");
           if (tempp.isLiberal) {
             addOptionText(23, 26, "G", "G - Change Gender");
@@ -500,6 +501,11 @@ Future<void> reviewMode(ReviewMode mode) async {
           if (c == Key.upArrow || c == Key.w) {
             page--;
             if (page < 0) page = 2;
+            continue;
+          }
+
+          if (c == Key.a) {
+            await assignTask(tempp);
             continue;
           }
 

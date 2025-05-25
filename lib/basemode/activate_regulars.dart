@@ -63,7 +63,7 @@ Future<void> activateRegulars() async {
     if (isPageDown(c) && (page + 1) * 19 < tempPool.length) page++;
     if (c >= Key.a && c <= Key.s) {
       int p = page * 19 + (c - Key.a);
-      if (p < tempPool.length) await _activateOne(tempPool[p]);
+      if (p < tempPool.length) await assignTask(tempPool[p]);
     }
     if (c == Key.t) {
       await sortingPrompt(SortingScreens.activateRegulars);
@@ -120,7 +120,7 @@ List<ActivityType> _teaching = [
   ActivityType.teachFighting,
 ];
 
-Future<void> _activateOne(Creature c) async {
+Future<void> assignTask(Creature c) async {
   int state = 0;
   bool canDisposeCorpses =
       c.site?.creaturesPresent.any((p) => !p.alive) == true;
