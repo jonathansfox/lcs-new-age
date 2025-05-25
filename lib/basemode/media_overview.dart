@@ -48,10 +48,9 @@ Future<void> mediaOverview() async {
             case NewsStories.squadSiteAction:
               String name = "";
               if (ns.loc != null) {
-                name = squadStoryTextLocation(ns, false, false,
-                    includeOpening: false);
+                name = squadStoryTextLocation(ns, false, includeOpening: false);
               }
-              if (ns.positive > 0) {
+              if (ns.liberalSpin) {
                 headline = "LCS Action $name";
               } else {
                 headline = "LCS Rampage $name";
@@ -63,10 +62,9 @@ Future<void> mediaOverview() async {
             case NewsStories.ccsSiteAction:
               String name = "";
               if (ns.loc != null) {
-                name = squadStoryTextLocation(ns, false, true,
-                    includeOpening: false);
+                name = squadStoryTextLocation(ns, true, includeOpening: false);
               }
-              if (ns.positive > 0) {
+              if (ns.liberalSpin) {
                 headline = "CCS Action $name";
               } else {
                 headline = "CCS Rampage $name";
