@@ -252,7 +252,7 @@ class Creature {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   int get health {
-    int health = 5;
+    int health = levelAttribute(this, Attribute.strength);
     // Your maximum health is derived from your convictions
     if (align == Alignment.liberal) {
       // Liberals use heart
