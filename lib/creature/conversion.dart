@@ -29,5 +29,5 @@ void liberalize(Creature cr) {
         cr.name = "Enlightened Judge";
     }
   }
-  interrogationSessions.removeWhere((e) => e.hostage == cr);
+  interrogationSessions.removeWhere((e) => e.hostageId == cr.id);
 }

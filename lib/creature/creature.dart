@@ -400,7 +400,7 @@ class Creature {
       politics.promoteVP();
       uniqueCreatures.newPresident();
     }
-    interrogationSessions.removeWhere((e) => e.hostage == this);
+    interrogationSessions.removeWhere((e) => e.hostageId == id);
 
     if (align == Alignment.liberal) {
       stats.martyrs++;
