@@ -1,3 +1,6 @@
+## 1.4.5 - 5/25/2025
+* Fixed a bug where assigning a task from a character's individual page on the review screen would instead go to the previous character in the list if there was one
+
 ## 1.4.4 - 5/25/2025
 * Added 23 new major news stories
 * Changed max hit point formula to now use both Strength and Heart instead of just Heart
