@@ -483,6 +483,11 @@ Future<void> reviewMode(ReviewMode mode) async {
 
           int c = await getKey();
 
+          if (c == Key.a) {
+            await assignTask(tempp);
+            continue;
+          }
+
           if (temppool.length > 1 &&
               ((c == Key.leftArrow || c == Key.a) ||
                   (c == Key.rightArrow || c == Key.d))) {
@@ -501,11 +506,6 @@ Future<void> reviewMode(ReviewMode mode) async {
           if (c == Key.upArrow || c == Key.w) {
             page--;
             if (page < 0) page = 2;
-            continue;
-          }
-
-          if (c == Key.a) {
-            await assignTask(tempp);
             continue;
           }
 

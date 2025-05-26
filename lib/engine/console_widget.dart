@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:lcs_new_age/engine/changelog.dart';
@@ -265,78 +267,85 @@ class _ConsoleWidgetState extends State<ConsoleWidget> {
             child: SizedBox(
               width: textSpanWidth,
               height: textSpanHeight,
-              child: MouseRegion(
-                onHover: (event) {
-                  updateHoverPosition(
-                      event.localPosition.dx, event.localPosition.dy);
-                },
-                onExit: (event) {
-                  setState(() {
-                    hoverX = null;
-                    hoverY = null;
-                  });
-                },
-                child: GestureDetector(
-                  onTapDown: (details) {
-                    // Convert tap coordinates to console coordinates
-                    double cellWidth = textSpanWidth / console.width;
-                    double cellHeight = textSpanHeight / console.height;
-                    int x = (details.localPosition.dx / cellWidth).floor();
-                    int y = (details.localPosition.dy / cellHeight).floor();
-                    console.handleMouseClick(y, x);
-                    console.handleMouseEvent(y, x, true);
-                  },
-                  onPanUpdate: (details) {
-                    // Convert pan coordinates to console coordinates
-                    double cellWidth = textSpanWidth / console.width;
-                    double cellHeight = textSpanHeight / console.height;
-                    int x = (details.localPosition.dx / cellWidth).floor();
-                    int y = (details.localPosition.dy / cellHeight).floor();
-                    console.handleMouseEvent(y, x, true);
-                  },
-                  onTapUp: (details) {
-                    double cellWidth = textSpanWidth / console.width;
-                    double cellHeight = textSpanHeight / console.height;
-                    int x = (details.localPosition.dx / cellWidth).floor();
-                    int y = (details.localPosition.dy / cellHeight).floor();
-                    console.handleMouseEvent(y, x, false);
-                  },
-                  onTapCancel: () {
-                    if (console.hoverX != null && console.hoverY != null) {
-                      console.handleMouseEvent(
-                          console.hoverY!, console.hoverX!, false);
-                    }
-                  },
-                  onTap: () {
-                    if (ChangelogWidget.globalKey.currentState?.showing !=
-                        true) {
-                      focusNode.requestFocus();
-                    }
-                  },
-                  child: Stack(
-                    children: [
-                      background(),
-                      Positioned.fill(
-                        child: CustomPaint(painter: BlockPainter(console)),
-                      ),
-                      RichText(
-                        text: fg,
-                        softWrap: false,
-                        textHeightBehavior: const TextHeightBehavior(
-                          applyHeightToFirstAscent: false,
-                          applyHeightToLastDescent: false,
-                          leadingDistribution: TextLeadingDistribution.even,
-                        ),
-                      ),
-                      ...graphics(),
-                      mobileKeyboardLayer(),
-                    ],
-                  ),
+              child: mouseInputLayer(
+                child: Stack(
+                  children: [
+                    background(),
+                    Positioned.fill(
+                      child: CustomPaint(painter: BlockPainter(console)),
+                    ),
+                    richText(fg),
+                    ...graphics(),
+                    mobileKeyboardLayer(),
+                  ],
                 ),
               ),
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget mouseInputLayer({Widget? child}) {
+    return MouseRegion(
+      onHover: (event) {
+        updateHoverPosition(event.localPosition.dx, event.localPosition.dy);
+      },
+      onExit: (event) {
+        setState(() {
+          hoverX = null;
+          hoverY = null;
+        });
+      },
+      child: GestureDetector(
+        onTapDown: (details) {
+          // Convert tap coordinates to console coordinates
+          double cellWidth = textSpanWidth / console.width;
+          double cellHeight = textSpanHeight / console.height;
+          int x = (details.localPosition.dx / cellWidth).floor();
+          int y = (details.localPosition.dy / cellHeight).floor();
+          console.handleMouseClick(y, x);
+          console.handleMouseEvent(y, x, true);
+        },
+        onPanUpdate: (details) {
+          // Convert pan coordinates to console coordinates
+          double cellWidth = textSpanWidth / console.width;
+          double cellHeight = textSpanHeight / console.height;
+          int x = (details.localPosition.dx / cellWidth).floor();
+          int y = (details.localPosition.dy / cellHeight).floor();
+          console.handleMouseEvent(y, x, true);
+        },
+        onTapUp: (details) {
+          double cellWidth = textSpanWidth / console.width;
+          double cellHeight = textSpanHeight / console.height;
+          int x = (details.localPosition.dx / cellWidth).floor();
+          int y = (details.localPosition.dy / cellHeight).floor();
+          console.handleMouseEvent(y, x, false);
+        },
+        onTapCancel: () {
+          if (console.hoverX != null && console.hoverY != null) {
+            console.handleMouseEvent(console.hoverY!, console.hoverX!, false);
+          }
+        },
+        onTap: () {
+          if (ChangelogWidget.globalKey.currentState?.showing != true) {
+            focusNode.requestFocus();
+          }
+        },
+        child: child,
+      ),
+    );
+  }
+
+  Widget richText(TextSpan fg) {
+    return RichText(
+      text: fg,
+      softWrap: false,
+      textHeightBehavior: const TextHeightBehavior(
+        applyHeightToFirstAscent: false,
+        applyHeightToLastDescent: false,
+        leadingDistribution: TextLeadingDistribution.even,
       ),
     );
   }
