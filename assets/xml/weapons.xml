@@ -367,8 +367,8 @@
     </weapontype>
 
     <weapontype idname="WEAPON_M7">
-        <name>XM7 Rifle</name>
-        <shortname>XM7</shortname>
+        <name>M7 Rifle</name>
+        <shortname>M7</shortname>
         <can_take_hostages>true</can_take_hostages>
         <threatening>true</threatening>
         <banned_at_gun_control>C</banned_at_gun_control>
@@ -386,8 +386,8 @@
     </weapontype>
 
     <weapontype idname="WEAPON_M250_MACHINEGUN">
-        <name>XM250 LMG</name>
-        <shortname>XM250</shortname>
+        <name>M250 LMG</name>
+        <shortname>M250</shortname>
         <can_take_hostages>true</can_take_hostages>
         <threatening>true</threatening>
         <banned_at_gun_control>C</banned_at_gun_control>
