@@ -230,13 +230,14 @@ Future<void> helpOnActivity(ActivityType type) async {
           "all jobs are available in the recruiting interface, but many "
           "valuable, important, or just iconic jobs are.");
     case ActivityType.study:
-      _head("=== Study ===");
-      _body("Studying is slower than taking classes, but it's free and has no "
+      _head("=== Practice ===");
+      _body(
+          "Practicing is slower than taking classes, but it's free and has no "
           "cap on how much you can learn. People with higher skill caps "
           "will learn faster.");
     case ActivityType.takeClass:
-      _head("=== Take a Class ===");
-      _body("Taking a class is faster than studying, but it costs money and "
+      _head("=== Take Classes ===");
+      _body("Taking a class is faster than practicing, but it costs money and "
           "has a cap on how much you can learn. People with higher skill "
           "caps will learn faster.");
     case ActivityType.teachFighting:
