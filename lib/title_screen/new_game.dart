@@ -24,6 +24,7 @@ const bool debugPresidentSleeper = false;
 const bool debugSiege = false;
 const bool debugMartialArtsMaster = false;
 const bool debugEliteLiberalPublicOpinion = false;
+const bool debugPartyRescue = false;
 
 Future<void> setupNewGame() async {
   gameState = GameState();
@@ -277,6 +278,23 @@ Future<void> makeCharacter() async {
     founder.juice = 1000;
     founder.rawSkill[Skill.martialArts] = founder.skillCap(Skill.martialArts);
     founder.rawSkill[Skill.dodge] = founder.skillCap(Skill.dodge);
+  }
+
+  if (debugPartyRescue) {
+    for (int i = 0; i < 20; i++) {
+      Creature c = Creature.fromId(CreatureTypeIds.collegeStudent);
+      liberalize(c);
+      c.nameCreature();
+      c.location =
+          findSiteInSameCity(founder.location?.city, SiteType.policeStation);
+      pool.add(c);
+    }
+
+    founder.rawAttributes[Attribute.agility] = 15;
+    founder.rawAttributes[Attribute.intelligence] = 15;
+    founder.juice = 1000;
+    founder.rawSkill[Skill.security] = founder.skillCap(Skill.security);
+    founder.rawSkill[Skill.stealth] = founder.skillCap(Skill.stealth);
   }
 
   await aNewConservativeEra();

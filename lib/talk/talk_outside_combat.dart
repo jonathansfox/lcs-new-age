@@ -31,7 +31,7 @@ Future<bool> talkOutsideCombat(Creature a, Creature tk) async {
   mvaddstrc(9, 1, white, "${a.name} talks to ");
   addstrc(tk.align.color, tk.name);
   setColor(white);
-  printCreatureAgeAndGender(tk);
+  addstr(" ${creatureAgeAndGender(tk)}");
   addstr(":");
 
   addOptionText(

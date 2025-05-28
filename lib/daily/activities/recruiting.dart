@@ -46,8 +46,8 @@ Future<void> doActivityRecruit(Creature cr) async {
     return;
   } else if (recruitCount == 1) {
     mvaddstr(11, 0, "${cr.name} managed to set up a meeting with ");
-    addstrc(encounter[0].align.color, encounter[0].name);
-    printCreatureAgeAndGender(encounter[0]);
+    addstrc(encounter[0].align.color,
+        "${encounter[0].name} ${creatureAgeAndGender(encounter[0])}");
     addstrc(lightGray, ".");
     await getKey();
 
@@ -68,8 +68,7 @@ Future<void> doActivityRecruit(Creature cr) async {
       for (int i = 0; i < recruitCount; i++) {
         String letter = letterAPlus(i);
         addOptionText(12 + i, 0, letter,
-            "$letter - &${ColorKey.fromColor(encounter[i].align.color)}${encounter[i].name}");
-        printCreatureAgeAndGender(encounter[i]);
+            "$letter - &${ColorKey.fromColor(encounter[i].align.color)}${encounter[i].name} ${creatureAgeAndGender(encounter[i])}");
       }
       addOptionText(12 + recruitCount + 1, 0, "Enter/Escape",
           "Enter/Escape - Call it a day");
