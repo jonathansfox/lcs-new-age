@@ -120,7 +120,7 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
   erase();
   setColor(white);
   move(0, 0);
-  String message = "${p.name} has ";
+  String message = "&W${p.name} &whas ";
   if (d.dates.length == 1) {
     if (p.clinicMonthsLeft > 0 || city == null) {
       message += "a \"hot\" date with ";
@@ -132,19 +132,19 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
   }
   for (int ei = 0; ei < d.dates.length; ei++) {
     Creature e = d.dates[ei];
-    message += e.name;
+    message += "&W${e.name}";
 
     if (ei <= d.dates.length - 3) {
-      message += ", ";
+      message += "&w, ";
     } else if (ei == d.dates.length - 2) {
-      message += " and ";
+      message += "&w and ";
     } else {
       if (p.clinicMonthsLeft > 0) {
-        message += " at ${p.location?.name}";
+        message += "&w at &W${p.location?.name}";
       } else if (city == null) {
-        message += " over video chat";
+        message += "&w over video chat";
       }
-      message += ".";
+      message += "&w.";
     }
   }
   addparagraph(1, 1, x2: console.width - 2, message);
@@ -271,7 +271,9 @@ Future<bool> completeDate(DatingSession d, Creature p) async {
       temp.removeAt(temp.length - 1);
     }
 
-    mvaddstr(10, 0, "How should ${p.name} approach the situation?");
+    mvaddstr(10, 0, "How should ");
+    addstrc(white, p.name);
+    addstrc(lightGray, " approach the situation?");
 
     bool canPay100 = ledger.funds >= 100 &&
         p.clinicMonthsLeft == 0 &&
