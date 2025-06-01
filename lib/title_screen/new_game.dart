@@ -27,7 +27,7 @@ const bool debugSiege = false;
 const bool debugMartialArtsMaster = false;
 const bool debugEliteLiberalPublicOpinion = false;
 const bool debugPartyRescue = false;
-const bool debugAllItems = true;
+const bool debugAllItems = false;
 
 Future<void> setupNewGame() async {
   gameState = GameState();

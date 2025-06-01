@@ -1,3 +1,6 @@
+## 1.4.7 - 6/1/2025
+* Disabled debug option that was giving one of every item in the game on new game
+
 ## 1.4.6 - 6/1/2025
 * Made external plate no longer suspicious for security uniforms
 * Fixed a typo that caused dogs to not get martial arts skill

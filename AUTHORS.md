@@ -13,7 +13,7 @@ Liberal Crime Squad: New Age is a complete rewrite and fork of Liberal Crime Squ
 
 * Jonathan Stickles / Jonathan S. Fox (jonathansfox@gmail.com)
 
-## Contributors to New Age
+## Contributors to New Age:
 
 * Userlog2 (2024) - edits to news story text
 * bnormoyle (2024) - improvements to hijacking media broadcasts
