@@ -35,12 +35,35 @@ Future<bool> talkOutsideCombat(Creature a, Creature tk) async {
   printCreatureAgeAndGender(tk);
   addstr(":");
 
-  addOptionText(
-      11, 1, "A", "A - Strike up a conversation about politics$whileNaked.");
-  addOptionText(12, 1, "B", "B - Drop a pickup line$whileNaked.",
-      enabledWhen: tk.canDate(a));
-  addOptionText(
-      13, 1, "C", "C - On second thought, don't say anything$whileNaked.");
+  // relationship/recruits status
+  String recruitOverview = "";
+  if (a.subordinatesLeft <= 0) {
+    recruitOverview += "&m${a.gender.heSheCap} cannot manage any${a.maxSubordinates > 0 ? " more ": " "}subordinates. ";
+  } else {
+    recruitOverview += "&w${a.gender.heSheCap} can manage &W${a.subordinatesLeft}&w more subordinate${a.subordinatesLeft > 1 ? "s" : ""}";
+    if (a.scheduledMeetings == 0) {
+      recruitOverview += ". ";
+    } else {
+      recruitOverview += ", and has &W${a.scheduledMeetings}&w meeting${a.scheduledMeetings > 1 ? "s" : ""} scheduled. ";
+    }
+  } 
+  if (a.relationshipsLeft <= 0) {
+    recruitOverview += "&m${a.gender.heSheCap} cannot maintain any${a.maxRelationships > 0 ? " more ": " "}relationships.";
+  } else {
+    recruitOverview += "&w${a.gender.heSheCap} can maintain &W${a.relationshipsLeft}&w more relationship${a.relationshipsLeft > 1 ? "s" : ""}";
+    if (a.scheduldeDates == 0) {
+      recruitOverview += ". ";
+    } else {
+      recruitOverview += ", and has &W${a.scheduldeDates}&w hot date${a.scheduldeDates > 1 ? "s" : ""} lined up. ";
+    }
+  } 
+  
+  addparagraph(10, 1, recruitOverview);
+
+
+  addOptionText(console.y + 1, 1, "A", "A - Strike up a conversation about politics$whileNaked.");
+  addOptionText(console.y + 1, 1, "B", "B - Drop a pickup line$whileNaked.", enabledWhen: tk.canDate(a));
+  addOptionText(console.y + 1, 1, "C", "C - On second thought, don't say anything$whileNaked.");
 
   if (tk.type.id == CreatureTypeIds.landlord) {
     if (activeSite?.controller == SiteController.unaligned) {
