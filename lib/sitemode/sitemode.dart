@@ -14,7 +14,6 @@ import 'package:lcs_new_age/creature/conversion.dart';
 import 'package:lcs_new_age/creature/creature.dart';
 import 'package:lcs_new_age/creature/creature_type.dart';
 import 'package:lcs_new_age/creature/difficulty.dart';
-import 'package:lcs_new_age/creature/name_lists.dart';
 import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/daily/siege.dart';
 import 'package:lcs_new_age/engine/engine.dart';

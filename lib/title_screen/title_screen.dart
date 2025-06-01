@@ -17,7 +17,7 @@ import 'package:lcs_new_age/utils/interface_options.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const String gameVersion = "1.4.5";
+const String gameVersion = "1.4.6";
 bool megaFounderCheat = false;
 
 Future<void> titleScreen() async {

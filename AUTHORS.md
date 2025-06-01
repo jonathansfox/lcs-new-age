@@ -18,6 +18,7 @@ Liberal Crime Squad: New Age is a complete rewrite and fork of Liberal Crime Squ
 * Userlog2 (2024) - edits to news story text
 * bnormoyle (2024) - improvements to hijacking media broadcasts
 * odinhb (2025) - improved backup save file naming convention
+* Karel-Koreze (2025) - UI improvements and bug fixes, updated readme with compiling instructions
 
 ## Branches of Liberal Crime Squad that New Age was based on:
 

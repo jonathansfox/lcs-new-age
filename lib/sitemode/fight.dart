@@ -28,7 +28,6 @@ import 'package:lcs_new_age/sitemode/haul_kidnap.dart';
 import 'package:lcs_new_age/sitemode/map_specials.dart';
 import 'package:lcs_new_age/sitemode/site_display.dart';
 import 'package:lcs_new_age/sitemode/sitemap.dart';
-import 'package:lcs_new_age/sitemode/stealth.dart';
 import 'package:lcs_new_age/talk/talk_in_combat.dart';
 import 'package:lcs_new_age/utils/colors.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';

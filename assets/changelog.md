@@ -3,9 +3,9 @@
 * Fixed a typo that caused dogs to not get martial arts skill
 * Gave Secret Service integrated soft armor
 * Made it so you can press W to select the currently under attack safehouse on the main screen
-* Made it so you can see when people you meet in the field are trans
-* Made it so you can see whether someone is trans on their full character sheet
-* Prevented detransitioning Liberals you recruit who were trans before they joined the LCS
+* Added information about whether someone is trans to their brief info you can see in the field
+* Added information about whether someone is trans to the full character sheet
+* Prevented detransitioning Liberals you recruit who were already identifying as trans before they joined the LCS
 * Fixed a UI issue on the equipment bulk movement screen where three prompts were appearing all on the same part of the same line, covering each other up
 * Added the city to the sleeper warning about an imminent CCS attack
 * Made Liberal Judge sleepers use their writing and law skills to influence their effectiveness at spreading liberalism
@@ -15,6 +15,12 @@
 * Made jury tampering failure only produce Twelve Angry Jurors when you fail both of the component skill checks (you still get dinged on your criminal record if you fail one of them)
 * Updated the rescue code when grabbing people from prison so it is more aware of liberals whose injuries prevent them from walking
 * Fixed folks seduced from the recruitment screen sometimes having the wrong work location
+* Renamed study to practice and gave details to the activity description when taking a class so you can tell what class you're taking
+* Renamed the XM7 and XM250 to the M7 and M250
+* Added current task feedback to creature info page above weapon, clothes, etc.
+* Highlighted names in the dating and recruitment screens
+* Updating the readme with instructions on compiling the game
+* Added a check to prevent the 'Assign Task' option from appearing in review mode if the liberal is dead, in prison, or otherwise indisposed
 
 ## 1.4.5 - 5/26/2025
 * Fixed a bug where assigning a task from a character's individual page on the review screen would instead go to the previous character in the list if there was one
