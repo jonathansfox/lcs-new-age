@@ -285,6 +285,9 @@ Future<void> fullCreatureInfoScreen(Creature cr) async {
       cr.name = await enterName(24, 0, cr.name);
     } else if (c == Key.g) {
       List<Gender> genders = [Gender.male, Gender.female, Gender.nonbinary];
+      if (cr.cannotDetransition) {
+        genders.remove(cr.genderAssignedAtBirth);
+      }
       int index;
       if (genders.contains(cr.gender)) {
         index = genders.indexOf(cr.gender);
@@ -372,6 +375,12 @@ void printFullCreatureStats(Creature cr,
     addstr("Female");
   } else {
     addstr("Nonbinary");
+  }
+  addstr(", ");
+  if (cr.gender != cr.genderAssignedAtBirth) {
+    addstr("Transgender");
+  } else {
+    addstr("Cisgender");
   }
   addstr(")");
 

@@ -132,7 +132,6 @@ Future<void> squadMemberAttacks(
   if (attacked) {
     // Add juice, drama, size crime
     if (mistake) {
-      await alienationCheck(mistake);
       siteCrime += 10;
     } else {
       siteCrime += 3;
@@ -708,15 +707,27 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
         if (p.weakSpot) size *= 4;
         if (!p.critical) continue;
       }
+      if (aroll + bonus > droll + 20) {
+        if (!p.weakSpot) continue;
+      }
+      if (aroll + bonus > droll + 15) {
+        if (!p.critical) continue;
+      }
       if (aroll + bonus > droll + 10) {
         if (p.weakSpot) size *= 2;
         if (p.critical) size *= 2;
       } else if (aroll + bonus > droll + 5) {
-        if (p.critical) size *= 2;
+        if (p.critical && !p.weakSpot) size *= 2;
+      } else {
+        if (p.weakSpot) continue;
       }
       weights[p] = size;
     }
-    if (weights.isNotEmpty) return lcsRandomWeighted(weights);
+    if (weights.isNotEmpty) {
+      return lcsRandomWeighted(weights);
+    } else if (t.body.parts.isNotEmpty) {
+      return t.body.parts.random;
+    }
     return null;
   }
 

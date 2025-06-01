@@ -523,6 +523,9 @@ Future<void> reviewMode(ReviewMode mode) async {
               Gender.female,
               Gender.nonbinary
             ];
+            if (tempp.cannotDetransition) {
+              genders.remove(tempp.genderAssignedAtBirth);
+            }
             int index;
             if (genders.contains(tempp.gender)) {
               index = genders.indexOf(tempp.gender);

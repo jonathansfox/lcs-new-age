@@ -1,3 +1,21 @@
+## 1.4.6 - 6/1/2025
+* Made external plate no longer suspicious for security uniforms
+* Fixed a typo that caused dogs to not get martial arts skill
+* Gave Secret Service integrated soft armor
+* Made it so you can press W to select the currently under attack safehouse on the main screen
+* Made it so you can see when people you meet in the field are trans
+* Made it so you can see whether someone is trans on their full character sheet
+* Prevented detransitioning Liberals you recruit who were trans before they joined the LCS
+* Fixed a UI issue on the equipment bulk movement screen where three prompts were appearing all on the same part of the same line, covering each other up
+* Added the city to the sleeper warning about an imminent CCS attack
+* Made Liberal Judge sleepers use their writing and law skills to influence their effectiveness at spreading liberalism
+* Changed the logic around hit location to make the margin of accuracy on a successful hit more strongly influence the location hit
+* Removed some cases where you would "alienate everyone" even though that isn't really meaningful in New Age
+* Updated the feedback when you fail to convince a jury to give more indication of why you failed to convince them
+* Made jury tampering failure only produce Twelve Angry Jurors when you fail both of the component skill checks (you still get dinged on your criminal record if you fail one of them)
+* Updated the rescue code when grabbing people from prison so it is more aware of liberals whose injuries prevent them from walking
+* Fixed folks seduced from the recruitment screen sometimes having the wrong work location
+
 ## 1.4.5 - 5/26/2025
 * Fixed a bug where assigning a task from a character's individual page on the review screen would instead go to the previous character in the list if there was one
 

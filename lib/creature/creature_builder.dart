@@ -151,7 +151,9 @@ void _giveGender(Creature creature, CreatureType type) {
   if (creature.isLiberal) {
     if (creature.gender == Gender.nonbinary) {
       creature.genderAssignedAtBirth = [Gender.male, Gender.female].random;
+      creature.cannotDetransition = true;
     } else if (oneIn(20)) {
+      creature.cannotDetransition = true;
       if (creature.gender == Gender.male) {
         creature.genderAssignedAtBirth = Gender.female;
       } else {

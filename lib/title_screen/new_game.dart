@@ -8,6 +8,8 @@ import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/gamestate/squad.dart';
+import 'package:lcs_new_age/items/item.dart';
+import 'package:lcs_new_age/items/item_type.dart';
 import 'package:lcs_new_age/location/city.dart';
 import 'package:lcs_new_age/location/location_type.dart';
 import 'package:lcs_new_age/location/site.dart';
@@ -25,6 +27,7 @@ const bool debugSiege = false;
 const bool debugMartialArtsMaster = false;
 const bool debugEliteLiberalPublicOpinion = false;
 const bool debugPartyRescue = false;
+const bool debugAllItems = true;
 
 Future<void> setupNewGame() async {
   gameState = GameState();
@@ -295,6 +298,10 @@ Future<void> makeCharacter() async {
     founder.juice = 1000;
     founder.rawSkill[Skill.security] = founder.skillCap(Skill.security);
     founder.rawSkill[Skill.stealth] = founder.skillCap(Skill.stealth);
+  }
+
+  if (debugAllItems) {
+    founder.base?.loot.addAll(itemTypes.values.map((e) => Item(e.idName)));
   }
 
   await aNewConservativeEra();

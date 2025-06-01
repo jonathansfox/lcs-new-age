@@ -536,7 +536,7 @@ Future<void> partyrescue(TileSpecial special) async {
       .toList();
 
   for (Creature rescue in waitingForRescue.toList()) {
-    if (freeslots > 0 && (hostslots == 0 || oneIn(2))) {
+    if (freeslots > 0 && (hostslots == 0 || oneIn(2) && rescue.canWalk)) {
       rescue.squad = activeSquad;
       rescue.location = null;
       rescue.base = squad[0].base;
@@ -562,13 +562,20 @@ Future<void> partyrescue(TileSpecial special) async {
           printParty();
           await encounterMessage(
               "You've rescued ${rescue.name} from the Conservatives.");
-          await encounterMessage(
-              "${rescue.name} ${[
-                "was tortured recently",
-                "was beaten severely yesterday",
-                "was on a hunger strike"
-              ].random}",
-              line2: "so ${p.name} will have to haul a Liberal.");
+          if (rescue.canWalk) {
+            await encounterMessage(
+                "${rescue.name} ${[
+                  "was tortured recently",
+                  "was beaten severely yesterday",
+                  "was on a hunger strike"
+                ].random}",
+                line2:
+                    "so ${p.name} will have to haul ${rescue.gender.himHer}.");
+          } else {
+            await encounterMessage("${rescue.name} is unable to walk",
+                line2:
+                    "so ${p.name} will have to haul ${rescue.gender.himHer}.");
+          }
           waitingForRescue.remove(rescue);
           break;
         }

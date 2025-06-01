@@ -607,7 +607,7 @@ Future<bool> doYouComeHereOften(Creature a, Creature tk) async {
 
       tk.nameCreature();
 
-      tk.location = a.location;
+      tk.location = tk.workLocation;
       tk.base = a.base;
 
       newd.dates.add(tk);

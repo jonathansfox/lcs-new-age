@@ -132,6 +132,10 @@ Future<bool> baseMode() async {
             refresh();
             await Future.delayed(const Duration(milliseconds: 100));
           }
+        } else if (loc?.siege.underAttack != true) {
+          activeSafehouse =
+              pool.firstWhere((p) => p.site?.siege.underAttack == true).site;
+          activeSquad = null;
         }
       case Key.i:
         Site? safehouse = activeSafehouse;
@@ -379,7 +383,12 @@ void baseModeOptionsDisplay(Site? loc) {
   }
 
   if (cannotWait) {
-    mvaddstrc(23, 1, red, "Cannot Wait until Siege Resolved");
+    if (sieged) {
+      mvaddstrc(23, 1, red, "Cannot Wait until Siege Resolved");
+    } else {
+      addOptionText(23, 1, "w", "W - Select Siege Location",
+          baseColorKey: ColorKey.red);
+    }
   } else {
     if (sieged) {
       addOptionText(23, 1, "w", "W - Wait out the siege");
