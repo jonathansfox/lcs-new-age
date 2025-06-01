@@ -667,18 +667,14 @@ Future<void> _siteModeAux() async {
                 int x = 0, y = 12;
                 for (Creature t in encounter) {
                   int i = encounter.indexOf(t);
-                  if (t.isWillingToTalk) {
-                    setColor(white);
-                    move(y, x);
-                    addchar(letterAPlus(i));
-                    addstr(" ");
-                    addstrc(t.align.color, t.name);
-                    printCreatureAgeAndGender(t);
+                  move(y, x);
+                  String letter = letterAPlus(i);
+                  addInlineOptionText(
+                      letter, "$letter - ${t.name} ${creatureAgeAndGender(t)}",
+                      baseColorKey: ColorKey.fromColor(t.align.color),
+                      enabledWhen: t.alive && t.isWillingToTalk);
 
-                    y++;
-                  } else {
-                    y++;
-                  }
+                  y++;
                 }
 
                 int c = await getKey();

@@ -538,7 +538,7 @@ Future<void> printNews(LootType li, Iterable<Creature> publishers) async {
       addjuice(c, 20, 1000);
     }
   } else if (li.idName == "LOOT_CORPFILES") {
-    story = "The Liberal Guardian runs a story featuring Corporate files";
+    story = "The Liberal Guardian runs a story featuring Corporate files ";
     switch (lcsRandom(5)) {
       case 0:
         story += "describing a genetic monster created in a lab.";

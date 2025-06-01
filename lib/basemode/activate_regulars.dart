@@ -408,14 +408,13 @@ void _acquisitionDefault(Creature c) {
 
 void _educationSubmenu(Creature c) {
   _y = 10;
-  _subActivity(ActivityType.study, "1 - Study a Skill (Free)");
-  _subActivity(ActivityType.takeClass, "2 - Take Classes (\$30/day)");
+  _subActivity(ActivityType.study, "1 - Practice a Skill (Free)");
+  _subActivity(ActivityType.takeClass, "2 - Take Paid Classes (\$30/day)");
 }
 
 Future<void> _educationChoice(Creature c, int choice) async {
   if (choice == 1) {
-    await _selectSkillForEducation(
-        c, "study independently", ActivityType.study);
+    await _selectSkillForEducation(c, "practice", ActivityType.study);
   }
   if (choice == 2) {
     await _selectSkillForEducation(
@@ -745,7 +744,7 @@ void _activityFooter(Creature cr) {
     case ActivityType.takeClass:
       addstr(" take classes in ${cr.activity.skill?.displayName}.");
       mvaddstrc(
-          23, 3, midGray, "Quickly and safely gains experience for \$10/day.");
+          23, 3, midGray, "Quickly and safely gains experience for \$30/day.");
       mvaddstr(
           24, 3, "Classes have a maximum level and not all skills are taught.");
     case ActivityType.teachCovert:

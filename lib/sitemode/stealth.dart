@@ -99,11 +99,6 @@ Future<bool> alienationCheck(bool evenIfNoWitnesses) async {
 
     if (evenIfNoWitnesses) alienatebig = false;
 
-    if (alienatebig) siteAlienated = SiteAlienation.alienatedEveryone;
-    if (alienate && siteAlienated != SiteAlienation.alienatedEveryone) {
-      siteAlienated = SiteAlienation.alienatedModerates;
-    }
-
     if (oldSiteAlienation.index < siteAlienated.index) {
       clearMessageArea();
       setColor(yellow);

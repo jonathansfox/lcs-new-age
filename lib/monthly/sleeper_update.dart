@@ -70,6 +70,7 @@ void sleeperInfluence(Creature cr, Map<View, int> libpower) {
     case CreatureTypeIds.author:
     case CreatureTypeIds.journalist:
       power += cr.skill(Skill.writing) * 5;
+    case CreatureTypeIds.liberalJudge:
     case CreatureTypeIds.conservativeJudge:
       power += cr.skill(Skill.writing);
       power += cr.skill(Skill.law);

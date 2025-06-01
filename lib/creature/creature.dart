@@ -114,6 +114,8 @@ class Creature {
   int sentence = 0;
   bool deathPenalty = false;
   int confessions = 0;
+  @JsonKey(defaultValue: false)
+  bool cannotDetransition = false;
 
   Map<Attribute, int> rawAttributes = <Attribute, int>{
     for (Attribute a in Attribute.values) a: 10

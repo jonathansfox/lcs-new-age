@@ -739,7 +739,7 @@ Elements marked as hardcoded may have their values overridden by the game.
         <weapon>WEAPON_9MM_HANDGUN</weapon>
         <weapon>WEAPON_M4</weapon>
         <weapon>WEAPON_MP5</weapon>
-        <armor>CLOTHING_BLACKSUIT</armor>
+        <armor>CLOTHING_BLACKSUIT_AGENT</armor>
         <age>MATURE</age>
         <alignment>CONSERVATIVE</alignment>
         <attributes>
@@ -860,9 +860,9 @@ Elements marked as hardcoded may have their values overridden by the game.
             <strength>7-12</strength>
             <wisdom>1-6</wisdom>
         </attributes>
-        <skill>
+        <skills>
             <martialArts>2-3</martialArts>
-        </skill>
+        </skills>
         <seethroughstealth>  15</seethroughstealth>
         <seethroughdisguise>  7</seethroughdisguise>
         <animal>true</animal>

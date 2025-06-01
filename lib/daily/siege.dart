@@ -405,9 +405,11 @@ Future<void> siegeCheck() async {
               pool.firstWhereOrNull((p) => p.sleeperAgent && p.type.ccsMember);
           if (ccsSleeper != null) {
             erase();
-            mvaddstrc(8, 1, white,
-                "You have received warning from ${ccsSleeper.name} that the CCS ");
-            mvaddstr(9, 1, "is gearing up to attack ${l.getName()}.");
+            addparagraph(
+                8,
+                1,
+                "You have received warning from ${ccsSleeper.name} that the CCS "
+                "is gearing up to attack ${l.getName()} in ${l.city.name}.");
             await getKey();
           }
         } else if (l.siege.timeuntilccs > 0) {

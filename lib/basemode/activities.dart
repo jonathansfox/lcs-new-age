@@ -51,7 +51,9 @@ class Activity {
       case ActivityType.visit:
         return "Visiting ${location?.name ?? "a bug"}";
       case ActivityType.study:
-        return "Studying ${skill?.displayName ?? "a bug"}";
+        return "Practice ${skill?.displayName ?? "a bug"}";
+      case ActivityType.takeClass:
+        return "Learning ${skill?.displayName ?? "a bug"}";
       default:
         return type.label;
     }
@@ -84,7 +86,7 @@ enum ActivityType {
   teachLiberalArts("Teaching Liberal Arts", purple),
   teachFighting("Teaching Fighting", purple),
   teachCovert("Teaching Covert Ops", purple),
-  study("Studying", pink),
+  study("Practicing", pink),
   takeClass("Taking a Class", pink),
   clinic("Going to the Hospital", red),
   sleeperLiberal("Promoting Liberalism", lightGreen),

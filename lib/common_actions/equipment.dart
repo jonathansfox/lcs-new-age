@@ -431,17 +431,14 @@ Future<void> equipmentBaseAssign() async {
 
     mvaddstrc(22, 0, lightGray,
         "Press a Letter to assign a base.  Press a Number to select a base.");
-    move(23, 0);
+    mvaddstr(23, 0, "Shift and a Number will move ALL items!");
     if (sortbytype) {
-      addOptionText(24, 0, "T", "T - Sort by location.");
+      addOptionText(24, 0, "T", "T - Sort by location");
     } else {
-      addOptionText(24, 0, "T", "T - Sort by type.");
+      addOptionText(24, 0, "T", "T - Sort by type");
     }
-    mvaddstr(24, 0, "Shift and a Number will move ALL items!");
-
-    move(24, 0); // location for either viewing other base pages or loot pages
     if (items.length > 19) {
-      addstr(pageStr);
+      addPageButtons(y: 24, x: console.x + 5);
     }
 
     material.KeyEvent keyEvent = await getKeyEvent();

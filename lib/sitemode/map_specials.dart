@@ -492,7 +492,6 @@ Future<void> specialNuclearOnOff() async {
     juiceparty(15, 500);
   }
   siteAlarm = true;
-  await alienationCheck(true);
   levelMap[locx][locy][locz].special = TileSpecial.none;
   siteCrime += 5;
   addPotentialCrime(squad, Crime.terrorism);
@@ -621,33 +620,34 @@ Future<void> specialCourthouseJury() async {
     }
   }
 
-  if (maxp.skillCheck(Skill.persuasion, Difficulty.hard) &&
-      maxp.skillCheck(Skill.law, Difficulty.challenging)) {
+  bool successPersuasion = maxp.skillCheck(Skill.persuasion, Difficulty.hard);
+  bool successLaw = maxp.skillCheck(Skill.law, Difficulty.challenging);
+
+  if (successPersuasion && successLaw) {
     succeed = true;
   }
 
+  String crime = [
+    "murder",
+    "assault",
+    "theft",
+    "mugging",
+    "burglary",
+    "property destruction",
+    "vandalism",
+    "libel",
+    "slander",
+    "sodomy",
+    "obstruction of justice",
+    "breaking and entering",
+    "public indecency",
+    "arson",
+    "resisting arrest",
+    "tax evasion",
+    "adultery",
+    "homosexuality",
+  ].random;
   if (succeed) {
-    String crime = [
-      "murder",
-      "assault",
-      "theft",
-      "mugging",
-      "burglary",
-      "property destruction",
-      "vandalism",
-      "libel",
-      "slander",
-      "sodomy",
-      "obstruction of justice",
-      "breaking and entering",
-      "public indecency",
-      "arson",
-      "resisting arrest",
-      "tax evasion",
-      "adultery",
-      "homosexuality",
-    ].random;
-
     if (laws[Law.deathPenalty] == DeepAlignment.archConservative) {
       await encounterMessage(
           "${maxp.name} works the room like in Twelve Angry Men, and the jury ",
@@ -660,16 +660,24 @@ Future<void> specialCourthouseJury() async {
       addjuice(maxp, 25, 200);
     }
   } else {
-    await encounterMessage("${maxp.name} wasn't quite convincing...");
+    if (successPersuasion) {
+      await encounterMessage(
+          "${maxp.name} charms the jury into not calling the guards, but fails ",
+          line2: "to show why $crime should go unpunished.");
+    } else if (successLaw) {
+      await encounterMessage(
+          "${maxp.name} presents a complex lecture on the many nuances of ",
+          line2: "the law around $crime, but the jurors just fall asleep.");
+    } else {
+      await encounterMessage(
+          "${maxp.name} tries to work the room like in Twelve Angry Men, but ",
+          line2: "only manages to produce Twelve Angry Jurors.");
+      fillEncounter(CreatureTypeIds.juror, 12);
+      printEncounter();
+      siteAlarm = true;
+      siteCrime += 10;
+    }
 
-    fillEncounter(CreatureTypeIds.juror, 12);
-
-    printEncounter();
-    refresh();
-
-    siteAlarm = true;
-    siteAlienated = SiteAlienation.alienatedEveryone;
-    siteCrime += 10;
     addDramaToSiteStory(Drama.juryTampering);
     addPotentialCrime(squad, Crime.juryTampering);
   }

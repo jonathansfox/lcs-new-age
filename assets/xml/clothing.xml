@@ -696,6 +696,7 @@
     </interrogation>
     <professionalism>2</professionalism>
     <stealth_value>1</stealth_value>
+    <allow_visible_armor>true</allow_visible_armor>
     <!-- only allow explicit armor upgrades listed below -->
     <upgradable>false</upgradable>
     <armor_allowed>ARMOR_HIDDEN</armor_allowed>

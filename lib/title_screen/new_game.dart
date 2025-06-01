@@ -8,6 +8,8 @@ import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/gamestate/squad.dart';
+import 'package:lcs_new_age/items/item.dart';
+import 'package:lcs_new_age/items/item_type.dart';
 import 'package:lcs_new_age/location/city.dart';
 import 'package:lcs_new_age/location/location_type.dart';
 import 'package:lcs_new_age/location/site.dart';
@@ -24,6 +26,8 @@ const bool debugPresidentSleeper = false;
 const bool debugSiege = false;
 const bool debugMartialArtsMaster = false;
 const bool debugEliteLiberalPublicOpinion = false;
+const bool debugPartyRescue = false;
+const bool debugAllItems = true;
 
 Future<void> setupNewGame() async {
   gameState = GameState();
@@ -277,6 +281,27 @@ Future<void> makeCharacter() async {
     founder.juice = 1000;
     founder.rawSkill[Skill.martialArts] = founder.skillCap(Skill.martialArts);
     founder.rawSkill[Skill.dodge] = founder.skillCap(Skill.dodge);
+  }
+
+  if (debugPartyRescue) {
+    for (int i = 0; i < 20; i++) {
+      Creature c = Creature.fromId(CreatureTypeIds.collegeStudent);
+      liberalize(c);
+      c.nameCreature();
+      c.location =
+          findSiteInSameCity(founder.location?.city, SiteType.policeStation);
+      pool.add(c);
+    }
+
+    founder.rawAttributes[Attribute.agility] = 15;
+    founder.rawAttributes[Attribute.intelligence] = 15;
+    founder.juice = 1000;
+    founder.rawSkill[Skill.security] = founder.skillCap(Skill.security);
+    founder.rawSkill[Skill.stealth] = founder.skillCap(Skill.stealth);
+  }
+
+  if (debugAllItems) {
+    founder.base?.loot.addAll(itemTypes.values.map((e) => Item(e.idName)));
   }
 
   await aNewConservativeEra();

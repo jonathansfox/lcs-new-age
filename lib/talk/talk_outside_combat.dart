@@ -32,7 +32,7 @@ Future<bool> talkOutsideCombat(Creature a, Creature tk) async {
   addstrc(lightGray, " talks to ");
   addstrc(tk.align.color, tk.name);
   setColor(white);
-  printCreatureAgeAndGender(tk);
+  addstr(" ${creatureAgeAndGender(tk)}");
   addstr(":");
 
   // relationship/recruits status
@@ -596,7 +596,6 @@ Future<bool> talkToBankTeller(Creature a, Creature tk) async {
         await getKey();
 
         siteAlarm = true;
-        siteAlienated = SiteAlienation.alienatedEveryone;
         addPotentialCrime(squad, Crime.bankRobbery);
         addDramaToSiteStory(Drama.bankStickup);
         siteCrime += 50;
@@ -615,7 +614,6 @@ Future<bool> talkToBankTeller(Creature a, Creature tk) async {
         addDramaToSiteStory(Drama.bankStickup);
         siteCrime += 50;
         siteAlarm = true;
-        siteAlienated = SiteAlienation.alienatedEveryone;
 
         for (SiteTile t in levelMap.all) {
           t.locked = false;

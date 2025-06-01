@@ -212,23 +212,22 @@ void printWounds(Creature cr, {int y = 2, int x = 49}) {
   }
 }
 
-void printCreatureAgeAndGender(Creature person) {
-  {
-    String age;
-    if (person.body is! HumanoidBody) {
-      // Animals and machines; +-2
-      age = "${person.age + person.birthDate.day % 5 - 2}?";
-    } else if (person.age < 20) {
-      // Children and teens; +-1
-      age = "${person.age + person.birthDate.day % 3 - 1}?";
-    } else {
-      // Adults; just assess a decade
-      age = "${person.age - (person.age % 10)}s";
-    }
-
-    // Assess their gender Liberally
-    addstr(" ($age, ${capitalize(person.gender.name)})");
+String creatureAgeAndGender(Creature person) {
+  String age;
+  if (person.body is! HumanoidBody) {
+    // Animals and machines; +-2
+    age = "${person.age + person.birthDate.day % 5 - 2}?";
+  } else if (person.age < 20) {
+    // Children and teens; +-1
+    age = "${person.age + person.birthDate.day % 3 - 1}?";
+  } else {
+    // Adults; just assess a decade
+    age = "${person.age - (person.age % 10)}s";
   }
+
+  // Assess their gender Liberally
+  String trans = person.gender != person.genderAssignedAtBirth ? ", Trans" : "";
+  return "($age, ${capitalize(person.gender.name)}$trans)";
 }
 
 /* full character sheet with surrounding interface */
@@ -286,6 +285,9 @@ Future<void> fullCreatureInfoScreen(Creature cr) async {
       cr.name = await enterName(24, 0, cr.name);
     } else if (c == Key.g) {
       List<Gender> genders = [Gender.male, Gender.female, Gender.nonbinary];
+      if (cr.cannotDetransition) {
+        genders.remove(cr.genderAssignedAtBirth);
+      }
       int index;
       if (genders.contains(cr.gender)) {
         index = genders.indexOf(cr.gender);
@@ -373,6 +375,12 @@ void printFullCreatureStats(Creature cr,
     addstr("Female");
   } else {
     addstr("Nonbinary");
+  }
+  addstr(", ");
+  if (cr.gender != cr.genderAssignedAtBirth) {
+    addstr("Transgender");
+  } else {
+    addstr("Cisgender");
   }
   addstr(")");
 
