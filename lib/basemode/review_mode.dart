@@ -465,7 +465,9 @@ Future<void> reviewMode(ReviewMode mode) async {
               addOptionText(22, 26, "K", "K - Kill LCS Member");
             }
           }
-          addOptionText(22, 52, "A", "A - Assign a Task");
+          if (tempp.isActiveLiberal) {
+            addOptionText(22, 52, "A", "A - Assign a Task");
+          }
           addOptionText(23, 0, "N", "N - Change Name");
           if (tempp.isLiberal) {
             addOptionText(23, 26, "G", "G - Change Gender");

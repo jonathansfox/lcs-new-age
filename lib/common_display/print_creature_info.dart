@@ -475,16 +475,23 @@ void printFullCreatureStats(Creature cr,
     }
   }
 
+  // Add task
+  mvaddstrc(12, 0, lightGray, "Task: ");
+  setColor(cr.activity.color);
+  addparagraph(12, 6, cr.activity.description, y2: 14, x2: 26);
+  setColor(lightGray);
+  // addstrc(cr.activity.color, cr.activity.description);
+
   // Add weapon
-  mvaddstrc(13, 0, lightGray, "Weapon: ");
+  mvaddstrc(console.y, 0, lightGray, "Weapon: ");
   printWeapon(cr);
 
   // Add clothing
-  mvaddstrc(14, 0, lightGray, "Clothes: ");
+  mvaddstrc(console.y+1, 0, lightGray, "Clothes: ");
   cr.clothing.printEquipTitle(full: true, armor: false);
 
   // Add vehicle
-  mvaddstrc(15, 0, lightGray, "Car: ");
+  mvaddstrc(console.y+1, 0, lightGray, "Car: ");
   Vehicle? v;
   if (showCarPrefs == ShowCarPrefs.showPreferences) {
     v = cr.preferredCar;
@@ -513,23 +520,23 @@ void printFullCreatureStats(Creature cr,
 
   // Add recruit stats
   if (!cr.brainwashed) {
-    move(18, 0);
+    move(19, 0);
     addstr((cr.maxSubordinates - cr.subordinatesLeft).toString());
     addstr(" Recruits / ");
     addstr(cr.maxSubordinates.toString());
     addstr(" Max");
   } else {
-    move(18, 0);
+    move(19, 0);
     addstr("Enlightened Can't Recruit");
   }
   // Any meetings with potential recruits scheduled?
   if (cr.scheduledMeetings > 0) {
-    move(18, 55);
+    move(19, 55);
     addstr("Scheduled Meetings: ");
     addstr(cr.scheduledMeetings.toString());
   }
   // Add seduction stats
-  move(19, 0);
+  move(20, 0);
   int lovers = cr.relationships.length;
   int maxLovers = cr.maxRelationships;
   addstr("$lovers Lover");
@@ -537,7 +544,7 @@ void printFullCreatureStats(Creature cr,
   addstr(" / $maxLovers Max");
   // Any dates with potential love interests scheduled?
   if (cr.scheduldeDates > 0) {
-    move(19, 55);
+    move(20, 55);
     addstr("Scheduled Dates:    ");
     addstr(cr.scheduldeDates.toString());
   }

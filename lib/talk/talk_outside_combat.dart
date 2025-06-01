@@ -28,7 +28,8 @@ Future<bool> talkOutsideCombat(Creature a, Creature tk) async {
   bool nude = a.indecent;
   String whileNaked = nude ? " while naked" : "";
   clearSceneAreas();
-  mvaddstrc(9, 1, white, "${a.name} talks to ");
+  mvaddstrc(9, 1, white, a.name);
+  addstrc(lightGray, " talks to ");
   addstrc(tk.align.color, tk.name);
   setColor(white);
   addstr(" ${creatureAgeAndGender(tk)}");

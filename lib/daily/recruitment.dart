@@ -185,7 +185,9 @@ Future<bool> completeRecruitMeeting(RecruitmentSession r, Creature p) async {
         addstr(" kind of regrets agreeing to this.");
       }
   }
-  mvaddstr(11, 0, "How should ${p.name} approach the situation?");
+  mvaddstr(11, 0, "How should ");
+  addstrc(white, p.name);
+  addstrc(lightGray, " approach the situation?");
 
   addOptionText(13, 0, "A",
       "A - Spend \$50 on props and a${inPerson ? " " : "n e-"}book for them to keep.",
