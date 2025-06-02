@@ -16,6 +16,8 @@ import 'package:lcs_new_age/location/location_type.dart';
 import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/newspaper/news_story.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
+import 'package:lcs_new_age/saveload/game_storage.dart';
+import 'package:lcs_new_age/saveload/storage_factory.dart';
 import 'package:lcs_new_age/title_screen/launch_game.dart';
 import 'package:lcs_new_age/title_screen/title_screen.dart';
 import 'package:lcs_new_age/utils/colors.dart';
@@ -24,26 +26,73 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 part 'save_load.g.dart';
 
-Future<void> autoSaveGame() async {
-  //Stopwatch stopwatch = Stopwatch()..start();
+late GameStorage _storage;
+
+Future<void> initStorage() async {
+  _storage = StorageFactory.createStorage();
+  await _storage.init();
+
+  // Check if we've already migrated
   final prefs = await SharedPreferences.getInstance();
-  await prefs.setString("gameVersion${gameState.uniqueGameId}", gameVersion);
-  await prefs.setString(
-      "savedGame${gameState.uniqueGameId}", jsonEncode(gameState.toJson()));
-  await prefs.setString(
-      "lastPlayed${gameState.uniqueGameId}", DateTime.now().toIso8601String());
-  await prefs.setInt("lastGameId", gameState.uniqueGameId);
-  final List<String>? saveGameIds = prefs.getStringList("savedGameIds");
-  if (saveGameIds == null) {
-    await prefs
-        .setStringList("savedGameIds", [gameState.uniqueGameId.toString()]);
-  } else {
-    if (!saveGameIds.contains(gameState.uniqueGameId.toString())) {
-      saveGameIds.add(gameState.uniqueGameId.toString());
-    }
-    await prefs.setStringList("savedGameIds", saveGameIds);
+  final bool hasMigrated = prefs.getBool('has_migrated_to_indexeddb') ?? false;
+
+  if (!hasMigrated) {
+    await _migrateFromSharedPreferences();
+    // Mark migration as complete
+    await prefs.setBool('has_migrated_to_indexeddb', true);
   }
-  //debugPrint("Saved game in ${stopwatch.elapsedMilliseconds}ms");
+}
+
+Future<void> _migrateFromSharedPreferences() async {
+  final prefs = await SharedPreferences.getInstance();
+  final List<String>? saveGameIds = prefs.getStringList("savedGameIds");
+  if (saveGameIds == null) return;
+
+  bool migrationSuccessful = true;
+  for (final gameId in saveGameIds) {
+    final String? version = prefs.getString("gameVersion$gameId");
+    final String? savedGame = prefs.getString("savedGame$gameId");
+    final String? lastPlayed = prefs.getString("lastPlayed$gameId");
+
+    if (savedGame != null) {
+      final DateTime? lastPlayedDate =
+          lastPlayed != null ? DateTime.tryParse(lastPlayed) : null;
+      try {
+        final saveFile = SaveFile(
+          version: version ?? "ERROR",
+          saveData: jsonDecode(savedGame),
+          gameId: gameId,
+          lastPlayed: lastPlayedDate,
+        );
+        await _storage.saveGame(saveFile);
+      } catch (e) {
+        debugPrint('Error migrating save game $gameId: $e');
+        migrationSuccessful = false;
+      }
+    }
+  }
+
+  // Only delete from SharedPreferences if migration was successful
+  if (migrationSuccessful) {
+    // Delete all save-related keys
+    for (final gameId in saveGameIds) {
+      await prefs.remove("gameVersion$gameId");
+      await prefs.remove("savedGame$gameId");
+      await prefs.remove("lastPlayed$gameId");
+    }
+    // Delete the list of game IDs
+    await prefs.remove("savedGameIds");
+  }
+}
+
+Future<void> autoSaveGame() async {
+  final saveFile = SaveFile(
+    version: gameVersion,
+    saveData: gameState.toJson(),
+    gameId: gameState.uniqueGameId.toString(),
+    lastPlayed: DateTime.now(),
+  );
+  await _storage.saveGame(saveFile);
 }
 
 @JsonSerializable()
@@ -234,15 +283,7 @@ Future<void> deleteSave(SaveFile selectedSave) async {
 }
 
 Future<void> deleteSaveGameId(String gameId) async {
-  final prefs = await SharedPreferences.getInstance();
-  final List<String>? saveGameIds = prefs.getStringList("savedGameIds");
-  if (saveGameIds != null) {
-    saveGameIds.remove(gameId);
-    await prefs.setStringList("savedGameIds", saveGameIds);
-  }
-  await prefs.remove("gameVersion$gameId");
-  await prefs.remove("savedGame$gameId");
-  await prefs.remove("lastPlayed$gameId");
+  await _storage.deleteGame(gameId);
 }
 
 Future<void> backupSave(SaveFile selectedSave) async {
@@ -307,57 +348,32 @@ Future<SaveFile?> importSave() async {
 }
 
 Future<void> saveGameFile(SaveFile saveFile) async {
-  final prefs = await SharedPreferences.getInstance();
-  await prefs.setString("gameVersion${saveFile.gameId}", saveFile.version);
-  await prefs.setString(
-      "savedGame${saveFile.gameId}", jsonEncode(saveFile.saveData));
-  await prefs.setString(
-      "lastPlayed${saveFile.gameId}",
-      saveFile.lastPlayed?.toIso8601String() ??
-          DateTime.now().toIso8601String());
-  final List<String>? saveGameIds = prefs.getStringList("savedGameIds");
-  if (saveGameIds == null) {
-    await prefs.setStringList("savedGameIds", [saveFile.gameId]);
-  } else {
-    if (!saveGameIds.contains(saveFile.gameId)) {
-      saveGameIds.add(saveFile.gameId);
-    }
-    await prefs.setStringList("savedGameIds", saveGameIds);
-  }
+  await _storage.saveGame(saveFile);
 }
 
 Future<List<SaveFile>> loadGameList() async {
-  //Stopwatch stopwatch = Stopwatch()..start();
-  final prefs = await SharedPreferences.getInstance();
-  final List<String> savedGameIds = prefs.getStringList("savedGameIds") ?? [];
-  //debugPrint("Loaded game list in ${stopwatch.elapsedMilliseconds}ms");
+  final List<String> gameIds = await _storage.listGameIds();
   List<SaveFile> saveFiles = [];
-  for (int i = 0; i < savedGameIds.length; i++) {
-    final String? version = prefs.getString("gameVersion${savedGameIds[i]}");
-    final String? savedGame = prefs.getString("savedGame${savedGameIds[i]}");
-    final String? lastPlayed = prefs.getString("lastPlayed${savedGameIds[i]}");
-    final DateTime? lastPlayedDate =
-        lastPlayed != null ? DateTime.tryParse(lastPlayed) : null;
-    try {
-      final GameState? gameState =
-          savedGame != null ? GameState.fromJson(jsonDecode(savedGame)) : null;
-      saveFiles.add(SaveFile(
-        version: version ?? "ERROR",
-        saveData: jsonDecode(savedGame ?? ""),
-        lastPlayed: lastPlayedDate,
-        gameId: savedGameIds[i],
-        gameState: gameState,
-      ));
-    } catch (e) {
-      debugPrint("Error loading save game $i: $e");
-      saveFiles.add(SaveFile(
-        version: version ?? "ERROR",
-        saveData: jsonDecode(savedGame ?? ""),
-        gameId: savedGameIds[i],
-        lastPlayed: lastPlayedDate,
-      ));
+
+  for (final gameId in gameIds) {
+    final saveFile = await _storage.loadGame(gameId);
+    if (saveFile != null) {
+      try {
+        final GameState gameState = GameState.fromJson(saveFile.saveData);
+        saveFiles.add(SaveFile(
+          version: saveFile.version,
+          saveData: saveFile.saveData,
+          lastPlayed: saveFile.lastPlayed,
+          gameId: saveFile.gameId,
+          gameState: gameState,
+        ));
+      } catch (e) {
+        debugPrint('Error loading save game $gameId: $e');
+        saveFiles.add(saveFile);
+      }
     }
   }
+
   return saveFiles;
 }
 
