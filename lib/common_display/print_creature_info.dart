@@ -328,7 +328,7 @@ void printFullCreatureSkills(Creature cr) {
 }
 
 void printSkillValue(Creature cr, Skill skill, int y, int x,
-    {bool emphasizePotential = false}) {
+    {bool emphasizePotential = false, bool showCap = true}) {
   move(y, x);
   addstr("{:2d}.".format(cr.skill(skill)));
   int xpPercent =
@@ -346,17 +346,19 @@ void printSkillValue(Creature cr, Skill skill, int y, int x,
     addstr("99+");
   }
 
-  if (emphasizePotential) {
-    if (cr.skillCap(skill) > cr.skill(skill)) {
-      setColor(white);
+  if (showCap) {
+    if (emphasizePotential) {
+      if (cr.skillCap(skill) > cr.skill(skill)) {
+        setColor(white);
+      }
+    } else {
+      if (cr.skillCap(skill) == 0 || cr.skill(skill) < cr.skillCap(skill)) {
+        setColor(darkGray);
+      }
     }
-  } else {
-    if (cr.skillCap(skill) == 0 || cr.skill(skill) < cr.skillCap(skill)) {
-      setColor(darkGray);
-    }
+    move(y, x + 6);
+    addstr("{:2d}.00".format(cr.skillCap(skill)));
   }
-  move(y, x + 6);
-  addstr("{:2d}.00".format(cr.skillCap(skill)));
 }
 
 /* full screen character sheet */
@@ -487,11 +489,11 @@ void printFullCreatureStats(Creature cr,
   printWeapon(cr);
 
   // Add clothing
-  mvaddstrc(console.y+1, 0, lightGray, "Clothes: ");
+  mvaddstrc(console.y + 1, 0, lightGray, "Clothes: ");
   cr.clothing.printEquipTitle(full: true, armor: false);
 
   // Add vehicle
-  mvaddstrc(console.y+1, 0, lightGray, "Car: ");
+  mvaddstrc(console.y + 1, 0, lightGray, "Car: ");
   Vehicle? v;
   if (showCarPrefs == ShowCarPrefs.showPreferences) {
     v = cr.preferredCar;

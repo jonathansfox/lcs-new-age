@@ -619,21 +619,26 @@ Future<void> _siteModeAux() async {
             clearSceneAreas();
 
             mvaddstrc(9, 1, white, "Which Liberal will speak?");
-            mvaddstr(9, 50, "Issues");
-            mvaddstr(9, 60, "Dating");
-            mvaddstr(9, 70, "Bluff");
+            mvaddstr(9, 35, "Persuasion");
+            mvaddstr(10, 35, "(Recruits/Max)");
+            mvaddstr(9, 52, "Seduction");
+            mvaddstr(10, 52, "(Lovers/Max)");
+            mvaddstr(9, 67, "Disguise");
 
+            setColor(lightGray);
             int y = 11;
             for (Creature p in activeSquad!.livingMembers) {
               int i = squad.indexOf(p);
               if (p.alive) {
-                mvaddstr(y, 1, "${i + 1} - ${p.name}");
-                mvaddstr(y, 50,
-                    "${p.attribute(Attribute.charisma) ~/ 2 + p.skill(Skill.persuasion)}");
-                mvaddstr(y, 60,
-                    "${p.attribute(Attribute.heart) ~/ 2 + p.skill(Skill.seduction)}");
-                mvaddstr(y++, 70,
-                    "${p.attribute(Attribute.charisma) ~/ 2 + p.skill(Skill.disguise)}");
+                addOptionText(y, 1, "${i + 1}", "${i + 1} - ${p.name}");
+                printSkillValue(p, Skill.persuasion, y, 34, showCap: false);
+                addstr(
+                    " (${p.maxSubordinates - p.subordinatesLeft}/${p.maxSubordinates})");
+                printSkillValue(p, Skill.seduction, y, 51, showCap: false);
+                addstr(
+                    " (${p.maxRelationships - p.relationshipsLeft}/${p.maxRelationships})");
+                printSkillValue(p, Skill.disguise, y, 66, showCap: false);
+                y++;
               }
             }
 
