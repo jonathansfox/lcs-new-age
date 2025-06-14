@@ -1,4 +1,5 @@
 /* base - review and reorganize liberals */
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:collection/collection.dart';
@@ -771,15 +772,48 @@ Future<void> assembleSquad(Squad? cursquad) async {
       addstr(cursquad.name);
     }
 
-    addHeader({4: "CODE NAME", 25: "SKILL", 33: "HEALTH", 50: "PROFESSION"});
+    addHeader({
+      6: "CODE NAME",
+      27: "SKILL",
+      34: "HEALTH",
+      46: "PROFESSION",
+      63: "LOCATION"
+    });
 
     int y = 2;
     for (p = page * 19; p < temppool.length && p < page * 19 + 19; p++) {
       Creature tempp = temppool[p];
       String letter = letterAPlus(y - 2);
-      addOptionText(y, 0, letter, "$letter - ${tempp.name}",
-          enabledWhen: cursquad.members.isEmpty ||
-              cursquad.members[0].location == tempp.location);
+      bool isAtCurrentSquadLocation = cursquad.members.isEmpty ||
+          cursquad.members[0].location == tempp.location;
+      bool isCurrentSquadMember = tempp.squadId == cursquad.id;
+
+      if (isAtCurrentSquadLocation) {
+        // option is in squad location
+        if (isCurrentSquadMember) {
+          // option is in this squad
+          mvaddstrc(y, 0, lightBlue, "●");
+        } else if (tempp.squadId != null) {
+          // option is in a different squad in this location
+          mvaddstrc(y, 0, yellow, "●");
+        } else {
+          // option is in this location and not part of a team
+          //mvaddstrc(y, 0, white, "○");
+        }
+      } else {
+        if (tempp.squadId != null) {
+          // option is in a diffirent squad in a different location
+          mvaddstrc(y, 0, darkGray, "●");
+        } else {
+          // option is not in a squad but in a different location
+          //mvaddstrc(y, 0, darkGray, "○");
+        }
+      }
+
+      addOptionText(y, 2, letter,
+          "$letter - ${tempp.name.substring(0, min(tempp.name.length, 20))}",
+          enabledWhen: isAtCurrentSquadLocation,
+          baseColorKey: isCurrentSquadMember ? "C" : "m");
 
       bool bright = false;
       int skill = 0;
@@ -791,21 +825,18 @@ Future<void> assembleSquad(Squad? cursquad) async {
         }
       }
 
-      mvaddstrc(y, 25, bright ? white : lightGray, skill.toString());
+      mvaddstrc(y, 27, bright ? white : lightGray, skill.toString());
 
-      printHealthStat(y, 33, tempp);
+      printHealthStat(y, 34, tempp);
 
-      if (tempp.squadId == cursquad.id) {
-        mvaddstrc(y, 75, lightGreen, "SQUAD");
-      } else if (tempp.squadId != null) {
-        mvaddstrc(y, 75, yellow, "SQUAD");
-      } else if (cursquad.members.isNotEmpty) {
-        if (cursquad.members[0].location != tempp.location) {
-          mvaddstrc(y, 75, darkGray, "AWAY");
-        }
-      }
+      mvaddstrc(y, 46, tempp.align.color, tempp.type.name);
+      mvaddstrc(
+          y,
+          63,
+          isAtCurrentSquadLocation ? lightGray : darkGray,
+          tempp.location?.getName(short: true, includeCity: true) ??
+              "In Hiding");
 
-      mvaddstrc(y, 50, tempp.align.color, tempp.type.name);
       y++;
     }
 
@@ -881,12 +912,19 @@ Future<void> assembleSquad(Squad? cursquad) async {
           //Create a temporary squad from which to view this character - even if they already have a squad.
           Squad? oldactiveSquad = activeSquad;
           Squad? oldSquad = tempp.squad;
+          if (tempp.squadId == cursquad.id) {
+            oldSquad = cursquad;
+            oldSquad.members.remove(tempp);
+          }
           //create a temp squad containing just this liberal
-          activeSquad = Squad()..name = "Temporary Squad";
+          Squad tempSquad = Squad()..name = "Temporary Squad";
+          squads.add(tempSquad);
+          activeSquad = tempSquad;
           tempp.squad = activeSquad;
           await fullCreatureInfoScreen(tempp);
           tempp.squad = oldSquad;
           activeSquad = oldactiveSquad;
+          squads.remove(tempSquad);
         }
       }
     }
