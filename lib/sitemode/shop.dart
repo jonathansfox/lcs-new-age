@@ -350,17 +350,19 @@ class Shop extends ShopOption {
     List<ShopOption> availableOptions =
         options.where((o) => o.display()).toList();
     bool fullscreen = false;
+    /*
     if (availableOptions.length > 5) {
       fullscreen = true;
       erase();
     }
+    */
     await pagedInterface(
       headerPrompt: "What will ${buyer.name} buy?",
       headerKey: {4: "NAME", 20: "AMMO TYPE", 47: "DAMAGE", 59: "PRICE"},
       footerPrompt: "Press a Letter to buy a Sufficiently Liberal Weapon",
       count: availableOptions.length * 2,
-      topY: fullscreen ? 0 : 9,
-      pageSize: fullscreen ? 20 : 10,
+      topY: fullscreen ? 0 : 9, // ignore: dead_code
+      pageSize: fullscreen ? 20 : 12, // ignore: dead_code
       linesPerOption: 2,
       lineBuilder: (y, key, index) {
         int i = index ~/ 2;
@@ -372,8 +374,8 @@ class Shop extends ShopOption {
           move(y, 4);
           addstr(weapon.description ?? "");
         } else {
-          String letter = letterAPlus((y - 2) ~/ 2);
-          addOptionText(y, 0, letter, "$letter - ${weapon.name}",
+          setColor(lightGray);
+          addOptionText(y, 0, key, "$key - ${weapon.name}",
               enabledWhen: availableOptions[i].isAvailable());
           move(y, 20);
           AmmoType? ammo = weapon.acceptableAmmo.firstOrNull;
@@ -402,6 +404,7 @@ class Shop extends ShopOption {
         if (index < availableOptions.length &&
             availableOptions[index].isAvailable()) {
           await availableOptions[index].choose(customers, buyer!, false);
+          // ignore: dead_code
           if (fullscreen) {
             return true;
           } else {

@@ -1687,6 +1687,7 @@ Future<void> _siteModeAux() async {
                   encounter.isNotEmpty) {
                 // Show an encounter warning based on whether the squad moved or not and the size of the encounter
                 clearMessageArea();
+                printEncounter();
 
                 String message;
                 if (squadmoved) {

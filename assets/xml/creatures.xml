@@ -376,6 +376,7 @@ Elements marked as hardcoded may have their values overridden by the game.
         <weapon>CIVILIAN</weapon>
         <armor>CLOTHING_CLOTHES</armor>
         <age>MATURE</age>
+        <gender>FEMALE BIAS</gender>
         <attributes>
             <intelligence>2-10</intelligence>
         </attributes>
@@ -418,6 +419,7 @@ Elements marked as hardcoded may have their values overridden by the game.
         <type_name>Bank Teller</type_name>
         <armor>CLOTHING_CLOTHES</armor>
         <age>MATURE</age>
+        <gender>FEMALE BIAS</gender>
         <alignment>MODERATE</alignment>
     </creaturetype>
     <creaturetype idname="CREATURE_BANK_MANAGER">
@@ -425,6 +427,7 @@ Elements marked as hardcoded may have their values overridden by the game.
         <weapon>WEAPON_NONE</weapon>
         <armor>CLOTHING_CLOTHES</armor>
         <age>MATURE</age>
+        <gender>MALE BIAS</gender>
         <alignment>CONSERVATIVE</alignment>
         <attributes>
             <intelligence>4-10</intelligence>
@@ -1128,6 +1131,7 @@ Elements marked as hardcoded may have their values overridden by the game.
         <weapon>CIVILIAN</weapon>
         <armor>CLOTHING_APRON</armor>
         <age>YOUNGADULT</age>
+        <gender>FEMALE BIAS</gender>
         <money>20-50</money>
         <talkreceptive>1</talkreceptive>
         <alignment>LIBERAL</alignment>
@@ -1469,6 +1473,7 @@ Elements marked as hardcoded may have their values overridden by the game.
         <type_name>Art Critic</type_name>
         <weapon>CIVILIAN</weapon>
         <armor>CLOTHING_CHEAPSUIT</armor>
+        <gender>MALE BIAS</gender>
         <age>MATURE</age>
         <money>100-230</money>
         <skills>
@@ -1482,6 +1487,7 @@ Elements marked as hardcoded may have their values overridden by the game.
         <type_name>Music Critic</type_name>
         <weapon>CIVILIAN</weapon>
         <armor>CLOTHING_CHEAPSUIT</armor>
+        <gender>MALE BIAS</gender>
         <age>MATURE</age>
         <money>100-230</money>
         <skills>
@@ -1604,7 +1610,6 @@ Elements marked as hardcoded may have their values overridden by the game.
         <armor>CLOTHING_BLACKCLOTHES</armor>
         <armor>CLOTHING_BOHO</armor>
         <age>MATURE</age>
-        <gender>FEMALE BIAS</gender>
         <skills>
             <art>2-3</art>
         </skills>
@@ -1936,7 +1941,6 @@ Elements marked as hardcoded may have their values overridden by the game.
             <heart>6-10</heart>
             <intelligence>6-10</intelligence>
         </attributes>
-        <gender>MALE BIAS</gender>
         <skills>
             <psychology>4-7</psychology>
         </skills>

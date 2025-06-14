@@ -90,19 +90,18 @@ void printCars(int page) {
     bool anotherSquad = pool
         .where((p) => !(activeSquad?.members.contains(p) ?? false))
         .any((p) => p.preferredCarId == vehiclePool[l].id);
+    String colorKey = ColorKey.lightGray;
     if (thisSquad && anotherSquad) {
-      setColor(red);
+      colorKey = ColorKey.red;
     } else if (anotherSquad) {
-      setColor(yellow);
+      colorKey = ColorKey.yellow;
     } else if (thisSquad) {
-      setColor(lightGreen);
-    } else {
-      setColor(lightGray);
+      colorKey = ColorKey.lightGreen;
     }
 
-    String key =
-        String.fromCharCode('A'.codePoint + (l - (page * carsPerPage)));
-    addOptionText(y, x, key, "$key - ${vehiclePool[l].fullName()}");
+    String key = letterAPlus(l - (page * carsPerPage));
+    addOptionText(y, x, key, "$key - ${vehiclePool[l].fullName()}",
+        baseColorKey: colorKey);
     x += 26;
     if (x > 53) {
       x = 1;

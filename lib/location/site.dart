@@ -421,26 +421,32 @@ void initSiteName(Site loc) {
       loc.name = "${lastName()} Garment Makers";
       loc.shortName = "Sweatshop";
     case SiteType.drugHouse:
-      do {
-        String name = lastName();
-        loc.name = "$name St. ";
-        if (laws[Law.drugs] == DeepAlignment.eliteLiberal) {
-          switch (lcsRandom(4)) {
-            case 0:
-              loc.name += "Recreational Drugs Center";
-              loc.shortName = "Drug Shop";
-            case 1:
-              loc.name += "Cannabis Lounge";
-              loc.shortName = "Pot Lounge";
-            case 2:
-              loc.name += "Marijuana Dispensary";
-              loc.shortName = "Dispensary";
+      if (loc.controller == SiteController.lcs) {
+        String name = loc.name.split(" ").first;
+        loc.name = "$name St. Safehouse";
+        loc.shortName = "Safehouse";
+      } else {
+        do {
+          String name = lastName();
+          loc.name = "$name St. ";
+          if (laws[Law.drugs] == DeepAlignment.eliteLiberal) {
+            switch (lcsRandom(4)) {
+              case 0:
+                loc.name += "Recreational Drugs Center";
+                loc.shortName = "Drug Shop";
+              case 1:
+                loc.name += "Cannabis Lounge";
+                loc.shortName = "Pot Lounge";
+              case 2:
+                loc.name += "Marijuana Dispensary";
+                loc.shortName = "Dispensary";
+            }
+          } else {
+            loc.name += "Drug House";
+            loc.shortName = "Drug House";
           }
-        } else {
-          loc.name += "Drug House";
-          loc.shortName = "Drug House";
-        }
-      } while (loc.isDuplicateLocation());
+        } while (loc.isDuplicateLocation());
+      }
     case SiteType.juiceBar:
       const adj = ["Natural", "Harmonious", "Restful", "Healthy", "New You"];
       const noun = ["Diet", "Methods", "Plan", "Orange", "Carrot"];
@@ -464,6 +470,22 @@ void initSiteName(Site loc) {
     case SiteType.publicPark:
       loc.name = "${lastName()} Park";
       loc.shortName = "Park";
+    case SiteType.barAndGrill:
+      if (loc.controller == SiteController.lcs) {
+        loc.name = "Vegan Eagle Bar & Grill";
+        loc.shortName = "Vegan Bar";
+      } else {
+        loc.name = "Desert Eagle Bar & Grill";
+        loc.shortName = "Deagle Bar";
+      }
+    case SiteType.bunker:
+      if (loc.controller == SiteController.lcs) {
+        loc.name = "Martin Luther King Bunker";
+        loc.shortName = "MLK Bunker";
+      } else {
+        loc.name = "Robert E. Lee Bunker";
+        loc.shortName = "Bunker";
+      }
     default:
       break;
   }

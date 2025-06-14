@@ -8,24 +8,28 @@ import 'package:lcs_new_age/utils/lcsrandom.dart';
 
 Future<int> traumatize(Creature lead, String action, int y) async {
   if (lcsRandom(lead.attribute(Attribute.heart)) > lcsRandom(3)) {
-    mvaddstrc(y++, 0, lightGreen,
-        "${lead.name} feels sick to ${lead.gender.hisHer} stomach afterward and ");
+    setColor(lightGreen);
+    addparagraph(
+        y++,
+        0,
+        "${lead.name} loses Heart and ${[
+          "throws up in a trash can",
+          "gets drunk, eventually falling asleep",
+          "curls up in a ball, crying softly",
+          "shoots up and collapses in a heap on the floor",
+          "has a panic attack",
+          "asks \"Are we the baddies?\"",
+          "doesn't want to talk to anyone",
+          "can't sleep for days",
+          "is haunted by the memory of the $action",
+          "has nightmares afterwards"
+        ].random}.");
     lead.heartDamage += 1;
     move(y++, 0);
-    addstr([
-      "throws up in a trash can.",
-      "gets drunk, eventually falling asleep.",
-      "curls up in a ball, crying softly.",
-      "shoots up and collapses in a heap on the floor.",
-      "has a panic attack.",
-      "doesn't want to talk to anyone.",
-      "can't sleep for days.",
-      "is haunted by the memory of the $action.",
-      "has nightmares afterwards."
-    ].random);
     lead.activity = Activity.none();
   } else if (oneIn(3) && lead.attribute(Attribute.wisdom) < 10) {
-    mvaddstrc(y++, 0, lightBlue, "${lead.name} grows colder.");
+    setColor(lightBlue);
+    addparagraph(y++, 0, "${lead.name} gains Wisdom and grows colder.");
     lead.adjustAttribute(Attribute.wisdom, 1);
   } else if (oneIn(3) &&
       lead.attribute(Attribute.wisdom) > lead.attribute(Attribute.heart)) {

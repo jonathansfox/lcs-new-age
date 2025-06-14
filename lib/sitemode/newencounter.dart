@@ -33,6 +33,8 @@ void prepareEncounter(SiteType type, bool sec,
   if (!addToExisting) encounter.clear();
 
   Map<String, int> weights = {};
+  bool lcs = activeSite?.controller == SiteController.lcs;
+  bool ccs = activeSite?.controller == SiteController.ccs && ccsActive;
 
   if (postAlarmTimer > 80) {
     switch (type) {
@@ -99,28 +101,33 @@ void prepareEncounter(SiteType type, bool sec,
     int encnum = num ?? 6;
     switch (type) {
       case SiteType.drugHouse:
-        weights.addAll({
-          CreatureTypeIds.teenager: 100,
-          CreatureTypeIds.musician: 1,
-          CreatureTypeIds.mathematician: 1,
-          CreatureTypeIds.highschoolDropout: 30,
-          CreatureTypeIds.bum: 200,
-          if (mutantsPossible) CreatureTypeIds.mutant: 2,
-          if (mutantsCommon) CreatureTypeIds.mutant: 50,
-          CreatureTypeIds.gangMember: 200,
-          CreatureTypeIds.crackhead: 200,
-          CreatureTypeIds.sexWorker: 200,
-          CreatureTypeIds.punk: 5,
-          CreatureTypeIds.biker: 5,
-          CreatureTypeIds.painter: 1,
-          CreatureTypeIds.sculptor: 1,
-          CreatureTypeIds.thief: 3,
-          CreatureTypeIds.actor: 1,
-          CreatureTypeIds.journalist: 2,
-          if (ccsState.index < CCSStrength.defeated.index &&
-              ccsState.index > CCSStrength.inHiding.index)
-            CreatureTypeIds.ccsVigilante: 50,
-        });
+        if (!lcs) {
+          weights.addAll({
+            CreatureTypeIds.gangMember: 200,
+            CreatureTypeIds.sexWorker: 200,
+            if (ccsState.index < CCSStrength.defeated.index &&
+                ccsState.index > CCSStrength.inHiding.index &&
+                activeSite?.city.sites
+                        .any((s) => s.controller == SiteController.ccs) ==
+                    true)
+              CreatureTypeIds.ccsVigilante: 50,
+            CreatureTypeIds.crackhead: 200,
+            if (mutantsPossible) CreatureTypeIds.mutant: 2,
+            if (mutantsCommon) CreatureTypeIds.mutant: 50,
+            CreatureTypeIds.punk: 10,
+            CreatureTypeIds.biker: 10,
+            CreatureTypeIds.painter: 1,
+            CreatureTypeIds.sculptor: 1,
+            CreatureTypeIds.musician: 1,
+            CreatureTypeIds.mathematician: 1,
+            CreatureTypeIds.thief: 3,
+            CreatureTypeIds.actor: 1,
+            CreatureTypeIds.journalist: 2,
+            CreatureTypeIds.highschoolDropout: 30,
+            CreatureTypeIds.teenager: 50,
+            CreatureTypeIds.bum: 100,
+          });
+        }
       case SiteType.juiceBar:
         weights.addAll({
           CreatureTypeIds.teenager: 10,
@@ -174,17 +181,42 @@ void prepareEncounter(SiteType type, bool sec,
         } else {
           weights.add(CreatureTypeIds.bouncer, 10);
         }
+        if (!lcs) {
+          weights.addAll({
+            CreatureTypeIds.eminentScientist: 1,
+            CreatureTypeIds.corporateManager: 30,
+            CreatureTypeIds.cop: 5,
+            if (deathSquadsActive) CreatureTypeIds.deathSquad: 2,
+            if (gangUnitsActive) CreatureTypeIds.gangUnit: 2,
+            CreatureTypeIds.conservativeJudge: 1,
+            CreatureTypeIds.radioPersonality: 1,
+            CreatureTypeIds.newsAnchor: 1,
+            CreatureTypeIds.televangelist: 1,
+            CreatureTypeIds.neoNazi: 10,
+            CreatureTypeIds.naziPunk: 1,
+            CreatureTypeIds.firefighter: 1,
+          });
+        } else {
+          weights.addAll({
+            CreatureTypeIds.punk: 5,
+            CreatureTypeIds.goth: 5,
+            CreatureTypeIds.emo: 5,
+            CreatureTypeIds.hippie: 5,
+            CreatureTypeIds.collegeStudent: 5,
+          });
+        }
+        if (ccs) {
+          weights.addAll({
+            CreatureTypeIds.ccsVigilante: 50,
+            if (sec) CreatureTypeIds.guardDog: 25,
+          });
+        }
+        if (!lcs && !ccs) {
+          weights.addAll({
+            if (sec) CreatureTypeIds.bouncer: 15,
+          });
+        }
         weights.addAll({
-          if (sec) CreatureTypeIds.guardDog: 25,
-          CreatureTypeIds.eminentScientist: 1,
-          CreatureTypeIds.corporateManager: 30,
-          CreatureTypeIds.cop: 5,
-          if (deathSquadsActive) CreatureTypeIds.deathSquad: 2,
-          if (gangUnitsActive) CreatureTypeIds.gangUnit: 2,
-          CreatureTypeIds.conservativeJudge: 1,
-          CreatureTypeIds.radioPersonality: 1,
-          CreatureTypeIds.newsAnchor: 1,
-          CreatureTypeIds.televangelist: 1,
           CreatureTypeIds.lawyer: 15,
           CreatureTypeIds.doctor: 10,
           CreatureTypeIds.psychologist: 1,
@@ -206,12 +238,8 @@ void prepareEncounter(SiteType type, bool sec,
           CreatureTypeIds.thief: 1,
           CreatureTypeIds.actor: 1,
           CreatureTypeIds.athlete: 1,
-          CreatureTypeIds.firefighter: 1,
           CreatureTypeIds.locksmith: 1,
-          CreatureTypeIds.neoNazi: 10,
-          CreatureTypeIds.naziPunk: 1,
-          if (ccsActive && activeSite?.controller != SiteController.lcs)
-            CreatureTypeIds.ccsVigilante: 50,
+          CreatureTypeIds.sexWorker: 2,
         });
       case SiteType.whiteHouse:
         weights.addAll({
@@ -294,7 +322,7 @@ void prepareEncounter(SiteType type, bool sec,
           CreatureTypeIds.chef: 1,
           CreatureTypeIds.constructionWorker: 3,
           CreatureTypeIds.amateurMagician: 1,
-          CreatureTypeIds.merc: 1,
+          CreatureTypeIds.angryRuralMob: 1,
           CreatureTypeIds.soldier: 1,
           CreatureTypeIds.veteran: 3,
           if (nineteenEightyFour) CreatureTypeIds.educator: 1,
@@ -959,34 +987,38 @@ void prepareEncounter(SiteType type, bool sec,
         });
       case SiteType.homelessEncampment:
       default:
-        weights.addAll({
-          CreatureTypeIds.janitor: 5,
-          CreatureTypeIds.teenager: 20,
-          CreatureTypeIds.musician: 3,
-          CreatureTypeIds.mathematician: 1,
-          CreatureTypeIds.bum: 200,
-          if (mutantsPossible) CreatureTypeIds.mutant: 2,
-          if (mutantsCommon) CreatureTypeIds.mutant: 50,
-          CreatureTypeIds.gangMember: 5,
-          CreatureTypeIds.crackhead: 50,
-          CreatureTypeIds.sexWorker: 10,
-          CreatureTypeIds.amateurMagician: 1,
-          CreatureTypeIds.hippie: 1,
-          CreatureTypeIds.punk: 1,
-          CreatureTypeIds.goth: 1,
-          CreatureTypeIds.emo: 1,
-          CreatureTypeIds.nurse: 5,
-          CreatureTypeIds.biker: 1,
-          CreatureTypeIds.painter: 1,
-          CreatureTypeIds.sculptor: 1,
-          CreatureTypeIds.dancer: 1,
-          CreatureTypeIds.photographer: 1,
-          CreatureTypeIds.thief: 5,
-          CreatureTypeIds.actor: 1,
-        });
+        if (!lcs) {
+          weights.addAll({
+            CreatureTypeIds.janitor: 5,
+            CreatureTypeIds.teenager: 20,
+            CreatureTypeIds.musician: 3,
+            CreatureTypeIds.mathematician: 1,
+            CreatureTypeIds.bum: 200,
+            if (mutantsPossible) CreatureTypeIds.mutant: 2,
+            if (mutantsCommon) CreatureTypeIds.mutant: 50,
+            CreatureTypeIds.gangMember: 5,
+            CreatureTypeIds.crackhead: 50,
+            CreatureTypeIds.sexWorker: 10,
+            CreatureTypeIds.amateurMagician: 1,
+            CreatureTypeIds.hippie: 1,
+            CreatureTypeIds.punk: 1,
+            CreatureTypeIds.goth: 1,
+            CreatureTypeIds.emo: 1,
+            CreatureTypeIds.nurse: 5,
+            CreatureTypeIds.biker: 1,
+            CreatureTypeIds.painter: 1,
+            CreatureTypeIds.sculptor: 1,
+            CreatureTypeIds.dancer: 1,
+            CreatureTypeIds.photographer: 1,
+            CreatureTypeIds.thief: 5,
+            CreatureTypeIds.actor: 1,
+          });
+        }
     }
-    for (int n = 0; n < lcsRandom(encnum - 1) + 1; n++) {
-      encounter.add(Creature.fromId(lcsRandomWeighted(weights)));
+    if (weights.isNotEmpty) {
+      for (int n = 0; n < lcsRandom(encnum - 1) + 1; n++) {
+        encounter.add(Creature.fromId(lcsRandomWeighted(weights)));
+      }
     }
   }
 }

@@ -1639,7 +1639,7 @@ Future<void> specialOvalOffice() async {
             line2: "\"You got brass fucking balls, I'll give you that.\"");
       } else {
         await encounterMessage("${uniqueCreatures.president.name} smirks,",
-            line2: "\"You're a cute girl, I'll give you that.\"");
+            line2: "\"You're a brave fucking girl, I'll give you that.\"");
       }
       siteAlarm = true;
 

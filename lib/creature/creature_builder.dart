@@ -111,6 +111,13 @@ void _giveGender(Creature creature, CreatureType type) {
     DeepAlignment.liberal => oneIn(2),
     DeepAlignment.eliteLiberal => false,
   };
+  bool canBeTrans = switch (laws[Law.lgbtRights]!) {
+    DeepAlignment.archConservative => false,
+    DeepAlignment.conservative => oneIn(20),
+    DeepAlignment.moderate => oneIn(5),
+    DeepAlignment.liberal => oneIn(2),
+    DeepAlignment.eliteLiberal => true,
+  };
   int nbChance = switch (laws[Law.lgbtRights]!) {
     DeepAlignment.archConservative => 20,
     DeepAlignment.conservative => 20,
@@ -119,7 +126,7 @@ void _giveGender(Creature creature, CreatureType type) {
     DeepAlignment.eliteLiberal => 8,
   };
   Gender any() {
-    if (creature.isLiberal && oneIn(nbChance)) {
+    if ((creature.isLiberal || canBeTrans) && oneIn(nbChance)) {
       return Gender.nonbinary;
     } else {
       return [Gender.male, Gender.female].random;
@@ -148,7 +155,7 @@ void _giveGender(Creature creature, CreatureType type) {
   // Gender assigned at birth to match gender expression
   creature.genderAssignedAtBirth = creature.gender;
   // ...UNLESS
-  if (creature.isLiberal) {
+  if (creature.isLiberal || canBeTrans) {
     if (creature.gender == Gender.nonbinary) {
       creature.genderAssignedAtBirth = [Gender.male, Gender.female].random;
       creature.cannotDetransition = true;

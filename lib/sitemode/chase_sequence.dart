@@ -1060,7 +1060,9 @@ void makeChasers(SiteType? sitetype, int sitecrime) {
   if (ccsState.index < CCSStrength.defeated.index &&
       ccsState.index >= CCSStrength.attacks.index &&
       oneIn(2) &&
-      sitetype != null) {
+      sitetype != null &&
+      activeSite?.city.sites.any((s) => s.controller == SiteController.ccs) ==
+          true) {
     cartype = "PICKUP";
     pnum = lcsRandom(sitecrime ~/ 5 + 1) + 1;
     if (pnum > 12) pnum = 12;

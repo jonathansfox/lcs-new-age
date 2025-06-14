@@ -382,9 +382,7 @@ void printFullCreatureStats(Creature cr,
   } else {
     addstr("Cisgender");
   }
-  addstr(")");
-
-  move(3, 46);
+  addstr(") ");
   printWantedFor(cr);
   setColor(lightGray);
 
@@ -487,11 +485,11 @@ void printFullCreatureStats(Creature cr,
   printWeapon(cr);
 
   // Add clothing
-  mvaddstrc(console.y+1, 0, lightGray, "Clothes: ");
+  mvaddstrc(console.y + 1, 0, lightGray, "Clothes: ");
   cr.clothing.printEquipTitle(full: true, armor: false);
 
   // Add vehicle
-  mvaddstrc(console.y+1, 0, lightGray, "Car: ");
+  mvaddstrc(console.y + 1, 0, lightGray, "Car: ");
   Vehicle? v;
   if (showCarPrefs == ShowCarPrefs.showPreferences) {
     v = cr.preferredCar;
@@ -705,7 +703,7 @@ void printWantedFor(Creature cr) {
   } else if (wanted[Crime.harboring] == true) {
     addstr(laws[Law.immigration]! < DeepAlignment.liberal
         ? "HIRING ILLEGAL ALIENS"
-        : "HIRING UNDOCUMENTED WORKERS");
+        : "HIRING UNDOCUMENTED");
   } else if (wanted[Crime.cyberTerrorism] == true) {
     addstr("CYBER TERRORISM");
   } else if (wanted[Crime.dataTheft] == true) {

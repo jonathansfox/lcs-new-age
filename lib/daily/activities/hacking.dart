@@ -25,7 +25,7 @@ Future<void> doActivityHacking(List<Creature> hack) async {
 
   void loot(String type) => hack[0].site!.loot.add(Loot(type));
 
-  if (Difficulty.formidable > hackTeamSkill) return;
+  if (Difficulty.hard > hackTeamSkill) return;
 
   View issue = View.issues.random;
   Crime crime;

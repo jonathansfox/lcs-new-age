@@ -618,7 +618,8 @@ Future<void> pagedInterface({
     setColor(lightGray);
     mvaddstrx(pageSize + 2 + topY, 0, footerPrompt);
     for (int i = 0; i + page * pageSize < count && i < pageSize; i++) {
-      lineBuilder(i + 2 + topY, letterAPlus(i), i + page * pageSize);
+      lineBuilder(
+          i + 2 + topY, letterAPlus(i ~/ linesPerOption), i + page * pageSize);
     }
     setColor(lightGray);
     eraseLine(pageSize + 3 + topY);

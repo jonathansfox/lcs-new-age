@@ -13,9 +13,22 @@ import 'package:lcs_new_age/sitemode/fight.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 
 NewsStory ccsStrikesStory() {
+  // Only pick sites from cities where CCS has presence
+  List<Site> validSites = sites
+      .where((s) =>
+          s.controller == SiteController.unaligned &&
+          s.city.sites.any((cs) => cs.controller == SiteController.ccs))
+      .toList();
+
+  if (validSites.isEmpty) {
+    // Fallback to any unaligned site if no CCS cities found
+    validSites =
+        sites.where((s) => s.controller == SiteController.unaligned).toList();
+  }
+
   return NewsStory.prepare(
       oneIn(10) ? NewsStories.ccsKilledInSiteAction : NewsStories.ccsSiteAction)
-    ..loc = sites.where((s) => s.controller == SiteController.unaligned).random;
+    ..loc = validSites.isNotEmpty ? validSites.random : null;
 }
 
 Future<void> advanceCCSDefeatStoryline() async {
