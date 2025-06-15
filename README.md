@@ -26,7 +26,7 @@ Liberal Crime Squad: New Age is always looking for Liberal Freedom Fighters to c
 > Note: LCS:NA does not fully support hot reload. All the gameplay is handled by a thread that is designed to be written the same way LCS code has always been written, with curses-style calls to print text to the console and flush the console and blocking calls to get input and so on. Meanwhile, the actual UI state is only an emulated console widget that has no knowledge of what is happening in the game.
 
 6) Create a release build
-    -  For website buillds (change or remove --base-href to suit your hosting choices)  
+    -  For website builds (change or remove --base-href to suit your hosting choices)  
 `flutter build web --source-maps --base-href /lcs-new-age`  
     -  For a windows build  
     `flutter build windows` 

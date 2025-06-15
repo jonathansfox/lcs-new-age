@@ -1,3 +1,25 @@
+## 1.4.8 - 6/14/2025
+* Secretaries, Bank Tellers, and Baristas are now more likely to be female at conservative gender equality laws
+* Bank Managers, Art Critics, and Music Critics are now more likely to be male at conservative gender equality laws
+* Photographers and Psychologists are now equally likely to be male or female at all gender equality laws (photographer was female biased and psychologist was male biased)
+* Fixed color highlighting on the vehicle assignment screen
+* Adjusted the position of "WANTED FOR" text on the character sheet so it doesn't overlap text to its left
+* Conservatives and moderates will now have a chance of being trans depending on LGBTQ laws.
+* The last name "Putin" has been moved to the name list reserved for CEOs and Arch-Conservative politicians.
+* Made it slightly easier to do easier hacking tasks so that it can actually happen when you don't roll high enough for a major hack.
+* Made trauma text about losing Heart and gaining Wisdom explicitly say they are losing Heart or gaining Wisdom.
+* Made the CCS only show up in the news for attacking sites in cities where they have an active safehouse.
+* Made CCS members only show up in public in cities where they have an active safehouse.
+* Made the CCS only tail the LCS after site actions in cities where they have an active safehouse.
+* Renamed several safehouses when the LCS captures them
+* Adjusted the encounter list of several safehouses when the LCS has control over them, including making it so you can't encounter people randomly in some places, and ensuring the Bar & Grill is no longer permitted to remain a Nazi bar once the LCS has control of it
+* Slightly changed the language used by the President to greet an LCS member who is assigned female at birth when the President is Conservative and formerly a hostage of the LCS
+* Made all weapon shops use the half-screen interface instead of the full-screen interface, which allows buying multiple items without going out and in, and gives more immediate feedback about items getting equipped by the active buyer, at the expense of having multiple pages of inventory for most weapon shops
+* Made the encounter show at the same time as the encounter warning instead of after it, if you have encounter warnings enabled
+* Revised squad selection interface and fixed V to view more about a Liberal not working on the squad selection screen
+* Updated the old "Issues/Dating/Bluff" UI for selecting a speaker to now show Persuasion/Seduction/Disguise as well as recruit caps
+* Added information about relationship/recruits status below the options when talking to someone in the field
+
 ## 1.4.7 - 6/1/2025
 * Disabled debug option that was giving one of every item in the game on new game
 
