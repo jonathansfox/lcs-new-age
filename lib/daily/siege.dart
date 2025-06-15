@@ -1664,6 +1664,7 @@ Future<void> conquerTextCCS() async {
     for (Site s in sites) {
       if (s.controller == SiteController.ccs) {
         s.controller = SiteController.lcs;
+        initSiteName(s);
       }
     }
   }

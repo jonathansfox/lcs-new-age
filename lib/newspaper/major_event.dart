@@ -1466,7 +1466,7 @@ MajorEventContent generateMajorEventContent(
                 "spokesperson said.  \"We've been exploring the use of "
                 "luxury interrogation suites that achieve several major "
                 "benchmarks.  Focus groups agree that the new method looks "
-                "much more human than the old ones, and the results are "
+                "much more humane than the old ones, and the results are "
                 "nothing short of miraculous.  We had one guy confess "
                 "to everything we wanted him to confess, he even admitted "
                 "plotting to $insidiousPlot!  Good thing we stopped that "

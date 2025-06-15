@@ -472,7 +472,7 @@ void initSiteName(Site loc) {
       loc.shortName = "Park";
     case SiteType.barAndGrill:
       if (loc.controller == SiteController.lcs) {
-        loc.name = "Vegan Eagle Bar & Grill";
+        loc.name = "Vegan Bar & Grill";
         loc.shortName = "Vegan Bar";
       } else {
         loc.name = "Desert Eagle Bar & Grill";
@@ -480,8 +480,8 @@ void initSiteName(Site loc) {
       }
     case SiteType.bunker:
       if (loc.controller == SiteController.lcs) {
-        loc.name = "Martin Luther King Bunker";
-        loc.shortName = "MLK Bunker";
+        loc.name = "Liberation Bunker";
+        loc.shortName = "Bunker";
       } else {
         loc.name = "Robert E. Lee Bunker";
         loc.shortName = "Bunker";

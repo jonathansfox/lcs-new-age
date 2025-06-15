@@ -1158,6 +1158,7 @@ Future<void> _siteModeAux() async {
           activeSite!.controller = SiteController.lcs;
           activeSite!.closed = 0;
           activeSite!.heat = 100;
+          initSiteName(activeSite!);
 
           // CCS Safehouse killed?
           if (activeSite!.type == SiteType.bombShelter ||
@@ -1786,6 +1787,7 @@ Future<void> _resolveSite() async {
           activeSite!.type == SiteType.drugHouse) {
         // Capture safehouse for the glory of the LCS!
         activeSite!.controller = SiteController.lcs;
+        initSiteName(activeSite!);
         activeSite!.closed = 0;
         activeSite!.heat = siteCrime;
       } else {

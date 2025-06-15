@@ -258,6 +258,7 @@ Future<ChaseOutcome> carChaseSequence() async {
       printChaseEncounter();
       while (await getKey() != Key.c) {}
       if (!await checkForDefeat()) {
+        animation.stop();
         mode = GameMode.base;
         return ChaseOutcome.death;
       }

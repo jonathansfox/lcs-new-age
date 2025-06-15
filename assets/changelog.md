@@ -1,4 +1,8 @@
-## 1.4.8 - 6/14/2025
+## 1.4.9 - 6/15/2025
+* Renamed several safehouses when the LCS captures them
+* Adjusted the text for one of the news stories to refer to torture cells that are "more humane" instead of "more human"
+
+## 1.4.8 - 6/15/2025
 * Secretaries, Bank Tellers, and Baristas are now more likely to be female at conservative gender equality laws
 * Bank Managers, Art Critics, and Music Critics are now more likely to be male at conservative gender equality laws
 * Photographers and Psychologists are now equally likely to be male or female at all gender equality laws (photographer was female biased and psychologist was male biased)
@@ -11,7 +15,6 @@
 * Made the CCS only show up in the news for attacking sites in cities where they have an active safehouse.
 * Made CCS members only show up in public in cities where they have an active safehouse.
 * Made the CCS only tail the LCS after site actions in cities where they have an active safehouse.
-* Renamed several safehouses when the LCS captures them
 * Adjusted the encounter list of several safehouses when the LCS has control over them, including making it so you can't encounter people randomly in some places, and ensuring the Bar & Grill is no longer permitted to remain a Nazi bar once the LCS has control of it
 * Slightly changed the language used by the President to greet an LCS member who is assigned female at birth when the President is Conservative and formerly a hostage of the LCS
 * Made all weapon shops use the half-screen interface instead of the full-screen interface, which allows buying multiple items without going out and in, and gives more immediate feedback about items getting equipped by the active buyer, at the expense of having multiple pages of inventory for most weapon shops
