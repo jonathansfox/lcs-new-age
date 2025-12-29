@@ -14,5 +14,5 @@ exec dart run dart_pre_commit
     await Process.run('chmod', ['+x', hookFile.path]);
   }
 
-  print('Git pre-commit hook installed at ${hookFile.path}');
+  stdout.writeln('Git pre-commit hook installed at ${hookFile.path}');
 }

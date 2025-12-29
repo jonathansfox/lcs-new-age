@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lcs_new_age/main.dart' as app;
 import 'package:lcs_new_age/i18n/i18n.dart';
+import 'package:lcs_new_age/main.dart' as app;
 
 void main() {
   group('Smoke Tests', () {
