@@ -1,6 +1,0 @@
-hooks:
-  format: true
-  analyze: true
-  test: true
-  flutter_compat: false
-  outdated: false

@@ -48,3 +48,11 @@ flutter:
    - family: SourceCodePro
      fonts:
       - asset: fonts/SourceCodePro-Regular.ttf
+
+dart_pre_commit:
+  format: true
+  analyze: true
+  test: true
+  flutter_compat: false
+  outdated: false
+  pull-up-dependencies: false
