@@ -1,0 +1,69 @@
+{
+  "@@locale": "en",
+  "@@context": "Liberal Crime Squad: New Age - English translations",
+  "": {
+    "@@metadata": {
+      "description": "English source translations for LCS New Age",
+      "version": "1.0.0",
+      "generated": "2025-12-28"
+    }
+  },
+  "Press any key to continue.": {
+    "@description": "Common prompt to continue",
+    "@type": "text"
+  },
+  "Loading...": {
+    "@description": "Loading indicator",
+    "@type": "text"
+  },
+  "Exit (Q)": {
+    "@description": "Exit menu option",
+    "@type": "text"
+  },
+  "You hit the {0}!": {
+    "@description": "Combat message when player hits target",
+    "@type": "text",
+    "placeholders": {
+      "0": {
+        "type": "String",
+        "description": "Target name"
+      }
+    }
+  },
+  "You have {0} items.": {
+    "@description": "Inventory count message",
+    "@type": "text",
+    "placeholders": {
+      "0": {
+        "type": "int",
+        "description": "Number of items"
+      }
+    }
+  },
+  "@@plural": {
+    "you_have_items": {
+      "zero": "You have no items.",
+      "one": "You have one item.",
+      "other": "You have {count} items.",
+      "@description": "Inventory count with proper pluralization",
+      "placeholders": {
+        "count": {
+          "type": "int",
+          "description": "Number of items"
+        }
+      }
+    }
+  },
+  "Game Over": {
+    "@description": "Game over screen title",
+    "@type": "text"
+  },
+  "Welcome to Liberal Crime Squad!": {
+    "@description": "Welcome message",
+    "@type": "text"
+  },
+  "The Conservatives have taken control.": {
+    "@description": "Game setup description",
+    "@type": "text"
+  }
+}

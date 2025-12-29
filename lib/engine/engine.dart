@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:lcs_new_age/common_display/common_display.dart';
 import 'package:lcs_new_age/engine/changelog.dart';
 import 'package:lcs_new_age/engine/console.dart';
+import 'package:lcs_new_age/i18n/i18n.dart';
 import 'package:lcs_new_age/utils/colors.dart';
 import 'package:lcs_new_age/utils/interface_options.dart';
 
@@ -15,7 +16,11 @@ void setColor(Color foreground, {Color background = black}) =>
 void addchar(String c) => console.addchar(c);
 void mvaddchar(int y, int x, String c) => console.mvaddchar(y, x, c);
 
-void addstr(String s) => console.addstr(s);
+void addstr(String s) {
+  final translated = LcsI18n.translate(s);
+  console.addstr(translated);
+}
+
 void addstrc(Color fg, String s, {Color? bg}) {
   setColor(fg, background: bg ?? black);
   addstr(s);
@@ -106,16 +111,23 @@ void addInlineOptionText(
   afterKey = text.substring(keyIndex + key.length);
   if (enabledWhen) {
     addstrx(
-        "&$baseColorKey$beforeKey&$highlightColorKey$key&$baseColorKey$afterKey",
-        mouseClickKey: mouseClickKey);
+      "&$baseColorKey$beforeKey&$highlightColorKey$key&$baseColorKey$afterKey",
+      mouseClickKey: mouseClickKey,
+    );
   } else {
     addstrx("&$disabledColorKey$text");
   }
 }
 
 void registerFullScreenMouseRegion(String key) {
-  console.registerMouseRegion(0, 0, CONSOLE_WIDTH, CONSOLE_HEIGHT, key,
-      noHighlight: true);
+  console.registerMouseRegion(
+    0,
+    0,
+    CONSOLE_WIDTH,
+    CONSOLE_HEIGHT,
+    key,
+    noHighlight: true,
+  );
 }
 
 void registerMouseRegion(int y, int x, int width, int height, String key) {
@@ -133,11 +145,14 @@ void addOptionText(
   String disabledColorKey = "K",
 }) {
   move(y, x);
-  addInlineOptionText(key, text,
-      enabledWhen: enabledWhen,
-      baseColorKey: baseColorKey,
-      highlightColorKey: highlightColorKey,
-      disabledColorKey: disabledColorKey);
+  addInlineOptionText(
+    key,
+    text,
+    enabledWhen: enabledWhen,
+    baseColorKey: baseColorKey,
+    highlightColorKey: highlightColorKey,
+    disabledColorKey: disabledColorKey,
+  );
 }
 
 void addCenteredOptionText(
@@ -151,14 +166,20 @@ void addCenteredOptionText(
 }) {
   int x = centerString(text);
   move(y, x);
-  addInlineOptionText(key, text,
-      enabledWhen: enabledWhen,
-      baseColorKey: baseColorKey,
-      highlightColorKey: highlightColorKey,
-      disabledColorKey: disabledColorKey);
+  addInlineOptionText(
+    key,
+    text,
+    enabledWhen: enabledWhen,
+    baseColorKey: baseColorKey,
+    highlightColorKey: highlightColorKey,
+    disabledColorKey: disabledColorKey,
+  );
 }
 
-void mvaddstr(int y, int x, String s) => console.mvaddstr(y, x, s);
+void mvaddstr(int y, int x, String s) {
+  final translated = LcsI18n.translate(s);
+  console.mvaddstr(y, x, translated);
+}
 
 /// Adds a string at the specified y coordinate, aligned to the right with an optional right margin
 /// [y] The y coordinate (row)
@@ -174,13 +195,31 @@ void mvaddstrc(int y, int x, Color fg, String s, {Color? bg}) {
   mvaddstr(y, x, s);
 }
 
-void addstrx(String s, {bool restoreOldColor = true, String? mouseClickKey}) =>
-    console.addstrx(s,
-        restoreOldColor: restoreOldColor, mouseClickKey: mouseClickKey);
-void mvaddstrx(int y, int x, String s,
-        {bool restoreOldColor = true, String? mouseClickKey}) =>
-    console.mvaddstrx(y, x, s,
-        restoreOldColor: restoreOldColor, mouseClickKey: mouseClickKey);
+void addstrx(String s, {bool restoreOldColor = true, String? mouseClickKey}) {
+  final translated = LcsI18n.translate(s);
+  console.addstrx(
+    translated,
+    restoreOldColor: restoreOldColor,
+    mouseClickKey: mouseClickKey,
+  );
+}
+
+void mvaddstrx(
+  int y,
+  int x,
+  String s, {
+  bool restoreOldColor = true,
+  String? mouseClickKey,
+}) {
+  final translated = LcsI18n.translate(s);
+  console.mvaddstrx(
+    y,
+    x,
+    translated,
+    restoreOldColor: restoreOldColor,
+    mouseClickKey: mouseClickKey,
+  );
+}
 
 void mvaddstrCenter(int y, String s, {int x = 39}) =>
     mvaddstr(y, centerString(s, x: x), s);
@@ -197,15 +236,16 @@ void eraseArea({
   int startX = 0,
   int endY = CONSOLE_HEIGHT,
   int endX = CONSOLE_WIDTH,
-}) =>
-    console.eraseArea(startY: startY, startX: startX, endY: endY, endX: endX);
+}) => console.eraseArea(startY: startY, startX: startX, endY: endY, endX: endX);
 void eraseLine(int y) => console.eraseLine(y);
 int centerString(String s, {int x = 39}) => (x - s.length / 2).round();
 void moveCenterString(int y, String s) => move(y, centerString(s));
 Future<void> pressAnyKey() => getKey();
-void setColorConditional(bool active,
-        {Color ifTrue = lightGray, Color ifFalse = darkGray}) =>
-    setColor(active ? ifTrue : ifFalse);
+void setColorConditional(
+  bool active, {
+  Color ifTrue = lightGray,
+  Color ifFalse = darkGray,
+}) => setColor(active ? ifTrue : ifFalse);
 
 Future<void> pause(int milliseconds) async {
   refresh();
@@ -310,8 +350,12 @@ Future<String> mvgetstr(int y, int x, {String? starting}) async {
   }
 }
 
-Future<String> enterName(int y, int x, String fallback,
-    {bool prefill = false}) async {
+Future<String> enterName(
+  int y,
+  int x,
+  String fallback, {
+  bool prefill = false,
+}) async {
   String s = await mvgetstr(y, x, starting: prefill ? fallback : null);
   if (s.isEmpty) return fallback;
   return s;

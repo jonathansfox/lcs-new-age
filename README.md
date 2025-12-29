@@ -30,3 +30,15 @@ Liberal Crime Squad: New Age is always looking for Liberal Freedom Fighters to c
 `flutter build web --source-maps --base-href /lcs-new-age`  
     -  For a windows build  
     `flutter build windows`
+
+## Testing
+
+Run tests with `flutter test`.
+
+### Pre-commit Hooks
+
+Install pre-commit hooks to run tests automatically:
+
+```bash
+dart run tool/setup_git_hooks.dart
+```
