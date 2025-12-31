@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:lcs_new_age/engine/engine.dart';
+import 'package:lcs_new_age/i18n/i18n.dart';
 import 'package:lcs_new_age/saveload/load_cpc_images.dart';
 import 'package:lcs_new_age/saveload/load_xml_data.dart';
 import 'package:lcs_new_age/title_screen/stack_trace/convert_stack_trace.dart';
@@ -13,6 +14,8 @@ class EndGameException implements Exception {
 }
 
 Future<void> launchGame() async {
+  // Initialize i18n system before loading game data
+  await LcsI18n.initialize();
   await loadXmlData();
   await loadCpcGraphics();
   await gameOptions.load();
