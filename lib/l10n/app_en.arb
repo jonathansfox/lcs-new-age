@@ -1,69 +1,124 @@
 {
   "@@locale": "en",
-  "@@context": "Liberal Crime Squad: New Age - English translations",
-  "": {
-    "@@metadata": {
-      "description": "English source translations for LCS New Age",
-      "version": "1.0.0",
-      "generated": "2025-12-28"
-    }
+  
+  "Press any key to continue.": "Press any key to continue.",
+  "@Press any key to continue.": {
+    "description": "Prompt to continue"
   },
-  "Press any key to continue.": {
-    "@description": "Common prompt to continue",
-    "@type": "text"
-  },
-  "Loading...": {
-    "@description": "Loading indicator",
-    "@type": "text"
-  },
-  "Exit (Q)": {
-    "@description": "Exit menu option",
-    "@type": "text"
-  },
-  "You hit the {0}!": {
-    "@description": "Combat message when player hits target",
-    "@type": "text",
+  
+  "Loading...": "Loading...",
+  "Exit (Q)": "Exit (Q)",
+  "Game Over": "Game Over",
+  "Welcome to Liberal Crime Squad!": "Welcome to Liberal Crime Squad!",
+  "The Conservatives have taken control.": "The Conservatives have taken control.",
+  
+  "{name}'s corpse has been recovered.": "{name}'s corpse has been recovered.",
+  "@{name}'s corpse has been recovered.": {
+    "description": "Death notification",
     "placeholders": {
-      "0": {
+      "name": {
         "type": "String",
-        "description": "Target name"
+        "example": "John"
       }
     }
   },
-  "You have {0} items.": {
-    "@description": "Inventory count message",
-    "@type": "text",
+  
+  "{name} has been rescued.": "{name} has been rescued.",
+  "@{name} has been rescued.": {
     "placeholders": {
-      "0": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  
+  "You hit the {target}!": "You hit the {target}!",
+  "@You hit the {target}!": {
+    "placeholders": {
+      "target": {
+        "type": "String",
+        "example": "Conservative"
+      }
+    }
+  },
+  
+  "The police confiscate everything": "The police confiscate everything",
+  "The soldiers confiscate everything": "The soldiers confiscate everything",
+  ", including vehicles": ", including vehicles",
+  "The compound fortifications are dismantled.": "The compound fortifications are dismantled.",
+  "Materials relating to the business front have been taken.": "Materials relating to the business front have been taken.",
+  "The booby traps are disarmed and removed.": "The booby traps are disarmed and removed.",
+  "The anti-aircraft gun is dismantled.": "The anti-aircraft gun is dismantled.",
+
+  "{squad} acting with their squad to visit a {location} will not "
+  "be able to do anything else that day.": "{squad} acting with their squad to visit a {location} will not be able to do anything else that day.",
+  "{squad} asks around for a {name}...": "{squad} asks around for a {name}...",
+
+  "{p.name}'s corpse has been recovered.": "{p.name}'s corpse has been recovered.",
+  "{p.name} has been rescued.": "{p.name} has been rescued.",
+
+  "{cr.name} asks around for a {name}...": "{cr.name} asks around for a {name}...",
+  "{cr.name} managed to set up a meeting with ": "{cr.name} managed to set up a meeting with ",
+  "{cr.name} was able to get information on multiple people.": "{cr.name} was able to get information on multiple people.",
+
+  "{count} other LCS members escape in the riot!": "{count} other LCS members escape in the riot!",
+  "{count} other LCS members escape in the riot!": {
+    "placeholders": {
+      "count": {
         "type": "int",
-        "description": "Number of items"
+        "example": "5"
       }
     }
   },
-  "@@plural": {
-    "you_have_items": {
-      "zero": "You have no items.",
-      "one": "You have one item.",
-      "other": "You have {count} items.",
-      "@description": "Inventory count with proper pluralization",
-      "placeholders": {
-        "count": {
-          "type": "int",
-          "description": "Number of items"
-        }
+
+  "You have {count} items.": "You have {count} items.",
+  "You have {count} items.": {
+    "placeholders": {
+      "count": {
+        "type": "int"
       }
     }
   },
-  "Game Over": {
-    "@description": "Game over screen title",
-    "@type": "text"
+
+  "Washington, DC": "Washington, DC",
+  "New York, NY": "New York, NY",
+  "Eugene, OR": "Eugene, OR",
+  "San Francisco, CA": "San Francisco, CA",
+  "Atlanta, GA": "Atlanta, GA",
+  "Cambridge, MA": "Cambridge, MA",
+  "Ithaca, NY": "Ithaca, NY",
+
+  "An M1 Abrams Tank is stopped by a tank traps.": "An M1 Abrams Tank is stopped by a tank traps.",
+
+  "{p.name}'s corpse has been recovered.": "{p.name}'s corpse has been recovered.",
+  "@{p.name}'s corpse has been recovered.": {
+    "placeholders": {
+      "p.name": {
+        "type": "String"
+      }
+    }
   },
-  "Welcome to Liberal Crime Squad!": {
-    "@description": "Welcome message",
-    "@type": "text"
+
+  "{p.name} has been rescued.": "{p.name} has been rescued.",
+  "@{p.name} has been rescued.": {
+    "placeholders": {
+      "p.name": {
+        "type": "String"
+      }
+    }
   },
-  "The Conservatives have taken control.": {
-    "@description": "Game setup description",
-    "@type": "text"
-  }
-}
+
+  "The police confiscate everything": "The police confiscate everything",
+  "The soldiers confiscate everything": "The soldiers confiscate everything",
+  ", including vehicles": ", including vehicles",
+  "The compound fortifications are dismantled.": "The compound fortifications are dismantled.",
+  "Materials relating to the business front have been taken.": "Materials relating to the business front have been taken.",
+  "The booby traps are disarmed and removed.": "The booby traps are disarmed and removed.",
+  "The anti-aircraft gun is dismantled.": "The anti-aircraft gun is dismantled."
+  
+  "{name}'s corpse has been recovered.": "{name}'s corpse has been recovered.",
+  "{name} has been rescued.": "{name} has been rescued.",
+  "The police confiscate everything": "The police confiscate everything",
+  "The soldiers confiscate everything": "The soldiers confiscate everything",
+  ", including vehicles": ", including vehicles",
+  "The compound fortifications are dismantled.": "The compound fortifications are dismantled."

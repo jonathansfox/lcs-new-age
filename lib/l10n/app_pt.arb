@@ -1,0 +1,35 @@
+{
+  "@@locale": "pt",
+  
+  "Press any key to continue.": "Pressione qualquer tecla para continuar.",
+  "Loading...": "Carregando...",
+  "Exit (Q)": "Sair (Q)",
+  "Game Over": "Fim de Jogo",
+  "Welcome to Liberal Crime Squad!": "Bem-vindo ao Esquadrão Liberal do Crime!",
+  "The Conservatives have taken control.": "Os Conservadores assumiram o controle.",
+  
+  "{name}'s corpse has been recovered.": "O cadáver de {name} foi recuperado.",
+  "{name} has been rescued.": "{name} foi resgatado.",
+  "You hit the {target}!": "Você acertou o {target}!",
+  
+  "The police confiscate everything": "A polícia confisca tudo",
+  "The soldiers confiscate everything": "Os soldados confiscam tudo",
+  ", including vehicles": ", incluindo veículos",
+  "The compound fortifications are dismantled.": "As fortificações do complexo foram desmontadas.",
+  "Materials relating to the business front have been taken.": "Materiais relacionados à fachada empresarial foram apreendidos.",
+  "The booby traps are disarmed and removed.": "As armadilhas foram desarmadas e removidas.",
+  "The anti-aircraft gun is dismantled.": "O canhão antiaéreo foi desmontado.",
+  
+  "@@plurals": {
+    "members_escape": {
+      "zero": "",
+      "one": "Outro membro preso do LCS também escapa!",
+      "other": "{count} outros membros do LCS escapam no motim!"
+    },
+    "inventory_items": {
+      "zero": "Você não tem itens.",
+      "one": "Você tem um item.",
+      "other": "Você tem {count} itens."
+    }
+  }
+}

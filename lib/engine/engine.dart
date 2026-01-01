@@ -16,9 +16,22 @@ void setColor(Color foreground, {Color background = black}) =>
 void addchar(String c) => console.addchar(c);
 void mvaddchar(int y, int x, String c) => console.mvaddchar(y, x, c);
 
-void addstr(String s) {
-  final translated = LcsI18n.translate(s);
-  console.addstr(translated);
+void addstr(String s, {Map<String, dynamic>? params}) {
+  String finalString = s;
+  if (params != null) {
+    // Handle plurals if count is provided with a context
+    final count = params['count'];
+    final pluralContext = params['context'] as String?;
+    if (count is int && pluralContext != null) {
+      finalString = LcsI18n.plural(count, context: pluralContext);
+    } else {
+      // Handle regular formatting
+      finalString = LcsI18n.format(s, params);
+    }
+  } else {
+    finalString = LcsI18n.translate(s);
+  }
+  console.addstr(finalString);
 }
 
 void addstrc(Color fg, String s, {Color? bg}) {
@@ -176,9 +189,20 @@ void addCenteredOptionText(
   );
 }
 
-void mvaddstr(int y, int x, String s) {
-  final translated = LcsI18n.translate(s);
-  console.mvaddstr(y, x, translated);
+void mvaddstr(int y, int x, String s, {Map<String, dynamic>? params}) {
+  String finalString = s;
+  if (params != null) {
+    final count = params['count'];
+    final pluralContext = params['context'] as String?;
+    if (count is int && pluralContext != null) {
+      finalString = LcsI18n.plural(count, context: pluralContext);
+    } else {
+      finalString = LcsI18n.format(s, params);
+    }
+  } else {
+    finalString = LcsI18n.translate(s);
+  }
+  console.mvaddstr(y, x, finalString);
 }
 
 /// Adds a string at the specified y coordinate, aligned to the right with an optional right margin
@@ -195,10 +219,26 @@ void mvaddstrc(int y, int x, Color fg, String s, {Color? bg}) {
   mvaddstr(y, x, s);
 }
 
-void addstrx(String s, {bool restoreOldColor = true, String? mouseClickKey}) {
-  final translated = LcsI18n.translate(s);
+void addstrx(
+  String s, {
+  bool restoreOldColor = true,
+  String? mouseClickKey,
+  Map<String, dynamic>? params,
+}) {
+  String finalString = s;
+  if (params != null) {
+    final count = params['count'];
+    final pluralContext = params['context'] as String?;
+    if (count is int && pluralContext != null) {
+      finalString = LcsI18n.plural(count, context: pluralContext);
+    } else {
+      finalString = LcsI18n.format(s, params);
+    }
+  } else {
+    finalString = LcsI18n.translate(s);
+  }
   console.addstrx(
-    translated,
+    finalString,
     restoreOldColor: restoreOldColor,
     mouseClickKey: mouseClickKey,
   );
@@ -210,12 +250,24 @@ void mvaddstrx(
   String s, {
   bool restoreOldColor = true,
   String? mouseClickKey,
+  Map<String, dynamic>? params,
 }) {
-  final translated = LcsI18n.translate(s);
+  String finalString = s;
+  if (params != null) {
+    final count = params['count'];
+    final pluralContext = params['context'] as String?;
+    if (count is int && pluralContext != null) {
+      finalString = LcsI18n.plural(count, context: pluralContext);
+    } else {
+      finalString = LcsI18n.format(s, params);
+    }
+  } else {
+    finalString = LcsI18n.translate(s);
+  }
   console.mvaddstrx(
     y,
     x,
-    translated,
+    finalString,
     restoreOldColor: restoreOldColor,
     mouseClickKey: mouseClickKey,
   );

@@ -1,98 +1,73 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/i18n/i18n.dart';
-import 'package:lcs_new_age/utils/colors.dart';
+
+String getConsoleLine(int y) {
+  return console.buffer[y].map((ch) => ch.glyph).join();
+}
+
+void resetConsole() {
+  erase();
+  move(0, 0);
+}
 
 void main() {
-  group('Console Wrapper Integration Tests', () {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
+  group('Console Wrapper Tests - Params Support', () {
     setUp(() async {
-      // Reset i18n state and console before each test
+      await LcsI18n.initialize('en');
+      resetConsole();
+    });
+
+    tearDown(() async {
       LcsI18n.reset();
-      erase();
-      await LcsI18n.initialize();
     });
 
-    test('addstr translates strings before output', () {
-      const testMessage = 'Hello, World!';
-      
-      // This should not throw and should translate the message
-      expect(() => addstr(testMessage), returnsNormally);
-      
-      // Verify the message was translated (currently returns original)
-      // In the future, this would verify actual translation
-      expect(LcsI18n.translate(testMessage), equals(testMessage));
-    });
-
-    test('mvaddstr translates strings before output', () {
-      const testMessage = 'Test message at position';
-      
-      // This should not throw
-      expect(() => mvaddstr(5, 10, testMessage), returnsNormally);
-    });
-
-    test('addstrx translates strings with color codes', () {
-      const testMessage = '&wWhite text&x';
-      
-      // This should not throw
-      expect(() => addstrx(testMessage), returnsNormally);
-    });
-
-    test('mvaddstrx translates strings with color codes at position', () {
-      const testMessage = '&rRed text&x';
-      
-      // This should not throw
-      expect(() => mvaddstrx(10, 20, testMessage), returnsNormally);
-    });
-
-    test('addstrc translates strings with color', () {
-      const testMessage = 'Colored message';
-      
-      // This should not throw
-      expect(() => addstrc(white, testMessage), returnsNormally);
-    });
-
-    test('mvaddstrc translates strings with color at position', () {
-      const testMessage = 'Positioned colored message';
-      
-      // This should not throw
-      expect(() => mvaddstrc(15, 5, lightGray, testMessage), returnsNormally);
-    });
-
-    test('console wrappers handle empty strings', () {
-      expect(() => addstr(''), returnsNormally);
-      expect(() => mvaddstr(0, 0, ''), returnsNormally);
-      expect(() => addstrx(''), returnsNormally);
-    });
-
-    test('console wrappers handle special characters', () {
-      const specialChars = '!@#\$%^&*()_+-=[]{}|;:\'",.<>?/~`';
-      
-      expect(() => addstr(specialChars), returnsNormally);
-      expect(() => mvaddstr(0, 0, specialChars), returnsNormally);
-    });
-
-    test('console wrappers handle unicode characters', () {
-      const unicode = 'Hello 世界 🌍';
-      
-      expect(() => addstr(unicode), returnsNormally);
-      expect(() => mvaddstr(0, 0, unicode), returnsNormally);
-    });
-
-    test('console wrappers work with translation format strings', () {
-      const formatString = 'You have {0} items';
-      
-      // Test that format strings pass through translation
-      expect(() => addstr(formatString), returnsNormally);
-    });
-
-    test('multiple console calls work sequentially', () {
+    test('addstr with params formats string', () {
       expect(() {
-        addstr('First message');
-        mvaddstr(1, 0, 'Second message');
-        addstrx('&wThird message&x');
-        mvaddstrx(2, 0, '&rFourth message&x');
+        addstr('You hit the {target}!', params: {'target': 'goblin'});
       }, returnsNormally);
+    });
+
+    test('addstr with count and context uses plural', () {
+      expect(() {
+        addstr(
+          'You have {count} items.',
+          params: {'count': 5, 'context': 'inventory_items'},
+        );
+      }, returnsNormally);
+    });
+
+    test('mvaddstr with params formats string', () {
+      expect(() {
+        mvaddstr(5, 10, '{name} has been rescued.', params: {'name': 'Jane'});
+      }, returnsNormally);
+    });
+
+    test('mvaddstr with count and context uses plural', () {
+      expect(() {
+        mvaddstr(
+          10,
+          1,
+          '{count} members escape.',
+          params: {'count': 3, 'context': 'members_escape'},
+        );
+      }, returnsNormally);
+    });
+
+    test('addstr format actually translates correctly in English', () async {
+      resetConsole();
+      await LcsI18n.initialize('en');
+      addstr('You hit the {target}!', params: {'target': 'goblin'});
+      expect(getConsoleLine(0), equals('You hit the goblin!'));
+    });
+
+    test('addstr format actually translates correctly in Portuguese', () async {
+      resetConsole();
+      await LcsI18n.initialize('pt');
+      addstr('You hit the {target}!', params: {'target': 'goblin'});
+      expect(getConsoleLine(0), equals('Você acertou o goblin!'));
     });
   });
 }
-

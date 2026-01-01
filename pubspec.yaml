@@ -43,6 +43,7 @@ flutter:
    - assets/maps/
    - assets/art/
    - assets/changelog.md
+   - lib/l10n/
   uses-material-design: true
   fonts:
    - family: SourceCodePro
