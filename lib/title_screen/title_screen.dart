@@ -401,7 +401,7 @@ Future<void> languageMenu() async {
       7,
       4,
       "P",
-      "Portuguese: ${gameOptions.language == 'pt' ? '&GSelected&x' : 'Portugues'}",
+      "Portuguese: ${gameOptions.language == 'pt_BR' ? '&GSelected&x' : 'Portugues'}",
       enabledWhen: true,
     );
 
@@ -421,11 +421,11 @@ Future<void> languageMenu() async {
 
     switch (c) {
       case Key.e:
-        gameOptions.language = 'en';
+        gameOptions.language = 'en_US';
         await gameOptions.save();
         return;
       case Key.p:
-        gameOptions.language = 'pt';
+        gameOptions.language = 'pt_BR';
         await gameOptions.save();
         return;
       case Key.b:

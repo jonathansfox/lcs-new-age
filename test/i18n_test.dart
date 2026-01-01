@@ -12,16 +12,16 @@ void main() {
     test('initialize with default locale', () async {
       await LcsI18n.initialize();
       expect(LcsI18n.isInitialized, isTrue);
-      expect(LcsI18n.currentLocale, equals('en'));
+      expect(LcsI18n.currentLocale, equals('en_US'));
     });
 
     test('initialize with custom locale', () async {
-      await LcsI18n.initialize('pt');
-      expect(LcsI18n.currentLocale, equals('pt'));
+      await LcsI18n.initialize('pt_BR');
+      expect(LcsI18n.currentLocale, equals('pt_BR'));
     });
 
     test('translate simple strings in English', () async {
-      await LcsI18n.initialize('en');
+      await LcsI18n.initialize('en_US');
 
       expect(LcsI18n.translate('Loading...'), equals('Loading...'));
       expect(LcsI18n.translate('Game Over'), equals('Game Over'));
@@ -32,7 +32,7 @@ void main() {
     });
 
     test('translate simple strings in Portuguese', () async {
-      await LcsI18n.initialize('pt');
+      await LcsI18n.initialize('pt_BR');
 
       expect(LcsI18n.translate('Loading...'), equals('Carregando...'));
       expect(LcsI18n.translate('Game Over'), equals('Fim de Jogo'));
@@ -43,7 +43,7 @@ void main() {
     });
 
     test('format strings with parameters in English', () async {
-      await LcsI18n.initialize('en');
+      await LcsI18n.initialize('en_US');
 
       expect(
         LcsI18n.format("{name}'s corpse has been recovered.", {'name': 'John'}),
@@ -62,7 +62,7 @@ void main() {
     });
 
     test('format strings with parameters in Portuguese', () async {
-      await LcsI18n.initialize('pt');
+      await LcsI18n.initialize('pt_BR');
 
       expect(
         LcsI18n.format("{name}'s corpse has been recovered.", {'name': 'João'}),
@@ -81,7 +81,7 @@ void main() {
     });
 
     test('plural handling - zero in English', () async {
-      await LcsI18n.initialize('en');
+      await LcsI18n.initialize('en_US');
       expect(
         LcsI18n.plural(0, context: 'inventory_items'),
         equals('You have no items.'),
@@ -89,7 +89,7 @@ void main() {
     });
 
     test('plural handling - one in English', () async {
-      await LcsI18n.initialize('en');
+      await LcsI18n.initialize('en_US');
       expect(
         LcsI18n.plural(1, context: 'inventory_items'),
         equals('You have one item.'),
@@ -97,7 +97,7 @@ void main() {
     });
 
     test('plural handling - other in English', () async {
-      await LcsI18n.initialize('en');
+      await LcsI18n.initialize('en_US');
       expect(
         LcsI18n.plural(5, context: 'inventory_items'),
         equals('You have 5 items.'),
@@ -105,7 +105,7 @@ void main() {
     });
 
     test('plural handling in Portuguese', () async {
-      await LcsI18n.initialize('pt');
+      await LcsI18n.initialize('pt_BR');
       expect(
         LcsI18n.plural(0, context: 'inventory_items'),
         equals('Você não tem itens.'),
@@ -121,7 +121,7 @@ void main() {
     });
 
     test('complex plural - members escape in English', () async {
-      await LcsI18n.initialize('en');
+      await LcsI18n.initialize('en_US');
       expect(LcsI18n.plural(0, context: 'members_escape'), equals(''));
       expect(
         LcsI18n.plural(1, context: 'members_escape'),
@@ -134,7 +134,7 @@ void main() {
     });
 
     test('complex plural - members escape in Portuguese', () async {
-      await LcsI18n.initialize('pt');
+      await LcsI18n.initialize('pt_BR');
       expect(LcsI18n.plural(0, context: 'members_escape'), equals(''));
       expect(
         LcsI18n.plural(1, context: 'members_escape'),
@@ -147,29 +147,29 @@ void main() {
     });
 
     test('shorthand tr() method works', () async {
-      await LcsI18n.initialize('en');
+      await LcsI18n.initialize('en_US');
       expect(LcsI18n.tr('Loading...'), equals('Loading...'));
     });
 
     test('fallback to English for missing translations', () async {
-      await LcsI18n.initialize('pt');
+      await LcsI18n.initialize('pt_BR');
       const untranslated = 'This message does not exist';
       expect(LcsI18n.translate(untranslated), equals(untranslated));
     });
 
     test('locale switching works', () async {
-      await LcsI18n.initialize('en');
+      await LcsI18n.initialize('en_US');
       expect(LcsI18n.translate('Game Over'), equals('Game Over'));
 
-      await LcsI18n.setLocale('pt');
+      await LcsI18n.setLocale('pt_BR');
       expect(LcsI18n.translate('Game Over'), equals('Fim de Jogo'));
 
-      await LcsI18n.setLocale('en');
+      await LcsI18n.setLocale('en_US');
       expect(LcsI18n.translate('Game Over'), equals('Game Over'));
     });
 
     test('missing translations are tracked', () async {
-      await LcsI18n.initialize('en');
+      await LcsI18n.initialize('en_US');
       const missing = 'This string is not translated';
       LcsI18n.translate(missing);
       expect(LcsI18n.getMissingTranslations(), contains(missing));

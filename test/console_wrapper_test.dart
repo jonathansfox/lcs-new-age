@@ -16,7 +16,7 @@ void main() {
 
   group('Console Wrapper Tests - Params Support', () {
     setUp(() async {
-      await LcsI18n.initialize('en');
+      await LcsI18n.initialize('en_US');
       resetConsole();
     });
 
@@ -58,7 +58,7 @@ void main() {
 
     test('addstr format actually translates correctly in English', () async {
       resetConsole();
-      await LcsI18n.initialize('en');
+      await LcsI18n.initialize('en_US');
       addstr('You hit the {target}!', params: {'target': 'goblin'});
       expect(getConsoleLine(0), equals('You hit the goblin!'));
     });

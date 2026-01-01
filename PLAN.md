@@ -247,7 +247,7 @@ When `params` is provided to console wrappers:
 ```dart
 class LcsI18n {
   // Initialize translation system
-  static Future<void> initialize([String locale = 'en']);
+  static Future<void> initialize([String locale = 'en_US']);
 
   // Change locale at runtime
   static Future<void> setLocale(String locale);

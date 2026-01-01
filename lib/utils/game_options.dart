@@ -8,14 +8,14 @@ class GameOptions {
   bool encounterWarnings = false;
   bool mouseInput = true;
   String interfacePgUp = "[";
-  String language = 'en';
+  String language = 'en_US';
 
   Future<void> load() async {
     final prefs = await SharedPreferences.getInstance();
     encounterWarnings = prefs.getBool(_encounterWarningsKey) ?? false;
     mouseInput = prefs.getBool(_mouseInputKey) ?? true;
     interfacePgUp = prefs.getString(_interfacePgUpKey) ?? "[";
-    language = prefs.getString(_languageKey) ?? 'en';
+    language = prefs.getString(_languageKey) ?? 'en_US';
   }
 
   Future<void> save() async {

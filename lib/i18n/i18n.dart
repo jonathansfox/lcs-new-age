@@ -10,15 +10,15 @@ import 'package:intl/intl.dart';
 ///
 /// Example:
 ///   addstr("Press any key to continue.");  // Translates automatically
-///   addstr(LcsI18n.format("You hit the {target}!", {"target": "goblin"}));
+///   addstr(LcsI18n.format("You hit the {target}!", {"target": "Conservative"}));
 class LcsI18n {
   static bool _initialized = false;
-  static String _currentLocale = 'en';
+  static String _currentLocale = 'en_US';
   static final Map<String, Map<String, dynamic>> _translations = {};
   static final Set<String> _missingTranslations = <String>{};
 
   /// Initialize the translation system with the specified locale
-  static Future<void> initialize([String locale = 'en']) async {
+  static Future<void> initialize([String locale = 'en_US']) async {
     if (_initialized) return;
 
     _currentLocale = locale;
@@ -26,8 +26,8 @@ class LcsI18n {
     await _loadLocale(locale);
 
     // Preload English as fallback
-    if (locale != 'en') {
-      await _loadLocale('en');
+    if (locale != 'en_US') {
+      await _loadLocale('en_US');
     }
 
     _initialized = true;
