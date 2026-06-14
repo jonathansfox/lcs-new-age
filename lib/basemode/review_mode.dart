@@ -45,7 +45,7 @@ Future<void> reviewAssetsAndFormSquads() async {
     for (Creature p in pool) {
       if (p.isActiveLiberal) active++; // Active Liberals
       if (p.align != Alignment.liberal && p.alive) hostages++; // Hostages
-      if (p.clinicMonthsLeft > 0 && p.alive) hospital++; // Hospital
+      if (p.hospitalized && p.alive) hospital++; // Hospital
       if (p.imprisoned) justice++; // Justice System
       if (p.sleeperAgent) sleepers++; // Sleepers
       if (!p.alive) dead++; // The Dead
@@ -215,7 +215,7 @@ Future<void> reviewMode(ReviewMode mode) async {
         case ReviewMode.hostages:
           if (p.align != Alignment.liberal && p.alive) temppool.add(p);
         case ReviewMode.clinic:
-          if (p.clinicMonthsLeft > 0 && p.alive) temppool.add(p);
+          if (p.hospitalized && p.alive) temppool.add(p);
         case ReviewMode.justice:
           if (p.imprisoned) temppool.add(p);
         case ReviewMode.sleepers:
@@ -268,7 +268,7 @@ Future<void> reviewMode(ReviewMode mode) async {
         ReviewMode.liberals => "SQUAD / ACTIVITY",
         ReviewMode.hostages => "DAYS IN CAPTIVITY",
         ReviewMode.justice => "MONTHS LEFT",
-        ReviewMode.clinic => "PROGNOSIS",
+        ReviewMode.clinic => "MEDICAL BILLS",
         ReviewMode.sleepers => "PROFESSION",
         ReviewMode.dead => "DAYS SINCE PASSING",
         ReviewMode.away => "DAYS UNTIL RETURN",
@@ -370,15 +370,8 @@ Future<void> reviewMode(ReviewMode mode) async {
             addstr("———————"); // 7 characters
           }
         case ReviewMode.clinic:
-          setColor(lightBlue);
-          addstr("Out in ");
-          addstr(tempp.clinicMonthsLeft.toString());
-          addstr(" ");
-          if (tempp.clinicMonthsLeft > 1) {
-            addstr("Months");
-          } else {
-            addstr("Month");
-          }
+          setColor(red);
+          addstr("\$${tempp.medicalBills}");
         case ReviewMode.sleepers:
           setColor(tempp.align.color);
           addstr(tempp.type.name);

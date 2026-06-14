@@ -34,7 +34,7 @@ Future<void> prison(Creature g) async {
     "crucifixion",
     "head-squishing",
     "piranha tank swimming exhibition",
-    "forced sucking of Ronald Reagan's ass",
+    "vivisection",
     "covering with peanut butter and letting rats eat",
     "burying up to the neck in a fire ant nest",
     "running truck over the head",
@@ -44,7 +44,7 @@ Future<void> prison(Creature g) async {
     "blood draining",
     "chemical weapons test",
     "sale to a furniture maker",
-    "sale to a CEO as a personal pleasure toy",
+    "being fed into a meat processing plant",
     "sale to foreign slave traders",
     "exposure to degenerate Bay 12 Curses games"
   ];
@@ -237,18 +237,35 @@ Future<void> laborCamp(Creature g) async {
   if (g.hireId == null && oneIn(3)) {
     escaped = 2;
     experience = " organizes a riot of oppressed prisoners...";
-    experience2 = " overwhelms the prison guards!";
+    if (g.body.canWalk) {
+      experience2 = " overwhelms the prison guards!";
+    } else {
+      experience2 = " is carried out by other escapees!";
+    }
   } else if (g.skillCheck(Skill.disguise, Difficulty.heroic) && oneIn(5)) {
     escaped = 1;
     experience = " wears an electrician's outfit...";
-    experience2 = " rides away with some contractors!";
+    if (g.body.canWalk) {
+      experience2 = " rides away with some contractors!";
+    } else {
+      experience2 = " is carried out by some confused contractors!";
+    }
     g.giveClothingType("CLOTHING_WORKCLOTHES");
   } else if (g.skillCheck(Skill.security, Difficulty.challenging) &&
       g.skillCheck(Skill.stealth, Difficulty.hard) &&
-      oneIn(10)) {
+      oneIn(10) &&
+      g.body.armok > 0 &&
+      g.body.legok > 0) {
     escaped = 1;
-    experience = " picks the lock on their leg chains...";
-    experience2 = " sneaks away!";
+    if (g.body.armok > 0 && g.body.legok > 0) {
+      experience = " picks the lock on their leg chains...";
+      experience2 = " sneaks away!";
+    } else {
+      experience = " teaches others how to pick their leg chains...";
+      if (g.body.canWalk) {
+        experience2 = " escapes with their help!";
+      }
+    }
   } else if (g.skillCheck(Skill.science, Difficulty.hard) && oneIn(10)) {
     escaped = 1;
     experience = " consumes drugs that simulate death...";
@@ -324,15 +341,25 @@ Future<void> prisonScene(Creature g) async {
     } else if (g.skillCheck(Skill.disguise, Difficulty.formidable) &&
         oneIn(5)) {
       escaped = 1;
-      experience =
-          " puts on smuggled street clothes and calmly walks out of prison.";
+      if (g.body.canWalk) {
+        experience =
+            " puts on smuggled street clothes and calmly walks out of prison.";
+      } else {
+        experience =
+            " puts on smuggled street clothes and calmly rolls out the front door!";
+      }
       g.giveArmor(Clothing("CLOTHING_CLOTHES"), null);
     } else if (g.skillCheck(Skill.security, Difficulty.hard) &&
         g.skillCheck(Skill.stealth, Difficulty.hard) &&
         oneIn(5)) {
       escaped = 1;
-      experience =
-          " jimmies the cell door and cuts the fence in the dead of night!";
+      if (g.body.armok > 0) {
+        experience =
+            " jimmies the cell door and cuts the fence in the dead of night!";
+      } else {
+        experience =
+            " shows an accomplice how to pick locks, and they escape together!";
+      }
     } else if (g.skillCheck(Skill.science, Difficulty.challenging) &&
         g.skillCheck(Skill.martialArts, Difficulty.challenging) &&
         oneIn(5)) {

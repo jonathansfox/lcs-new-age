@@ -190,4 +190,24 @@
         <fencevalue>1500</fencevalue>
     </loottype>
 
+    <loottype idname="LOOT_LANDLORD_PAPERS">
+        <name>Landlord Papers</name>
+        <stackable>true</stackable>
+        <no_quick_fencing>true</no_quick_fencing>
+        <fencevalue>600</fencevalue>
+    </loottype>
+
+    <loottype idname="LOOT_INSURANCE_DOCUMENTS">
+        <name>Healthcare Documents</name>
+        <stackable>true</stackable>
+        <no_quick_fencing>true</no_quick_fencing>
+        <fencevalue>1000</fencevalue>
+    </loottype>
+
+    <loottype idname="LOOT_RETIREMENT_DOCUMENTS">
+        <name>Elder Abuse Evidence</name>
+        <stackable>true</stackable>
+        <no_quick_fencing>true</no_quick_fencing>
+        <fencevalue>200</fencevalue>
+    </loottype>
 </loot>

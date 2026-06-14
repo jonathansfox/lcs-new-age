@@ -486,12 +486,12 @@ Future<bool> checkForVision() async {
     for (Creature c in pool) {
       if (c.isActiveLiberal) {
         cantSeeReason = CantSeeReason.none;
-        if (c.clinicMonthsLeft == 0) {
+        if (!c.hospitalized) {
           forceWait = false;
           break;
         }
       } else {
-        if (c.clinicMonthsLeft > 0 &&
+        if (c.hospitalized &&
             cantSeeReason.index > CantSeeReason.hospital.index) {
           cantSeeReason = CantSeeReason.hospital;
         } else if (c.vacationDaysLeft > 0 &&

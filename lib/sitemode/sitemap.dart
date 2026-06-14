@@ -157,6 +157,12 @@ enum TileSpecial {
   ovalOfficeNE,
   ovalOfficeSW,
   ovalOfficeSE,
+  nursingHomeFiles,
+  nursingHomeManager,
+  nursingHomePatient,
+  nursingHomePatientDone,
+  insuranceFiles,
+  insuranceCEO,
 }
 
 class SiteTile {
@@ -575,6 +581,10 @@ void buildSiteFromTabScript(Site loc) {
       buildSite("GENERIC_ONEROOM");
     case SiteType.publicPark:
       buildSite("OUTDOOR_PUBLICPARK");
+    case SiteType.nursingHome:
+      buildSite("NURSING_HOME");
+    case SiteType.insuranceOffice:
+      buildSite("INSURANCE_OFFICES");
     default:
       buildSite("GENERIC_LOBBY");
   }

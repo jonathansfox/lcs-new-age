@@ -10,6 +10,7 @@ import 'package:lcs_new_age/items/clothing.dart';
 import 'package:lcs_new_age/items/clothing_type.dart';
 import 'package:lcs_new_age/items/item.dart';
 import 'package:lcs_new_age/items/loot.dart';
+import 'package:lcs_new_age/items/loot_type.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 
 Future<void> doActivityMakeClothing(Creature cr) async {
@@ -87,6 +88,6 @@ Future<void> doActivityMakeClothing(Creature cr) async {
         await showMessage(
             "${cr.name} got feet and inches mixed up and is now outfitting ants.");
     }
-    cr.site?.loot.add(Loot("LOOT_RECYCLEDCLOTH"));
+    cr.site?.loot.add(Loot(LootTypeIds.recycledCloth));
   }
 }

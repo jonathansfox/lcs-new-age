@@ -25,6 +25,7 @@ import 'package:lcs_new_age/monthly/advance_month.dart';
 import 'package:lcs_new_age/newspaper/news_story.dart';
 import 'package:lcs_new_age/newspaper/run_news_cycle.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
+import 'package:lcs_new_age/politics/laws.dart';
 import 'package:lcs_new_age/saveload/save_load.dart';
 import 'package:lcs_new_age/sitemode/sitemap.dart';
 import 'package:lcs_new_age/sitemode/sitemode.dart';
@@ -621,13 +622,9 @@ Future<void> _dailyHealing() async {
   for (Site site in sites) {
     medical[site] = 0;
     injuries[site] = 0;
-    // Clinic and lockups are equal to a skill 6 liberal
-    if (site.type == SiteType.clinic) medical[site] = 6;
-    if (site.type == SiteType.policeStation) medical[site] = 6;
-    if (site.type == SiteType.courthouse) medical[site] = 6;
-    if (site.type == SiteType.prison) medical[site] = 6;
-    // Hospital is equal to a skill 12 liberal
-    if (site.type == SiteType.universityHospital) medical[site] = 12;
+    if (site.controller != SiteController.lcs) medical[site] = 6;
+    // Hospital is equal to a skill 16 liberal
+    if (site.type == SiteType.universityHospital) medical[site] = 16;
   }
   for (Creature p in pool) {
     // First pass is to identify medics
@@ -644,11 +641,26 @@ Future<void> _dailyHealing() async {
     }
   }
 
-  //HEAL NON-CLINIC PEOPLE AND TRAIN
+  //HEAL PEOPLE AND TRAIN
   for (Creature p in pool) {
+    bool hospital = p.site?.type == SiteType.universityHospital;
+    int billFactor = 0;
+    if (hospital) {
+      switch (politics.laws[Law.healthcare]) {
+        case DeepAlignment.archConservative:
+          billFactor = 300;
+        case DeepAlignment.conservative:
+          billFactor = 200;
+        case DeepAlignment.moderate:
+          billFactor = 100;
+        case DeepAlignment.liberal:
+          billFactor = 25;
+        default:
+          billFactor = 0;
+      }
+    }
     if (!p.alive) continue;
-    if (clinictime(p) > 0 && p.clinicMonthsLeft == 0) {
-      // For people in LCS home treatment
+    if (clinictime(p) > 0) {
       int damage = 0; // Amount health degrades
       //int release=1;
       bool transfer = false;
@@ -659,16 +671,14 @@ Future<void> _dailyHealing() async {
       // Cap blood at 100-injurylevel*20
       double maxHealingProportion = 1 - (clinictime(p) - 1) * 0.2;
       int maxBlood = (p.maxBlood * maxHealingProportion).round();
+      maxBlood = min(maxBlood, p.maxBlood);
       if (p.blood < maxBlood) {
         // Add health
         if (p.site != null) {
-          p.blood += 1 + medical[p.site]! ~/ 3;
-        }
-        if (p.blood > maxBlood) {
-          p.blood = maxBlood;
-        }
-        if (p.blood > p.maxBlood) {
-          p.blood = p.maxBlood;
+          int healing = 1 + medical[p.site]! ~/ 3;
+          healing = min(healing, maxBlood - p.blood);
+          p.blood += healing;
+          if (hospital) p.medicalBills += healing * billFactor ~/ 5;
         }
       }
       if (p.alive && p.blood < 0) {
@@ -683,6 +693,7 @@ Future<void> _dailyHealing() async {
           if (p.site != null && medical[p.site]! + lcsRandom(10) > 12) {
             w.cleanOff = true;
             w.nastyOff = false;
+            if (hospital) p.medicalBills += billFactor * 5;
           } else {
             // Else take bleed damage (4)
             damage += 4;
@@ -693,13 +704,15 @@ Future<void> _dailyHealing() async {
         } else if (w.bleeding > 0) {
           // Bleeding wounds
           // Chance to stabilize wound
-          // Difficulty 8 (1 in 10 of happening naturally)
-          if (p.site != null && (medical[p.site] ?? 0) + lcsRandom(10) > 8) {
-            w.bleeding = 0;
-          } else {
-            // Else take bleed damage (1)
-            damage += 1;
-            w.bleeding = max(0, w.bleeding - 1);
+          for (int i = w.bleeding; i > 0; i--) {
+            // Difficulty 8 (1 in 10 of happening naturally)
+            if (p.site != null && (medical[p.site] ?? 0) + lcsRandom(10) > 8) {
+              w.bleeding--;
+              if (hospital) p.medicalBills += billFactor;
+            } else {
+              // Else take bleed damage (1)
+              damage += 1;
+            }
           }
         }
         // Non-bleeding wounds
@@ -726,6 +739,9 @@ Future<void> _dailyHealing() async {
           // if it remains untreated.
           if (p.site != null &&
               medicalValue + lcsRandom(10) > (14 + extraDifficulty)) {
+            if (hospital) {
+              p.medicalBills += billFactor * (10 * (extraDifficulty + 1));
+            }
             return false; // stabilized
           } else {
             if (possiblePermanentDamage) {
@@ -801,13 +817,52 @@ Future<void> _dailyHealing() async {
         mvaddstr(8, 1, "${p.name}'s injuries require professional treatment.");
         p.activity = Activity(ActivityType.clinic);
         await getKey();
+      } else if (hospital && clinictime(p) == 0) {
+        p.blood = p.maxBlood;
+        p.activity = Activity.none();
+        if (p.medicalBills > 0) {
+          erase();
+          setColor(lightGray);
+          mvaddstr(6, 1, "${p.name} is being discharged from ${p.site!.name}.");
+          mvaddstrx(8, 1,
+              "&w${p.name}'s hospital bill comes to &R\$${p.medicalBills}&w.");
+          mvaddstrx(9, 1, "The LCS has &G\$${ledger.funds}&w available.");
+          addOptionText(11, 1, "A", "A - Pay the bill.",
+              enabledWhen: ledger.funds >= p.medicalBills);
+          addOptionText(12, 1, "B", "B - Just leave.");
+
+          while (true) {
+            int c = await getKey();
+            if (c == Key.a && ledger.funds >= p.medicalBills) {
+              ledger.subtractFunds(p.medicalBills, Expense.hospitalBills);
+              p.medicalBills = 0;
+              break;
+            } else if (c == Key.b) {
+              break;
+            }
+          }
+        } else {
+          await showMessage(
+              "${p.name} has been discharged from ${p.site!.name}.");
+        }
+
+        Site? hs =
+            findSiteInSameCity(p.site!.city, SiteType.homelessEncampment);
+
+        if (hs != null &&
+            (p.base?.siege.underSiege != false ||
+                p.base?.controller != SiteController.lcs)) {
+          p.base = hs;
+        }
+
+        p.location = p.base;
       }
     }
   }
   //Give experience to medics
   for (Creature p in pool) {
     //If present, qualified to heal, and doing so
-    if (p.site != null) {
+    if (p.site != null && p.site!.controller == SiteController.lcs) {
       //Clear activity if their location doesn't have healing work to do
       if ((injuries[p.site] ?? 0) > 0) {
         //Give experience based on work done and current skill

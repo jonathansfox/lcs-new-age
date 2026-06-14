@@ -151,6 +151,8 @@ enum Drama {
   legalGunUsed,
   illegalGunUsed,
   musicalRampage,
+  openedNursingHomeSafe,
+  openedInsuranceSafe,
 }
 
 enum NewsStories {

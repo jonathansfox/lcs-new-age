@@ -10,6 +10,7 @@ import 'package:lcs_new_age/creature/creature.dart';
 import 'package:lcs_new_age/creature/creature_type.dart';
 import 'package:lcs_new_age/creature/difficulty.dart';
 import 'package:lcs_new_age/creature/gender.dart';
+import 'package:lcs_new_age/creature/name.dart';
 import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
@@ -18,6 +19,7 @@ import 'package:lcs_new_age/items/ammo_type.dart';
 import 'package:lcs_new_age/items/clothing.dart';
 import 'package:lcs_new_age/items/item.dart';
 import 'package:lcs_new_age/items/loot.dart';
+import 'package:lcs_new_age/items/loot_type.dart';
 import 'package:lcs_new_age/items/money.dart';
 import 'package:lcs_new_age/items/weapon.dart';
 import 'package:lcs_new_age/items/weapon_type.dart';
@@ -93,6 +95,16 @@ Future<void> useTileSpecial() async {
       await specialBankVault();
     case TileSpecial.bankMoney:
       await specialBankMoney();
+    case TileSpecial.nursingHomeFiles:
+      await specialNursingHomeSafe();
+    case TileSpecial.nursingHomePatient:
+      await specialNursingHomePatient();
+    case TileSpecial.nursingHomePatientDone:
+      await specialNursingHomePatient(done: true);
+    case TileSpecial.insuranceFiles:
+      await specialInsuranceSafe();
+    case TileSpecial.nursingHomeManager:
+    case TileSpecial.insuranceCEO:
     case TileSpecial.ccsBoss:
     case TileSpecial.bankTeller:
     case TileSpecial.ovalOfficeNW:
@@ -763,7 +775,7 @@ Future<void> specialIntelSupercomputer() async {
       addstr(",");
       mvaddstr(10, 1, "including a list of government backers of the CCS.");
 
-      Item it = Loot("LOOT_CCS_BACKERLIST");
+      Item it = Loot(LootTypeIds.ccsBackerList);
       activeSquad!.loot.add(it);
 
       ccsExposure = CCSExposure.lcsGotData;
@@ -773,7 +785,7 @@ Future<void> specialIntelSupercomputer() async {
 
     juiceparty(50, 1000);
 
-    Item it = Loot("LOOT_INTHQDISK");
+    Item it = Loot(LootTypeIds.intHqDisk);
     activeSquad!.loot.add(it);
 
     await getKey();
@@ -947,14 +959,14 @@ Future<void> specialCEOSafe() async {
 
     if (oneIn(2)) {
       await encounterMessage("The squad Liberates some expensive jewelery.");
-      _loot(Loot("LOOT_EXPENSIVEJEWELERY", stackSize: 3));
+      _loot(Loot(LootTypeIds.expensiveJewelry, stackSize: 3));
       empty = false;
     }
 
     if (oneIn(3)) {
       await encounterMessage(
           "There are some... very compromising photos here.");
-      _loot(Loot("LOOT_CEOPHOTOS"));
+      _loot(Loot(LootTypeIds.ceoPhotos));
       empty = false;
     }
 
@@ -966,13 +978,13 @@ Future<void> specialCEOSafe() async {
     if (oneIn(3)) {
       await encounterMessage("Wow, get a load of these love letters.",
           line2: "The squad will take those.");
-      _loot(Loot("LOOT_CEOLOVELETTERS"));
+      _loot(Loot(LootTypeIds.ceoLoveLetters));
       empty = false;
     }
 
     if (oneIn(3)) {
       await encounterMessage("These documents show serious tax evasion.");
-      _loot(Loot("LOOT_CEOTAXPAPERS"));
+      _loot(Loot(LootTypeIds.ceoTaxPapers));
       empty = false;
     }
 
@@ -990,6 +1002,385 @@ Future<void> specialCEOSafe() async {
   levelMap[locx][locy][locz].special = TileSpecial.none;
 }
 
+Future<void> specialNursingHomeSafe() async {
+  bool crack =
+      await sitemodePrompt("You've found a safe.", "Crack it? (Yes or No)");
+  if (!crack) return;
+
+  UnlockResult result = await unlock(UnlockTypes.safe);
+
+  if (result == UnlockResult.unlocked) {
+    await encounterMessage(
+        "The squad has found documents detailing systemic elder abuse.");
+    _loot(Loot(LootTypeIds.elderAbuseEvidence));
+
+    juiceparty(50, 1000);
+    siteCrime += 40;
+    addDramaToSiteStory(Drama.openedNursingHomeSafe);
+    addPotentialCrime(squad, Crime.theft);
+  }
+
+  await noticeCheck();
+  levelMap[locx][locy][locz].special = TileSpecial.none;
+}
+
+enum PatientPersonality {
+  lonely,
+  angry,
+  cheerful,
+  depressed,
+  withdrawn,
+  basic,
+}
+
+class PatientState {
+  PatientState(
+    this.description,
+    this.successMessage,
+    this.skill, {
+    this.difficulty = Difficulty.automatic,
+    this.juice = 5,
+    this.failMessage = "%HELPER% isn't sure what to do about that.",
+  });
+  String description;
+  int juice;
+  Skill skill;
+  int difficulty;
+  String successMessage;
+  String failMessage;
+}
+
+enum PatientStateKey {
+  lonely,
+  lyingInSamePosition,
+  pillsLookWrong,
+  bruiseOnLeftCheek,
+  leftInSoiledClothing,
+  leftInRestraints,
+  gladToHaveVisitor,
+  hallucinatesDeceasedRelative,
+  suspectsTheft,
+  swearsAtHelper,
+  inGoodSpirits,
+  asksForBook,
+  asksForChannelChange,
+  asksForRadio,
+}
+
+PatientState _getPatientState(PatientPersonality personality) {
+  Map<PatientStateKey, int> stateWeights = {};
+  switch (personality) {
+    case PatientPersonality.lonely:
+      stateWeights[PatientStateKey.lonely] = 10;
+      stateWeights[PatientStateKey.lyingInSamePosition] = 3;
+      stateWeights[PatientStateKey.pillsLookWrong] = 2;
+      stateWeights[PatientStateKey.bruiseOnLeftCheek] = 1;
+      stateWeights[PatientStateKey.leftInSoiledClothing] = 1;
+      stateWeights[PatientStateKey.gladToHaveVisitor] = 10;
+      stateWeights[PatientStateKey.hallucinatesDeceasedRelative] = 3;
+      stateWeights[PatientStateKey.suspectsTheft] = 1;
+      stateWeights[PatientStateKey.asksForBook] = 1;
+      stateWeights[PatientStateKey.asksForChannelChange] = 1;
+      stateWeights[PatientStateKey.asksForRadio] = 1;
+    case PatientPersonality.angry:
+      stateWeights[PatientStateKey.lonely] = 3;
+      stateWeights[PatientStateKey.lyingInSamePosition] = 3;
+      stateWeights[PatientStateKey.pillsLookWrong] = 2;
+      stateWeights[PatientStateKey.bruiseOnLeftCheek] = 3;
+      stateWeights[PatientStateKey.leftInSoiledClothing] = 3;
+      stateWeights[PatientStateKey.leftInRestraints] = 3;
+      stateWeights[PatientStateKey.gladToHaveVisitor] = 1;
+      stateWeights[PatientStateKey.hallucinatesDeceasedRelative] = 1;
+      stateWeights[PatientStateKey.suspectsTheft] = 3;
+      stateWeights[PatientStateKey.swearsAtHelper] = 6;
+      stateWeights[PatientStateKey.inGoodSpirits] = 1;
+      stateWeights[PatientStateKey.asksForBook] = 1;
+      stateWeights[PatientStateKey.asksForChannelChange] = 3;
+      stateWeights[PatientStateKey.asksForRadio] = 3;
+    case PatientPersonality.cheerful:
+      stateWeights[PatientStateKey.lonely] = 1;
+      stateWeights[PatientStateKey.lyingInSamePosition] = 3;
+      stateWeights[PatientStateKey.pillsLookWrong] = 2;
+      stateWeights[PatientStateKey.leftInSoiledClothing] = 3;
+      stateWeights[PatientStateKey.gladToHaveVisitor] = 10;
+      stateWeights[PatientStateKey.hallucinatesDeceasedRelative] = 3;
+      stateWeights[PatientStateKey.suspectsTheft] = 1;
+      stateWeights[PatientStateKey.inGoodSpirits] = 10;
+      stateWeights[PatientStateKey.asksForBook] = 3;
+      stateWeights[PatientStateKey.asksForChannelChange] = 3;
+      stateWeights[PatientStateKey.asksForRadio] = 3;
+    case PatientPersonality.depressed:
+      stateWeights[PatientStateKey.lonely] = 12;
+      stateWeights[PatientStateKey.lyingInSamePosition] = 6;
+      stateWeights[PatientStateKey.pillsLookWrong] = 2;
+      stateWeights[PatientStateKey.leftInSoiledClothing] = 6;
+      stateWeights[PatientStateKey.hallucinatesDeceasedRelative] = 6;
+      stateWeights[PatientStateKey.suspectsTheft] = 1;
+      stateWeights[PatientStateKey.asksForBook] = 1;
+      stateWeights[PatientStateKey.asksForChannelChange] = 6;
+      stateWeights[PatientStateKey.asksForRadio] = 1;
+    case PatientPersonality.withdrawn:
+      stateWeights[PatientStateKey.lonely] = 1;
+      stateWeights[PatientStateKey.lyingInSamePosition] = 3;
+      stateWeights[PatientStateKey.pillsLookWrong] = 2;
+      stateWeights[PatientStateKey.leftInSoiledClothing] = 3;
+      stateWeights[PatientStateKey.gladToHaveVisitor] = 1;
+      stateWeights[PatientStateKey.hallucinatesDeceasedRelative] = 3;
+      stateWeights[PatientStateKey.suspectsTheft] = 1;
+      stateWeights[PatientStateKey.inGoodSpirits] = 1;
+      stateWeights[PatientStateKey.swearsAtHelper] = 3;
+      stateWeights[PatientStateKey.asksForBook] = 6;
+      stateWeights[PatientStateKey.asksForChannelChange] = 6;
+      stateWeights[PatientStateKey.asksForRadio] = 6;
+    default:
+      for (PatientStateKey key in PatientStateKey.values) {
+        stateWeights[key] = 1;
+      }
+  }
+  switch (lcsRandomWeighted<PatientStateKey>(stateWeights)) {
+    case PatientStateKey.lonely:
+      return PatientState(
+          "%FIRSTLAST% is lonely and feels isolated here.",
+          "%HELPER% sits and talks with %FIRST% for a while.",
+          Skill.psychology);
+    case PatientStateKey.lyingInSamePosition:
+      return PatientState(
+          "%FIRSTLAST% has been lying in the same position all day.",
+          "%HELPER% repositions %FIRST% so %HE% is more comfortable.",
+          Skill.firstAid,
+          difficulty: Difficulty.easy);
+    case PatientStateKey.pillsLookWrong:
+      return PatientState(
+          "%FIRSTLAST% says the pills don't look right.",
+          "%HELPER% checks %FIRST%'s chart and gets %HIM% the right medication.",
+          Skill.firstAid,
+          difficulty: Difficulty.average);
+    case PatientStateKey.bruiseOnLeftCheek:
+      return PatientState(
+          "%FIRSTLAST% has a bruise on %HIS% left cheek.",
+          "%FIRST% confides in %HELPER% that one of the aides hit %HIM%.",
+          Skill.psychology,
+          difficulty: Difficulty.easy);
+    case PatientStateKey.leftInSoiledClothing:
+      return PatientState(
+          "%FIRSTLAST% has been left in soiled clothing.",
+          "%HELPER% helps %FIRST% get into a new set of clothes.",
+          Skill.firstAid);
+    case PatientStateKey.leftInRestraints:
+      return PatientState(
+          "%FIRSTLAST% has been left in restraints as a punishment.",
+          "%HELPER% releases the restraints so %FIRST% can move.",
+          Skill.security);
+    case PatientStateKey.gladToHaveVisitor:
+      return PatientState(
+          "%FIRSTLAST% is glad to have a visitor.",
+          "%HELPER% sits and talks with %FIRST% for a while.",
+          Skill.psychology);
+    case PatientStateKey.hallucinatesDeceasedRelative:
+      return PatientState(
+          "%FIRSTLAST% mistakes %HELPER% for a deceased relative.",
+          "%HELPER% helps %FIRST% remember them.",
+          Skill.psychology,
+          difficulty: Difficulty.easy);
+    case PatientStateKey.suspectsTheft:
+      return PatientState(
+          "%FIRSTLAST% asks if %HELPER% is here to steal from %HIM%.",
+          "%FIRST% confides in %HELPER% that one of the aides steals from %HIM%.",
+          Skill.psychology,
+          difficulty: Difficulty.average);
+    case PatientStateKey.swearsAtHelper:
+      return PatientState(
+          "%FIRSTLAST% swears bitterly at %HELPER%.",
+          "%HELPER% talks with %FIRST% and learns the aides verbally abuse %HIM%.",
+          Skill.psychology,
+          difficulty: Difficulty.average);
+    case PatientStateKey.inGoodSpirits:
+      return PatientState(
+          "%FIRSTLAST% seems to be in good spirits.",
+          "%HELPER% sits and talks with %FIRST%. It's nice to see %HIM% happy.",
+          Skill.psychology);
+    case PatientStateKey.asksForBook:
+      return PatientState("%FIRSTLAST% asks %HELPER% to bring %HIM% a book.",
+          "%HELPER% hands %FIRST% a book.", Skill.writing);
+    case PatientStateKey.asksForChannelChange:
+      return PatientState("%FIRSTLAST% asks %HELPER% to change the TV channel.",
+          "%HELPER% changes the channel.", Skill.computers);
+    case PatientStateKey.asksForRadio:
+      return PatientState("%FIRSTLAST% asks %HELPER% to turn the radio on.",
+          "%HELPER% turns on the radio.", Skill.music);
+  }
+}
+
+Future<void> specialNursingHomePatient({bool done = false}) async {
+  // Who is here?
+  int oldSeed = nextRngSeed;
+  nextRngSeed = (100 + locx) +
+      (100 + locy) * 7 +
+      (100 + locz) * 103 * sites.indexOf(activeSite ?? sites[0]);
+  Gender gender = oneIn(2) ? Gender.male : Gender.female;
+  String patientLastName = lastName();
+  String patientFirstName = firstName(gender);
+  String formal = patientLastName;
+  if (gender == Gender.male) formal = "Mr. $patientLastName";
+  if (gender == Gender.female) formal = "Mrs. $patientLastName";
+  PatientPersonality personality = PatientPersonality.values.random;
+  nextRngSeed = oldSeed;
+
+  if (done) {
+    await encounterMessage("The squad has already checked up on $formal.");
+    return;
+  }
+
+  // What state are they in?
+  PatientState patientState = _getPatientState(personality);
+  Creature helper =
+      squad.sortedBy<num>((a) => a.skill(patientState.skill)).first;
+  bool success = helper.skillCheck(patientState.skill, patientState.difficulty);
+  int juice = patientState.juice;
+  int experience = 2;
+  if (patientState.difficulty > Difficulty.automatic) experience = 10;
+
+  // Indicate the squad is checking up on them
+  String squadName = squad.length > 1 ? "The squad" : squad[0].name;
+  await encounterMessage("$squadName checks up on $formal.");
+
+  if (siteAlarm) {
+    // Alarm prevents aiding residents
+    await encounterMessage(
+        "$formal looks at the squad in fear and shouts for help.",
+        line2: "$squadName leaves ${gender.himHer} alone.");
+  } else {
+    // Resolve the attempt to aid the resident
+    String resultMessage;
+    if (success) {
+      resultMessage = patientState.successMessage;
+      juiceparty(juice, 200);
+    } else {
+      resultMessage = patientState.failMessage;
+    }
+    helper.train(patientState.skill, experience);
+
+    // Fill in the variables in the state description and success/fail messages
+    String fillMessage(String message) => message
+        .replaceAll("%FIRSTLAST%", "$patientFirstName $patientLastName")
+        .replaceAll("%FIRST%", patientFirstName)
+        .replaceAll("%HIS%", gender.hisHer)
+        .replaceAll("%HIM%", gender.himHer)
+        .replaceAll("%HE%", gender.heShe)
+        .replaceAll("%HELPER%", helper.name);
+
+    // Show the result
+    await encounterMessage(fillMessage(patientState.description),
+        line2: fillMessage(resultMessage));
+
+    currentTile.special = TileSpecial.nursingHomePatientDone;
+  }
+}
+
+Future<void> specialNursingHomeManager() async {
+  clearMessageArea();
+  setColor(white);
+  move(9, 1);
+  currentTile.special = TileSpecial.none;
+  Creature admin =
+      uniqueCreatures.currentSiteCreature(CreatureTypeIds.nursingHomeAdmin);
+  if (admin.alive && admin.location == activeSite) {
+    addstr("The administrator is present.");
+
+    await getKey();
+
+    encounter.clear();
+    if (admin.formerHostage && admin.align == Alignment.conservative) {
+      if (activeSite!.hasHighSecurity) {
+        encounter.add(Creature.fromId(CreatureTypeIds.securityGuard));
+        encounter.add(Creature.fromId(CreatureTypeIds.securityGuard));
+        encounter.add(Creature.fromId(CreatureTypeIds.guardDog));
+      } else {
+        encounter.add(Creature.fromId(CreatureTypeIds.nurse));
+        encounter.add(Creature.fromId(CreatureTypeIds.nurse));
+      }
+      encounter.add(admin);
+      printEncounter();
+      if (activeSite!.hasHighSecurity) {
+        await encounterMessage("${admin.name} cries, ",
+            line2: "\"It's them!  They're back!  SECURITY, HELP ME!!!\"");
+      } else {
+        await encounterMessage("${admin.name} cries, ",
+            line2: "\"It's them!  They're back!  NURSES, HELP ME!!!\"");
+      }
+      siteAlarm = true;
+
+      await enemyattack(encounter);
+      await creatureadvance();
+    } else {
+      encounter.add(admin);
+    }
+  } else {
+    addstr("The administrative office is empty.");
+
+    await getKey();
+  }
+}
+
+Future<void> specialInsuranceSafe() async {
+  bool crack =
+      await sitemodePrompt("You've found a safe.", "Crack it? (Yes or No)");
+  if (!crack) return;
+
+  UnlockResult result = await unlock(UnlockTypes.safe);
+
+  if (result == UnlockResult.unlocked) {
+    await encounterMessage(
+        "The squad has found documents detailing the insurance company's malfeasance.");
+    _loot(Loot(LootTypeIds.insuranceFraudEvidence));
+
+    juiceparty(50, 1000);
+    siteCrime += 40;
+    addDramaToSiteStory(Drama.openedInsuranceSafe);
+    addPotentialCrime(squad, Crime.theft);
+  }
+
+  await noticeCheck();
+  levelMap[locx][locy][locz].special = TileSpecial.none;
+}
+
+Future<void> specialInsuranceCEO() async {
+  clearMessageArea();
+  setColor(white);
+  move(9, 1);
+  currentTile.special = TileSpecial.none;
+
+  Creature ceo =
+      uniqueCreatures.currentSiteCreature(CreatureTypeIds.insuranceCEO);
+  if (ceo.alive && ceo.location == activeSite) {
+    addstr("The Insurance CEO is in his office.");
+
+    await getKey();
+
+    encounter.clear();
+    if (ceo.formerHostage && ceo.align == Alignment.conservative) {
+      encounter.add(Creature.fromId(CreatureTypeIds.merc));
+      encounter.add(Creature.fromId(CreatureTypeIds.merc));
+      encounter.add(Creature.fromId(CreatureTypeIds.merc));
+      encounter.add(Creature.fromId(CreatureTypeIds.merc));
+      encounter.add(ceo);
+      printEncounter();
+      await encounterMessage("${ceo.name} cries, ",
+          line2: "\"It's them!  They're back for me again!  Help!!!\"");
+      siteAlarm = true;
+
+      await enemyattack(encounter);
+      await creatureadvance();
+    } else {
+      encounter.add(ceo);
+    }
+  } else {
+    addstr("The Insurance CEO's office is empty.");
+
+    await getKey();
+  }
+}
+
 Future<void> specialArmory() async {
   bool smash =
       await sitemodePrompt("You've found the armory.", "Break in? (Yes or No)");
@@ -1001,14 +1392,14 @@ Future<void> specialArmory() async {
   setColor(white);
   bool empty = true;
   if (!lcsGotM249 && activeSite!.type == SiteType.armyBase) {
-    await encounterMessage("Jackpot! The squad found an XM250 Machine Gun!");
+    await encounterMessage("Jackpot! The squad found an M250 Machine Gun!");
     _lootWeapon("WEAPON_M250_MACHINEGUN", 9);
     lcsGotM249 = true;
     empty = false;
   }
 
   if (oneIn(2)) {
-    await encounterMessage("The squad finds some XM7 Assault Rifles.");
+    await encounterMessage("The squad finds some M7 Assault Rifles.");
     int num = 0;
     do {
       _lootWeapon("WEAPON_M7", 5);
@@ -1076,8 +1467,8 @@ Future<void> specialCorporateSafe() async {
   if (result == UnlockResult.unlocked) {
     await encounterMessage("The Squad has found some very interesting files.");
 
-    _loot(Loot("LOOT_CORPFILES"));
-    _loot(Loot("LOOT_CORPFILES"));
+    _loot(Loot(LootTypeIds.corpFiles));
+    _loot(Loot(LootTypeIds.corpFiles));
 
     juiceparty(50, 1000);
     siteCrime += 40;
@@ -1755,21 +2146,21 @@ Item? lootItemForSite(SiteType site) {
         ];
         newArmorType = rndArmors.random;
       } else if (oneIn(3)) {
-        newLootType = "LOOT_KIDART";
+        newLootType = LootTypeIds.kidArt;
       } else if (oneIn(2)) {
-        newLootType = "LOOT_DIRTYSOCK";
+        newLootType = LootTypeIds.dirtySock;
       } else {
-        newLootType = "LOOT_FAMILYPHOTO";
+        newLootType = LootTypeIds.familyPhoto;
       }
     case SiteType.bank:
       if (oneIn(4)) {
-        newLootType = "LOOT_WATCH";
+        newLootType = LootTypeIds.watch;
       } else if (oneIn(3)) {
-        newLootType = "LOOT_CELLPHONE";
+        newLootType = LootTypeIds.cellphone;
       } else if (oneIn(2)) {
-        newLootType = "LOOT_PDA";
+        newLootType = LootTypeIds.pda;
       } else {
-        newLootType = "LOOT_COMPUTER";
+        newLootType = LootTypeIds.computer;
       }
     case SiteType.apartment:
       if (oneIn(25)) {
@@ -1793,15 +2184,15 @@ Item? lootItemForSite(SiteType site) {
         ];
         newArmorType = rndArmors.random;
       } else if (oneIn(5)) {
-        newLootType = "LOOT_CELLPHONE";
+        newLootType = LootTypeIds.cellphone;
       } else if (oneIn(4)) {
-        newLootType = "LOOT_SILVERWARE";
+        newLootType = LootTypeIds.silverware;
       } else if (oneIn(3)) {
-        newLootType = "LOOT_TRINKET";
+        newLootType = LootTypeIds.trinket;
       } else if (oneIn(2)) {
-        newLootType = "LOOT_CHEAPJEWELERY";
+        newLootType = LootTypeIds.cheapJewelry;
       } else {
-        newLootType = "LOOT_COMPUTER";
+        newLootType = LootTypeIds.computer;
       }
     case SiteType.upscaleApartment:
       if (oneIn(30)) {
@@ -1830,33 +2221,33 @@ Item? lootItemForSite(SiteType site) {
         ];
         newArmorType = rndArmors.random;
       } else if (oneIn(10)) {
-        newLootType = "LOOT_EXPENSIVEJEWELERY";
+        newLootType = LootTypeIds.expensiveJewelry;
       } else if (oneIn(5)) {
-        newLootType = "LOOT_CELLPHONE";
+        newLootType = LootTypeIds.cellphone;
       } else if (oneIn(4)) {
-        newLootType = "LOOT_SILVERWARE";
+        newLootType = LootTypeIds.silverware;
       } else if (oneIn(3)) {
-        newLootType = "LOOT_PDA";
+        newLootType = LootTypeIds.pda;
       } else if (oneIn(2)) {
-        newLootType = "LOOT_CHEAPJEWELERY";
+        newLootType = LootTypeIds.cheapJewelry;
       } else {
-        newLootType = "LOOT_COMPUTER";
+        newLootType = LootTypeIds.computer;
       }
     case SiteType.cosmeticsLab:
     case SiteType.nuclearPlant:
     case SiteType.geneticsLab:
       if (oneIn(20)) {
-        newLootType = "LOOT_RESEARCHFILES";
+        newLootType = LootTypeIds.researchFiles;
       } else if (oneIn(2)) {
-        newLootType = "LOOT_LABEQUIPMENT";
+        newLootType = LootTypeIds.labEquipment;
       } else if (oneIn(2)) {
-        newLootType = "LOOT_COMPUTER";
+        newLootType = LootTypeIds.computer;
       } else if (oneIn(5)) {
-        newLootType = "LOOT_PDA";
+        newLootType = LootTypeIds.pda;
       } else if (oneIn(5)) {
-        newLootType = "LOOT_CHEMICAL";
+        newLootType = LootTypeIds.chemical;
       } else {
-        newLootType = "LOOT_COMPUTER";
+        newLootType = LootTypeIds.computer;
       }
     case SiteType.policeStation:
       if (oneIn(25)) {
@@ -1881,23 +2272,23 @@ Item? lootItemForSite(SiteType site) {
         ];
         newArmorType = rndArmors.random;
       } else if (oneIn(20)) {
-        newLootType = "LOOT_POLICERECORDS";
+        newLootType = LootTypeIds.policeRecords;
       } else if (oneIn(3)) {
-        newLootType = "LOOT_CELLPHONE";
+        newLootType = LootTypeIds.cellphone;
       } else if (oneIn(2)) {
-        newLootType = "LOOT_PDA";
+        newLootType = LootTypeIds.pda;
       } else {
-        newLootType = "LOOT_COMPUTER";
+        newLootType = LootTypeIds.computer;
       }
     case SiteType.courthouse:
       if (oneIn(20)) {
-        newLootType = "LOOT_JUDGEFILES";
+        newLootType = LootTypeIds.judgeFiles;
       } else if (oneIn(3)) {
-        newLootType = "LOOT_CELLPHONE";
+        newLootType = LootTypeIds.cellphone;
       } else if (oneIn(2)) {
-        newLootType = "LOOT_PDA";
+        newLootType = LootTypeIds.pda;
       } else {
-        newLootType = "LOOT_COMPUTER";
+        newLootType = LootTypeIds.computer;
       }
     case SiteType.prison:
       if (oneIn(5)) {
@@ -1907,13 +2298,13 @@ Item? lootItemForSite(SiteType site) {
       }
     case SiteType.whiteHouse:
       if (oneIn(20)) {
-        newLootType = "LOOT_SECRETDOCUMENTS";
+        newLootType = LootTypeIds.secretDocuments;
       } else if (oneIn(3)) {
-        newLootType = "LOOT_CELLPHONE";
+        newLootType = LootTypeIds.cellphone;
       } else if (oneIn(2)) {
-        newLootType = "LOOT_PDA";
+        newLootType = LootTypeIds.pda;
       } else {
-        newLootType = "LOOT_COMPUTER";
+        newLootType = LootTypeIds.computer;
       }
     case SiteType.armyBase:
       if (oneIn(3)) {
@@ -1927,13 +2318,13 @@ Item? lootItemForSite(SiteType site) {
         List<String> rndArmors = ["CLOTHING_ARMYARMOR"];
         newArmorType = rndArmors.random;
       } else if (oneIn(20)) {
-        newLootType = "LOOT_SECRETDOCUMENTS";
+        newLootType = LootTypeIds.secretDocuments;
       } else if (oneIn(3)) {
-        newLootType = "LOOT_CELLPHONE";
+        newLootType = LootTypeIds.cellphone;
       } else if (oneIn(2)) {
-        newLootType = "LOOT_WATCH";
+        newLootType = LootTypeIds.watch;
       } else {
-        newLootType = "LOOT_TRINKET";
+        newLootType = LootTypeIds.trinket;
       }
     case SiteType.intelligenceHQ:
       if (oneIn(24)) {
@@ -1946,35 +2337,35 @@ Item? lootItemForSite(SiteType site) {
         ];
         newWeaponType = rndWeps.random;
       } else if (oneIn(20)) {
-        newLootType = "LOOT_SECRETDOCUMENTS";
+        newLootType = LootTypeIds.secretDocuments;
       } else if (oneIn(3)) {
-        newLootType = "LOOT_CELLPHONE";
+        newLootType = LootTypeIds.cellphone;
       } else if (oneIn(2)) {
-        newLootType = "LOOT_PDA";
+        newLootType = LootTypeIds.pda;
       } else {
-        newLootType = "LOOT_COMPUTER";
+        newLootType = LootTypeIds.computer;
       }
     case SiteType.fireStation:
       if (oneIn(25)) {
         newArmorType = "CLOTHING_BUNKERGEAR";
       } else if (oneIn(2)) {
-        newLootType = "LOOT_TRINKET";
+        newLootType = LootTypeIds.trinket;
       } else {
-        newLootType = "LOOT_COMPUTER";
+        newLootType = LootTypeIds.computer;
       }
     case SiteType.sweatshop:
-      newLootType = "LOOT_FINECLOTH";
+      newLootType = LootTypeIds.fineCloth;
     case SiteType.dirtyIndustry:
-      newLootType = "LOOT_CHEMICAL";
+      newLootType = LootTypeIds.chemical;
     case SiteType.corporateHQ:
       if (oneIn(50)) {
-        newLootType = "LOOT_CORPFILES";
+        newLootType = LootTypeIds.corpFiles;
       } else if (oneIn(3)) {
-        newLootType = "LOOT_CELLPHONE";
+        newLootType = LootTypeIds.cellphone;
       } else if (oneIn(2)) {
-        newLootType = "LOOT_PDA";
+        newLootType = LootTypeIds.pda;
       } else {
-        newLootType = "LOOT_COMPUTER";
+        newLootType = LootTypeIds.computer;
       }
     case SiteType.ceoHouse:
       if (oneIn(50)) {
@@ -1988,45 +2379,45 @@ Item? lootItemForSite(SiteType site) {
         newArmorType = rndArmors.random;
       }
       if (oneIn(8)) {
-        newLootType = "LOOT_TRINKET";
+        newLootType = LootTypeIds.trinket;
       } else if (oneIn(7)) {
-        newLootType = "LOOT_WATCH";
+        newLootType = LootTypeIds.watch;
       } else if (oneIn(6)) {
-        newLootType = "LOOT_PDA";
+        newLootType = LootTypeIds.pda;
       } else if (oneIn(5)) {
-        newLootType = "LOOT_CELLPHONE";
+        newLootType = LootTypeIds.cellphone;
       } else if (oneIn(4)) {
-        newLootType = "LOOT_SILVERWARE";
+        newLootType = LootTypeIds.silverware;
       } else if (oneIn(3)) {
-        newLootType = "LOOT_CHEAPJEWELERY";
+        newLootType = LootTypeIds.cheapJewelry;
       } else if (oneIn(2)) {
-        newLootType = "LOOT_FAMILYPHOTO";
+        newLootType = LootTypeIds.familyPhoto;
       } else {
-        newLootType = "LOOT_COMPUTER";
+        newLootType = LootTypeIds.computer;
       }
     case SiteType.amRadioStation:
       if (oneIn(20)) {
-        newLootType = "LOOT_AMRADIOFILES";
+        newLootType = LootTypeIds.amRadioFiles;
       } else if (oneIn(4)) {
-        newLootType = "LOOT_MICROPHONE";
+        newLootType = LootTypeIds.microphone;
       } else if (oneIn(3)) {
-        newLootType = "LOOT_PDA";
+        newLootType = LootTypeIds.pda;
       } else if (oneIn(2)) {
-        newLootType = "LOOT_CELLPHONE";
+        newLootType = LootTypeIds.cellphone;
       } else {
-        newLootType = "LOOT_COMPUTER";
+        newLootType = LootTypeIds.computer;
       }
     case SiteType.cableNewsStation:
       if (oneIn(20)) {
-        newLootType = "LOOT_CABLENEWSFILES";
+        newLootType = LootTypeIds.cableNewsFiles;
       } else if (oneIn(4)) {
-        newLootType = "LOOT_MICROPHONE";
+        newLootType = LootTypeIds.microphone;
       } else if (oneIn(3)) {
-        newLootType = "LOOT_PDA";
+        newLootType = LootTypeIds.pda;
       } else if (oneIn(2)) {
-        newLootType = "LOOT_CELLPHONE";
+        newLootType = LootTypeIds.cellphone;
       } else {
-        newLootType = "LOOT_COMPUTER";
+        newLootType = LootTypeIds.computer;
       }
     case SiteType.barAndGrill:
     case SiteType.bunker:
@@ -2058,15 +2449,15 @@ Item? lootItemForSite(SiteType site) {
           newArmorType = rndArmors.random;
         default:
           if (oneIn(5)) {
-            newLootType = "LOOT_CELLPHONE";
+            newLootType = LootTypeIds.cellphone;
           } else if (oneIn(4)) {
-            newLootType = "LOOT_SILVERWARE";
+            newLootType = LootTypeIds.silverware;
           } else if (oneIn(3)) {
-            newLootType = "LOOT_TRINKET";
+            newLootType = LootTypeIds.trinket;
           } else if (oneIn(2)) {
-            newLootType = "LOOT_CHEAPJEWELERY";
+            newLootType = LootTypeIds.cheapJewelry;
           } else {
-            newLootType = "LOOT_COMPUTER";
+            newLootType = LootTypeIds.computer;
           }
       }
     default:

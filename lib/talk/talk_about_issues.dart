@@ -191,7 +191,7 @@ Map<Law, _DiscussionPoint> _discussionPoints = {
       "cheap products like shampoo and mascara.",
       "Every time you eat chicken, a chicken ghost haunts your freezer.",
       "We've come so far, but animals are still denied the right to vote!",
-      "Don't pretend animals are human."),
+      "Who cares?  They're animals.  They don't have souls like we do."),
   Law.policeReform: _DiscussionPoint(
       "Systemic racism and lack of accountability in policing disproportionately",
       "harm marginalized communities.",
@@ -209,19 +209,19 @@ Map<Law, _DiscussionPoint> _discussionPoints = {
       "They're just punishing murder by committing more murder!",
       "They executed this one dude, and like, his head caught on fire.",
       "You can go to prison for life for serious crimes.",
-      "Some people deserve to die."),
+      "Some people just deserve to die.  I see no problem with it."),
   Law.nuclearPower: _DiscussionPoint(
       "Radioactive waste is being stored all over the country, and it poses",
       "a serious threat to many families, even in this neighborhood.",
       "Have you seen Godzilla?  Nuclear power is bad!",
       "Some people support legalizing nuclear power.",
-      "Nuclear power is clean."),
+      "A leftist who hates nuclear power?  Huh, I thought y'all went extinct."),
   Law.pollution: _DiscussionPoint(
       "Industries that stop at nothing to become more profitable are polluting",
       "the environment in ways that hurt not only humans, but animals too.",
       "You wanna look like the Toxic Avenger?  Oppose pollution!",
       "We have a long way to go before we reach zero carbon emissions.",
-      "It's not that bad."),
+      "You know that's a hoax, right?  I don't know why I'm talking to you."),
   Law.labor: _DiscussionPoint(
       "Corporate greed has turned full-time jobs into poverty traps, while",
       "workers' rights are eroded daily.",
@@ -233,7 +233,7 @@ Map<Law, _DiscussionPoint> _discussionPoints = {
       "against laws that treat them as second-class citizens.",
       "The man doesn't even know you is a pronoun.",
       "We still have work to do ensuring society treats trans people fairly.",
-      "I hate trans people."),
+      "Your gender ideology is a threat to the fabric of our society."),
   Law.corporate: _DiscussionPoint(
       "Corporate executives use giant corporations as a means to become parasites",
       "that suck wealth out of this country and put it into their pockets.",
@@ -245,7 +245,7 @@ Map<Law, _DiscussionPoint> _discussionPoints = {
       "this country.  People have to watch what they write -- even what they read.",
       "The government won't let me fucking swear!",
       "Free speech is an eternal struggle.  We could easily slide back.",
-      "Don't be offensive and you'll be fine.")
+      "Just follow the law and don't say vile and disgusting things.")
     ..noProfanityStupidPrompt =
         "[The government is great and I have nothing to say about it.]",
   Law.flagBurning: _DiscussionPoint(
@@ -260,43 +260,43 @@ Map<Law, _DiscussionPoint> _discussionPoints = {
       "a right to walk around with the power to murder at any moment.",
       "Guns *kill* people.",
       "We can't finish banning guns until we repeal the second amendment.",
-      "Without guns, we're slaves to the Government."),
+      "The only reason we're free is because the Government fears guns."),
   Law.taxes: _DiscussionPoint(
       "The tax code has been designed to perpetuate an unjust class",
       "structure that is keeping you oppressed.",
       "Rich people, like, have money, man.",
       "We should raise taxes even more.  There's so much more we can do.",
-      "I want to pay lower taxes."),
+      "Taxes are a drag on the economy, not to mention a form of theft."),
   Law.genderEquality: _DiscussionPoint(
       "Sexism is still pervasive, in subtle ways, and women make much less",
       "than they deserve for their labor.",
       "We need more women!",
       "Despite our progress, there's more to be done for women's rights.",
-      "Why don't you go burn a bra or something?"),
+      "Go cry with your other misandrist friends."),
   Law.civilRights: _DiscussionPoint(
       "Racial discrimination isn't a relic of the past, it's woven into the",
       "fabric of our institutions, holding back true equality.",
       "Racism put on a suit and got a desk job.",
       "Implicit bias is something we all need to struggle against.",
-      "Reverse discrimination is still discrimination."),
+      "Your efforts support a racist regime of reverse discrimination."),
   Law.drugs: _DiscussionPoint(
       "The government's drug policy is a mess.  We need to stop filling prisons",
       "with drug users, and only intervene when people really need help.",
       "Dude, the government won't let you do drugs.",
       "You can still be fired for using drugs, even without a performance issue.",
-      "Drugs are a terrible influence on society."),
+      "Drugs ruin lives, create crime, and are a terrible influence on society."),
   Law.immigration: _DiscussionPoint(
       "Millions of people are treated like criminals for living normal lives.",
       "Immigration is an act of hope that deserves our respect, not rejection.",
       "Borders are just lines on a map, man.",
       "We shouldn't rest until we have truly open borders.",
-      "Immigration undermines our economy and culture."),
+      "Immigration deeply and fundamentally undermines our economy and culture."),
   Law.elections: _DiscussionPoint(
       "Political favors are bought and sold for campaign contributions,",
       "and the voting system enforces two party dominance.",
       "The politicians are just tools of the corporations!",
       "Politicians who self-finance their campaigns essentially buy their office.",
-      "Unregulated campaigning is a matter of free speech."),
+      "Election finance law is the worst kind of suppression of political speech."),
   Law.military: _DiscussionPoint(
       "We spend billions on weapons while schools and hospitals beg for funding.",
       null,
@@ -308,11 +308,29 @@ Map<Law, _DiscussionPoint> _discussionPoints = {
       "the government torture and abuse human beings on our behalf.",
       "The government forces people to do extreme sports like waterboarding!",
       "We need to stay vigilant about respecting human rights at all times.",
-      "The terrorists would do worse to us."),
+      "What are you, a terrorist sympathizer?"),
   Law.prisons: _DiscussionPoint(
       "The prison system doesn't help criminals by providing rehabilitation, so",
       "when they get released, they mostly become criminals again.",
       "They lock people in tiny rooms with no snacks.  That's messed up.",
       "We need to keep moving and work to achieve a world without prisons.",
-      "Criminals deserve what they get in prison."),
+      "Criminals deserve everything they get and more.  Just follow the law!"),
+  Law.housing: _DiscussionPoint(
+      "The cost of housing goes up every year, and it's getting harder and harder",
+      "for people to afford it. The free market is failing us.",
+      "I was just thinking...  you know homeless people are human, right?",
+      "Housing is a human right, but it still costs money.  It should be free.",
+      "It's a fair system.  Nobody owes you their labor to build a house for free."),
+  Law.healthcare: _DiscussionPoint(
+      "Every year people are finding it harder and harder to afford essential",
+      "healthcare services.  We need to treat healthcare as a human right.",
+      "Man, don't you hate it when your doctor waves a bill in your face?",
+      "The latest UN report says we're still only #7 in the world for healthcare.",
+      "Doctors aren't your slaves, you're not entitled to their labor for free."),
+  Law.retirement: _DiscussionPoint(
+      "When we get old, we need to be able to retire and not have to worry about",
+      "money.  Caring for our retirees is a gift to ourselves as much as them.",
+      "Last night I had a dream I was old and homeless and had to beg for food.",
+      "To ensure quality of life, we need to improve retirement benefits.",
+      "Pay for your own retirement, don't try to steal from others for it."),
 };

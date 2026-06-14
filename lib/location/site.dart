@@ -274,6 +274,50 @@ void initSiteName(Site loc) {
         loc.name = "${lastName(Gender.whiteMalePatriarch)} Prison";
         loc.shortName = "Prison";
       }
+    case SiteType.universityHospital:
+      switch (loc.city.name) {
+        case "New York, NY":
+          loc.name = "NewYork-Presbyterian Hospital";
+          loc.shortName = "NYP Hospital";
+        case "Los Angeles, CA":
+          loc.name = "LA General Medical Center";
+          loc.shortName = "LA General";
+        case "Seattle, WA":
+          loc.name = "UW Medical Center";
+          loc.shortName = "UW Medical";
+        case "Washington DC":
+          loc.name = "MedStar Washington";
+          loc.shortName = "MedStar";
+        default:
+          loc.name = "University Hospital";
+          loc.shortName = "Hospital";
+      }
+    case SiteType.nursingHome:
+      const adjective = [
+        "Happy",
+        "Gentle",
+        "Quiet",
+        "Radiant",
+        "Loving",
+        "Tender",
+        "Joyful"
+      ];
+      const noun = [
+        "Journey",
+        "Moments",
+        "Compass",
+        "Touch",
+        "Oasis",
+        "Care",
+        "Reflections"
+      ];
+      loc.name = "${adjective.random} ${noun.random} Nursing Home";
+      loc.shortName = "NursingHome";
+    case SiteType.insuranceOffice:
+      const adjective = ["United", "Human", "Blue", "First", "Golden"];
+      const noun = ["Cross", "Health", "Care", "Life", "Well"];
+      loc.name = "${adjective.random} ${noun.random} Insurance";
+      loc.shortName = "Insurance";
     case SiteType.nuclearPlant:
       if (laws[Law.nuclearPower] == DeepAlignment.eliteLiberal) {
         loc.rename("Nuclear Waste Center", "Nuclear");

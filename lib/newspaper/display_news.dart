@@ -433,6 +433,14 @@ Future<void> displayStory(NewsStory ns, View? header) async {
             if (did(Drama.musicalRampage)) {
               addDrama("a musical rampage", "performed an impromptu concert");
             }
+            if (did(Drama.openedNursingHomeSafe)) {
+              addDrama("accessed private documents",
+                  "uncovered evidence of elder abuse");
+            }
+            if (did(Drama.openedInsuranceSafe)) {
+              addDrama("accessed private documents",
+                  "uncovered evidence of insurance fraud");
+            }
 
             story += "."
                 "&r";

@@ -45,6 +45,8 @@ enum SiteType {
   bunker("Bunker", "Robert E. Lee Bunker"),
   armyBase("Army Base", "Army Base"),
   bank("Bank", "First American Bank"),
+  insuranceOffice("Insurance", "Health Insurance HQ"),
+  nursingHome("Nurs. Home", "Nursing Home"),
   liberalPartyHQ("Lib. HQ", "Liberal Party HQ"),
   whiteHouse("WhiteHouse", "White House"),
   // districts
@@ -72,6 +74,8 @@ int securityable(SiteType type) {
     case SiteType.corporateHQ:
     case SiteType.amRadioStation:
     case SiteType.cableNewsStation:
+    case SiteType.insuranceOffice:
+    case SiteType.nursingHome:
       return 1;
     //These places have better quality locks.
     case SiteType.bank:

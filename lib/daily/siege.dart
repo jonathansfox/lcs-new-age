@@ -109,10 +109,9 @@ Future<void> siegeCheck() async {
         // Accumulate heat from liberals who have it,
         // but let them bleed it off in the process
         if (p.heat > 0) {
-          debugPrint(
-              "Heat from ${p.name}: ${p.heat} -> ${sqrt(p.heat).ceil()}");
-          crimes += sqrt(p.heat).ceil();
-          p.heat -= min(max(1, p.heat ~/ 100), p.heat);
+          debugPrint("Heat from ${p.name}: ${p.heat} -> ${p.heat}");
+          crimes += p.heat;
+          p.heat -= min(max(1, p.heat ~/ 10), p.heat);
         }
       }
 

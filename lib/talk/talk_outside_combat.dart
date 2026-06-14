@@ -73,9 +73,6 @@ Future<bool> talkOutsideCombat(Creature a, Creature tk) async {
     }
   }
   recruitOverview += ". ";
-  if (a.scheduldeDates > 0 || a.scheduledMeetings > 0) {
-    recruitOverview += "&m${a.gender.heSheCap} ";
-  }
   if (a.relationshipsLeft <= 0) {
     recruitOverview +=
         "&m${a.gender.heSheCap} cannot maintain any${a.maxRelationships > 0 ? " more " : " "}relationships";

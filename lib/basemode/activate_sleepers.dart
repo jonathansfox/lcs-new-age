@@ -18,7 +18,7 @@ Future<void> activateSleepers() async {
           p.sleeperAgent &&
           p.align == Alignment.liberal &&
           !p.inHiding &&
-          p.clinicMonthsLeft == 0 &&
+          !p.hospitalized &&
           p.vacationDaysLeft == 0)
       .toList();
 
@@ -269,7 +269,7 @@ Future<void> activateSleepersBulk() async {
           p.sleeperAgent &&
           p.align == Alignment.liberal &&
           !p.inHiding &&
-          p.clinicMonthsLeft == 0 &&
+          !p.hospitalized &&
           p.vacationDaysLeft == 0)
       .toList();
 

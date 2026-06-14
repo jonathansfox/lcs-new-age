@@ -187,6 +187,19 @@ int displayStoryHeader(NewsStory ns, View? header) {
                       ["SPIN CYCLE", "BIAS TOWN", "PUNDITS DOWN"].random,
                       5,
                       ns);
+                case View.healthcare:
+                  displayCenteredNewsFont(
+                      ["HEALTHCARE", "SICK SYSTEM", "UNCARING"].random, 5, ns);
+                case View.retirement:
+                  displayCenteredNewsFont(
+                      ["ELDER ABUSE", "FOR SENIORS", "FOR GRANDMA"].random,
+                      5,
+                      ns);
+                case View.housing:
+                  displayCenteredNewsFont(
+                      ["RENT SEEKERS", "HOUSE CRISIS", "HOMELESS"].random,
+                      5,
+                      ns);
                 default:
                   displayCenteredNewsFont(
                       [

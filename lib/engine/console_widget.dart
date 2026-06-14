@@ -117,17 +117,19 @@ class _ConsoleWidgetState extends State<ConsoleWidget> {
 
   double textSpanWidth = 1;
   double textSpanHeight = 1;
+  double fontSize = 16;
 
   @override
   void didChangeDependencies() {
+    fontSize = gameOptions.fontSize;
     widget.console.flush = () => setState(() {});
     super.didChangeDependencies();
     TextSpan fg = consoleDataToTextSpan(false);
     TextPainter textPainter = TextPainter(
-      strutStyle: const StrutStyle(
+      strutStyle: StrutStyle(
         height: 1,
         leading: 0,
-        fontSize: 20,
+        fontSize: fontSize,
       ),
       text: fg,
       textDirection: TextDirection.ltr,
@@ -214,7 +216,7 @@ class _ConsoleWidgetState extends State<ConsoleWidget> {
         text: text,
         style: TextStyle(
           fontFamily: "SourceCodePro",
-          fontSize: 16,
+          fontSize: gameOptions.fontSize,
           color: foreground,
           backgroundColor: bg ? background : null,
           //leadingDistribution: TextLeadingDistribution.even,
@@ -253,6 +255,9 @@ class _ConsoleWidgetState extends State<ConsoleWidget> {
 
   @override
   Widget build(BuildContext context) {
+    if (gameOptions.fontSize != fontSize) {
+      didChangeDependencies();
+    }
     focusAttachment.reparent();
     TextSpan fg = consoleDataToTextSpan(false);
     return Material(
@@ -313,6 +318,14 @@ class _ConsoleWidgetState extends State<ConsoleWidget> {
           int x = (details.localPosition.dx / cellWidth).floor();
           int y = (details.localPosition.dy / cellHeight).floor();
           console.handleMouseEvent(y, x, true);
+        },
+        onPanEnd: (details) {
+          // Convert pan coordinates to console coordinates
+          double cellWidth = textSpanWidth / console.width;
+          double cellHeight = textSpanHeight / console.height;
+          int x = (details.localPosition.dx / cellWidth).floor();
+          int y = (details.localPosition.dy / cellHeight).floor();
+          console.handleMouseEvent(y, x, false);
         },
         onTapUp: (details) {
           double cellWidth = textSpanWidth / console.width;

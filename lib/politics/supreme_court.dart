@@ -234,6 +234,24 @@ Future<void> supremeCourt() async {
           } else {
             addstr("permit harsh treatment of prisoners");
           }
+        case Law.housing:
+          if (scasedir[c] == 1) {
+            addstr("expand tenant rights");
+          } else {
+            addstr("expand landlord rights");
+          }
+        case Law.healthcare:
+          if (scasedir[c] == 1) {
+            addstr("extend healthcare rights");
+          } else {
+            addstr("reduce healthcare access");
+          }
+        case Law.retirement:
+          if (scasedir[c] == 1) {
+            addstr("guarantee retirement benefits");
+          } else {
+            addstr("limit retirement benefits");
+          }
       }
       addstrc(lightGray, ".");
 

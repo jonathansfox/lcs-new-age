@@ -31,14 +31,18 @@ Future<int> handleExecution(InterrogationSession intr, Creature lead,
     setColor(purple);
     cr.die();
     stats.kills++;
-    mvaddstr(y++, 0, "${lead.name} executes ${cr.name} by ");
-    addstr([
-      "burning photos of Ronald Reagan in front of ${cr.gender.himHer}.",
-      "telling ${cr.gender.himHer} that taxes have been increased.",
-      "forcing ${cr.gender.himHer} to listen to right-wing radio for 24 hours straight.",
-      "showing ${cr.gender.himHer} a graph of rising global temperatures.",
-      "forcing ${cr.gender.himHer} to actually read a book.",
-    ].random);
+    addparagraph(
+        y++,
+        0,
+        "${lead.name} executes ${cr.name} by ${[
+          "burning photos of Ronald Reagan in front of ${cr.gender.himHer}.",
+          "telling ${cr.gender.himHer} that taxes have been increased.",
+          "forcing ${cr.gender.himHer} to listen to right-wing radio for 24 hours straight.",
+          "showing ${cr.gender.himHer} a graph of rising global temperatures.",
+          "forcing ${cr.gender.himHer} to actually read a book.",
+        ].random}");
+
+    y = console.y + 1;
 
     await getKey();
 

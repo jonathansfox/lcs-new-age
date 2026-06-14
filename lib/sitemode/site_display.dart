@@ -111,11 +111,19 @@ void printSiteMap(int x, int y, int z) {
       str = "Lab Equipment";
     case TileSpecial.armory:
       str = "Armory";
+    case TileSpecial.nursingHomeManager:
+      str = "Manager's Office";
+    case TileSpecial.insuranceCEO:
+      str = "CEO's Office";
     case TileSpecial.ceoOffice:
       str = "CEO's Study";
     case TileSpecial.ceoSafe:
     case TileSpecial.corporateFiles:
+    case TileSpecial.nursingHomeFiles:
+    case TileSpecial.insuranceFiles:
       str = "Safe";
+    case TileSpecial.nursingHomePatient:
+      str = "Patient's Room";
     case TileSpecial.radioBroadcastStudio:
       str = "Radio Broadcast Room";
     case TileSpecial.cableBroadcastStudio:
@@ -301,6 +309,7 @@ void drawTileContent(SiteTile tile) {
         TileSpecial.ovalOfficeSW ||
         TileSpecial.ovalOfficeSE =>
           politics.exec[Exec.president]!.color,
+        TileSpecial.nursingHomePatientDone => darkBlue,
         _ => yellow,
       });
       addchar(switch (tile.special) {
@@ -349,6 +358,12 @@ void drawTileContent(SiteTile tile) {
         TileSpecial.ovalOfficeNE => "┐",
         TileSpecial.ovalOfficeSW => "└",
         TileSpecial.ovalOfficeSE => "┘",
+        TileSpecial.nursingHomeFiles => "\$",
+        TileSpecial.nursingHomeManager => "O",
+        TileSpecial.nursingHomePatient => "P",
+        TileSpecial.nursingHomePatientDone => "P",
+        TileSpecial.insuranceFiles => "\$",
+        TileSpecial.insuranceCEO => "O",
       });
     } else if (tile.siegeTrap) {
       setColor(yellow);
@@ -475,6 +490,8 @@ void printSiteMapSmall(int x, int y, int z) {
       str = "CEO's Study";
     case TileSpecial.ceoSafe:
     case TileSpecial.corporateFiles:
+    case TileSpecial.nursingHomeFiles:
+    case TileSpecial.insuranceFiles:
       str = "Safe";
     case TileSpecial.radioBroadcastStudio:
       str = "Radio Broadcast Room";
@@ -513,6 +530,11 @@ void printSiteMapSmall(int x, int y, int z) {
     case TileSpecial.ovalOfficeSW:
     case TileSpecial.ovalOfficeSE:
       str = "President's Office";
+    case TileSpecial.nursingHomePatient:
+    case TileSpecial.nursingHomePatientDone:
+      str = "Patient's Room";
+    case TileSpecial.nursingHomeManager:
+      str = "Manager's Office";
     default:
       str = "";
   }

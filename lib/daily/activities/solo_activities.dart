@@ -50,7 +50,7 @@ Future<void> soloActivities(bool disbanding) async {
   for (Creature p in pool) {
     p.income = 0;
     if (!p.alive) continue;
-    if (p.clinicMonthsLeft > 0) continue;
+    if (p.hospitalized) continue;
     if (p.vacationDaysLeft > 0) continue;
     if (p.hidingDaysLeft != 0) continue;
     p.location ??= p.base;

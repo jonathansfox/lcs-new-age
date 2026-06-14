@@ -310,7 +310,55 @@ Elements marked as hardcoded may have their values overridden by the game.
             <attack_description>laughs about the Laffer curve with</attack_description>
             <attack_description>praises high wages to</attack_description>
             <attack_description>says life isn't about money to</attack_description>
-            <attack_description>poses with a pride pin at</attack_description>
+            <attack_description>poses with a pride pin in front of</attack_description>
+            <social_damage>true</social_damage>
+            <skill>BUSINESS</skill>
+            <stuns>true</stuns>
+        </social_attack>
+    </creaturetype>
+    <creaturetype idname="CREATURE_INSURANCE_CEO">
+        <type_name>Insurance CEO</type_name>
+        <!-- <encounter_name> Hardcoded -->
+        <armor>CLOTHING_EXPENSIVESUIT</armor>
+        <age>MIDDLEAGED</age>
+        <alignment>CONSERVATIVE</alignment>
+        <attributes>
+            <charisma>7-10</charisma>
+            <intelligence>7-10</intelligence>
+            <wisdom>12</wisdom>
+        </attributes>
+        <gender>MALE BIAS</gender>
+        <infiltration>100</infiltration>
+        <juice>1000</juice>
+        <money>1000-2000</money>
+        <skills>
+            <business>10-15</business>
+            <dodge>10-15</dodge>
+            <firstAid>1-2</firstAid>
+        </skills>
+        <seethroughstealth>5</seethroughstealth>
+        <seethroughdisguise>11</seethroughdisguise>
+        <social_attack>
+            <priority>1</priority>
+            <alignment_restriction>CONSERVATIVE</alignment_restriction>
+            <attack_description>explains the insurance market to</attack_description>
+            <attack_description>denies the insurance claim of</attack_description>
+            <attack_description>criticizes healthcare reform to</attack_description>
+            <attack_description>frames capitalism as progressive to</attack_description>
+            <attack_description>offers a VP position to</attack_description>
+            <attack_description>shows a $1000 bill to</attack_description>
+            <attack_description>offers stock options to</attack_description>
+            <social_damage>true</social_damage>
+            <skill>BUSINESS</skill>
+            <stuns>true</stuns>
+        </social_attack>
+        <social_attack>
+            <priority>2</priority>
+            <attack_description>endorses single-payer healthcare to</attack_description>
+            <attack_description>grants the insurance claim of</attack_description>
+            <attack_description>praises high wages to</attack_description>
+            <attack_description>says life isn't about money to</attack_description>
+            <attack_description>poses with a pride pin in front of</attack_description>
             <social_damage>true</social_damage>
             <skill>BUSINESS</skill>
             <stuns>true</stuns>
@@ -436,6 +484,23 @@ Elements marked as hardcoded may have their values overridden by the game.
         <money>120-240</money>
         <skills>
             <business>3-6</business>
+        </skills>
+    </creaturetype>
+    <creaturetype idname="CREATURE_NURSING_HOME_MANAGER">
+        <type_name>Nursing Home Admin</type_name>
+        <weapon>WEAPON_NONE</weapon>
+        <armor>CLOTHING_CLOTHES</armor>
+        <age>MATURE</age>
+        <gender>MALE BIAS</gender>
+        <alignment>CONSERVATIVE</alignment>
+        <attributes>
+            <intelligence>4-10</intelligence>
+            <wisdom>4-10</wisdom>
+        </attributes>
+        <money>120-240</money>
+        <skills>
+            <business>3-6</business>
+            <firstAid>1-2</firstAid>
         </skills>
     </creaturetype>
     <creaturetype idname="CREATURE_TEENAGER">
@@ -1183,7 +1248,6 @@ Elements marked as hardcoded may have their values overridden by the game.
     <creaturetype idname="CREATURE_OFFICEWORKER">
         <type_name>Office Worker</type_name>
         <weapon>CIVILIAN</weapon>
-        <armor>CLOTHING_CLOTHES</armor>
         <armor>CLOTHING_CHEAPSUIT</armor>
         <age>MATURE</age>
         <money>20-50</money>
@@ -1191,6 +1255,26 @@ Elements marked as hardcoded may have their values overridden by the game.
             <business>0-2</business>
         </skills>
         <recruit_activity_difficulty>4</recruit_activity_difficulty>
+    </creaturetype>
+    <creaturetype idname="CREATURE_AUDITOR">
+        <type_name>Auditor</type_name>
+        <weapon>CIVILIAN</weapon>
+        <armor>CLOTHING_CHEAPSUIT</armor>
+        <age>MATURE</age>
+        <money>40-80</money>
+        <skills>
+            <business>2-4</business>
+        </skills>
+    </creaturetype>
+    <creaturetype idname="CREATURE_ACTUARY">
+        <type_name>Actuary</type_name>
+        <weapon>CIVILIAN</weapon>
+        <armor>CLOTHING_CHEAPSUIT</armor>
+        <age>MATURE</age>
+        <money>40-80</money>
+        <skills>
+            <business>2-4</business>
+        </skills>
     </creaturetype>
     <creaturetype idname="CREATURE_FOOTBALLCOACH">
         <type_name>Football Coach</type_name>
@@ -1842,6 +1926,99 @@ Elements marked as hardcoded may have their values overridden by the game.
         </skills>
         <talkreceptive>1</talkreceptive>
         <recruit_activity_difficulty>4</recruit_activity_difficulty>
+    </creaturetype>
+    <creaturetype idname="CREATURE_NURSING_HOME_ADMIN">
+        <type_name>Nursing Home Admin</type_name>
+        <alignment>CONSERVATIVE</alignment>
+        <armor>CLOTHING_EXPENSIVESUIT</armor>
+        <age>MIDDLEAGED</age>
+        <infiltration>100</infiltration>
+        <juice>100-200</juice>
+        <money>100-200</money>
+        <gender>MALE BIAS</gender>
+        <attributes>
+            <wisdom>8-10</wisdom>
+        </attributes>
+        <skills>
+            <business>5-8</business>
+            <psychology>2-6</psychology>
+            <persuasion>2-6</persuasion>
+            <firstAid>1-2</firstAid>
+        </skills>
+        <seethroughstealth>5</seethroughstealth>
+        <seethroughdisguise>11</seethroughdisguise>
+        <social_attack>
+            <priority>1</priority>
+            <alignment_restriction>CONSERVATIVE</alignment_restriction>
+            <attack_description>redirects all inquiries to</attack_description>
+            <attack_description>dissembles about the cost of care to</attack_description>
+            <attack_description>philosophizes about aging to</attack_description>
+            <attack_description>expounds on the dignity of aging to</attack_description>
+            <attack_description>explains the importance of routine to</attack_description>
+            <attack_description>reframes neglect as empowerment to</attack_description>
+            <attack_description>frames cutbacks as prudent stewardship to</attack_description>
+            <attack_description>warns aggression will increase costs to</attack_description>
+            <attack_description>promises key improvements to</attack_description>
+            <attack_description>frames empathy as a luxury to</attack_description>
+            <social_damage>true</social_damage>
+            <skill>PERSUASION</skill>
+            <stuns>true</stuns>
+        </social_attack>
+        <social_attack>
+            <priority>2</priority>
+            <attack_description>advocates for resident rights to</attack_description>
+            <attack_description>praises the dignity of the elderly to</attack_description>
+            <attack_description>explains the importance of flexibility to</attack_description>
+            <attack_description>frames care as an essential right to</attack_description>
+            <attack_description>emphasizes the value of the human touch to</attack_description>
+            <attack_description>advocates for better retirement care to</attack_description>
+            <attack_description>champions better end-of-life care to</attack_description>
+            <attack_description>philosophizes about the virtue of empathy to</attack_description>
+            <social_damage>true</social_damage>
+            <skill>PERSUASION</skill>
+            <stuns>true</stuns>
+        </social_attack>
+    </creaturetype>
+    <creaturetype idname="CREATURE_DIETICIAN">
+        <type_name>Dietician</type_name>
+        <armor>CLOTHING_CLOTHES</armor>
+        <age>GRADUATE</age>
+        <gender>FEMALE BIAS</gender>
+        <skills>
+            <firstAid>1-4</firstAid>
+        </skills>
+        <talkreceptive>1</talkreceptive>
+        <recruit_activity_difficulty>4</recruit_activity_difficulty>
+    </creaturetype>
+    <creaturetype idname="CREATURE_PHYSICAL_THERAPIST">
+        <type_name>Physio</type_name>
+        <armor>CLOTHING_SCRUBS</armor>
+        <age>GRADUATE</age>
+        <skills>
+            <firstAid>1-4</firstAid>
+        </skills>
+        <talkreceptive>1</talkreceptive>
+        <recruit_activity_difficulty>4</recruit_activity_difficulty>
+    </creaturetype>
+    <creaturetype idname="CREATURE_NURSING_HOME_ATTENDANT">
+        <type_name>Nursing Assistant</type_name>
+        <armor>CLOTHING_SCRUBS</armor>
+        <age>MATURE</age>
+        <gender>FEMALE BIAS</gender>
+        <skills>
+            <firstAid>1-4</firstAid>
+            <persuasion>0-2</persuasion>
+        </skills>
+        <recruit_activity_difficulty>4</recruit_activity_difficulty>
+    </creaturetype>
+    <creaturetype idname="CREATURE_SOCIAL_WORKER">
+        <type_name>Social Worker</type_name>
+        <armor>CLOTHING_CLOTHES</armor>
+        <age>MATURE</age>
+        <gender>FEMALE BIAS</gender>
+        <skills>
+            <psychology>1-4</psychology>
+        </skills>
     </creaturetype>
     <creaturetype idname="CREATURE_CCS_VIGILANTE">
         <type_name>CCS Member</type_name>

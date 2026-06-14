@@ -10,6 +10,8 @@ import 'package:lcs_new_age/daily/recruitment.dart';
 import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/gamestate/time.dart';
+import 'package:lcs_new_age/location/city.dart';
+import 'package:lcs_new_age/location/district.dart';
 import 'package:lcs_new_age/location/location_type.dart';
 import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/newspaper/news_story.dart';
@@ -407,6 +409,24 @@ void applyBugFixes(String version) {
       if (newsStory.newspaperPhotoId == 0 &&
           newsStory.headline != "HELL ON EARTH") {
         newsStory.newspaperPhotoId = null;
+      }
+    }
+  }
+  if (compareVersionStrings(version, "1.5.0") < 0) {
+    for (City city in gameState.cities) {
+      for (District district in city.districts) {
+        if (district.name.contains("Downtown")) {
+          district.addSites([
+            SiteType.insuranceOffice,
+          ]);
+        }
+        if (district.name.contains("University") ||
+            district.name.contains("Brooklyn") ||
+            district.name.contains("Hollywood")) {
+          district.addSites([
+            SiteType.nursingHome,
+          ]);
+        }
       }
     }
   }

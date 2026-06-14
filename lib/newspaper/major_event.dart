@@ -120,6 +120,11 @@ void displayMajorEventStory(
 
 MajorEventContent generateMajorEventContent(
     View view, bool liberalSpin, NewsStory ns) {
+  bool zeroCensorship =
+      laws[Law.freeSpeech] == DeepAlignment.archConservative ||
+          ns.publicationAlignment == DeepAlignment.eliteLiberal;
+  bool maxCensorship = noProfanity && !zeroCensorship;
+
   if (liberalSpin) {
     switch (view) {
       case View.womensRights:
@@ -166,14 +171,17 @@ MajorEventContent generateMajorEventContent(
             "transsexual calling himself \"${victim.first}\"",
           _ => "trans woman",
         };
+        if (zeroCensorship) {
+          victimLabel = "trans woman";
+        }
         String murdered = [
           "dragged to death behind a pickup truck",
           "burned alive",
           "beaten to death",
         ].random;
         String actionTowardPolice = [
-          "throwing ${noProfanity ? "[juice boxes]" : "beer bottles"}",
-          "${noProfanity ? "[relieving themselves]" : "pissing"} out the window",
+          "throwing ${maxCensorship ? "[juice boxes]" : "beer bottles"}",
+          "${maxCensorship ? "[relieving themselves]" : "pissing"} out the window",
           "taking swipes",
         ].random;
         String chaseEnd = [
@@ -184,7 +192,7 @@ MajorEventContent generateMajorEventContent(
           "were caught in traffic",
         ].random;
         String despiteTheBan = switch (laws[Law.lgbtRights]) {
-          DeepAlignment.archConservative => noProfanity
+          DeepAlignment.archConservative => maxCensorship
               ? ", even though transgenderism is deviant, as we all know"
               : ", despite the fact that $victimFullName was a known transsexual",
           _ => "",

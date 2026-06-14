@@ -5,7 +5,6 @@ import 'package:lcs_new_age/basemode/disbanding.dart';
 import 'package:lcs_new_age/basemode/liberal_agenda.dart';
 import 'package:lcs_new_age/common_display/common_display.dart';
 import 'package:lcs_new_age/creature/attributes.dart';
-import 'package:lcs_new_age/creature/body.dart';
 import 'package:lcs_new_age/creature/creature.dart';
 import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/daily/advance_day.dart';
@@ -347,96 +346,6 @@ Future<void> advanceMonth() async {
   if (canSeeThings) await fundReport(false);
   ledger.resetMonthlyAmounts();
   if (clearScreenOnNextMessage) erase();
-
-  //HEAL CLINIC PEOPLE
-  for (Creature p in pool) {
-    if (disbanding) break;
-    if (!p.alive) continue;
-
-    if (p.clinicMonthsLeft > 0) {
-      p.clinicMonthsLeft--;
-
-      for (BodyPart w in p.body.parts) {
-        w.heal();
-      }
-
-      int healthdamage = 0;
-      HumanoidBody? body =
-          p.body is HumanoidBody ? p.body as HumanoidBody : null;
-      if (body != null) {
-        if (body.puncturedRightLung) {
-          body.puncturedRightLung = false;
-          if (oneIn(2)) healthdamage++;
-        }
-        if (body.puncturedLeftLung) {
-          body.puncturedLeftLung = false;
-          if (oneIn(2)) healthdamage++;
-        }
-        if (body.puncturedHeart) {
-          body.puncturedHeart = false;
-          if (!oneIn(3)) healthdamage++;
-        }
-        body.puncturedLiver = false;
-        body.puncturedStomach = false;
-        body.puncturedRightKidney = false;
-        body.puncturedLeftKidney = false;
-        body.puncturedSpleen = false;
-        body.ribs = body.maxRibs;
-        if (body.neck == InjuryState.untreated) {
-          body.neck = InjuryState.treated;
-        }
-        if (body.upperSpine == InjuryState.untreated) {
-          body.upperSpine = InjuryState.treated;
-        }
-        if (body.lowerSpine == InjuryState.untreated) {
-          body.lowerSpine = InjuryState.treated;
-        }
-
-        // Inflict permanent health damage
-        p.permanentHealthDamage += healthdamage;
-      }
-
-      if (p.blood <= p.maxBlood * 0.5 && p.clinicMonthsLeft <= 2) {
-        p.blood = (p.maxBlood * 0.5).floor();
-      }
-      if (p.blood <= p.maxBlood * 0.75 && p.clinicMonthsLeft <= 1) {
-        p.blood = (p.maxBlood * 0.75).floor();
-      }
-
-      // If at clinic and in critical condition, transfer to university hospital
-      if (p.clinicMonthsLeft > 2 && p.site?.type == SiteType.clinic) {
-        Site? hospital =
-            findSiteInSameCity(p.site!.city, SiteType.universityHospital);
-        if (hospital != null) {
-          p.location = hospital;
-          mvaddstrc(8, 1, white, p.name);
-          addstr(" has been transferred to ");
-          addstr(hospital.name);
-          addstr(".");
-
-          await getKey();
-        }
-      }
-
-      // End treatment
-      if (p.clinicMonthsLeft == 0) {
-        p.blood = p.maxBlood;
-        p.activity = Activity.none();
-        await showMessage("${p.name} has left the ${p.site!.name}.");
-
-        Site? hs =
-            findSiteInSameCity(p.site!.city, SiteType.homelessEncampment);
-
-        if (hs != null &&
-            (p.base?.siege.underSiege != false ||
-                p.base?.controller != SiteController.lcs)) {
-          p.base = hs;
-        }
-
-        p.location = p.base;
-      }
-    }
-  }
 }
 
 Future<void> winCheck() async {

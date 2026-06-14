@@ -53,8 +53,8 @@ Future<void> characterCreationQuestions(Creature founder, bool choose) async {
         founder.birthDate = DateTime(2004, 6, 30);
         founder.adjustAttribute(Attribute.agility, 2);
       }),
-      _Option("Ronald Reagan died.", "+2 Strength, September 5th", () {
-        founder.birthDate = DateTime(2004, 9, 5);
+      _Option("Ronald Reagan died.", "+2 Strength, June 5th", () {
+        founder.birthDate = DateTime(2004, 6, 5);
         founder.adjustAttribute(Attribute.strength, 2);
       }),
       _Option(

@@ -985,9 +985,29 @@ void prepareEncounter(SiteType type, bool sec,
           CreatureTypeIds.photographer: 5,
           CreatureTypeIds.cameraman: 5,
         });
+      case SiteType.nursingHome:
+        if (sec) weights.add(CreatureTypeIds.securityGuard, 15);
+        weights.addAll({
+          CreatureTypeIds.nursingHomeAttendant: 15,
+          CreatureTypeIds.nurse: 2,
+          CreatureTypeIds.dietician: 1,
+          CreatureTypeIds.physicalTherapist: 1,
+          CreatureTypeIds.socialWorker: 1,
+        });
+      case SiteType.insuranceOffice:
+        weights.addAll({
+          CreatureTypeIds.securityGuard: sec ? 100 : 10,
+          CreatureTypeIds.officeWorker: 40,
+          CreatureTypeIds.secretary: 20,
+          CreatureTypeIds.corporateManager: 5,
+          CreatureTypeIds.janitor: 5,
+          CreatureTypeIds.actuary: 5,
+          CreatureTypeIds.auditor: 1,
+          CreatureTypeIds.doctor: 1,
+        });
       case SiteType.homelessEncampment:
       default:
-        if (!lcs) {
+        if (!lcs || type == SiteType.homelessEncampment) {
           weights.addAll({
             CreatureTypeIds.janitor: 5,
             CreatureTypeIds.teenager: 20,

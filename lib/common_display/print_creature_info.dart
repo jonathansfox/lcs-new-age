@@ -104,6 +104,10 @@ void setWeaponColor(Creature cr) {
 }
 
 void printWeapon(Creature cr) {
+  if (cr.equippedWeapon == null && cr.type.socialAttacks.isNotEmpty) {
+    addstr("Voice");
+    return;
+  }
   addstr(cr.weapon.type.shortName);
   setColor(lightGray);
   if (cr.weapon.type.usesAmmo) {

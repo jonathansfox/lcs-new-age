@@ -228,10 +228,10 @@ Future<void> displayNewsStories() async {
         SiteType.ceoHouse => View.ceoSalary,
         SiteType.amRadioStation => View.amRadio,
         SiteType.cableNewsStation => View.cableNews,
-        SiteType.upscaleApartment ||
-        SiteType.barAndGrill ||
-        SiteType.bank =>
-          View.taxes,
+        SiteType.upscaleApartment => View.housing,
+        SiteType.insuranceOffice => View.healthcare,
+        SiteType.nursingHome => View.retirement,
+        SiteType.barAndGrill || SiteType.bank => View.taxes,
         _ => null,
       };
     }
@@ -419,7 +419,7 @@ void handlePublicOpinionImpact(NewsStory ns) {
         View.corporateCulture,
         View.womensRights,
       ],
-    SiteType.ceoHouse => [View.taxes, View.ceoSalary],
+    SiteType.ceoHouse => [View.taxes, View.ceoSalary, View.housing],
     SiteType.amRadioStation => [
         View.amRadio,
         View.freeSpeech,
@@ -434,7 +434,16 @@ void handlePublicOpinionImpact(NewsStory ns) {
         View.womensRights,
         View.civilRights
       ],
-    SiteType.upscaleApartment => [View.taxes, View.ceoSalary, View.gunControl],
+    SiteType.upscaleApartment => [
+        View.taxes,
+        View.ceoSalary,
+        View.gunControl,
+        View.housing,
+        View.retirement
+      ],
+    SiteType.apartment => [View.housing],
+    SiteType.tenement => [View.housing],
+    SiteType.homelessEncampment => [View.housing],
     SiteType.barAndGrill => [
         View.taxes,
         View.ceoSalary,
@@ -442,7 +451,15 @@ void handlePublicOpinionImpact(NewsStory ns) {
         View.gunControl,
         View.lgbtRights
       ],
-    SiteType.bank => [View.taxes, View.ceoSalary, View.corporateCulture],
+    SiteType.bank => [
+        View.taxes,
+        View.ceoSalary,
+        View.corporateCulture,
+        View.retirement,
+        View.housing
+      ],
+    SiteType.insuranceOffice => [View.healthcare, View.corporateCulture],
+    SiteType.nursingHome => [View.housing, View.retirement, View.healthcare],
     _ => [],
   };
 
@@ -559,6 +576,7 @@ void setpriority(NewsStory ns) {
       ns.priority += drama[Drama.juryTampering]! * 30;
       ns.priority += drama[Drama.bankTellerRobbery]! * 30;
       ns.priority += drama[Drama.hijackedBroadcast]! * 30;
+      ns.priority += drama[Drama.openedNursingHomeSafe]! * 30;
 
       // Common site crimes
       ns.priority += drama[Drama.killedSomebody]! * 30; // uncapped

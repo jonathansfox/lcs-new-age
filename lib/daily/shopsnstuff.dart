@@ -75,19 +75,12 @@ Future<void> hospitalize(Site loc, Creature patient) async {
   int time = clinictime(patient);
 
   if (time > 0) {
-    patient.clinicMonthsLeft = time;
     patient.squad = null;
     patient.location = loc;
     patient.activity = Activity.none();
 
     makeDelimiter();
-    mvaddstrc(8, 1, white, "${patient.name} will be at ${loc.name} for $time ");
-    if (time > 1) {
-      addstr("months");
-    } else {
-      addstr("month");
-    }
-    addstr(".");
+    mvaddstrc(8, 1, white, "${patient.name} is admitted to ${loc.name}.");
 
     await getKey();
   }

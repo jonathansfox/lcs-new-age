@@ -72,7 +72,7 @@ Future<void> doActivityTeach(List<Creature> teachers) async {
           siteIds.contains(p.locationId) &&
           p.align == Alignment.liberal &&
           (p.sleeperAgent || !siteIdsInJusticeSystem.contains(p.locationId)) &&
-          p.clinicMonthsLeft == 0) {
+          !p.hospitalized) {
         students.add(p);
       }
     }

@@ -79,8 +79,6 @@ List<String> _issueEventStrings = [
   "a Liberal policy paper inquiring into judicial decisions",
   "a book profiling school shootings",
   "a hand-recorded video of unregulated sweatshops",
-  "call for stricter environmental regulations",
-  "are disgusted by corporate malfeasance",
   "a Liberal think-tank survey of top CEO salaries",
   "a documentary about modern feminism",
   "a documentary on the civil rights struggle",
@@ -330,7 +328,8 @@ Future<bool> completeRecruitMeeting(RecruitmentSession r, Creature p) async {
           addstr(p.name);
           addstr(" needs more experience.");
         } else {
-          addstr("${r.recruit.name} thinks ${p.name} is dangerous extremist.");
+          addstr(
+              "${r.recruit.name} thinks ${p.name} is a dangerous extremist.");
 
           move(y++, 0);
           addstr(
@@ -379,10 +378,7 @@ Future<void> sleeperizePrompt(
       converted.location = recruiter.base;
       converted.base = recruiter.base;
       liberalize(converted);
-      if (converted == uniqueCreatures.ceo) uniqueCreatures.newCEO();
-      if (converted == uniqueCreatures.president) {
-        politics.promoteVP();
-      }
+      uniqueCreatures.replace(converted);
       break;
     }
   }

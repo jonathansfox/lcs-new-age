@@ -158,6 +158,8 @@ Future<void> fundReport(bool disbanding) async {
               mvaddstr(y, 0, "Training");
             case Expense.travel:
               mvaddstr(y, 0, "Travel");
+            case Expense.hospitalBills:
+              mvaddstr(y, 0, "Hospital Bills");
           }
         }
         totalmoney -= ledger.expense[exp] ?? 0;
@@ -293,19 +295,21 @@ Future<void> fundReport(bool disbanding) async {
 Future<LootType?> chooseSpecialEdition() async {
   //Temporary, maybe put special edition definition into an xml file. -XML
   const List<String> docs = [
-    "LOOT_AMRADIOFILES",
-    "LOOT_CABLENEWSFILES",
-    "LOOT_CCS_BACKERLIST",
-    "LOOT_CEOLOVELETTERS",
-    "LOOT_CEOPHOTOS",
-    "LOOT_CEOTAXPAPERS",
-    "LOOT_CORPFILES",
-    "LOOT_INTHQDISK",
-    "LOOT_JUDGEFILES",
-    "LOOT_POLICERECORDS",
-    "LOOT_PRISONFILES",
-    "LOOT_RESEARCHFILES",
-    "LOOT_SECRETDOCUMENTS",
+    LootTypeIds.amRadioFiles,
+    LootTypeIds.cableNewsFiles,
+    LootTypeIds.ccsBackerList,
+    LootTypeIds.ceoLoveLetters,
+    LootTypeIds.ceoPhotos,
+    LootTypeIds.ceoTaxPapers,
+    LootTypeIds.corpFiles,
+    LootTypeIds.intHqDisk,
+    LootTypeIds.judgeFiles,
+    LootTypeIds.policeRecords,
+    LootTypeIds.prisonFiles,
+    LootTypeIds.researchFiles,
+    LootTypeIds.secretDocuments,
+    LootTypeIds.landlordPapers,
+    LootTypeIds.insuranceFraudEvidence,
   ];
 
   //char havetype[LOOTNUM];
@@ -419,372 +423,465 @@ Future<void> printNews(LootType li, Iterable<Creature> publishers) async {
     }
   }
 
-  if (li.idName == "LOOT_INTHQDISK" || li.idName == "LOOT_SECRETDOCUMENTS") {
+  if (li.idName == LootTypeIds.intHqDisk ||
+      li.idName == LootTypeIds.secretDocuments) {
     criminalizeAll(publishers, Crime.treason);
   }
 
   List<View> issues = [View.lcsKnown, View.lcsLiked];
   int potency = 10;
 
-  if (li.idName == "LOOT_CEOPHOTOS") // Tmp -XML
-  {
-    story =
-        "The Liberal Guardian runs a story featuring photos of a major CEO ";
-    switch (lcsRandom(10)) {
-      case 0:
-        story += "sexually assaulting animals.";
-        issues.add(View.animalResearch);
-      case 1:
-        story += "digging up graves and sleeping with the dead.";
-      case 2:
-        story += "participating in a murder.";
-        issues.add(View.policeBehavior);
-        issues.add(View.justices);
-      case 3:
-        story += "pointing guns at photos of the CEO's employees.";
-        issues.add(View.gunControl);
-      case 4:
-        story += "tongue-kissing an infamous dictator.";
-      case 5:
-        story +=
-            "on a date with an EPA regulator overseeing the CEO's facilities.";
-        issues.add(View.pollution);
-      case 6:
-        story += "shaking hands with the Grand Wizard of the KKK.";
-        issues.add(View.civilRights);
-      case 7:
-        story += "waving a Nazi flag at a supremacist rally.";
-        issues.add(View.civilRights);
-      case 8:
-        story += "torturing an employee with a hot iron.";
-        issues.add(View.sweatshops);
-      case 9:
-        story +=
-            "on a date with an FDA regulator overseeing the CEO's products.";
-        issues.add(View.genetics);
-    }
+  // Converted the long if/else chain on li.idName to a switch statement for clarity and maintainability.
+  switch (li.idName) {
+    case LootTypeIds.ceoPhotos:
+      story =
+          "The Liberal Guardian runs a story featuring photos of a major CEO ";
+      switch (lcsRandom(10)) {
+        case 0:
+          story += "sexually assaulting animals.";
+          issues.add(View.animalResearch);
+        case 1:
+          story += "digging up graves and sleeping with the dead.";
+        case 2:
+          story += "participating in a murder.";
+          issues.add(View.policeBehavior);
+          issues.add(View.justices);
+        case 3:
+          story += "pointing guns at photos of the CEO's employees.";
+          issues.add(View.gunControl);
+        case 4:
+          story += "tongue-kissing an infamous dictator.";
+        case 5:
+          story +=
+              "on a date with an EPA regulator overseeing the CEO's facilities.";
+          issues.add(View.pollution);
+        case 6:
+          story += "shaking hands with the Grand Wizard of the KKK.";
+          issues.add(View.civilRights);
+        case 7:
+          story += "waving a Nazi flag at a supremacist rally.";
+          issues.add(View.civilRights);
+        case 8:
+          story += "torturing an employee with a hot iron.";
+          issues.add(View.sweatshops);
+        case 9:
+          story +=
+              "on a date with an FDA regulator overseeing the CEO's products.";
+          issues.add(View.genetics);
+      }
 
-    issues.add(View.ceoSalary);
-    issues.add(View.corporateCulture);
-    potency = reception(50);
-    offendedCorps = true;
-    for (Creature p in publishers) {
-      p.offendedCorps++;
-    }
-    story +=
-        "\n\nBe on guard for retaliation.  This guy is not the forgiving type...";
-    addparagraph(6, 1, story);
-  } else if (li.idName == "LOOT_CEOLOVELETTERS") {
-    story =
-        "The Liberal Guardian runs a story featuring salacious love letters from a";
-    mvaddstr(7, 1, "major CEO ");
-    switch (lcsRandom(8)) {
-      case 0:
-        story += "addressed to his pet dog.  Yikes.";
-        issues.add(View.animalResearch);
-      case 1:
-        story += "to the judge that acquit him in a corruption trial.";
-        issues.add(View.justices);
-      case 2:
-        story +=
-            "to a subordinate, demanding she submit to a sexual relationship.";
-        issues.add(View.womensRights);
-      case 3:
-        story += "to himself.  They're very steamy.";
-      case 4:
-        story += "implying that he has enslaved his houseservants.";
-        issues.add(View.sweatshops);
-      case 5:
-        story += "to the FDA official overseeing the CEO's products.";
-        issues.add(View.genetics);
-        issues.add(View.pollution);
-      case 6:
-        story +=
-            "that alternate between romantic and threats of extreme violence.";
-      case 7:
-        story +=
-            "promising someone company profits in exchange for sexual favors.";
-    }
-    issues.add(View.ceoSalary);
-    issues.add(View.corporateCulture);
-    potency = reception(50);
-    offendedCorps = true;
-    for (Creature p in publishers) {
-      p.offendedCorps++;
-    }
-    story +=
-        "\n\nBe on guard for retaliation.  This guy is not the forgiving type...";
-    for (Creature c in publishers) {
-      addjuice(c, 20, 1000);
-    }
-  } else if (li.idName == "LOOT_CEOTAXPAPERS") {
-    story =
-        "The Liberal Guardian runs a story featuring a major CEO's tax papers ";
-    switch (lcsRandom(1)) {
-      default:
-        story += "showing that he has engaged in consistent tax evasion.";
-        issues.add(View.taxes);
-    }
-    issues.add(View.ceoSalary);
-    issues.add(View.corporateCulture);
-    potency = reception(50);
-    offendedCorps = true;
-    for (Creature p in publishers) {
-      p.offendedCorps++;
-    }
-    story +=
-        "\n\nBe on guard for retaliation.  This guy is not the forgiving type...";
-    for (Creature c in publishers) {
-      addjuice(c, 20, 1000);
-    }
-  } else if (li.idName == "LOOT_CORPFILES") {
-    story = "The Liberal Guardian runs a story featuring Corporate files ";
-    switch (lcsRandom(5)) {
-      case 0:
-        story += "describing a genetic monster created in a lab.";
-        issues.add(View.genetics);
-      case 1:
-        story += "with a list of \"suspected\" LGBT employees.";
-        issues.add(View.lgbtRights);
-      case 2:
-        story +=
-            "containing a memo: \"Terminate the pregnancy, I terminate you.\"";
-        issues.add(View.womensRights);
-      case 3:
-        story += "cheerfully describing foreign corporate sweatshops.";
-        issues.add(View.sweatshops);
-      case 4:
-        story += "describing an intricate tax scheme.";
-        issues.add(View.taxes);
-    }
-    issues.add(View.ceoSalary);
-    issues.add(View.corporateCulture);
-    potency = reception(50);
-    offendedCorps = true;
-    for (Creature p in publishers) {
-      p.offendedCorps++;
-    }
-    story +=
-        "\n\nBe on guard for retaliation.  These guys don't like to lose...";
-    for (Creature c in publishers) {
-      addjuice(c, 20, 1000);
-    }
-  } else if (li.idName == "LOOT_CCS_BACKERLIST") {
-    story =
-        "The Liberal Guardian runs more than one thousand pages of documents about "
-        "the CCS organization, also revealing in extreme detail the names and "
-        "responsibilities of Conservative Crime Squad sympathizers and supporters "
-        "in the state and federal governments. Sections precisely document the "
-        "extensive planning to create an extra-judicial death squad that would be "
-        "above prosecution, and could hunt down law-abiding Liberals and act "
-        "as a foil when no other enemies were present to direct public energy "
-        "against.\n\n"
-        "The scandal reaches into the heart of the Conservative leadership in the "
-        "country, and the full ramifications of this revelation may not be felt "
-        "for months. One thing is clear, however, from the immediate public reaction "
-        "toward the revelations, and the speed with which even AM Radio and Cable "
-        "News denounce the CCS.\n\n"
-        "This is the beginning of the end for the Conservative Crime Squad.";
-    startY = 5;
+      issues.add(View.ceoSalary);
+      issues.add(View.corporateCulture);
+      potency = reception(50);
+      offendedCorps = true;
+      for (Creature p in publishers) {
+        p.offendedCorps++;
+      }
+      story +=
+          "\n\nBe on guard for retaliation.  This guy is not the forgiving type...";
+      addparagraph(6, 1, story);
+    case LootTypeIds.ceoLoveLetters:
+      story =
+          "The Liberal Guardian runs a story featuring salacious love letters from a";
+      mvaddstr(7, 1, "major CEO ");
+      switch (lcsRandom(8)) {
+        case 0:
+          story += "addressed to his pet dog.  Yikes.";
+          issues.add(View.animalResearch);
+        case 1:
+          story += "to the judge that acquit him in a corruption trial.";
+          issues.add(View.justices);
+        case 2:
+          story +=
+              "to a subordinate, demanding she submit to a sexual relationship.";
+          issues.add(View.womensRights);
+        case 3:
+          story += "to himself.  They're very steamy.";
+        case 4:
+          story += "implying that he has enslaved his houseservants.";
+          issues.add(View.sweatshops);
+        case 5:
+          story += "to the FDA official overseeing the CEO's products.";
+          issues.add(View.genetics);
+          issues.add(View.pollution);
+        case 6:
+          story +=
+              "that alternate between romantic and threats of extreme violence.";
+        case 7:
+          story +=
+              "promising someone company profits in exchange for sexual favors.";
+      }
+      issues.add(View.ceoSalary);
+      issues.add(View.corporateCulture);
+      potency = reception(50);
+      offendedCorps = true;
+      for (Creature p in publishers) {
+        p.offendedCorps++;
+      }
+      story +=
+          "\n\nBe on guard for retaliation.  This guy is not the forgiving type...";
+      for (Creature c in publishers) {
+        addjuice(c, 20, 1000);
+      }
+    case LootTypeIds.ceoTaxPapers:
+      story =
+          "The Liberal Guardian runs a story featuring a major CEO's tax papers ";
+      switch (lcsRandom(1)) {
+        default:
+          story += "showing that he has engaged in consistent tax evasion.";
+          issues.add(View.taxes);
+      }
+      issues.add(View.ceoSalary);
+      issues.add(View.corporateCulture);
+      potency = reception(50);
+      offendedCorps = true;
+      for (Creature p in publishers) {
+        p.offendedCorps++;
+      }
+      story +=
+          "\n\nBe on guard for retaliation.  This guy is not the forgiving type...";
+      for (Creature c in publishers) {
+        addjuice(c, 20, 1000);
+      }
+    case LootTypeIds.corpFiles:
+      story = "The Liberal Guardian runs a story featuring Corporate files ";
+      switch (lcsRandom(8)) {
+        case 0:
+          story += "describing a genetic monster created in a lab.";
+          issues.add(View.genetics);
+        case 1:
+          story += "with a list of \"suspected\" LGBT employees.";
+          issues.add(View.lgbtRights);
+        case 2:
+          story +=
+              "containing a memo: \"Terminate the pregnancy, I terminate you.\"";
+          issues.add(View.womensRights);
+        case 3:
+          story += "cheerfully describing foreign corporate sweatshops.";
+          issues.add(View.sweatshops);
+        case 4:
+          story += "describing an intricate tax scheme.";
+          issues.add(View.taxes);
+        case 5:
+          story +=
+              "noting that the cost of housing is too high for entry-level salaries.";
+          issues.add(View.housing);
+        case 6:
+          story += "discussing plans to cut healthcare benefits.";
+          issues.add(View.healthcare);
+        case 7:
+          story += "discussing plans to cut retirement benefits.";
+          issues.add(View.retirement);
+      }
+      issues.add(View.ceoSalary);
+      issues.add(View.corporateCulture);
+      potency = reception(50);
+      offendedCorps = true;
+      for (Creature p in publishers) {
+        p.offendedCorps++;
+      }
+      story +=
+          "\n\nBe on guard for retaliation.  These guys don't like to lose...";
+      for (Creature c in publishers) {
+        addjuice(c, 20, 1000);
+      }
+    case LootTypeIds.ccsBackerList:
+      story =
+          "The Liberal Guardian runs more than one thousand pages of documents about "
+          "the CCS organization, also revealing in extreme detail the names and "
+          "responsibilities of Conservative Crime Squad sympathizers and supporters "
+          "in the state and federal governments. Sections precisely document the "
+          "extensive planning to create an extra-judicial death squad that would be "
+          "above prosecution, and could hunt down law-abiding Liberals and act "
+          "as a foil when no other enemies were present to direct public energy "
+          "against.\n\n"
+          "The scandal reaches into the heart of the Conservative leadership in the "
+          "country, and the full ramifications of this revelation may not be felt "
+          "for months. One thing is clear, however, from the immediate public reaction "
+          "toward the revelations, and the speed with which even AM Radio and Cable "
+          "News denounce the CCS.\n\n"
+          "This is the beginning of the end for the Conservative Crime Squad.";
+      startY = 5;
 
-    issues.addAll([View.intelligence, View.ccsHated]);
-    potency = 100;
-    ccsExposure = CCSExposure.exposed;
-  } else if (li.idName == "LOOT_INTHQDISK" ||
-      li.idName == "LOOT_SECRETDOCUMENTS") {
-    story =
-        "The Liberal Guardian runs a story featuring CIA and other intelligence files ";
-    switch (lcsRandom(6)) {
-      case 0:
-        story += "documenting the overthrow of a government.";
-      case 1:
-        story +=
-            "documenting the planned assassination of a Liberal federal judge.";
-        issues.add(View.justices);
-      case 2:
-        story += "containing private information on innocent citizens.";
-      case 3:
-        story += "documenting \"harmful speech\" made by innocent citizens.";
-        issues.add(View.freeSpeech);
-      case 4:
-        story += "used to keep tabs on LGBT citizens.";
-        issues.add(View.lgbtRights);
-      case 5:
-        story += "documenting the infiltration of a pro-choice group.";
-        issues.add(View.womensRights);
-    }
-    story +=
-        "\n\nBe on guard for retaliation.  These guys REALLY don't like to lose...";
-    issues.add(View.intelligence);
-    potency = reception(50);
-    offendedCia = true;
-    for (Creature c in publishers) {
-      addjuice(c, 50, 1000);
-      criminalize(c, Crime.treason);
-      c.offendedCIA++;
-    }
-  } else if (li.idName == "LOOT_POLICERECORDS") {
-    story = "The Liberal Guardian runs a story featuring police records ";
-    switch (lcsRandom(7)) {
-      case 0:
-        story += "documenting human rights abuses by the force.";
-        issues.add(View.torture);
-      case 1:
-        story += "documenting a pattern of torturing suspects.";
-        issues.add(View.torture);
-      case 2:
-        story += "documenting a systematic invasion of privacy by the force.";
-        issues.add(View.intelligence);
-      case 3:
-        story += "documenting a forced confession.";
-      case 4:
-        story += "documenting widespread corruption in the force.";
-      case 5:
-        story +=
-            "documenting gladiatorial matches held between prisoners by guards.";
-        issues.add(View.deathPenalty);
-        issues.add(View.prisons);
-      case 6:
-        story +=
-            "documenting the coverup of several killings of unarmed Black men.";
-        issues.add(View.civilRights);
-    }
-    issues.add(View.policeBehavior);
-    potency = reception(50);
-    story +=
-        "\n\nThe cops hate this, but what else is new?  They're already on your ass.";
-  } else if (li.idName == "LOOT_JUDGEFILES") {
-    story =
-        "The Liberal Guardian runs a story with evidence of a Conservative judge ";
-    switch (lcsRandom(2)) {
-      case 0:
-        story += "taking bribes to acquit murderers.";
-      case 1:
-        story += "promising Conservative rulings in exchange for appointments.";
-    }
-    issues.add(View.justices);
-    potency = reception(50);
-    story +=
-        "\n\nThis Judge is too weak to pose a real threat to you moving forward.";
-    for (Creature c in publishers) {
-      addjuice(c, 20, 1000);
-    }
-  } else if (li.idName == "LOOT_RESEARCHFILES") {
-    story = "The Liberal Guardian runs a story featuring research papers ";
-    switch (lcsRandom(4)) {
-      case 0:
-        story += "documenting horrific animal rights abuses.";
-        issues.add(View.animalResearch);
-      case 1:
-        story += "studying the effects of torture on cats.";
-        issues.add(View.animalResearch);
-      case 2:
-        story += "covering up the accidental creation of a genetic monster.";
-        issues.add(View.genetics);
-      case 3:
-        story += "showing human test subjects dying under genetic research.";
-        issues.add(View.genetics);
-    }
-    potency = reception(50);
-    story +=
-        "\n\nThe research company is too small to pose a real threat to you.";
-    for (Creature c in publishers) {
-      addjuice(c, 20, 1000);
-    }
-  } else if (li.idName == "LOOT_PRISONFILES") {
-    story = "The Liberal Guardian runs a story featuring prison documents ";
-    switch (lcsRandom(5)) {
-      case 0:
-        story += "documenting human rights abuses by prison guards.";
-      case 1:
-        story += "documenting a prison torture case.";
-        issues.add(View.torture);
-      case 2:
-        story += "documenting widespread corruption among prison employees.";
-      case 3:
-        story +=
-            "documenting gladiatorial matches held between prisoners by guards.";
-      case 4:
-        story += "referring to prisoners using a wide variety of racist slurs.";
-        issues.add(View.civilRights);
-    }
-    issues.addAll([View.prisons, View.deathPenalty]);
-    potency = reception(50);
-    story +=
-        "\n\nThe prison system doesn't love this, but what are they gonna do?  Jail you?";
-    for (Creature c in publishers) {
-      addjuice(c, 20, 1000);
-    }
-  } else if (li.idName == "LOOT_CABLENEWSFILES") {
-    story = "The Liberal Guardian runs a story featuring cable news memos ";
-    switch (lcsRandom(7)) {
-      case 0:
-        story += "mandating that any investigative news stories must be "
-            "approved by the network's Conservative commentators before they "
-            "can be aired.";
-      case 1:
-        story += "mandating negative coverage of Liberal politicians.";
-      case 2:
-        story += "planning to drum up a false scandal about a Liberal figure "
-            "that they privately acknowledge to be unimpeachable.";
-      case 3:
-        story += "instructing a female anchor to 'slim down or get a new job'.";
-        issues.add(View.womensRights);
-      case 4:
-        story +=
-            "directing staff to prioritize crime coverage in which the suspect "
-            "is Black.";
-        issues.add(View.civilRights);
-      case 5:
-        story +=
-            "searching for particularly ineffectual Liberal media personalities "
-            "to bring on opposite one of their Conservative hosts.";
-      case 6:
-        story +=
-            "intenarnally acknowledging that several of their recent stories "
-            "have been largely made up.";
-    }
-    issues.add(View.cableNews);
-    offendedAngryRuralMobs = true;
-    potency = reception(50);
-    story +=
-        "\n\nThis is bound to get the Conservative masses a little riled up...";
-    for (Creature c in publishers) {
-      addjuice(c, 20, 1000);
-      c.offendedAngryRuralMobs++;
-    }
-  } else if (li.idName == "LOOT_AMRADIOFILES") {
-    story = "The Liberal Guardian runs a story featuring AM radio plans ";
-    switch (lcsRandom(5)) {
-      case 0:
-        story += "to promote a foreign dictator as a hero to listeners "
-            "after a major radio host received a large sum of money from "
-            "the dictator's regime.";
-      case 1:
-        story += "brainstorming, in very blunt terms, which overt lies to "
-            "tell listeners based on what they think their listeners are "
-            "'stupid enough' to believe.";
-      case 2:
-        story += "planning to drum up a false scandal about a Liberal figure "
-            "that they privately acknowledge to be unimpeachable.";
-      case 3:
-        story += "to systematically promote hostility toward Black people.";
-        issues.add(View.civilRights);
-      case 4:
-        story += "to make sure to follow the name of every LGBT figure "
-            "mentioned on the program with the words \"who is known to be a "
-            "pedophile and a groomer, by the way.\"";
-        issues.add(View.lgbtRights);
-    }
-    issues.add(View.amRadio);
-    potency = reception(50);
-    offendedAngryRuralMobs = true;
-    story +=
-        "\n\nThis is bound to get the Conservative masses a little riled up...";
-    for (Creature c in publishers) {
-      addjuice(c, 20, 1000);
-      c.offendedAngryRuralMobs++;
-    }
+      issues.addAll([View.intelligence, View.ccsHated]);
+      potency = 100;
+      ccsExposure = CCSExposure.exposed;
+    case LootTypeIds.intHqDisk:
+    case LootTypeIds.secretDocuments:
+      story =
+          "The Liberal Guardian runs a story featuring CIA and other intelligence files ";
+      switch (lcsRandom(6)) {
+        case 0:
+          story += "documenting the overthrow of a government.";
+        case 1:
+          story +=
+              "documenting the planned assassination of a Liberal federal judge.";
+          issues.add(View.justices);
+        case 2:
+          story += "containing private information on innocent citizens.";
+        case 3:
+          story += "documenting \"harmful speech\" made by innocent citizens.";
+          issues.add(View.freeSpeech);
+        case 4:
+          story += "used to keep tabs on LGBT citizens.";
+          issues.add(View.lgbtRights);
+        case 5:
+          story += "documenting the infiltration of a pro-choice group.";
+          issues.add(View.womensRights);
+      }
+      story +=
+          "\n\nBe on guard for retaliation.  These guys REALLY don't like to lose...";
+      issues.add(View.intelligence);
+      potency = reception(50);
+      offendedCia = true;
+      for (Creature c in publishers) {
+        addjuice(c, 50, 1000);
+        criminalize(c, Crime.treason);
+        c.offendedCIA++;
+      }
+    case LootTypeIds.policeRecords:
+      story = "The Liberal Guardian runs a story featuring police records ";
+      switch (lcsRandom(7)) {
+        case 0:
+          story += "documenting human rights abuses by the force.";
+          issues.add(View.torture);
+        case 1:
+          story += "documenting a pattern of torturing suspects.";
+          issues.add(View.torture);
+        case 2:
+          story += "documenting a systematic invasion of privacy by the force.";
+          issues.add(View.intelligence);
+        case 3:
+          story += "documenting a forced confession.";
+        case 4:
+          story += "documenting widespread corruption in the force.";
+        case 5:
+          story +=
+              "documenting gladiatorial matches held between prisoners by guards.";
+          issues.add(View.deathPenalty);
+          issues.add(View.prisons);
+        case 6:
+          story +=
+              "documenting the coverup of several killings of unarmed Black men.";
+          issues.add(View.civilRights);
+      }
+      issues.add(View.policeBehavior);
+      potency = reception(50);
+      story +=
+          "\n\nThe cops hate this, but what else is new?  They're already on your ass.";
+    case LootTypeIds.judgeFiles:
+      story =
+          "The Liberal Guardian runs a story with evidence of a Conservative judge ";
+      switch (lcsRandom(2)) {
+        case 0:
+          story += "taking bribes to acquit murderers.";
+        case 1:
+          story +=
+              "promising Conservative rulings in exchange for appointments.";
+      }
+      issues.add(View.justices);
+      potency = reception(50);
+      story +=
+          "\n\nThis Judge is too weak to pose a real threat to you moving forward.";
+      for (Creature c in publishers) {
+        addjuice(c, 20, 1000);
+      }
+    case LootTypeIds.researchFiles:
+      story = "The Liberal Guardian runs a story featuring research papers ";
+      switch (lcsRandom(4)) {
+        case 0:
+          story += "documenting horrific animal rights abuses.";
+          issues.add(View.animalResearch);
+        case 1:
+          story += "studying the effects of torture on cats.";
+          issues.add(View.animalResearch);
+        case 2:
+          story += "covering up the accidental creation of a genetic monster.";
+          issues.add(View.genetics);
+        case 3:
+          story += "showing human test subjects dying under genetic research.";
+          issues.add(View.genetics);
+      }
+      potency = reception(50);
+      story +=
+          "\n\nThe research company is too small to pose a real threat to you.";
+      for (Creature c in publishers) {
+        addjuice(c, 20, 1000);
+      }
+    case LootTypeIds.prisonFiles:
+      story = "The Liberal Guardian runs a story featuring prison documents ";
+      switch (lcsRandom(6)) {
+        case 0:
+          story += "documenting human rights abuses by prison guards.";
+        case 1:
+          story += "documenting a prison torture case.";
+          issues.add(View.torture);
+        case 2:
+          story += "documenting widespread corruption among prison employees.";
+        case 3:
+          story +=
+              "documenting gladiatorial matches held between prisoners by guards.";
+        case 4:
+          story +=
+              "referring to prisoners using a wide variety of racist slurs.";
+          issues.add(View.civilRights);
+        case 5:
+          story += "showing the substandard healthcare provided to prisoners.";
+          issues.add(View.healthcare);
+      }
+      issues.addAll([View.prisons, View.deathPenalty]);
+      potency = reception(50);
+      story +=
+          "\n\nThe prison system doesn't love this, but what are they gonna do?  Jail you?";
+      for (Creature c in publishers) {
+        addjuice(c, 20, 1000);
+      }
+    case LootTypeIds.cableNewsFiles:
+      story = "The Liberal Guardian runs a story featuring cable news memos ";
+      switch (lcsRandom(7)) {
+        case 0:
+          story += "mandating that any investigative news stories must be "
+              "approved by the network's Conservative commentators before they "
+              "can be aired.";
+        case 1:
+          story += "mandating negative coverage of Liberal politicians.";
+        case 2:
+          story += "planning to drum up a false scandal about a Liberal figure "
+              "that they privately acknowledge to be unimpeachable.";
+        case 3:
+          story +=
+              "instructing a female anchor to 'slim down or get a new job'.";
+          issues.add(View.womensRights);
+        case 4:
+          story +=
+              "directing staff to prioritize crime coverage in which the suspect "
+              "is Black.";
+          issues.add(View.civilRights);
+        case 5:
+          story +=
+              "searching for particularly ineffectual Liberal media personalities "
+              "to bring on opposite one of their Conservative hosts.";
+        case 6:
+          story +=
+              "intenarnally acknowledging that several of their recent stories "
+              "have been largely made up.";
+      }
+      issues.add(View.cableNews);
+      offendedAngryRuralMobs = true;
+      potency = reception(50);
+      story +=
+          "\n\nThis is bound to get the Conservative masses a little riled up...";
+      for (Creature c in publishers) {
+        addjuice(c, 20, 1000);
+        c.offendedAngryRuralMobs++;
+      }
+    case LootTypeIds.amRadioFiles:
+      story = "The Liberal Guardian runs a story featuring AM radio plans ";
+      switch (lcsRandom(5)) {
+        case 0:
+          story += "to promote a foreign dictator as a hero to listeners "
+              "after a major radio host received a large sum of money from "
+              "the dictator's regime.";
+        case 1:
+          story += "brainstorming, in very blunt terms, which overt lies to "
+              "tell listeners based on what they think their listeners are "
+              "'stupid enough' to believe.";
+        case 2:
+          story += "planning to drum up a false scandal about a Liberal figure "
+              "that they privately acknowledge to be unimpeachable.";
+        case 3:
+          story += "to systematically promote hostility toward Black people.";
+          issues.add(View.civilRights);
+        case 4:
+          story += "to make sure to follow the name of every LGBT figure "
+              "mentioned on the program with the words \"who is known to be a "
+              "pedophile and a groomer, by the way.\"";
+          issues.add(View.lgbtRights);
+      }
+      issues.add(View.amRadio);
+      potency = reception(50);
+      offendedAngryRuralMobs = true;
+      story +=
+          "\n\nThis is bound to get the Conservative masses a little riled up...";
+      for (Creature c in publishers) {
+        addjuice(c, 20, 1000);
+        c.offendedAngryRuralMobs++;
+      }
+    case LootTypeIds.landlordPapers:
+      story = "The Liberal Guardian runs a story featuring landlord papers ";
+      switch (lcsRandom(7)) {
+        case 0:
+          story +=
+              "documenting a conspiracy to coordinate rents across multiple major land ownership companies.";
+        case 1:
+          story +=
+              "instructing that Black applicants be told that there are no vacancies in designated neighborhoods.";
+          issues.add(View.civilRights);
+        case 2:
+          story += "showing a pattern of unfair evictions.";
+        case 3:
+          story +=
+              "documenting the use of an AI system specifically designed to coordinate rent price fixing.";
+        case 4:
+          story += "showing a pattern of severe neglect of maintenance.";
+        case 5:
+          story +=
+              "showing a deliberate strategy of fabricating damage to justify stealing security deposits.";
+        case 6:
+          story +=
+              "showing that elderly tenants are being exploited with higher rent prices.";
+          issues.add(View.retirement);
+      }
+      issues.add(View.housing);
+      potency = reception(50);
+      story +=
+          "\n\nRelations with big rental companies are likely to be frosty after this...";
+      for (Creature c in publishers) {
+        addjuice(c, 20, 1000);
+        if ((c.base?.rent ?? 0) > 0) {
+          // One *hundred* *billion* dollars...!
+          // Impossibly high rent ensures that you will be evicted if there's
+          // a landlord who can do so.
+          c.base!.rent = 100000000000;
+        }
+      }
+    case LootTypeIds.insuranceFraudEvidence:
+      story =
+          "The Liberal Guardian runs a story featuring healthcare documents ";
+      switch (lcsRandom(5)) {
+        case 0:
+          story +=
+              "showing that thousands of people have died because the insurance company refused to cover essential services.";
+        case 1:
+          story +=
+              "showing that the insurance company is deliberately delaying coverage for essential services.";
+        case 2:
+          story += "showing major gaps in treatment between men and women.";
+          issues.add(View.womensRights);
+        case 3:
+          story +=
+              "showing that rates are systematically higher for members of the LGBTQ+ community.";
+          issues.add(View.lgbtRights);
+        case 4:
+          story +=
+              "showing price discrimination depending on the race of the patient.";
+          issues.add(View.civilRights);
+        case 5:
+          story +=
+              "showing that the government is being overcharged for care for the elderly.";
+          issues.add(View.retirement);
+      }
+      issues.add(View.healthcare);
+      potency = reception(50);
+      offendedCorps = true;
+      for (Creature p in publishers) {
+        p.offendedCorps++;
+      }
+      story +=
+          "\n\nBe on guard for retaliation.  These guys don't like to lose...";
+      for (Creature c in publishers) {
+        addjuice(c, 20, 1000);
+      }
   }
   addparagraph(startY, 1, story);
 
@@ -805,18 +902,19 @@ Future<void> printNews(LootType li, Iterable<Creature> publishers) async {
 
   // Set headline based on the type of exposé
   archiveStory.headline = switch (li.idName) {
-    "LOOT_CEOPHOTOS" => "CEO SCANDAL EXPOSED",
-    "LOOT_CEOLOVELETTERS" => "CEO LOVE LETTERS REVEALED",
-    "LOOT_CEOTAXPAPERS" => "CEO TAX EVASION UNCOVERED",
-    "LOOT_CORPFILES" => "CORPORATE CORRUPTION EXPOSED",
-    "LOOT_CCS_BACKERLIST" => "CCS GOVERNMENT TIES REVEALED",
-    "LOOT_INTHQDISK" || "LOOT_SECRETDOCUMENTS" => "INTELLIGENCE FILES LEAKED",
-    "LOOT_POLICERECORDS" => "POLICE MISCONDUCT EXPOSED",
-    "LOOT_JUDGEFILES" => "JUDICIAL CORRUPTION REVEALED",
-    "LOOT_RESEARCHFILES" => "RESEARCH ABUSES UNCOVERED",
-    "LOOT_PRISONFILES" => "PRISON ABUSES EXPOSED",
-    "LOOT_CABLENEWSFILES" => "CABLE NEWS BIAS REVEALED",
-    "LOOT_AMRADIOFILES" => "AM RADIO PROPAGANDA EXPOSED",
+    LootTypeIds.ceoPhotos => "CEO SCANDAL EXPOSED",
+    LootTypeIds.ceoLoveLetters => "CEO LOVE LETTERS REVEALED",
+    LootTypeIds.ceoTaxPapers => "CEO TAX EVASION UNCOVERED",
+    LootTypeIds.corpFiles => "CORPORATE CORRUPTION EXPOSED",
+    LootTypeIds.ccsBackerList => "CCS GOVERNMENT TIES REVEALED",
+    LootTypeIds.intHqDisk => "INTELLIGENCE FILES LEAKED",
+    LootTypeIds.secretDocuments => "INTELLIGENCE DOCS LEAKED",
+    LootTypeIds.policeRecords => "POLICE MISCONDUCT EXPOSED",
+    LootTypeIds.judgeFiles => "JUDICIAL CORRUPTION REVEALED",
+    LootTypeIds.researchFiles => "RESEARCH ABUSES UNCOVERED",
+    LootTypeIds.prisonFiles => "PRISON ABUSES EXPOSED",
+    LootTypeIds.cableNewsFiles => "CABLE NEWS BIAS REVEALED",
+    LootTypeIds.amRadioFiles => "AM RADIO PROPAGANDA EXPOSED",
     _ => "LIBERAL GUARDIAN EXPOSÉ"
   };
 

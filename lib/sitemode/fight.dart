@@ -765,6 +765,7 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
         str += hitPart.name.toLowerCase();
       }
     } else {
+      str += "${t.name}'s ";
       str += hitPart.name.toLowerCase();
     }
 

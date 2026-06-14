@@ -204,10 +204,45 @@ Future<void> doActivityTrouble(List<Creature> trouble) async {
         } else {
           juiceval = 1;
         }
-      default:
-        message += "protested against the game being buggy!";
+      case View.housing:
+        message += "glued the locks on the doors of luxury apartments!";
+        juiceval = 2;
+        crime = Crime.vandalism;
+      case View.healthcare:
+        message += "protested against the cost of healthcare!";
         if (noProfanity) {
-          // How DARE you protest against the game being buggy!
+          juiceval = 2;
+          crime = Crime.unlawfulSpeech;
+        } else {
+          juiceval = 1;
+        }
+      case View.retirement:
+        message += "joined a senior citizens' protest!";
+        if (noProfanity) {
+          juiceval = 2;
+          crime = Crime.unlawfulSpeech;
+        } else {
+          juiceval = 1;
+        }
+      case View.lcsKnown:
+        message += "distributed fliers about the LCS!";
+        if (noProfanity) {
+          juiceval = 2;
+          crime = Crime.unlawfulSpeech;
+        } else {
+          juiceval = 1;
+        }
+      case View.lcsLiked:
+        message += "distributed fliers about the LCS!";
+        if (noProfanity) {
+          juiceval = 2;
+          crime = Crime.unlawfulSpeech;
+        } else {
+          juiceval = 1;
+        }
+      case View.ccsHated:
+        message += "marched downtown to protest the CCS!";
+        if (noProfanity) {
           juiceval = 2;
           crime = Crime.unlawfulSpeech;
         } else {

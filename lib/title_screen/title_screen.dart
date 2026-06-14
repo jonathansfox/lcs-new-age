@@ -17,7 +17,7 @@ import 'package:lcs_new_age/utils/interface_options.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const String gameVersion = "1.4.9";
+const String gameVersion = "1.5.0";
 bool megaFounderCheat = false;
 
 Future<void> titleScreen() async {
@@ -130,10 +130,8 @@ Future<void> optionsMenu() async {
         7,
         8,
         x2: 72,
-        "When encounter warnings are on, you will be warned when you take a "
-        "step or wait and a new encounter begins. This extra step can help "
-        "you avoid accidentally walking past an encounter or doing something "
-        "else you might not want to do. Default is off.");
+        "Adds an extra prompt when you run into people so you don't "
+        "accidentally walk past them. Default is off.");
 
     addOptionText(console.y + 1, 4, "M",
         "M - Experimental Mouse Input: ${gameOptions.mouseInput ? "&GOn&x" : "&ROff&x"}");
@@ -142,8 +140,7 @@ Future<void> optionsMenu() async {
         console.y + 1,
         8,
         x2: 72,
-        "When mouse input is on, you can use the mouse to select options in "
-        "the game. This feature is not complete and not all screens support "
+        "This feature is not complete and not all screens support "
         "mouse input. Default is on.");
 
     addOptionText(console.y + 1, 4, "P",
@@ -153,11 +150,21 @@ Future<void> optionsMenu() async {
         console.y + 1,
         8,
         x2: 72,
-        "Any of these options can be used to page up and down on paged "
-        "interfaces in the game, regardless of how this option is set. "
-        "This option changes which set of keys is shown in the in-game "
-        "prompts. Default is [ and ].");
+        "Only changes the prompts. All options are accepted regardless. "
+        "Default is [ and ].");
 
+    addOptionText(console.y + 1, 4, "D", "D - Decrease");
+    addstrc(lightGray, " / ");
+    addOptionText(console.y, console.x, "I", "I - Increase Font Size");
+    addstrx("&w (&G${gameOptions.fontSize}&w)");
+    setColor(midGray);
+    addparagraph(
+        console.y + 1,
+        8,
+        x2: 72,
+        "This option changes the size of the font in the game. Sizes that are "
+        "too large for the screen will be scaled down and may cause small "
+        "black lines to appear. Default is 16.");
     addOptionText(console.y + 1, 4, "B", "B - Back to Title Screen");
 
     int c = await getKey();
@@ -177,6 +184,18 @@ Future<void> optionsMenu() async {
             gameOptions.interfacePgUp = ",";
           case ",":
             gameOptions.interfacePgUp = "[";
+        }
+        await gameOptions.save();
+      case Key.d:
+        gameOptions.fontSize = gameOptions.fontSize - 1;
+        if (gameOptions.fontSize < 14) {
+          gameOptions.fontSize = 14;
+        }
+        await gameOptions.save();
+      case Key.i:
+        gameOptions.fontSize = gameOptions.fontSize + 1;
+        if (gameOptions.fontSize > 32) {
+          gameOptions.fontSize = 32;
         }
         await gameOptions.save();
       case Key.b:
@@ -224,7 +243,8 @@ void printTitleScreen(HighScores? highScores) {
   addstr("NEW AGE");
   setColor(midGray);
   mvaddstrCenter(4, "Maintained by Jonathan S. Fox, with gratitude to:");
-  mvaddstrCenter(5, "Bay 12 Games, IsaacG, SlatersQuest, Kamal-Sadek, Grundee");
+  mvaddstrCenter(
+      5, "Bay 12 Games, IsaacG, SlatersQuest, TheCheshireCat, Kamal-Sadek,");
   mvaddstrCenter(
       6, "and many others who have contributed to LCS over the years");
 

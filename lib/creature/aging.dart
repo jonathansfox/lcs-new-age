@@ -6,12 +6,12 @@ int ageModifierForAttribute(Attribute attribute, int age) {
       return childAgeModifiers[attribute]!;
     case < teenAge:
       return teenAgeModifiers[attribute]!;
-    case >= middleAge:
-      return middleAgeModifiers[attribute]!;
-    case >= oldAge:
-      return oldAgeModifiers[attribute]!;
     case >= elderlyAge:
       return elderlyAgeModifiers[attribute]!;
+    case >= oldAge:
+      return oldAgeModifiers[attribute]!;
+    case >= middleAge:
+      return middleAgeModifiers[attribute]!;
     default:
       return 0;
   }
@@ -57,7 +57,7 @@ const Map<Attribute, int> teenAgeModifiers = {
   Attribute.heart: 1,
 };
 
-const int childAge = 12;
+const int childAge = 11;
 const Map<Attribute, int> childAgeModifiers = {
   Attribute.strength: -3,
   Attribute.agility: 0,

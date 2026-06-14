@@ -1,3 +1,25 @@
+## 1.5.0 - 10/25/2025
+* Added Housing, Healthcare, and Retirement issues and corresponding laws
+* Added nursing home and insurance office locations, each with special interactive locations, secret documents, and new NPCs
+* Added Landlord Papers, which can only be provided by a Landlord sleeper
+* Changed display of unarmed attack when the character will use a built-in social attack to Voice
+* Made reductions in stats that block gaining more skill levels not permonently destroy previously accumulated experience toward higher skill levels
+* Allowed execution flavor text to wrap to the next line
+* Changed the balance of heat generation to make heat accumulate more quickly
+* Fixed a bug where hiding with a lit torch was calculated incorrectly
+* Fixed old age and middle age modifiers stacking incorrectly
+* Reduced the age that children become teenagers from 12 to 11
+* Increased the prices quoted in some of the newspaper ads
+* Fixed an issue where the homeless camp wasn't using the intended encounter list
+* Adjusted the wording on the free speech issue on various screens
+* Fixed some text formatting on the recruit overview when talking to people in the field
+* Updated the text when looting the armory to no longer refer to XM250 and XM7, instead just M250 and M7
+* Added TheCheshireCat to the special thanks credits on the title screen
+* Removed some extra lines that could come up during recruitment meetings that didn't make grammatical sense
+* Fixed grammar when a recruit thinks the recruiter is a dangerous extremist
+* Fixed the Liberal Guardian potentially using censorship and/or hate speech during C+ free speech laws
+* Fixed Ronald Reagan's death date
+
 ## 1.4.9 - 6/15/2025
 * Renamed several safehouses when the LCS captures them
 * Adjusted the text for one of the news stories to refer to torture cells that are "more humane" instead of "more human"

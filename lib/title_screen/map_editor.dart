@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math' as math;
 
 import 'package:file_saver/file_saver.dart';
 import 'package:flutter/services.dart';
@@ -173,6 +174,539 @@ final List<SpecialType> specialTypes = [
   };
 }
 
+// Flood fill function for fill mode
+void floodFill(int startX, int startY, int floor, TileType newTileType) {
+  if (startX < 0 || startX >= MAPX || startY < 0 || startY >= MAPY) return;
+
+  SiteTile startTile = levelMap[startX][startY][floor];
+
+  // Get the original tile type to match against
+  bool originalWall = startTile.wall;
+  bool originalDoor = startTile.door;
+  bool originalExit = startTile.exit;
+  bool originalGrass = startTile.grass;
+  bool originalChainlink = startTile.chainlink;
+  bool originalMetal = startTile.metal;
+  bool originalRestricted = startTile.restricted;
+  bool originalLocked = startTile.locked;
+
+  // If the tile is already the target type, no need to fill
+  bool isAlreadyTargetType = false;
+  if (newTileType.key == "wall" && originalWall) {
+    isAlreadyTargetType = true;
+  } else if (newTileType.key == "door" && originalDoor && !originalLocked) {
+    isAlreadyTargetType = true;
+  } else if (newTileType.key == "locked_door" &&
+      originalDoor &&
+      originalLocked) {
+    isAlreadyTargetType = true;
+  } else if (newTileType.key == "exit" && originalExit) {
+    isAlreadyTargetType = true;
+  } else if (newTileType.key == "grass" && originalGrass) {
+    isAlreadyTargetType = true;
+  } else if (newTileType.key == "chainlink" && originalChainlink) {
+    isAlreadyTargetType = true;
+  } else if (newTileType.key == "metal_wall" && originalMetal) {
+    isAlreadyTargetType = true;
+  } else if (newTileType.key == "restricted" && originalRestricted) {
+    isAlreadyTargetType = true;
+  } else if (newTileType.key == "floor" &&
+      !originalWall &&
+      !originalDoor &&
+      !originalExit &&
+      !originalGrass &&
+      !originalChainlink &&
+      !originalMetal &&
+      !originalRestricted) {
+    isAlreadyTargetType = true;
+  }
+
+  if (isAlreadyTargetType) return;
+
+  // Use a stack-based flood fill
+  List<(int, int)> stack = [(startX, startY)];
+  Set<(int, int)> visited = {};
+
+  while (stack.isNotEmpty) {
+    var (x, y) = stack.removeLast();
+
+    if (x < 0 || x >= MAPX || y < 0 || y >= MAPY) continue;
+    if (visited.contains((x, y))) continue;
+
+    SiteTile tile = levelMap[x][y][floor];
+
+    // Check if this tile matches the original type
+    bool matchesOriginal = false;
+    if (tile.wall == originalWall &&
+        tile.door == originalDoor &&
+        tile.exit == originalExit &&
+        tile.grass == originalGrass &&
+        tile.chainlink == originalChainlink &&
+        tile.metal == originalMetal &&
+        tile.restricted == originalRestricted &&
+        tile.locked == originalLocked) {
+      matchesOriginal = true;
+    }
+
+    if (!matchesOriginal) continue;
+
+    visited.add((x, y));
+    newTileType.setter(tile);
+
+    // Add neighbors to stack
+    stack.add((x + 1, y));
+    stack.add((x - 1, y));
+    stack.add((x, y + 1));
+    stack.add((x, y - 1));
+  }
+}
+
+// Preview map function - full screen view with vision and exploration
+Future<void> previewMap(int floor) async {
+  int playerX = MAPX >> 1; // Start at player spawn position
+  int playerY = 1;
+
+  // Create exploration map - tracks what has been seen
+  List<List<bool>> explored =
+      List.generate(MAPX, (x) => List.generate(MAPY, (y) => false));
+
+  // Mark starting position as explored
+  explored[playerX][playerY] = true;
+
+  while (true) {
+    erase();
+
+    // Draw the map with vision and exploration
+    for (int y = 0; y < MAPY; y++) {
+      for (int x = 0; x < MAPX; x++) {
+        if (explored[x][y]) {
+          SiteTile tile = levelMap[x][y][floor];
+
+          // Check if tile is visible from player position
+          bool isVisible = isTileVisible(playerX, playerY, x, y, floor);
+
+          if (isVisible) {
+            // Draw tile normally
+            String symbol = getTileSymbol(tile);
+            Color color = getTileColor(tile);
+            Color bgColor = getTileBackgroundColor(tile, true);
+
+            // For normal walls, use background color as foreground to create solid blocks
+            if (tile.wall &&
+                !tile.burning &&
+                !tile.neighbors().any((t) => t.megaBloody) &&
+                !tile.neighbors().any((t) => t.graffitiLCS) &&
+                !tile.neighbors().any((t) => t.graffitiCCS) &&
+                !tile.neighbors().any((t) => t.graffitiOther)) {
+              color = bgColor;
+            }
+
+            setColor(color, background: bgColor);
+            mvaddstr(y, x, symbol);
+          } else {
+            // Draw as explored but not currently visible (darker)
+            String symbol = getTileSymbol(tile);
+            Color color = getTileColor(tile);
+            Color bgColor = getTileBackgroundColor(tile, false);
+
+            // For normal walls, use background color as foreground to create solid blocks
+            if (tile.wall &&
+                !tile.burning &&
+                !tile.neighbors().any((t) => t.megaBloody) &&
+                !tile.neighbors().any((t) => t.graffitiLCS) &&
+                !tile.neighbors().any((t) => t.graffitiCCS) &&
+                !tile.neighbors().any((t) => t.graffitiOther)) {
+              color = bgColor;
+            }
+
+            setColor(color, background: bgColor);
+            mvaddstr(y, x, symbol);
+          }
+        } else {
+          // Unexplored - show as black space
+          setColor(black);
+          mvaddstr(y, x, " ");
+        }
+      }
+    }
+
+    // Draw player
+    setColor(white);
+    mvaddstr(playerY, playerX, "@");
+
+    // Draw UI
+    setColor(lightGray);
+    mvaddstr(0, 0, "Preview Mode - Floor ${floor + 1}");
+    mvaddstr(1, 0, "Position: ($playerX, $playerY)");
+
+    // Show tile info at player position
+    if (playerX >= 0 && playerX < MAPX && playerY >= 0 && playerY < MAPY) {
+      SiteTile currentTile = levelMap[playerX][playerY][floor];
+      String tileInfo = getTileDescription(currentTile);
+      mvaddstr(2, 0, "Tile: $tileInfo");
+    }
+
+    refresh();
+
+    // Handle input
+    String key = await getKeyCaseSensitive();
+
+    if (key == "X" || key == "Escape" || key == "q" || key == "Q") {
+      return; // Exit preview
+    } else if (key == "Up" || key == "8") {
+      if (playerY > 0) {
+        int newY = playerY - 1;
+        if (canMoveTo(playerX, newY, floor)) {
+          playerY = newY;
+          exploreArea(playerX, playerY, floor, explored);
+        }
+      }
+    } else if (key == "Down" || key == "2") {
+      if (playerY < MAPY - 1) {
+        int newY = playerY + 1;
+        if (canMoveTo(playerX, newY, floor)) {
+          playerY = newY;
+          exploreArea(playerX, playerY, floor, explored);
+        }
+      }
+    } else if (key == "Left" || key == "4") {
+      if (playerX > 0) {
+        int newX = playerX - 1;
+        if (canMoveTo(newX, playerY, floor)) {
+          playerX = newX;
+          exploreArea(playerX, playerY, floor, explored);
+        }
+      }
+    } else if (key == "Right" || key == "6") {
+      if (playerX < MAPX - 1) {
+        int newX = playerX + 1;
+        if (canMoveTo(newX, playerY, floor)) {
+          playerX = newX;
+          exploreArea(playerX, playerY, floor, explored);
+        }
+      }
+    }
+  }
+}
+
+// Check if a tile is visible from the player position
+bool isTileVisible(int fromX, int fromY, int toX, int toY, int floor) {
+  // Simple line-of-sight check
+  int dx = (toX - fromX).abs();
+  int dy = (toY - fromY).abs();
+
+  // If too far away, not visible
+  if (dx > 8 || dy > 8) return false;
+
+  // Check line of sight
+  int steps = math.max(dx, dy);
+  if (steps == 0) return true;
+
+  double stepX = (toX - fromX) / steps;
+  double stepY = (toY - fromY) / steps;
+
+  for (int i = 1; i < steps; i++) {
+    int checkX = (fromX + stepX * i).round();
+    int checkY = (fromY + stepY * i).round();
+
+    if (checkX >= 0 && checkX < MAPX && checkY >= 0 && checkY < MAPY) {
+      SiteTile tile = levelMap[checkX][checkY][floor];
+      if (tile.wall || tile.door || tile.metal || tile.chainlink) {
+        return false; // Blocked by wall/door
+      }
+    }
+  }
+
+  return true;
+}
+
+// Check if player can move to a position
+bool canMoveTo(int x, int y, int floor) {
+  if (x < 0 || x >= MAPX || y < 0 || y >= MAPY) return false;
+
+  SiteTile tile = levelMap[x][y][floor];
+
+  // Can't move through walls, metal, or chainlink
+  if (tile.wall || tile.metal || tile.chainlink) return false;
+
+  // Can move through doors, exits, grass, restricted areas, and floors
+  return true;
+}
+
+// Explore area around player position
+void exploreArea(
+    int centerX, int centerY, int floor, List<List<bool>> explored) {
+  // Mark current position and surrounding area as explored
+  for (int dy = -2; dy <= 2; dy++) {
+    for (int dx = -2; dx <= 2; dx++) {
+      int x = centerX + dx;
+      int y = centerY + dy;
+
+      if (x >= 0 && x < MAPX && y >= 0 && y < MAPY) {
+        if (isTileVisible(centerX, centerY, x, y, floor)) {
+          explored[x][y] = true;
+        }
+      }
+    }
+  }
+}
+
+// Get tile symbol for display (using sitemode graphics)
+String getTileSymbol(SiteTile tile) {
+  if (tile.wall) {
+    if (tile.burning) return "¤";
+    if (tile.neighbors().any((t) => t.megaBloody)) return " ";
+    if (tile.neighbors().any((t) => t.graffitiLCS)) return "L";
+    if (tile.neighbors().any((t) => t.graffitiCCS)) return "C";
+    if (tile.neighbors().any((t) => t.graffitiOther)) return "g";
+    return " ";
+  }
+  if (tile.door) {
+    if (tile.right?.wall == true || tile.left?.wall == true) {
+      return "\u2550"; // Horizontal door
+    } else {
+      return "\u2551"; // Vertical door
+    }
+  }
+  if (tile.special == TileSpecial.stairsUp) return "↑";
+  if (tile.special == TileSpecial.stairsDown) return "↓";
+  if (tile.exit) return "X";
+  if (tile.firePeak) return "₰";
+  if (tile.fireEnd) return "৵";
+  if (tile.fireStart) return "¤";
+  if (tile.special != TileSpecial.none) {
+    return switch (tile.special) {
+      TileSpecial.apartmentLandlord => "L",
+      TileSpecial.armory => "A",
+      TileSpecial.bankMoney => "\$",
+      TileSpecial.bankTeller => "T",
+      TileSpecial.bankVault => "V",
+      TileSpecial.cableBroadcastStudio => "S",
+      TileSpecial.cagedMonsters => "#",
+      TileSpecial.cagedRabbits => "#",
+      TileSpecial.ccsBoss => "!",
+      TileSpecial.ceoOffice => "O",
+      TileSpecial.ceoSafe => "\$",
+      TileSpecial.nursingHomeFiles => "\$",
+      TileSpecial.nursingHomeManager => "O",
+      TileSpecial.nursingHomePatient => "P",
+      TileSpecial.nursingHomePatientDone => "P",
+      TileSpecial.insuranceFiles => "\$",
+      TileSpecial.insuranceCEO => "O",
+      TileSpecial.clubBouncer => "B",
+      TileSpecial.clubBouncerSecondVisit => "B",
+      TileSpecial.computer => "c",
+      TileSpecial.corporateFiles => "\$",
+      TileSpecial.courthouseJuryRoom => "J",
+      TileSpecial.courthouseLockup => "#",
+      TileSpecial.displayCase => "d",
+      TileSpecial.polluterEquipment => "P",
+      TileSpecial.sweatshopEquipment => "S",
+      TileSpecial.labEquipment => "L",
+      TileSpecial.stairsDown => "↓",
+      TileSpecial.stairsUp => "↑",
+      TileSpecial.none => "?",
+      TileSpecial.policeStationLockup => "#",
+      TileSpecial.prisonControl => "#",
+      TileSpecial.prisonControlLow => "#",
+      TileSpecial.prisonControlMedium => "#",
+      TileSpecial.prisonControlHigh => "#",
+      TileSpecial.intelSupercomputer => "C",
+      TileSpecial.nuclearControlRoom => "C",
+      TileSpecial.radioBroadcastStudio => "S",
+      TileSpecial.signOne => "?",
+      TileSpecial.table => "t",
+      TileSpecial.tent => "t",
+      TileSpecial.parkBench => "b",
+      TileSpecial.signTwo => "?",
+      TileSpecial.signThree => "?",
+      TileSpecial.securityCheckpoint => "S",
+      TileSpecial.securityMetalDetectors => "S",
+      TileSpecial.securitySecondVisit => "S",
+      TileSpecial.ovalOfficeNW => "┌",
+      TileSpecial.ovalOfficeNE => "┐",
+      TileSpecial.ovalOfficeSW => "└",
+      TileSpecial.ovalOfficeSE => "┘",
+    };
+  }
+  if (tile.siegeTrap) return "%";
+  if (tile.loot) return "\$";
+  if (tile.megaBloody) return ";";
+  if (tile.grass) return ",";
+  if (tile.debris) return "~";
+  return "."; // Floor
+}
+
+// Get tile background color for display (using sitemode colors)
+Color getTileBackgroundColor(SiteTile tile, bool isVisible) {
+  if (tile.wall) {
+    if (tile.burning) return isVisible ? lightGray : darkGray;
+    if (tile.neighbors().any((t) => t.megaBloody)) return darkRed;
+    if (tile.neighbors().any((t) => t.graffitiLCS)) {
+      return isVisible ? lightGray : darkGray;
+    }
+    if (tile.neighbors().any((t) => t.graffitiCCS)) {
+      return isVisible ? lightGray : darkGray;
+    }
+    if (tile.neighbors().any((t) => t.graffitiOther)) {
+      return isVisible ? lightGray : darkGray;
+    }
+    return isVisible ? lightGray : darkGray;
+  }
+  if (tile.door) {
+    if (tile.metal) return white;
+    if (tile.burning) return black;
+    if (tile.cantUnlock && tile.locked) return darkRed;
+    return black;
+  }
+  return black; // Default background
+}
+
+// Get tile color for display (using sitemode colors)
+Color getTileColor(SiteTile tile) {
+  if (tile.wall) {
+    if (tile.burning) return orange;
+    if (tile.neighbors().any((t) => t.megaBloody)) return darkRed;
+    if (tile.neighbors().any((t) => t.graffitiLCS)) return green;
+    if (tile.neighbors().any((t) => t.graffitiCCS)) return darkRed;
+    if (tile.neighbors().any((t) => t.graffitiOther)) return black;
+    return lightGray; // Will be overridden by background color for solid walls
+  }
+  if (tile.door) {
+    if (tile.metal) return white;
+    if (tile.burning) return orange;
+    if (tile.cantUnlock && tile.locked) return red;
+    if (tile.knownLock && tile.locked) return darkGray;
+    return yellow;
+  }
+  if (tile.special == TileSpecial.stairsUp ||
+      tile.special == TileSpecial.stairsDown) {
+    return yellow;
+  }
+  if (tile.exit) return yellow;
+  if (tile.firePeak || tile.fireEnd || tile.fireStart) return orange;
+  if (tile.special != TileSpecial.none) {
+    return switch (tile.special) {
+      TileSpecial.clubBouncer => red,
+      TileSpecial.clubBouncerSecondVisit => red,
+      TileSpecial.securityCheckpoint => red,
+      TileSpecial.securityMetalDetectors => red,
+      TileSpecial.ceoOffice => red,
+      TileSpecial.ccsBoss => red,
+      TileSpecial.ovalOfficeNW ||
+      TileSpecial.ovalOfficeNE ||
+      TileSpecial.ovalOfficeSW ||
+      TileSpecial.ovalOfficeSE =>
+        white, // Default for oval office
+      _ => yellow,
+    };
+  }
+  if (tile.siegeTrap) return yellow;
+  if (tile.loot) return purple;
+  if (tile.megaBloody) return red;
+  if (tile.grass) {
+    if (tile.bloody) return red;
+    return lightGreen;
+  }
+  if (tile.debris) return lightGray;
+  if (tile.restricted) return blue;
+  if (tile.bloody) return red;
+  return lightGray; // Floor
+}
+
+// Get tile description for UI
+String getTileDescription(SiteTile tile) {
+  if (tile.wall) {
+    if (tile.burning) return "Burning Wall";
+    if (tile.neighbors().any((t) => t.megaBloody)) return "Bloody Wall";
+    if (tile.neighbors().any((t) => t.graffitiLCS)) return "LCS Graffiti Wall";
+    if (tile.neighbors().any((t) => t.graffitiCCS)) return "CCS Graffiti Wall";
+    if (tile.neighbors().any((t) => t.graffitiOther)) {
+      return "Gang Graffiti Wall";
+    }
+    return "Wall";
+  }
+  if (tile.door) {
+    if (tile.metal) return "Metal Door";
+    if (tile.burning) return "Burning Door";
+    if (tile.cantUnlock && tile.locked) return "Unlockable Door";
+    if (tile.knownLock && tile.locked) return "Known Locked Door";
+    return tile.locked ? "Locked Door" : "Door";
+  }
+  if (tile.special == TileSpecial.stairsUp) return "Stairs Up";
+  if (tile.special == TileSpecial.stairsDown) return "Stairs Down";
+  if (tile.exit) return "Exit";
+  if (tile.firePeak) return "Fire Peak";
+  if (tile.fireEnd) return "Fire End";
+  if (tile.fireStart) return "Fire Start";
+  if (tile.special != TileSpecial.none) {
+    return switch (tile.special) {
+      TileSpecial.apartmentLandlord => "Apartment Landlord",
+      TileSpecial.armory => "Armory",
+      TileSpecial.bankMoney => "Bank Money",
+      TileSpecial.bankTeller => "Bank Teller",
+      TileSpecial.bankVault => "Bank Vault",
+      TileSpecial.cableBroadcastStudio => "Cable Studio",
+      TileSpecial.cagedMonsters => "Caged Monsters",
+      TileSpecial.cagedRabbits => "Caged Rabbits",
+      TileSpecial.ccsBoss => "CCS Boss",
+      TileSpecial.ceoOffice => "CEO Office",
+      TileSpecial.ceoSafe => "CEO Safe",
+      TileSpecial.nursingHomeFiles => "Nursing Home Files",
+      TileSpecial.nursingHomeManager => "Nursing Home Manager",
+      TileSpecial.nursingHomePatient => "Nursing Home Patient",
+      TileSpecial.nursingHomePatientDone => "Nursing Home Patient (Done)",
+      TileSpecial.insuranceFiles => "H. Insurance Files",
+      TileSpecial.insuranceCEO => "H. Insurance CEO",
+      TileSpecial.clubBouncer => "Club Bouncer",
+      TileSpecial.clubBouncerSecondVisit => "Club Bouncer (2nd)",
+      TileSpecial.computer => "Computer",
+      TileSpecial.corporateFiles => "Corporate Files",
+      TileSpecial.courthouseJuryRoom => "Jury Room",
+      TileSpecial.courthouseLockup => "Courthouse Lockup",
+      TileSpecial.displayCase => "Display Case",
+      TileSpecial.polluterEquipment => "Polluter Equipment",
+      TileSpecial.sweatshopEquipment => "Sweatshop Equipment",
+      TileSpecial.labEquipment => "Lab Equipment",
+      TileSpecial.stairsDown => "Stairs Down",
+      TileSpecial.stairsUp => "Stairs Up",
+      TileSpecial.none => "Unknown",
+      TileSpecial.policeStationLockup => "Police Lockup",
+      TileSpecial.prisonControl => "Prison Control",
+      TileSpecial.prisonControlLow => "Prison Control (Low)",
+      TileSpecial.prisonControlMedium => "Prison Control (Medium)",
+      TileSpecial.prisonControlHigh => "Prison Control (High)",
+      TileSpecial.intelSupercomputer => "Intel Supercomputer",
+      TileSpecial.nuclearControlRoom => "Nuclear Control",
+      TileSpecial.radioBroadcastStudio => "Radio Studio",
+      TileSpecial.signOne => "Sign",
+      TileSpecial.table => "Table",
+      TileSpecial.tent => "Tent",
+      TileSpecial.parkBench => "Park Bench",
+      TileSpecial.signTwo => "Sign",
+      TileSpecial.signThree => "Sign",
+      TileSpecial.securityCheckpoint => "Security Checkpoint",
+      TileSpecial.securityMetalDetectors => "Metal Detectors",
+      TileSpecial.securitySecondVisit => "Security (2nd)",
+      TileSpecial.ovalOfficeNW => "Oval Office (NW)",
+      TileSpecial.ovalOfficeNE => "Oval Office (NE)",
+      TileSpecial.ovalOfficeSW => "Oval Office (SW)",
+      TileSpecial.ovalOfficeSE => "Oval Office (SE)",
+    };
+  }
+  if (tile.siegeTrap) return "Siege Trap";
+  if (tile.loot) return "Loot";
+  if (tile.megaBloody) return "Mega Bloody";
+  if (tile.grass) {
+    if (tile.bloody) return "Bloody Grass";
+    return "Grass";
+  }
+  if (tile.debris) return "Debris";
+  if (tile.restricted) return "Restricted Area";
+  if (tile.bloody) return "Bloody Floor";
+  return "Floor";
+}
+
 Future<void> editMap(String mapName) async {
   // Clear any old map data
   for (SiteTile tile in levelMap.all) {
@@ -194,23 +728,81 @@ Future<void> editMap(String mapName) async {
   TileType? selectedTileType;
   SpecialType? selectedSpecialType;
   bool isDragging = false;
+  int editMode = 0; // 0 = pencil, 1 = rectangle, 2 = fill
+  int? dragStartX;
+  int? dragStartY;
+  int? dragCurrentX;
+  int? dragCurrentY;
 
   // Enable mouse events for drag functionality
   console.enableMouseEvents((y, x, isDown) {
+    dragCurrentX = x;
+    dragCurrentY = y - 1;
     if (x >= 0 && x < MAPX && y - 1 >= 0 && y - 1 < MAPY) {
-      if (isDown) {
-        isDragging = true;
-      } else {
-        isDragging = false;
-      }
+      if (editMode == 1) {
+        // Rectangle mode: start on mouse down, commit on mouse up
+        if (isDown) {
+          if (!isDragging) {
+            isDragging = true;
+            dragStartX = x;
+            dragStartY = y - 1;
+          }
+        } else {
+          if (isDragging &&
+              dragStartX != null &&
+              dragStartY != null &&
+              (selectedTileType != null || selectedSpecialType != null)) {
+            int startX = dragStartX!;
+            int startY = dragStartY!;
+            int endX = dragCurrentX ?? x;
+            int endY = dragCurrentY ?? (y - 1);
 
-      if (isDragging &&
-          (selectedTileType != null || selectedSpecialType != null)) {
-        SiteTile tile = levelMap[x][y - 1][currentFloor];
-        if (selectedTileType != null) {
-          selectedTileType.setter(tile);
-        } else if (selectedSpecialType != null) {
-          tile.special = selectedSpecialType.special;
+            if (startX > endX) {
+              int t = startX;
+              startX = endX;
+              endX = t;
+            }
+            if (startY > endY) {
+              int t = startY;
+              startY = endY;
+              endY = t;
+            }
+
+            for (int ry = startY; ry <= endY; ry++) {
+              for (int rx = startX; rx <= endX; rx++) {
+                SiteTile tile = levelMap[rx][ry][currentFloor];
+                if (selectedTileType != null) {
+                  selectedTileType.setter(tile);
+                } else if (selectedSpecialType != null) {
+                  tile.special = selectedSpecialType.special;
+                }
+              }
+            }
+          }
+
+          isDragging = false;
+          dragStartX = null;
+          dragStartY = null;
+        }
+      } else if (editMode == 2) {
+        // Fill mode: flood fill on click (tiles only)
+        if (isDown && selectedTileType != null) {
+          floodFill(x, y - 1, currentFloor, selectedTileType);
+        }
+      } else {
+        // Pencil mode: paint continuously while dragging
+        if (isDown) {
+          isDragging = true;
+          if (selectedTileType != null || selectedSpecialType != null) {
+            SiteTile tile = levelMap[x][y - 1][currentFloor];
+            if (selectedTileType != null) {
+              selectedTileType.setter(tile);
+            } else if (selectedSpecialType != null) {
+              tile.special = selectedSpecialType.special;
+            }
+          }
+        } else {
+          isDragging = false;
         }
       }
     }
@@ -260,15 +852,101 @@ Future<void> editMap(String mapName) async {
       }
     }
 
+    // Draw player start position indicator
+    int playerStartX = MAPX >> 1; // Middle of map horizontally
+    int playerStartY = 1; // Second row from top
+    if (currentFloor == 0) {
+      // Only show on ground floor
+      SiteTile startTile = levelMap[playerStartX][playerStartY][currentFloor];
+
+      // Determine color based on tile accessibility
+      Color indicatorColor;
+      if (startTile.wall ||
+          startTile.door ||
+          startTile.chainlink ||
+          startTile.metal) {
+        // Blocked - red
+        indicatorColor = red;
+      } else if (startTile.restricted) {
+        // Restricted - yellow
+        indicatorColor = yellow;
+      } else {
+        // Unrestricted and not blocked - green
+        indicatorColor = green;
+      }
+
+      setColor(indicatorColor);
+      mvaddstr(playerStartY + 1, playerStartX, "@"); // @ symbol for player
+    }
+
+    // Rectangle preview overlay while dragging (no map mutation)
+    if (editMode == 1 &&
+        isDragging &&
+        dragStartX != null &&
+        dragStartY != null &&
+        (selectedTileType != null || selectedSpecialType != null) &&
+        dragCurrentX != null &&
+        dragCurrentY != null) {
+      int startX = dragStartX!;
+      int startY = dragStartY!;
+      int endX = dragCurrentX!;
+      int endY = dragCurrentY!;
+
+      // Clamp to map bounds
+      if (endX < 0) endX = 0;
+      if (endX >= MAPX) endX = MAPX - 1;
+      if (endY < 0) endY = 0;
+      if (endY >= MAPY) endY = MAPY - 1;
+
+      // Normalize rectangle
+      if (startX > endX) {
+        int t = startX;
+        startX = endX;
+        endX = t;
+      }
+      if (startY > endY) {
+        int t = startY;
+        startY = endY;
+        endY = t;
+      }
+
+      String previewChar;
+      Color previewColor;
+      if (selectedTileType != null) {
+        previewChar = selectedTileType.symbol;
+        previewColor = selectedTileType.color;
+      } else if (selectedSpecialType != null) {
+        previewChar = selectedSpecialType.symbol;
+        previewColor = selectedSpecialType.color;
+      } else {
+        previewChar = "?";
+        previewColor = lightGray;
+      }
+
+      setColor(previewColor);
+      for (int py = startY; py <= endY; py++) {
+        for (int px = startX; px <= endX; px++) {
+          mvaddstr(py + 1, px, previewChar);
+        }
+      }
+    }
+
     // Add floor display and controls
     setColor(lightGray);
     mvaddstr(0, 0, "Floor ${currentFloor + 1}");
-    addOptionText(24, 0, "X", "X - Exit Map Editor");
-    addOptionText(24, 24, nextPageStr.split(" ").first, "$nextPageStr Floor");
+    addOptionText(24, 0, "X", "X - Exit");
+    addOptionText(24, console.x + 2, nextPageStr.split(" ").first, nextPageStr);
     addstr(" / ");
-    addInlineOptionText(
-        previousPageStr.split(" ").first, "$previousPageStr Floor");
-    addOptionText(24, 60, "E", "E - Export Map");
+    addInlineOptionText(previousPageStr.split(" ").first, previousPageStr);
+    addOptionText(24, console.x + 2, "E", "E - Export");
+    String modeText = switch (editMode) {
+      0 => "R - Pencil Mode",
+      1 => "R - Rectangle Mode",
+      2 => "R - Fill Mode",
+      _ => "R - Unknown Mode"
+    };
+    addOptionText(24, console.x + 2, "R", modeText);
+    addOptionText(24, console.x + 2, "P", "P - Preview");
 
     // Add tile buttons
     setColor(lightGray);
@@ -277,14 +955,9 @@ Future<void> editMap(String mapName) async {
       int row = i ~/ 8;
       int col = i % 8;
       setColor(tileTypes[i].color);
-      addOptionText(
-        2 + row,
-        MAPX + 1 + col,
-        "tile_$i",
-        tileTypes[i].symbol,
-        baseColorKey: ColorKey.fromColor(tileTypes[i].color),
-        highlightColorKey: ColorKey.fromColor(tileTypes[i].color),
-      );
+      mvaddstr(2 + row, MAPX + 1 + col, tileTypes[i].symbol);
+      // Register mouse region for clicking
+      registerMouseRegion(2 + row, MAPX + 1 + col, 1, 1, "tile_$i");
     }
 
     // Add special buttons
@@ -294,14 +967,9 @@ Future<void> editMap(String mapName) async {
       int row = i ~/ 8;
       int col = i % 8;
       setColor(specialTypes[i].color);
-      addOptionText(
-        7 + row,
-        MAPX + 1 + col,
-        "special_$i",
-        specialTypes[i].symbol,
-        baseColorKey: ColorKey.fromColor(specialTypes[i].color),
-        highlightColorKey: ColorKey.fromColor(specialTypes[i].color),
-      );
+      mvaddstr(7 + row, MAPX + 1 + col, specialTypes[i].symbol);
+      // Register mouse region for clicking
+      registerMouseRegion(7 + row, MAPX + 1 + col, 1, 1, "special_$i");
     }
 
     // Add hover feedback
@@ -378,6 +1046,10 @@ Future<void> editMap(String mapName) async {
       return;
     } else if (key == "E" || key == "export_map") {
       await exportMap(mapName, currentFloor);
+    } else if (key == "R") {
+      editMode = (editMode + 1) % 3; // Cycle through 0, 1, 2
+    } else if (key == "P") {
+      await previewMap(currentFloor);
     } else if (isPageUp(key.codePoint) && currentFloor > 0) {
       currentFloor--;
     } else if (isPageDown(key.codePoint) && currentFloor < MAPZ - 1) {

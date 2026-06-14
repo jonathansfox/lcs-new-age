@@ -383,7 +383,7 @@ void _pollsPage(int start) {
       case View.intelligence:
         addstr("want to stop government mass surveillance");
       case View.freeSpeech:
-        addstr("believe in unfettered free speech");
+        addstr("want more freedom to criticize the government");
       case View.genetics:
         addstr("support regulation of genetic research");
       case View.justices:
@@ -424,6 +424,12 @@ void _pollsPage(int start) {
         addstr("consider the Liberal Crime Squad a force for good");
       case View.ccsHated:
         addstr("want the Conservative Crime Squad brought to justice");
+      case View.housing:
+        addstr("want the government to provide affordable housing");
+      case View.healthcare:
+        addstr("support universal healthcare");
+      case View.retirement:
+        addstr("want a government-run retirement system");
     }
   }
 }
@@ -498,7 +504,7 @@ String _concernString(View view) {
       if (publicOpinion[view]! > 50) {
         return "protecting free speech";
       } else {
-        return "vulgarity in the media";
+        return "the media's vulgarity";
       }
     case View.genetics:
       if (publicOpinion[view]! > 50) {
@@ -591,6 +597,24 @@ String _concernString(View view) {
         return "the CCS terrorists";
       } else {
         return "the CCS patriots";
+      }
+    case View.housing:
+      if (publicOpinion[view]! > 50) {
+        return "the cost of housing";
+      } else {
+        return "socialists trying to control housing";
+      }
+    case View.healthcare:
+      if (publicOpinion[view]! > 50) {
+        return "the cost of healthcare";
+      } else {
+        return "socialists trying to control healthcare";
+      }
+    case View.retirement:
+      if (publicOpinion[view]! > 50) {
+        return "the cost of retirement";
+      } else {
+        return "socialists trying to control retirement";
       }
   }
 }

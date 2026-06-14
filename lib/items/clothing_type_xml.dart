@@ -102,6 +102,8 @@ void parseClothingType(ClothingType clothing, XmlElement xml,
             parseBool(element.innerText) ?? clothing.allowVisibleArmor;
       case "armor_allowed":
         clothing.allowedArmorIds.add(element.innerText);
+      case "culture":
+        clothing.culture.add(element.innerText);
       default:
         debugPrint("Unknown clothing type key: $key");
     }

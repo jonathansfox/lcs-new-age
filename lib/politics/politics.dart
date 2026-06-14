@@ -40,6 +40,9 @@ class Politics {
     p.laws[Law.military] = DeepAlignment.conservative;
     p.laws[Law.prisons] = DeepAlignment.conservative;
     p.laws[Law.torture] = DeepAlignment.liberal;
+    p.laws[Law.housing] = DeepAlignment.conservative;
+    p.laws[Law.healthcare] = DeepAlignment.moderate;
+    p.laws[Law.retirement] = DeepAlignment.moderate;
     p.changePublicOpinion(View.womensRights, 5);
     p.changePublicOpinion(View.animalResearch, -30);
     p.changePublicOpinion(View.policeBehavior, -5);
@@ -59,6 +62,9 @@ class Politics {
     p.changePublicOpinion(View.military, -5);
     p.changePublicOpinion(View.prisons, -5);
     p.changePublicOpinion(View.torture, 20);
+    p.changePublicOpinion(View.housing, 5);
+    p.changePublicOpinion(View.healthcare, 5);
+    p.changePublicOpinion(View.retirement, 5);
     p.publicInterest.updateAll((k, v) => 0);
     return p;
   }
@@ -327,6 +333,9 @@ class Politics {
         Law.military => [View.military],
         Law.prisons => [View.prisons],
         Law.torture => [View.intelligence, View.policeBehavior],
+        Law.housing => [View.housing],
+        Law.healthcare => [View.healthcare],
+        Law.retirement => [View.retirement],
       };
 
   double publicSupportForLaw(Law law) {

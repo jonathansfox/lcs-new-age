@@ -367,6 +367,9 @@ String _mediaIssueDescription(View v) => switch (v) {
       View.lcsKnown => "the LCS",
       View.lcsLiked => "the LCS",
       View.ccsHated => "the CCS",
+      View.housing => "housing",
+      View.healthcare => "healthcare",
+      View.retirement => "retirement",
     };
 
 int _mediaSegmentPower() {

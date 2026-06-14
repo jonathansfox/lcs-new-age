@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
 
@@ -94,12 +95,12 @@ enum Law {
   ]),
   freeSpeech("Free Speech", [
     "Opening your mouth is a capital crime.",
-    "Intelligence agents are tasked with suppressing unacceptable speech.",
-    "The government has extensive content guidelines for the media.",
-    "The government censors some offensive content in the media.",
-    "Government censorship is kept to a minimum.",
-    "The government does not censor speech.",
-    "Free speech is sacrosanct and diverse points of view are celebrated.",
+    "A wide swath of unacceptable speech by individuals is directly criminalized.",
+    "Government suppresses notionally Unamerican Ideas from mainstream media.",
+    "Private carriers platform hate content in the name of free speech.",
+    "Government censors mainstream media for so-called \"obscenity\".",
+    "Social norms keep hate speech to a minimum without government intervention.",
+    "Hate speech is unheard of and diverse points of view are celebrated.",
   ]),
   flagBurning("Flag Burning", [
     "Images or words describing flag burning are punished by death.",
@@ -199,11 +200,43 @@ enum Law {
     "The government insists that it does not torture anyone.",
     "The government consistently enforces a ban on torture.",
     "Terrorism ended after the government formally apologized to terrorist leaders.",
+  ]),
+  housing("Housing", [
+    "Housing beyond living in a tent is a luxury reserved only for the rich.",
+    "Housing has become a privilege only for those worthy of it by virtue of wealth.",
+    "Rent control is banned and landlords are given a free hand.",
+    "Zoning reform has been undertaken to encourage market rate home building.",
+    "Rent stabilization laws and subsidies are in place to keep housing affordable.",
+    "The government has undertaken a massive expansion of public housing.",
+    "Housing co-operatives are ubiquitous and ensure that everyone has a home.",
+  ]),
+  healthcare("Healthcare", [
+    "Dying sick in a gutter is the expected natural condition of the masses.",
+    "The government has abandoned the poor to die of treatable diseases.",
+    "Essential healthcare benefits for the poor are being cut back.",
+    "The healthcare system is a dysfunctional mess of insurance bureaucracy.",
+    "The government is undertaking efforts to improve the healthcare system.",
+    "The government has established a universal single-payer healthcare plan.",
+    "Universal healthcare is guaranteed to everyone at no cost.",
+  ]),
+  retirement("Retirement", [
+    "Retirement is a myth mentioned only in hushed whispers among the elderly.",
+    "Private retirement accounts are the only way to retire in old age.",
+    "Private retirement accounts are the only way to ensure a comfortable old age.",
+    "Social Security is unstable as payroll tax receipts no longer cover benefits.",
+    "Social Security is stable and benefits are fully funded.",
+    "Generous retirement funds ensure a comfortable old age for everyone.",
+    "Retirement has been integrated with UBI and is no longer based on age or work.",
   ]);
 
   const Law(this.label, this.description);
   final String label;
   final List<String> description;
+  static Iterable<Law> get all => Law.values.whereNot((l) => [
+        Law.flagBurning,
+        Law.torture,
+        Law.elections,
+      ].contains(l));
 }
 
 String billName(Law l, bool liberal) {
@@ -343,6 +376,24 @@ String billName(Law l, bool liberal) {
         }
       } else {
         return "Enhance Prison Security";
+      }
+    case Law.housing:
+      if (liberal) {
+        return "Promote Affordable Housing";
+      } else {
+        return "Deregulate Housing Markets";
+      }
+    case Law.healthcare:
+      if (liberal) {
+        return "Improve Healthcare Access";
+      } else {
+        return "Defund Healthcare Programs";
+      }
+    case Law.retirement:
+      if (liberal) {
+        return "Guarantee Retirement Benefits";
+      } else {
+        return "Cut Social Security Benefits";
       }
   }
 }

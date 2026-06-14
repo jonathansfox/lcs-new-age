@@ -24,6 +24,9 @@ enum View {
   immigration("Immigration"),
   military("Military"),
   prisons("Prisons"),
+  housing("Housing"),
+  healthcare("Healthcare"),
+  retirement("Retirement"),
   // media
   amRadio("AM Radio"),
   cableNews("Cable News"),
@@ -34,6 +37,10 @@ enum View {
   ccsHated("CCS Hated");
 
   const View(this.label);
+
+  static final Iterable<View> all = View.values.where((v) => ![
+        View.torture,
+      ].contains(v));
 
   static final List<View> issues = [
     lgbtRights,
@@ -58,8 +65,11 @@ enum View {
     immigration,
     military,
     prisons,
+    housing,
+    healthcare,
+    retirement,
     amRadio,
-    cableNews
+    cableNews,
   ];
 
   final String label;

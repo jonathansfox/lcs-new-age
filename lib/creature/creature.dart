@@ -26,6 +26,7 @@ import 'package:lcs_new_age/items/weapon.dart';
 import 'package:lcs_new_age/items/weapon_type.dart';
 import 'package:lcs_new_age/justice/crimes.dart';
 import 'package:lcs_new_age/location/location.dart';
+import 'package:lcs_new_age/location/location_type.dart';
 import 'package:lcs_new_age/location/siege.dart';
 import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
@@ -62,7 +63,7 @@ class Creature {
   bool sleeperAgent = false;
   int hidingDaysLeft = 0;
   bool get inHiding => hidingDaysLeft != 0;
-  int clinicMonthsLeft = 0;
+  int medicalBills = 0;
   int vacationDaysLeft = 0;
   int daysSinceJoined = 0;
   int daysSinceDeath = 0;
@@ -227,8 +228,8 @@ class Creature {
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  bool get away =>
-      clinicMonthsLeft > 0 || vacationDaysLeft > 0 || hidingDaysLeft > 0;
+  bool get hospitalized => site?.type == SiteType.universityHospital;
+  bool get away => hospitalized || vacationDaysLeft > 0 || hidingDaysLeft > 0;
   @JsonKey(includeFromJson: false, includeToJson: false)
   bool get inTown => vacationDaysLeft == 0 && hidingDaysLeft == 0;
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -394,14 +395,11 @@ class Creature {
   void die() {
     alive = false;
     if (blood > 0) blood = 0;
-    if (id == uniqueCreatures.ceo.id) {
-      uniqueCreatures.newCEO();
-    }
     if (id == uniqueCreatures.president.id) {
       politics.oldPresidentName = properName;
       politics.promoteVP();
-      uniqueCreatures.newPresident();
     }
+    uniqueCreatures.replace(this);
     interrogationSessions.removeWhere((e) => e.hostageId == id);
 
     if (align == Alignment.liberal) {
@@ -485,15 +483,15 @@ class Creature {
         stealth *= 0.5;
       }
     }
-    // Sneaking around with a lit torch lol
-    if (weapon.type.idName == "WEAPON_TORCH") {
-      stealth = 0;
-    }
 
     value = value + (stealth * 5).round();
     // Shredded clothes get you no stealth.
     if (clothing.quality > clothing.type.qualityLevels) {
       value = 0;
+    }
+    // Sneaking around with a lit torch lol
+    if (weapon.type.idName == "WEAPON_TORCH") {
+      stealth = 0;
     }
     return value;
   }
@@ -670,8 +668,8 @@ class Creature {
         skillxp -= skillXpNeeded(level);
         rawSkillXP[skill] = skillxp;
         rawSkill[skill] = ++level;
+        if (level >= cap) rawSkillXP[skill] = 0;
       }
-      if (level >= skillCap(skill)) rawSkillXP[skill] = 0;
     }
   }
 
@@ -832,7 +830,8 @@ class Creature {
     if (type.intimidationResistant) courage += 200;
     if (type.ccsMember ||
         typeId == CreatureTypeIds.neoNazi ||
-        typeId == CreatureTypeIds.naziPunk) {
+        typeId == CreatureTypeIds.naziPunk ||
+        typeId == CreatureTypeIds.deathSquad) {
       courage += 2000;
     }
     if ((equippedWeapon != null &&

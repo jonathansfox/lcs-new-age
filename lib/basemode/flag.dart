@@ -15,6 +15,16 @@ import 'package:lcs_new_age/utils/colors.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 import 'package:pixel_snap/material.dart';
 
+enum FlagType {
+  us,
+  progress,
+  transgender,
+  bisexual,
+  pansexual,
+  genderqueer,
+  genderfluid,
+}
+
 Future<void> prideOrProtest(Site loc) async {
   if (loc.hasFlag) {
     await burnFlag(loc);
@@ -262,4 +272,7 @@ class BurnData {
 void printFlag() {
   console.addGraphic(ConsoleGraphic(10, 27.25, 15.5, 51.75,
       SvgPicture.asset('assets/flags/Flag_of_the_United_States.svg')));
+
+  //console.addGraphic(ConsoleGraphic(10, 27.25, 15.5, 51.75,
+  //    SvgPicture.asset('assets/flags/progress_pride.svg')));
 }

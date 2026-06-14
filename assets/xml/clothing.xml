@@ -76,7 +76,6 @@
     <shortname>Naked</shortname>
     <professionalism>0</professionalism>
     <conceal_weapon_size>0</conceal_weapon_size>
-    <culture>CHAOS</culture>
   </clothingtype>
   <clothingtype idname="CLOTHING_COMPOSITE_ARMOR">
     <!-- Cosmetic component of the Tank creature; actual armor value is part of the tank body -->
@@ -385,7 +384,6 @@
     <appropriate_weapon>WEAPON_M250_MACHINEGUN</appropriate_weapon>
     <lawenforcement>true</lawenforcement>
     <culture>FAR RIGHT</culture>
-    <culture>POLICE</culture>
     <gendered>MALE</gendered>
   </clothingtype>
   <clothingtype idname="CLOTHING_DONKEYSUIT">

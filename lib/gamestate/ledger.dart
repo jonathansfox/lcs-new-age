@@ -79,5 +79,6 @@ enum Expense {
   compoundUpgrades,
   training,
   travel,
-  augmentation;
+  augmentation,
+  hospitalBills;
 }

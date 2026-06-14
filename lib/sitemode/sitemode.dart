@@ -9,7 +9,6 @@ import 'package:lcs_new_age/common_actions/equipment.dart';
 import 'package:lcs_new_age/common_display/common_display.dart';
 import 'package:lcs_new_age/common_display/print_creature_info.dart';
 import 'package:lcs_new_age/common_display/print_party.dart';
-import 'package:lcs_new_age/creature/attributes.dart';
 import 'package:lcs_new_age/creature/conversion.dart';
 import 'package:lcs_new_age/creature/creature.dart';
 import 'package:lcs_new_age/creature/creature_type.dart';
@@ -59,6 +58,8 @@ Future<void> siteMode(Site loc) async {
   if (!loc.siege.underSiege) {
     ccsSiegeKills = 0;
     ccsBossKills = 0;
+    ccsSiegeConverts = 0;
+    ccsBossConverts = 0;
 
     //Start at entrance to map
     locx = MAPX >> 1;
@@ -358,16 +359,16 @@ Future<void> _siteModeAux() async {
       addstrc(
           useColor ? lightGray : darkGray, graffiti ? "-graffiti, " : "se, ");
       if (enemy && siteAlarm) {
-        bool canSneak = false;
+        bool cantSneak = false;
         for (Creature e in encounter) {
           if (e.alive && e.noticedParty) {
             // You can't sneak past this person; they already know you're there
-            canSneak = true;
+            cantSneak = true;
             break;
           }
         }
         addstrc(blue, "V");
-        if (!canSneak) {
+        if (!cantSneak) {
           addstrc(lightGray, "-Sneak, ");
         } else {
           addstrc(lightGray, "-Flee, ");
@@ -1116,6 +1117,8 @@ Future<void> _siteModeAux() async {
           case TileSpecial.clubBouncerSecondVisit:
           case TileSpecial.apartmentLandlord:
           case TileSpecial.ceoOffice:
+          case TileSpecial.insuranceCEO:
+          case TileSpecial.nursingHomeManager:
           case TileSpecial.table:
           case TileSpecial.tent:
           case TileSpecial.computer:
@@ -1563,6 +1566,10 @@ Future<void> _siteModeAux() async {
               await specialBouncerAssessSquad();
             case TileSpecial.clubBouncerSecondVisit:
               specialBouncerGreetSquad();
+            case TileSpecial.insuranceCEO:
+              await specialInsuranceCEO();
+            case TileSpecial.nursingHomeManager:
+              await specialNursingHomeManager();
             case TileSpecial.ceoOffice:
               clearMessageArea();
               setColor(white);
@@ -1777,8 +1784,7 @@ Future<void> _resolveSite() async {
   if (!newsStories.contains(sitestory!)) newsStories.add(sitestory!);
 
   // Reset isWillingToTalk for unique creatures
-  uniqueCreatures.ceo.isWillingToTalk = true;
-  uniqueCreatures.president.isWillingToTalk = true;
+  uniqueCreatures.resetWillingToTalk();
 
   if (siteCrime > 50 + lcsRandom(50)) {
     if (activeSite!.controller == SiteController.unaligned) {

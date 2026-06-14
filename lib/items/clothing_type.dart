@@ -72,7 +72,7 @@ class ClothingType extends ItemType {
   }
 
   List<String> allowedArmorIds = [];
-
+  List<String> culture = [];
   List<String> traitsList(bool includeArmor,
       {ArmorUpgrade? specifiedArmorUpgrade}) {
     List<String> traits = [];
