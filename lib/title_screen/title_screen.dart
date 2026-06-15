@@ -56,7 +56,7 @@ Future<void> titleScreen() async {
   mvaddstrCenter(10, "Select an Option to Pursue your Liberal Agenda");
   setColor(lightGray);
   addOptionText(12, 10, "C", continueText, enabledWhen: lastGameId != null);
-  addOptionText(12, 48, "L", "L - Load a Saved Game", enabledWhen: hasSaves);
+  addOptionText(12, 48, "L", "L - Load & Manage Saves", enabledWhen: hasSaves);
   addOptionText(13, 10, "N", "N - Start a New Game");
   addOptionText(13, 48, "I", "I - Import a Save");
   addOptionText(14, 10, "H", "H - View High Scores",

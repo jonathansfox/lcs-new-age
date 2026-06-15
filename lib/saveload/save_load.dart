@@ -245,7 +245,7 @@ Future<bool> loadGame(SaveFile selectedSave) async {
   addOptionText(y++, 1, "L",
       "L - ${selectedSave.gameState != null ? "Load Game" : "Load Game (Crash Report Expected)"}");
   addOptionText(y++, 1, "D", "D - Delete Save");
-  addOptionText(y++, 1, "B", "B - Backup Save");
+  addOptionText(y++, 1, "E", "E - Export Save File");
   mvaddstr(++y, 1, "Press the key for the action you want to take.");
   while (true) {
     int c = await getKey();
