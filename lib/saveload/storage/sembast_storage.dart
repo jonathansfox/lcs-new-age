@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:lcs_new_age/saveload/storage/game_storage.dart';
-import 'package:lcs_new_age/saveload/storage/save_load.dart';
+import 'package:lcs_new_age/saveload/save_load.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sembast/sembast_io.dart';

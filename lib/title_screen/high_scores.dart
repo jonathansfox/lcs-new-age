@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/gamestate/time.dart';
-import 'package:lcs_new_age/saveload/storage/save_load.dart';
+import 'package:lcs_new_age/saveload/save_load.dart';
 import 'package:lcs_new_age/title_screen/game_over.dart';
 import 'package:lcs_new_age/utils/colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';

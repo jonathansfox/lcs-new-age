@@ -16,6 +16,8 @@ import 'package:lcs_new_age/location/location_type.dart';
 import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/newspaper/news_story.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
+import 'package:lcs_new_age/politics/laws.dart';
+import 'package:lcs_new_age/politics/views.dart';
 import 'package:lcs_new_age/saveload/storage/game_storage.dart';
 import 'package:lcs_new_age/saveload/storage/storage_factory.dart';
 import 'package:lcs_new_age/title_screen/launch_game.dart';
@@ -24,7 +26,7 @@ import 'package:lcs_new_age/utils/colors.dart';
 import 'package:lcs_new_age/utils/interface_options.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-part '../save_load.g.dart';
+part 'save_load.g.dart';
 
 late GameStorage _storage;
 
@@ -436,6 +438,7 @@ void applyBugFixes(String version) {
     }
   }
   if (compareVersionStrings(version, "1.5.0") < 0) {
+    // 1.5: Add new insurance office and nursing home locations
     for (City city in gameState.cities) {
       for (District district in city.districts) {
         if (district.name.contains("Downtown")) {
@@ -469,5 +472,24 @@ void applyBugFixes(String version) {
     uniqueCreatures.president.location =
         sites.firstWhere((s) => s.type == SiteType.whiteHouse);
     uniqueCreatures.president.workLocation = uniqueCreatures.president.location;
+  }
+  // Populate any missing laws
+  Map<DeepAlignment, int> lawAlignments = {};
+  for (DeepAlignment alignment in gameState.politics.laws.values) {
+    lawAlignments[alignment] = (lawAlignments[alignment] ?? 0) + 1;
+  }
+  MapEntry<DeepAlignment, int>? mostCommonLawAlignment = lawAlignments.entries
+      .fold(
+          null, (max, entry) => entry.value > (max?.value ?? 0) ? entry : max);
+  for (Law law in Law.values) {
+    gameState.politics.laws[law] ??=
+        mostCommonLawAlignment?.key ?? DeepAlignment.conservative;
+  }
+  // Populate any missing public opinion issues
+  double publicMood = gameState.politics.publicMood();
+  for (View view in View.issues) {
+    gameState.politics.publicOpinion[view] ??= publicMood;
+    gameState.politics.publicInterest[view] ??= 0;
+    gameState.politics.backgroundInfluence[view] ??= 0;
   }
 }

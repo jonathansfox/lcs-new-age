@@ -26,7 +26,7 @@ import 'package:lcs_new_age/newspaper/news_story.dart';
 import 'package:lcs_new_age/newspaper/run_news_cycle.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
 import 'package:lcs_new_age/politics/laws.dart';
-import 'package:lcs_new_age/saveload/storage/save_load.dart';
+import 'package:lcs_new_age/saveload/save_load.dart';
 import 'package:lcs_new_age/sitemode/sitemap.dart';
 import 'package:lcs_new_age/sitemode/sitemode.dart';
 import 'package:lcs_new_age/title_screen/game_over.dart';

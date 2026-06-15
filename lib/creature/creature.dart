@@ -63,6 +63,7 @@ class Creature {
   bool sleeperAgent = false;
   int hidingDaysLeft = 0;
   bool get inHiding => hidingDaysLeft != 0;
+  @JsonKey(defaultValue: 0)
   int medicalBills = 0;
   int vacationDaysLeft = 0;
   int daysSinceJoined = 0;
