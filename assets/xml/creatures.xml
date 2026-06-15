@@ -1275,6 +1275,7 @@ Elements marked as hardcoded may have their values overridden by the game.
         <skills>
             <business>2-4</business>
         </skills>
+        <alignment>CONSERVATIVE</alignment>
     </creaturetype>
     <creaturetype idname="CREATURE_FOOTBALLCOACH">
         <type_name>Football Coach</type_name>
@@ -2019,6 +2020,9 @@ Elements marked as hardcoded may have their values overridden by the game.
         <skills>
             <psychology>1-4</psychology>
         </skills>
+        <alignment>LIBERAL</alignment>
+        <recruit_activity_difficulty>4</recruit_activity_difficulty>
+        <talkreceptive>1</talkreceptive>
     </creaturetype>
     <creaturetype idname="CREATURE_CCS_VIGILANTE">
         <type_name>CCS Member</type_name>

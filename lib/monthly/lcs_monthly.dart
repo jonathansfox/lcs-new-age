@@ -310,6 +310,7 @@ Future<LootType?> chooseSpecialEdition() async {
     LootTypeIds.secretDocuments,
     LootTypeIds.landlordPapers,
     LootTypeIds.insuranceFraudEvidence,
+    LootTypeIds.elderAbuseEvidence,
   ];
 
   //char havetype[LOOTNUM];
@@ -879,6 +880,38 @@ Future<void> printNews(LootType li, Iterable<Creature> publishers) async {
       }
       story +=
           "\n\nBe on guard for retaliation.  These guys don't like to lose...";
+      for (Creature c in publishers) {
+        addjuice(c, 20, 1000);
+      }
+    case LootTypeIds.elderAbuseEvidence:
+      story =
+          "The Liberal Guardian runs a story featuring nursing home documents ";
+      switch (lcsRandom(6)) {
+        case 0:
+          story += "documenting neglect caused by chronic understaffing.";
+        case 1:
+          story += "documenting a pattern of intentional abuse by staff.";
+        case 2:
+          story +=
+              "documenting overmedication as a form of chemical restraint.";
+        case 3:
+          story += "documenting exploitation and theft from residents.";
+        case 4:
+          story += "documenting fraudulent overbilling practices.";
+          issues.add(View.healthcare);
+        case 5:
+          story +=
+              "documenting a pattern of discriminatory treatment of black residents.";
+          issues.add(View.civilRights);
+      }
+      issues.add(View.retirement);
+      potency = reception(50);
+      offendedCorps = true;
+      for (Creature p in publishers) {
+        p.offendedCorps++;
+      }
+      story +=
+          "\n\nYou probably don't need to worry about retaliation with this one.";
       for (Creature c in publishers) {
         addjuice(c, 20, 1000);
       }

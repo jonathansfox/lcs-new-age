@@ -30,6 +30,8 @@ bool testWorkLocation(CreatureType type, Site location) {
         SiteType.cableNewsStation,
         SiteType.barAndGrill,
         SiteType.bank,
+        SiteType.insuranceOffice,
+        SiteType.nursingHome,
       ]);
     case CreatureTypeIds.bankManager:
     case CreatureTypeIds.bankTeller:
@@ -90,6 +92,7 @@ bool testWorkLocation(CreatureType type, Site location) {
         SiteType.cableNewsStation,
         SiteType.fireStation,
         SiteType.whiteHouse,
+        SiteType.insuranceOffice,
       ]);
     case CreatureTypeIds.landlord:
       okaySite.addAll([
@@ -143,10 +146,15 @@ bool testWorkLocation(CreatureType type, Site location) {
       ]);
     case CreatureTypeIds.doctor:
     case CreatureTypeIds.psychologist:
+      okaySite.addAll([
+        SiteType.clinic,
+        SiteType.universityHospital,
+      ]);
     case CreatureTypeIds.nurse:
       okaySite.addAll([
         SiteType.clinic,
         SiteType.universityHospital,
+        SiteType.nursingHome,
       ]);
     case CreatureTypeIds.ccsArchConservative:
     case CreatureTypeIds.ccsVigilante:
@@ -186,6 +194,7 @@ bool testWorkLocation(CreatureType type, Site location) {
         SiteType.cableNewsStation,
         SiteType.departmentStore,
         SiteType.whiteHouse,
+        SiteType.insuranceOffice,
       ]);
     case CreatureTypeIds.sexWorker:
       okaySite.addAll([
@@ -244,6 +253,16 @@ bool testWorkLocation(CreatureType type, Site location) {
         SiteType.oubliette,
         SiteType.whiteHouse,
       ]);
+    case CreatureTypeIds.nursingHomeAdmin:
+    case CreatureTypeIds.nursingHomeAttendant:
+    case CreatureTypeIds.dietician:
+    case CreatureTypeIds.physicalTherapist:
+    case CreatureTypeIds.socialWorker:
+      okaySite.add(SiteType.nursingHome);
+    case CreatureTypeIds.insuranceCEO:
+    case CreatureTypeIds.auditor:
+    case CreatureTypeIds.actuary:
+      okaySite.add(SiteType.insuranceOffice);
     default:
   }
   return okaySite.contains(location.type);

@@ -275,20 +275,20 @@ void initSiteName(Site loc) {
         loc.shortName = "Prison";
       }
     case SiteType.universityHospital:
-      switch (loc.city.name) {
-        case "New York, NY":
-          loc.name = "NewYork-Presbyterian Hospital";
-          loc.shortName = "NYP Hospital";
-        case "Los Angeles, CA":
-          loc.name = "LA General Medical Center";
-          loc.shortName = "LA General";
-        case "Seattle, WA":
+      switch (loc.cityId) {
+        case 1: // Seattle
           loc.name = "UW Medical Center";
           loc.shortName = "UW Medical";
-        case "Washington DC":
+        case 2: // New York
+          loc.name = "NewYork-Presbyterian Hospital";
+          loc.shortName = "NYP Hospital";
+        case 3: // Los Angeles
+          loc.name = "LA General Medical Center";
+          loc.shortName = "LA General";
+        case 4: // Washington DC
           loc.name = "MedStar Washington";
           loc.shortName = "MedStar";
-        default:
+        default: // It is a mystery
           loc.name = "University Hospital";
           loc.shortName = "Hospital";
       }

@@ -492,6 +492,7 @@ TileSpecial specialLookup(String value) {
     "NURSING_HOME_PATIENT" => TileSpecial.nursingHomePatient,
     "INSURANCE_FILES" => TileSpecial.insuranceFiles,
     "INSURANCE_CEO" => TileSpecial.insuranceCEO,
+    "INSURANCE_CLAIMS_TERMINAL" => TileSpecial.insuranceClaimsTerminal,
     _ => TileSpecial.none,
   };
 }

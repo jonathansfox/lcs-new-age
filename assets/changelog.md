@@ -1,6 +1,7 @@
-## 1.5.0 - 10/25/2025
+## 1.5.0 - 6/15/2026
 * Added Housing, Healthcare, and Retirement issues and corresponding laws
 * Added nursing home and insurance office locations, each with special interactive locations, secret documents, and new NPCs
+* Added six new major news stories, one positive and one negative for each of the new issues
 * Added Landlord Papers, which can only be provided by a Landlord sleeper
 * Changed display of unarmed attack when the character will use a built-in social attack to Voice
 * Made reductions in stats that block gaining more skill levels not permonently destroy previously accumulated experience toward higher skill levels

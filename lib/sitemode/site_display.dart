@@ -122,6 +122,8 @@ void printSiteMap(int x, int y, int z) {
     case TileSpecial.nursingHomeFiles:
     case TileSpecial.insuranceFiles:
       str = "Safe";
+    case TileSpecial.insuranceClaimsTerminal:
+      str = "Claims Terminal";
     case TileSpecial.nursingHomePatient:
       str = "Patient's Room";
     case TileSpecial.radioBroadcastStudio:
@@ -364,6 +366,7 @@ void drawTileContent(SiteTile tile) {
         TileSpecial.nursingHomePatientDone => "P",
         TileSpecial.insuranceFiles => "\$",
         TileSpecial.insuranceCEO => "O",
+        TileSpecial.insuranceClaimsTerminal => "c",
       });
     } else if (tile.siegeTrap) {
       setColor(yellow);
@@ -493,6 +496,8 @@ void printSiteMapSmall(int x, int y, int z) {
     case TileSpecial.nursingHomeFiles:
     case TileSpecial.insuranceFiles:
       str = "Safe";
+    case TileSpecial.insuranceClaimsTerminal:
+      str = "Claims Terminal";
     case TileSpecial.radioBroadcastStudio:
       str = "Radio Broadcast Room";
     case TileSpecial.cableBroadcastStudio:

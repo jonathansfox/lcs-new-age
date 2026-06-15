@@ -163,6 +163,7 @@ enum TileSpecial {
   nursingHomePatientDone,
   insuranceFiles,
   insuranceCEO,
+  insuranceClaimsTerminal,
 }
 
 class SiteTile {

@@ -82,6 +82,9 @@ void sleeperInfluence(Creature cr, Map<View, int> libpower) {
       power += cr.skill(Skill.science);
     case CreatureTypeIds.corporateCEO:
     case CreatureTypeIds.corporateManager:
+    case CreatureTypeIds.insuranceCEO:
+    case CreatureTypeIds.auditor:
+    case CreatureTypeIds.actuary:
       power += cr.skill(Skill.business);
     case CreatureTypeIds.priest:
     case CreatureTypeIds.nun:
@@ -95,6 +98,15 @@ void sleeperInfluence(Creature cr, Map<View, int> libpower) {
     case CreatureTypeIds.athlete:
     case CreatureTypeIds.cheerleader:
       power += cr.skill(Skill.dodge);
+    case CreatureTypeIds.socialWorker:
+    case CreatureTypeIds.psychologist:
+      power += cr.skill(Skill.psychology);
+    case CreatureTypeIds.nursingHomeAttendant:
+    case CreatureTypeIds.dietician:
+    case CreatureTypeIds.physicalTherapist:
+    case CreatureTypeIds.nurse:
+    case CreatureTypeIds.doctor:
+      power += cr.skill(Skill.firstAid);
     default:
       break;
   }
@@ -184,8 +196,9 @@ void sleeperInfluence(Creature cr, Map<View, int> libpower) {
         View.ceoSalary, View.taxes, View.corporateCulture,
         View.sweatshops, View.pollution, View.civilRights, //
       ], power);
-    /* Banks and housing block */
+    /* Financial and housing block */
     case CreatureTypeIds.bankManager:
+    case CreatureTypeIds.auditor:
     case CreatureTypeIds.landlord:
       addIssues([
         View.taxes, View.civilRights, View.ceoSalary, //
@@ -227,6 +240,11 @@ void sleeperInfluence(Creature cr, Map<View, int> libpower) {
     /* Healthcare industry block */
     case CreatureTypeIds.doctor:
     case CreatureTypeIds.nurse:
+    case CreatureTypeIds.socialWorker:
+    case CreatureTypeIds.nursingHomeAdmin:
+    case CreatureTypeIds.nursingHomeAttendant:
+    case CreatureTypeIds.dietician:
+    case CreatureTypeIds.physicalTherapist:
       addIssues([View.healthcare, View.retirement, View.genetics], power);
     /* No influence at all block - for people were liberal anyway, or have no way of doing any good */
     case CreatureTypeIds.childLaborer:
@@ -370,6 +388,14 @@ Future<void> sleeperSpy(Creature cr, Map<View, int> libpower) async {
       await leak(
           LootTypeIds.ccsBackerList, "a list of the CCS's government backers");
       ccsExposure = CCSExposure.lcsGotData;
+    case CreatureTypeIds.landlord:
+      await leak(LootTypeIds.landlordPapers, "evidence of landlord misconduct");
+    case CreatureTypeIds.insuranceCEO:
+      await leak(LootTypeIds.insuranceFraudEvidence,
+          "evidence of fraudulent insurance practices");
+    case CreatureTypeIds.nursingHomeAdmin:
+      await leak(
+          LootTypeIds.elderAbuseEvidence, "evidence of systemic elder abuse");
     default:
       // 2/3 chance of not leaking anything
       if (!oneIn(3)) break;
@@ -393,6 +419,12 @@ Future<void> sleeperSpy(Creature cr, Map<View, int> libpower) async {
         case SiteType.corporateHQ:
         case SiteType.ceoHouse:
           await leak(LootTypeIds.corpFiles, "secret corporate documents");
+        case SiteType.nursingHome:
+          await leak(LootTypeIds.elderAbuseEvidence,
+              "evidence of systemic elder abuse");
+        case SiteType.insuranceOffice:
+          await leak(LootTypeIds.insuranceFraudEvidence,
+              "evidence of fraudulent insurance practices");
         default:
           break;
       }
@@ -435,10 +467,14 @@ Future<void> sleeperEmbezzle(Creature cr, Map<View, int> libpower) async {
   switch (cr.type.id) {
     case CreatureTypeIds.corporateCEO:
     case CreatureTypeIds.president:
+    case CreatureTypeIds.insuranceCEO:
       income = (50000 * cr.infiltration).round();
     case CreatureTypeIds.eminentScientist:
     case CreatureTypeIds.corporateManager:
     case CreatureTypeIds.bankManager:
+    case CreatureTypeIds.auditor:
+    case CreatureTypeIds.actuary:
+    case CreatureTypeIds.nursingHomeAdmin:
       income = (5000 * cr.infiltration).round();
     default:
       income = (500 * cr.infiltration).round();

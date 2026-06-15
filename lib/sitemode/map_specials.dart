@@ -103,6 +103,8 @@ Future<void> useTileSpecial() async {
       await specialNursingHomePatient(done: true);
     case TileSpecial.insuranceFiles:
       await specialInsuranceSafe();
+    case TileSpecial.insuranceClaimsTerminal:
+      await specialInsuranceClaimsTerminal();
     case TileSpecial.nursingHomeManager:
     case TileSpecial.insuranceCEO:
     case TileSpecial.ccsBoss:
@@ -1255,6 +1257,8 @@ Future<void> specialNursingHomePatient({bool done = false}) async {
     if (success) {
       resultMessage = patientState.successMessage;
       juiceparty(juice, 200);
+      changePublicOpinion(View.retirement, 1, coloredByLcsOpinions: true);
+      changePublicOpinion(View.lcsLiked, 1);
     } else {
       resultMessage = patientState.failMessage;
     }
@@ -1341,6 +1345,100 @@ Future<void> specialInsuranceSafe() async {
   }
 
   await noticeCheck();
+  levelMap[locx][locy][locz].special = TileSpecial.none;
+}
+
+Future<void> specialInsuranceClaimsTerminal() async {
+  String claimDescription;
+  String denialReason;
+  String claimDescriptionShort;
+
+  switch (lcsRandom(14)) {
+    case 0:
+      claimDescription = "Chemotherapy";
+      denialReason = "Missing Documentation";
+      claimDescriptionShort = "chemo";
+    case 1:
+      claimDescription = "Insulin";
+      denialReason = "Name Spelled Incorrectly";
+      claimDescriptionShort = "insulin";
+    case 2:
+      claimDescription = "Emergency Room Visit";
+      denialReason = "Out of Network";
+      claimDescriptionShort = "ER visit";
+    case 3:
+      claimDescription = "Depression Counseling";
+      denialReason = "Not Medically Necessary";
+      claimDescriptionShort = "therapy";
+    case 4:
+      claimDescription = "Assistive Device";
+      denialReason = "No Prior Authorization";
+      claimDescriptionShort = "assistive device";
+    case 5:
+      claimDescription = "HIV Treatment";
+      denialReason = "Coverage Limit Exceeded";
+      claimDescriptionShort = "HIV treatment";
+    case 6:
+      claimDescription = "Comprehensive Bloodwork";
+      denialReason = "Not Medically Necessary";
+      claimDescriptionShort = "bloodwork";
+    case 7:
+      claimDescription = "Alzheimer's Treatment";
+      denialReason = "Experimental";
+      claimDescriptionShort = "Alzheimer's";
+    case 8:
+      claimDescription = "MRI Scan";
+      denialReason = "No Prior Authorization";
+      claimDescriptionShort = "MRI";
+    case 9:
+      claimDescription = "CT Scan";
+      denialReason = "No Prior Authorization";
+      claimDescriptionShort = "CT";
+    case 10:
+      claimDescription = "Post-Operative Physical Therapy";
+      denialReason = "Not Medically Necessary";
+      claimDescriptionShort = "physical therapy";
+    case 11:
+      claimDescription = "Double Bypass Surgery";
+      denialReason = "No Prior Authorization";
+      claimDescriptionShort = "surgery";
+    case 12:
+      claimDescription = "Drug Addiction Treatment";
+      denialReason = "Not Medically Necessary";
+      claimDescriptionShort = "addiction treatment";
+    case 13:
+      claimDescription = "Hormone Replacement Therapy";
+      denialReason = "Not Medically Necessary";
+      claimDescriptionShort = "HRT";
+    default:
+      claimDescription = "Bug Infestation";
+      denialReason = "Coding Error";
+      claimDescriptionShort = "buggy";
+  }
+
+  bool approve = await sitemodePrompt("Claim: $claimDescription.",
+      "Denied: $denialReason. Override and approve? (Yes or No)");
+  if (!approve) return;
+
+  // Best hacker in the squad works the terminal.
+  Creature hacker =
+      squad.sortedBy<num>((a) => a.skillRoll(Skill.computers)).last;
+  bool success = hacker.skillCheck(Skill.computers, Difficulty.average);
+  hacker.train(Skill.computers, 20);
+
+  if (success) {
+    await encounterMessage(
+        "${hacker.name} approves the $claimDescriptionShort claim.",
+        color: lightGreen);
+    juiceparty(5, 200);
+    changePublicOpinion(View.healthcare, 1, coloredByLcsOpinions: true);
+    changePublicOpinion(View.lcsLiked, 1);
+  } else {
+    await encounterMessage(
+        "Error: User not authorized. Please contact the administrator.",
+        color: red);
+  }
+
   levelMap[locx][locy][locz].special = TileSpecial.none;
 }
 
