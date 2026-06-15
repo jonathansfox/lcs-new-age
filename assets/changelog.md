@@ -3,6 +3,8 @@
 * Added nursing home and insurance office locations, each with special interactive locations, secret documents, and new NPCs
 * Added six new major news stories, one positive and one negative for each of the new issues
 * Added Landlord Papers, which can only be provided by a Landlord sleeper
+* Updated the way data is saved to avoid limits on browser storage
+* Fixed an issue that prevented running the game offline on mobile
 * Changed display of unarmed attack when the character will use a built-in social attack to Voice
 * Made reductions in stats that block gaining more skill levels not permonently destroy previously accumulated experience toward higher skill levels
 * Allowed execution flavor text to wrap to the next line
