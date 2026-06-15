@@ -26,7 +26,6 @@ dependencies:
   markdown_widget: ^2.3.2
   idb_shim: ^2.6.6
   sembast: ^3.8.5
-  sembast_web: ^2.4.1
   path_provider: ^2.1.5
   path: ^1.9.1
 

@@ -14,7 +14,7 @@ import 'package:lcs_new_age/politics/laws.dart';
 import 'package:lcs_new_age/politics/politics.dart';
 import 'package:lcs_new_age/politics/states.dart';
 import 'package:lcs_new_age/politics/views.dart';
-import 'package:lcs_new_age/saveload/save_load.dart';
+import 'package:lcs_new_age/saveload/storage/save_load.dart';
 import 'package:lcs_new_age/title_screen/game_over.dart';
 import 'package:lcs_new_age/title_screen/high_scores.dart';
 import 'package:lcs_new_age/utils/colors.dart';

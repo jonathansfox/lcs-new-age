@@ -1,4 +1,4 @@
-import 'package:lcs_new_age/saveload/save_load.dart';
+import 'package:lcs_new_age/saveload/storage/save_load.dart';
 
 abstract class GameStorage {
   /// Initialize the storage system

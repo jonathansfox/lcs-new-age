@@ -1,7 +1,7 @@
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/location/siege.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
-import 'package:lcs_new_age/saveload/save_load.dart';
+import 'package:lcs_new_age/saveload/storage/save_load.dart';
 import 'package:lcs_new_age/title_screen/high_scores.dart';
 import 'package:lcs_new_age/title_screen/launch_game.dart';
 

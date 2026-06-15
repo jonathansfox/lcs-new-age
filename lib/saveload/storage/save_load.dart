@@ -16,20 +16,20 @@ import 'package:lcs_new_age/location/location_type.dart';
 import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/newspaper/news_story.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
-import 'package:lcs_new_age/saveload/game_storage.dart';
-import 'package:lcs_new_age/saveload/storage_factory.dart';
+import 'package:lcs_new_age/saveload/storage/game_storage.dart';
+import 'package:lcs_new_age/saveload/storage/storage_factory.dart';
 import 'package:lcs_new_age/title_screen/launch_game.dart';
 import 'package:lcs_new_age/title_screen/title_screen.dart';
 import 'package:lcs_new_age/utils/colors.dart';
 import 'package:lcs_new_age/utils/interface_options.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-part 'save_load.g.dart';
+part '../save_load.g.dart';
 
 late GameStorage _storage;
 
 Future<void> initStorage() async {
-  _storage = StorageFactory.createStorage();
+  _storage = createGameStorage();
   await _storage.init();
 
   // Check if we've already migrated
@@ -37,16 +37,17 @@ Future<void> initStorage() async {
   final bool hasMigrated = prefs.getBool('has_migrated_to_indexeddb') ?? false;
 
   if (!hasMigrated) {
-    await _migrateFromSharedPreferences();
-    // Mark migration as complete
-    await prefs.setBool('has_migrated_to_indexeddb', true);
+    final bool migrated = await _migrateFromSharedPreferences();
+    if (migrated) {
+      await prefs.setBool('has_migrated_to_indexeddb', true);
+    }
   }
 }
 
-Future<void> _migrateFromSharedPreferences() async {
+Future<bool> _migrateFromSharedPreferences() async {
   final prefs = await SharedPreferences.getInstance();
   final List<String>? saveGameIds = prefs.getStringList("savedGameIds");
-  if (saveGameIds == null) return;
+  if (saveGameIds == null) return true;
 
   bool migrationSuccessful = true;
   for (final gameId in saveGameIds) {
@@ -83,6 +84,8 @@ Future<void> _migrateFromSharedPreferences() async {
     // Delete the list of game IDs
     await prefs.remove("savedGameIds");
   }
+
+  return migrationSuccessful;
 }
 
 Future<void> autoSaveGame() async {
@@ -93,6 +96,7 @@ Future<void> autoSaveGame() async {
     lastPlayed: DateTime.now(),
   );
   await _storage.saveGame(saveFile);
+  await _storage.updateLastGameId(saveFile.gameId);
 }
 
 @JsonSerializable()
@@ -105,9 +109,12 @@ class SaveFile {
     this.gameState,
   });
   factory SaveFile.fromJson(Map<String, dynamic> json) {
-    String version = json["version"];
-    if (compareVersionStrings(version, "1.0.2") < 0) {
-      json["saveData"] = jsonDecode(json["saveData"]);
+    // Older (pre-1.0.2) saves stored saveData as a JSON-encoded string rather
+    // than a nested object. Previously this code decoded it based on version
+    // number, but migrating between save formats could cause this to be already
+    // decoded regardless of version.
+    if (json["saveData"] is String) {
+      json["saveData"] = jsonDecode(json["saveData"] as String);
     }
     return _$SaveFileFromJson(json);
   }
