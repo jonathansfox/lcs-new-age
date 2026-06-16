@@ -1,3 +1,6 @@
+## 1.5.1 - ????
+* Changed some wording on save management and export for improved clarity
+
 ## 1.5.0 - 6/15/2026
 * Added Housing, Healthcare, and Retirement issues and corresponding laws
 * Added nursing home and insurance office locations, each with special interactive locations, secret documents, and new NPCs
@@ -22,6 +25,7 @@
 * Fixed grammar when a recruit thinks the recruiter is a dangerous extremist
 * Fixed the Liberal Guardian potentially using censorship and/or hate speech during C+ free speech laws
 * Fixed Ronald Reagan's death date
+* Added an option to change text size so the game window can be enlarged
 
 ## 1.4.9 - 6/15/2025
 * Renamed several safehouses when the LCS captures them
