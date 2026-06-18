@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flags>
+  <!-- Clarification
+    <flagtype idname="(string)"> idname identifies the flag type internally.
+        <name> (string) Display name.
+        <shortname> (string) Short name for menu columns (~14 chars).
+            Try to make sure it mentions it's a flag, or inventories will get confusing.
+        <asset> (string) SVG file name within assets/flags/.
+        <category> (string) national | pride | anarchist | labor | feminist |
+            environmentalist | civilRights. Determines the issue the flag affects
+            during a siege and whether it is burned (national) or flown.
+        <description> (string) Flavor text shown in flag menus.
+        <buyable> (boolean) If false, flag cannot be bought for $20 (crafting still allowed).
+        <make_difficulty> (integer) Minimum tailoring skill to craft. -1 = impossible.
+        <make_price> (integer) Supply cost to craft (halved if cloth is on hand).
+        <fencevalue> (number) Pawn shop sale price.
+  -->
+
+  <!-- National -->
+  <flagtype idname="FLAG_US">
+    <name>United States Flag</name>
+    <shortname>US Flag</shortname>
+    <asset>UnitedStates.svg</asset>
+    <category>national</category>
+    <description>Demonstrate your patriotism by flying the national flag.</description>
+    <make_difficulty>-1</make_difficulty>
+    <make_price>15</make_price>
+    <fencevalue>15</fencevalue>
+  </flagtype>
+
+  <!-- Pride -->
+  <flagtype idname="FLAG_RAINBOW">
+    <name>Rainbow Pride Flag</name>
+    <shortname>Rainbow Flag</shortname>
+    <asset>Rainbow.svg</asset>
+    <category>pride</category>
+    <description>A classic symbol of LGBTQ+ pride.</description>
+    <make_difficulty>1</make_difficulty>
+    <make_price>15</make_price>
+    <fencevalue>20</fencevalue>
+  </flagtype>
+  <flagtype idname="FLAG_PROGRESS">
+    <name>Progress Pride Flag</name>
+    <shortname>Progress Flag</shortname>
+    <asset>Progress.svg</asset>
+    <category>pride</category>
+    <description>A popular alternative LGBTQ+ pride flag created by Danial Quasar.</description>
+    <buyable>false</buyable>
+    <make_difficulty>4</make_difficulty>
+    <make_price>20</make_price>
+    <fencevalue>30</fencevalue>
+  </flagtype>
+  <flagtype idname="FLAG_INTERSEX">
+    <name>Intersex Progress Pride Flag</name>
+    <shortname>IProgress Flag</shortname>
+    <asset>IntersexInclusiveProgress.svg</asset>
+    <category>pride</category>
+    <description>A variant of the Progress Pride Flag for intersex inclusion.</description>
+    <buyable>false</buyable>
+    <make_difficulty>5</make_difficulty>
+    <make_price>20</make_price>
+    <fencevalue>30</fencevalue>
+  </flagtype>
+  <flagtype idname="FLAG_LESBIAN">
+    <name>Sunset Lesbian Pride Flag</name>
+    <shortname>Lesbian Flag</shortname>
+    <asset>Lesbian.svg</asset>
+    <category>pride</category>
+    <description>A union of the lipstick lesbian and butch lesbian flags.</description>
+    <buyable>false</buyable>
+    <make_difficulty>1</make_difficulty>
+    <make_price>15</make_price>
+    <fencevalue>20</fencevalue>
+  </flagtype>
+  <flagtype idname="FLAG_GAYMEN">
+    <name>Ocean Gay Pride Flag</name>
+    <shortname>Gay Flag</shortname>
+    <asset>GayMen.svg</asset>
+    <category>pride</category>
+    <description>A flag for the boys, based on the sunset lesbian pride flag.</description>
+    <buyable>false</buyable>
+    <make_difficulty>1</make_difficulty>
+    <make_price>15</make_price>
+    <fencevalue>20</fencevalue>
+  </flagtype>
+  <flagtype idname="FLAG_BISEXUAL">
+    <name>Bisexual Pride Flag</name>
+    <shortname>Bisexual Flag</shortname>
+    <asset>Bisexual.svg</asset>
+    <category>pride</category>
+    <description>¿Por qué no los dos?</description>
+    <buyable>false</buyable>
+    <make_difficulty>1</make_difficulty>
+    <make_price>10</make_price>
+    <fencevalue>15</fencevalue>
+  </flagtype>
+  <flagtype idname="FLAG_TRANSGENDER">
+    <name>Transgender Pride Flag</name>
+    <shortname>Trans Flag</shortname>
+    <asset>Transgender.svg</asset>
+    <category>pride</category>
+    <description>Change is scary, but so is staying the same.</description>
+    <make_difficulty>1</make_difficulty>
+    <make_price>10</make_price>
+    <fencevalue>15</fencevalue>
+  </flagtype>
+  <flagtype idname="FLAG_PANSEXUAL">
+    <name>Pansexual Pride Flag</name>
+    <shortname>Pansexual Flag</shortname>
+    <asset>Pansexual.svg</asset>
+    <category>pride</category>
+    <description>We're here to enjoy the wine, not the label.</description>
+    <buyable>false</buyable>
+    <make_difficulty>1</make_difficulty>
+    <make_price>10</make_price>
+    <fencevalue>15</fencevalue>
+  </flagtype>
+  <flagtype idname="FLAG_LABRYSLESBIAN">
+    <name>Variant Labrys Lesbian Flag</name>
+    <shortname>Labrys Flag</shortname>
+    <asset>TransLabrysLesbian.svg</asset>
+    <category>pride</category>
+    <description>Sapphic, feminist, and explicitly trans-affirming.</description>
+    <buyable>false</buyable>
+    <make_difficulty>5</make_difficulty>
+    <make_price>15</make_price>
+    <fencevalue>25</fencevalue>
+  </flagtype>
+
+  <!-- Labor -->
+  <flagtype idname="FLAG_SOCIALIST">
+    <name>Red Flag</name>
+    <shortname>Red Flag</shortname>
+    <asset>Socialist.svg</asset>
+    <category>labor</category>
+    <description>Workers of the world, unite! We have nothing to lose but our chains.</description>
+    <buyable>false</buyable>
+    <make_difficulty>0</make_difficulty>
+    <make_price>10</make_price>
+    <fencevalue>10</fencevalue>
+  </flagtype>
+  <flagtype idname="FLAG_REDANDBLACK">
+    <name>Anarcho-Syndicalist Flag</name>
+    <shortname>Red/Black Flag</shortname>
+    <asset>RedAndBlack.svg</asset>
+    <category>labor</category>
+    <description>A divided flag first used by Anarcho-Syndicalists in Spain.</description>
+    <buyable>false</buyable>
+    <make_difficulty>1</make_difficulty>
+    <make_price>10</make_price>
+    <fencevalue>15</fencevalue>
+  </flagtype>
+
+  <!-- Anarchist -->
+  <flagtype idname="FLAG_ANARCHIST">
+    <name>Black Flag</name>
+    <shortname>Black Flag</shortname>
+    <asset>Anarchist.svg</asset>
+    <category>anarchist</category>
+    <description>No gods, no masters.</description>
+    <buyable>false</buyable>
+    <make_difficulty>0</make_difficulty>
+    <make_price>10</make_price>
+    <fencevalue>10</fencevalue>
+  </flagtype>
+  <flagtype idname="FLAG_ANARCHIST_A">
+    <name>Anarchist Flag</name>
+    <shortname>Circle-A Flag</shortname>
+    <asset>AnarchistA.svg</asset>
+    <category>anarchist</category>
+    <description>A person without a government is like a fish without a bicycle.</description>
+    <buyable>false</buyable>
+    <make_difficulty>4</make_difficulty>
+    <make_price>10</make_price>
+    <fencevalue>15</fencevalue>
+  </flagtype>
+  <flagtype idname="FLAG_PUNK_ANARCHIST">
+    <name>Punk Anarchist Flag</name>
+    <shortname>PunkAnarc Flag</shortname>
+    <asset>PunkAnarchist.svg</asset>
+    <category>anarchist</category>
+    <description>Better to die on your feet than live on your knees!</description>
+    <buyable>false</buyable>
+    <make_difficulty>4</make_difficulty>
+    <make_price>10</make_price>
+    <fencevalue>15</fencevalue>
+  </flagtype>
+  <flagtype idname="FLAG_ANTIFA">
+    <name>Black Antifa Flag</name>
+    <shortname>Bk Antifa Flag</shortname>
+    <asset>AntifaBlack.svg</asset>
+    <category>anarchist</category>
+    <description>An anti-fascist alliance of anarchists and socialists.</description>
+    <buyable>false</buyable>
+    <make_difficulty>6</make_difficulty>
+    <make_price>15</make_price>
+    <fencevalue>25</fencevalue>
+  </flagtype>
+  <flagtype idname="FLAG_ANTIFA_ALT">
+    <name>Red Antifa Flag</name>
+    <shortname>Rd Antifa Flag</shortname>
+    <asset>AntifaRed.svg</asset>
+    <category>anarchist</category>
+    <description>An anti-fascist alliance of socialists and anarchists.</description>
+    <buyable>false</buyable>
+    <make_difficulty>6</make_difficulty>
+    <make_price>15</make_price>
+    <fencevalue>25</fencevalue>
+  </flagtype>
+
+  <!-- Feminist -->
+  <flagtype idname="FLAG_ANARCHIST_FEMINISM">
+    <name>Anarcha-Feminist Flag</name>
+    <shortname>An-Fem Flag</shortname>
+    <asset>AnarchistFeminism.svg</asset>
+    <category>feminist</category>
+    <description>Freedom, self-expression, and other beautiful, radiant things.</description>
+    <buyable>false</buyable>
+    <make_difficulty>1</make_difficulty>
+    <make_price>10</make_price>
+    <fencevalue>15</fencevalue>
+  </flagtype>
+  <flagtype idname="FLAG_FEMINIST">
+    <name>Feminist Flag</name>
+    <shortname>Feminist Flag</shortname>
+    <asset>Feminist.svg</asset>
+    <category>feminist</category>
+    <description>Feminism is the radical notion that women are people.</description>
+    <make_difficulty>4</make_difficulty>
+    <make_price>15</make_price>
+    <fencevalue>15</fencevalue>
+  </flagtype>
+
+  <!-- Environmentalist -->
+  <flagtype idname="FLAG_ENVIRONMENTALIST">
+    <name>Green Flag</name>
+    <shortname>Green Flag</shortname>
+    <asset>Environmentalist.svg</asset>
+    <category>environmentalist</category>
+    <description>This is the only world we have. There is no Planet B.</description>
+    <buyable>false</buyable>
+    <make_difficulty>0</make_difficulty>
+    <make_price>10</make_price>
+    <fencevalue>10</fencevalue>
+  </flagtype>
+  <flagtype idname="FLAG_ECOLOGY">
+    <name>Ecology Flag</name>
+    <shortname>Ecology Flag</shortname>
+    <asset>EcologyTheta.svg</asset>
+    <category>environmentalist</category>
+    <description>An American environmentalist flag from the 1970s.</description>
+    <buyable>false</buyable>
+    <make_difficulty>4</make_difficulty>
+    <make_price>10</make_price>
+    <fencevalue>20</fencevalue>
+  </flagtype>
+  <flagtype idname="FLAG_GREEN_AND_BLACK">
+    <name>Eco-Anarchist Flag</name>
+    <shortname>EcoAnarch Flag</shortname>
+    <asset>GreenAndBlack.svg</asset>
+    <category>environmentalist</category>
+    <description>Radical anti-capitalist and anti-authoritarian environmentalism.</description>
+    <buyable>false</buyable>
+    <make_difficulty>1</make_difficulty>
+    <make_price>10</make_price>
+    <fencevalue>15</fencevalue>
+  </flagtype>
+
+  <!-- Civil Rights -->
+  <flagtype idname="FLAG_BLACK_AMERICAN_HERITAGE">
+    <name>Black American Heritage Flag</name>
+    <shortname>BkHrtg Flag</shortname>
+    <asset>BlackAmericanHeritage.svg</asset>
+    <category>civilRights</category>
+    <description>Rise to the struggle for equal justice and human dignity.</description>
+    <buyable>false</buyable>
+    <make_difficulty>6</make_difficulty>
+    <make_price>15</make_price>
+    <fencevalue>30</fencevalue>
+  </flagtype>
+  <flagtype idname="FLAG_PAN_AFRICAN">
+    <name>Pan-African Flag</name>
+    <shortname>PanAfrica Flag</shortname>
+    <asset>PanAfrican.svg</asset>
+    <category>civilRights</category>
+    <description>Solidarity between all peoples of African descent.</description>
+    <make_difficulty>1</make_difficulty>
+    <make_price>10</make_price>
+    <fencevalue>15</fencevalue>
+  </flagtype>
+  <flagtype idname="FLAG_BLACK_LIVES_MATTER">
+    <name>Black Lives Matter Flag</name>
+    <shortname>BLM Flag</shortname>
+    <asset>BlackLivesMatter.svg</asset>
+    <category>civilRights</category>
+    <description>Power concedes nothing without a demand. It never did and it never will.</description>
+    <buyable>false</buyable>
+    <make_difficulty>4</make_difficulty>
+    <make_price>10</make_price>
+    <fencevalue>20</fencevalue>
+  </flagtype>
+</flags>

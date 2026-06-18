@@ -1,4 +1,5 @@
 import 'package:lcs_new_age/creature/creature.dart';
+import 'package:lcs_new_age/creature/gender.dart';
 import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/items/armor_upgrade.dart';
 import 'package:lcs_new_age/items/item_type.dart';
@@ -73,6 +74,15 @@ class ClothingType extends ItemType {
 
   List<String> allowedArmorIds = [];
   List<String> culture = [];
+  String? genderString;
+  Gender get gender => switch (genderString) {
+        "MALE" => Gender.male,
+        "FEMALE" => Gender.female,
+        "NONBINARY" => Gender.nonbinary,
+        "MALE_BIAS" => Gender.male,
+        "FEMALE_BIAS" => Gender.female,
+        _ => Gender.nonbinary,
+      };
   List<String> traitsList(bool includeArmor,
       {ArmorUpgrade? specifiedArmorUpgrade}) {
     List<String> traits = [];

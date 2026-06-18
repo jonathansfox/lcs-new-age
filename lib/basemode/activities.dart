@@ -8,6 +8,7 @@ import 'package:lcs_new_age/daily/activities/recruiting.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/items/armor_upgrade.dart';
 import 'package:lcs_new_age/items/clothing_type.dart';
+import 'package:lcs_new_age/items/flag_type.dart';
 import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/politics/views.dart';
 import 'package:lcs_new_age/utils/colors.dart';
@@ -37,6 +38,7 @@ class Activity {
   Creature? get creature => pool.firstWhereOrNull((e) => e.id == idInt);
   ClothingType? get clothingType =>
       clothingTypes[idString?.split(":ARMOR").firstOrNull];
+  FlagType? get flagType => flagTypes[idString];
   ArmorUpgrade? get armorUpgrade => clothingType?.allowedArmor.elementAtOrNull(
       int.tryParse(idString?.split(":ARMOR").lastOrNull ?? "0") ?? 0);
   Site? get location =>
@@ -48,6 +50,8 @@ class Activity {
         return "Tending to ${creature?.name ?? "a bug"}";
       case ActivityType.makeClothing:
         return "Making ${clothingType?.shortName ?? "a bug"}";
+      case ActivityType.makeFlag:
+        return "Making ${flagType?.shortName ?? "a bug"}";
       case ActivityType.visit:
         return "Visiting ${location?.name ?? "a bug"}";
       case ActivityType.study:
@@ -78,6 +82,7 @@ enum ActivityType {
   ccfraud("Credit Card Fraud", red),
   hacking("Hacking", lightGreen),
   makeClothing("Tailoring", lightBlue),
+  makeFlag("Making a Flag", lightBlue),
   stealCars("Stealing a Car", lightBlue),
   wheelchair("Procuring a Wheelchair", lightBlue),
   bury("Burying Dead", darkGray),

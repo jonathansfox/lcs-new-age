@@ -79,8 +79,10 @@ class Console {
       }
     }
     graphics.removeWhere((g) =>
-        (g.right >= startX || g.left <= endX) &&
-        (g.top >= startY || g.bottom <= endY));
+        g.left < endX &&
+        g.right > startX &&
+        g.top < endY &&
+        g.bottom > startY);
   }
 
   void eraseLine(int y) => eraseArea(startY: y, endY: y + 1);

@@ -2,7 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 enum View {
   // political issues
-  lgbtRights("LGBT Rights"),
+  lgbtRights("LGBTQ+ Rights"),
   deathPenalty("Death Penalty"),
   taxes("Taxes"),
   nuclearPower("Nuclear Power"),
@@ -14,7 +14,7 @@ enum View {
   genetics("Genetics"),
   justices("Justices"),
   gunControl("Gun Control"),
-  sweatshops("Sweatshops"),
+  sweatshops("Labor Rights"),
   pollution("Pollution"),
   corporateCulture("Corporations"),
   ceoSalary("Income Inequality"),
@@ -38,9 +38,9 @@ enum View {
 
   const View(this.label);
 
-  static final Iterable<View> all = View.values.where((v) => ![
-        View.torture,
-      ].contains(v));
+  static final Iterable<View> all = View.values.where(
+    (v) => ![View.torture].contains(v),
+  );
 
   static final List<View> issues = [
     lgbtRights,

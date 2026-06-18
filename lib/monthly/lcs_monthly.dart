@@ -252,9 +252,9 @@ Future<void> fundReport(bool disbanding) async {
     nextY();
 
     liquidAssetLine(
-        "Total Liquid Assets",
-        (ledger.funds + weaponValue + armorValue + clipValue + lootValue)
-            .round());
+      "Total Liquid Assets",
+      (ledger.funds + weaponValue + armorValue + clipValue + lootValue).round(),
+    );
 
     setColor(lightGray);
     if (numpages > 1) {
@@ -346,7 +346,8 @@ Future<LootType?> chooseSpecialEdition() async {
     onChoice: (index) async {
       for (Site loc in sites.where((s) => s.controller == SiteController.lcs)) {
         Loot? l = loc.loot.whereType<Loot>().firstWhereOrNull(
-            (l) => l.type.idName == lootTypesAvailable[index].idName);
+          (l) => l.type.idName == lootTypesAvailable[index].idName,
+        );
         if (l == null) continue;
         l.split(1);
         if (l.stackSize == 0) loc.loot.remove(l);
@@ -370,7 +371,8 @@ Future<void> printNews(LootType li, Iterable<Creature> publishers) async {
   int reception(int basePotency) {
     Creature? leader;
     Skill? skillUsed;
-    int power = publishers.length +
+    int power =
+        publishers.length +
         publishers.fold(0, (best, p) {
           Skill skill = p.activity.type == ActivityType.writeGuardian
               ? Skill.writing
@@ -392,11 +394,13 @@ Future<void> printNews(LootType li, Iterable<Creature> publishers) async {
     String leadersArticle = "${leader?.name ?? "The squad"}'s $article";
     story += "\n\n";
     if (power < 4) {
-      story += "The information is posted to the internet with little fanfare."
+      story +=
+          "The information is posted to the internet with little fanfare."
           "Some conspiracy theorists mention it, but most people don't believe it.";
       return basePotency ~/ 5;
     } else if (power < 10) {
-      story += "$leadersArticle about this doesn't have much impact. "
+      story +=
+          "$leadersArticle about this doesn't have much impact. "
           "The information is taken up by watchdog groups but never really catches on.";
       return basePotency ~/ 4;
     } else if (power < 15) {
@@ -405,19 +409,23 @@ Future<void> printNews(LootType li, Iterable<Creature> publishers) async {
           "The information is taken up by watchdog groups but never really catches on.";
       return basePotency ~/ 4;
     } else if (power < 15) {
-      story += "$leadersArticle about this gets more views than usual. "
+      story +=
+          "$leadersArticle about this gets more views than usual. "
           "A prominent journalist investigates further, but can't prove it's true.";
       return basePotency ~/ 3;
     } else if (power < 20) {
-      story += "$leadersArticle about this lays out the evidence. "
+      story +=
+          "$leadersArticle about this lays out the evidence. "
           "The story is picked up by several major networks and publications.";
       return basePotency ~/ 2;
     } else if (power < 25) {
-      story += "$leadersArticle about this is electrifying. "
+      story +=
+          "$leadersArticle about this is electrifying. "
           "The major networks and publications take it up and run it for weeks.";
       return basePotency;
     } else {
-      story += "$leadersArticle about this transforms the media narrative. "
+      story +=
+          "$leadersArticle about this transforms the media narrative. "
           "The major networks and publications fixate on the story for weeks. "
           "The information is so explosive that it becomes a national scandal.";
       return (basePotency * 1.5).round();
@@ -551,7 +559,7 @@ Future<void> printNews(LootType li, Iterable<Creature> publishers) async {
           story += "describing a genetic monster created in a lab.";
           issues.add(View.genetics);
         case 1:
-          story += "with a list of \"suspected\" LGBT employees.";
+          story += "with a list of \"suspected\" gay and trans employees.";
           issues.add(View.lgbtRights);
         case 2:
           story +=
@@ -624,7 +632,7 @@ Future<void> printNews(LootType li, Iterable<Creature> publishers) async {
           story += "documenting \"harmful speech\" made by innocent citizens.";
           issues.add(View.freeSpeech);
         case 4:
-          story += "used to keep tabs on LGBT citizens.";
+          story += "used to keep tabs on LGBTQ+ citizens.";
           issues.add(View.lgbtRights);
         case 5:
           story += "documenting the infiltration of a pro-choice group.";
@@ -741,13 +749,15 @@ Future<void> printNews(LootType li, Iterable<Creature> publishers) async {
       story = "The Liberal Guardian runs a story featuring cable news memos ";
       switch (lcsRandom(7)) {
         case 0:
-          story += "mandating that any investigative news stories must be "
+          story +=
+              "mandating that any investigative news stories must be "
               "approved by the network's Conservative commentators before they "
               "can be aired.";
         case 1:
           story += "mandating negative coverage of Liberal politicians.";
         case 2:
-          story += "planning to drum up a false scandal about a Liberal figure "
+          story +=
+              "planning to drum up a false scandal about a Liberal figure "
               "that they privately acknowledge to be unimpeachable.";
         case 3:
           story +=
@@ -780,21 +790,25 @@ Future<void> printNews(LootType li, Iterable<Creature> publishers) async {
       story = "The Liberal Guardian runs a story featuring AM radio plans ";
       switch (lcsRandom(5)) {
         case 0:
-          story += "to promote a foreign dictator as a hero to listeners "
+          story +=
+              "to promote a foreign dictator as a hero to listeners "
               "after a major radio host received a large sum of money from "
               "the dictator's regime.";
         case 1:
-          story += "brainstorming, in very blunt terms, which overt lies to "
+          story +=
+              "brainstorming, in very blunt terms, which overt lies to "
               "tell listeners based on what they think their listeners are "
               "'stupid enough' to believe.";
         case 2:
-          story += "planning to drum up a false scandal about a Liberal figure "
+          story +=
+              "planning to drum up a false scandal about a Liberal figure "
               "that they privately acknowledge to be unimpeachable.";
         case 3:
           story += "to systematically promote hostility toward Black people.";
           issues.add(View.civilRights);
         case 4:
-          story += "to make sure to follow the name of every LGBT figure "
+          story +=
+              "to make sure to follow the name of every LGBT figure "
               "mentioned on the program with the words \"who is known to be a "
               "pedophile and a groomer, by the way.\"";
           issues.add(View.lgbtRights);
@@ -948,7 +962,7 @@ Future<void> printNews(LootType li, Iterable<Creature> publishers) async {
     LootTypeIds.prisonFiles => "PRISON ABUSES EXPOSED",
     LootTypeIds.cableNewsFiles => "CABLE NEWS BIAS REVEALED",
     LootTypeIds.amRadioFiles => "AM RADIO PROPAGANDA EXPOSED",
-    _ => "LIBERAL GUARDIAN EXPOSÉ"
+    _ => "LIBERAL GUARDIAN EXPOSÉ",
   };
 
   // Record the opinion changes in effects

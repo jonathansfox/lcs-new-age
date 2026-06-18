@@ -148,9 +148,11 @@ void specialBouncerGreetSquad() {
   // add a bouncer if there isn't one in the first slot
   if (!siteAlarm &&
       activeSite!.controller != SiteController.lcs &&
-      !encounter.any((e) =>
-          e.type.id == CreatureTypeIds.bouncer ||
-          e.type.id == CreatureTypeIds.ccsVigilante)) {
+      !encounter.any(
+        (e) =>
+            e.type.id == CreatureTypeIds.bouncer ||
+            e.type.id == CreatureTypeIds.ccsVigilante,
+      )) {
     if (activeSite!.controller == SiteController.ccs) {
       encounter.add(Creature.fromId(CreatureTypeIds.ccsVigilante));
       encounter.add(Creature.fromId(CreatureTypeIds.ccsVigilante));
@@ -172,13 +174,15 @@ Future<void> specialBouncerAssessSquad() async {
 
   printEncounter();
   Creature? sleeper = pool.firstWhereOrNull(
-      (p) => p.base == activeSite && p.type.id == encounter[0].type.id);
+    (p) => p.base == activeSite && p.type.id == encounter[0].type.id,
+  );
   if (sleeper != null) {
     autoadmit = true;
     encounter[0] = sleeper;
     levelMap[locx][locy][locz].special = TileSpecial.none;
     await encounterMessage(
-        "Sleeper ${sleeper.name} smirks and lets the squad in.");
+      "Sleeper ${sleeper.name} smirks and lets the squad in.",
+    );
   } else {
     levelMap[locx][locy][locz].special = TileSpecial.clubBouncerSecondVisit;
     if (activeSite!.controller == SiteController.ccs &&
@@ -246,115 +250,139 @@ Future<void> specialBouncerAssessSquad() async {
     switch (rejected) {
       case REJECTED_CCS:
         setColor(red);
-        addstr([
-          "\"Can I see... heh heh... some ID?\"",
-          "\"Woah... you think you're coming in here?\"",
-          "\"Check out this fool. Heh.\"",
-          "\"Want some trouble, dumpster breath?\"",
-          "\"You're gonna stir up the hornet's nest, fool.\"",
-          "\"Come on, take a swing at me. Just try it.\"",
-          "\"You really don't want to fuck with me.\"",
-          "\"Hey girly, have you written your will?\"",
-          "\"Oh, you're trouble. I *like* trouble.\"",
-          "\"I'll bury you in those planters over there.\"",
-          "\"Looking to check on the color of your blood?\"",
-        ].random);
+        addstr(
+          [
+            "\"Can I see... heh heh... some ID?\"",
+            "\"Woah... you think you're coming in here?\"",
+            "\"Check out this fool. Heh.\"",
+            "\"Want some trouble, dumpster breath?\"",
+            "\"You're gonna stir up the hornet's nest, fool.\"",
+            "\"Come on, take a swing at me. Just try it.\"",
+            "\"You really don't want to fuck with me.\"",
+            "\"Hey girly, have you written your will?\"",
+            "\"Oh, you're trouble. I *like* trouble.\"",
+            "\"I'll bury you in those planters over there.\"",
+            "\"Looking to check on the color of your blood?\"",
+          ].random,
+        );
       case REJECTED_NUDE:
         setColor(red);
-        addstr([
-          "\"No shirt, no underpants, no service.\"",
-          "\"Put some clothes on! That's disgusting.\"",
-          "\"No! No, you can't come in naked! God!!\"",
-          "\"Naked? ${noProfanity ? "[I won't look.]" : "That's hot."} But no, you can't come in.\"",
-          "\"${noProfanity ? "[Yuck!]" : "Fuck!"} I did not want to see your naked ${noProfanity ? "[body]" : "ass"}.\"",
-        ].random);
+        addstr(
+          [
+            "\"No shirt, no underpants, no service.\"",
+            "\"Put some clothes on! That's disgusting.\"",
+            "\"No! No, you can't come in naked! God!!\"",
+            "\"Naked? ${noProfanity ? "[I won't look.]" : "That's hot."} But no, you can't come in.\"",
+            "\"${noProfanity ? "[Yuck!]" : "Fuck!"} I did not want to see your naked ${noProfanity ? "[body]" : "ass"}.\"",
+          ].random,
+        );
       case REJECTED_UNDERAGE:
         setColor(red);
-        addstr([
-          "\"ID? No? Come back when you're older.\"",
-          "\"I'm gonna need to see some ID.\"",
-          "\"Drinking age is 21, mate.\"",
-          "\"You look a bit young for this place.\"",
-          "\"Must be 21 or older to enter.\"",
-        ].random);
+        addstr(
+          [
+            "\"ID? No? Come back when you're older.\"",
+            "\"I'm gonna need to see some ID.\"",
+            "\"Drinking age is 21, mate.\"",
+            "\"You look a bit young for this place.\"",
+            "\"Must be 21 or older to enter.\"",
+          ].random,
+        );
       case REJECTED_FEMALE:
         setColor(red);
-        addstr([
-          "\"Move along ma'am, this club's for men.\"",
-          "\"This 'ain't no sewing circle, ma'am.\"",
-          "\"Leave, female.\"",
-          "\"Where's your husband?\"",
-        ].random);
+        addstr(
+          [
+            "\"Move along ma'am, this club's for men.\"",
+            "\"This 'ain't no sewing circle, ma'am.\"",
+            "\"Leave, female.\"",
+            "\"Where's your husband?\"",
+          ].random,
+        );
       case REJECTED_TRANS:
         setColor(red);
-        addstr([
-          "\"I smell trangenderism. Get out.\"",
-          "\"Ugh, trans people. ${noProfanity ? "[Heavens]" : "Hell"} no.\"",
-          "\"Your gender is a disgrace against nature.\"",
-          "\"Trans men are men, ${noProfanity ? "[fellow child of God]" : "idiot"}. Get out.\"",
-          "\"Trans women are women, ${noProfanity ? "[fellow child of God]" : "moron"}. Leave.\"",
-        ].random);
+        addstr(
+          [
+            "\"I smell trangenderism. Get out.\"",
+            "\"Ugh, trans people. ${noProfanity ? "[Heavens]" : "Hell"} no.\"",
+            "\"Your gender is a disgrace against nature.\"",
+            "\"Trans men are men, ${noProfanity ? "[fellow child of God]" : "idiot"}. Get out.\"",
+            "\"Trans women are women, ${noProfanity ? "[fellow child of God]" : "moron"}. Leave.\"",
+          ].random,
+        );
       case REJECTED_DRESSCODE:
         setColor(red);
-        addstr([
-          "\"Check the dress code.\"",
-          "\"We have a dress code here.\"",
-          "\"I can't let you in wearing that.\"",
-        ].random);
+        addstr(
+          [
+            "\"Check the dress code.\"",
+            "\"We have a dress code here.\"",
+            "\"I can't let you in wearing that.\"",
+          ].random,
+        );
       case REJECTED_SMELLFUNNY:
         setColor(red);
-        addstr([
-          "\"God, you smell.\"",
-          "\"You smell that? Yeah... Liberals...\"",
-          "\"Nope. There's something off about you.\"",
-          "\"Take a shower, hippie.\"",
-          "\"Jesus. Ever heard of deodorant?\"",
-          "\"Nah. I can tell this ain't your scene.\"",
-        ].random);
+        addstr(
+          [
+            "\"God, you smell.\"",
+            "\"You smell that? Yeah... Liberals...\"",
+            "\"Nope. There's something off about you.\"",
+            "\"Take a shower, hippie.\"",
+            "\"Jesus. Ever heard of deodorant?\"",
+            "\"Nah. I can tell this ain't your scene.\"",
+          ].random,
+        );
       case REJECTED_BLOODYCLOTHES:
         setColor(red);
-        addstr([
-          "\"Good God! What is wrong with your clothes?\"",
-          "\"Absolutely not. Clean up a bit.\"",
-          "\"This isn't a goth club, bloody clothes don't cut it here.\"",
-          "\"Uh, maybe you should wash... replace... those clothes.\"",
-          "\"Did you spill something on your clothes?\"",
-          "\"Come back when you get the red wine out of your clothes.\"",
-        ].random);
+        addstr(
+          [
+            "\"Good God! What is wrong with your clothes?\"",
+            "\"Absolutely not. Clean up a bit.\"",
+            "\"This isn't a goth club, bloody clothes don't cut it here.\"",
+            "\"Uh, maybe you should wash... replace... those clothes.\"",
+            "\"Did you spill something on your clothes?\"",
+            "\"Come back when you get the red wine out of your clothes.\"",
+          ].random,
+        );
       case REJECTED_DAMAGEDCLOTHES:
         setColor(red);
-        addstr([
-          "\"Good God! What is wrong with your clothes?\"",
-          "\"This isn't a goth club, ripped clothes don't cut it here.\"",
-        ].random);
+        addstr(
+          [
+            "\"Good God! What is wrong with your clothes?\"",
+            "\"This isn't a goth club, ripped clothes don't cut it here.\"",
+          ].random,
+        );
       case REJECTED_SECONDRATECLOTHES:
         setColor(red);
-        addstr([
-          "\"Do you shop at a dumpster or a thrift store?\"",
-          "\"I'm gonna guess you sew your own clothes.\"",
-          "\"If badly cut clothing is a hot new trend, I missed it.\"",
-          "\"That doesn't... that doesn't even fit you.\"",
-        ].random);
+        addstr(
+          [
+            "\"Do you shop at a dumpster or a thrift store?\"",
+            "\"I'm gonna guess you sew your own clothes.\"",
+            "\"If badly cut clothing is a hot new trend, I missed it.\"",
+            "\"That doesn't... that doesn't even fit you.\"",
+          ].random,
+        );
       case REJECTED_WEAPONS:
         setColor(red);
-        addstr([
-          "\"No weapons allowed.\"",
-          "\"I can't let you in carrying that.\"",
-          "\"I can't let you take that in.\"",
-          "\"Come to me armed, and I'll tell you to take a hike.\"",
-          "\"Real men fight with fists. And no, you can't come in.\"",
-        ].random);
+        addstr(
+          [
+            "\"No weapons allowed.\"",
+            "\"I can't let you in carrying that.\"",
+            "\"I can't let you take that in.\"",
+            "\"Come to me armed, and I'll tell you to take a hike.\"",
+            "\"Real men fight with fists. And no, you can't come in.\"",
+          ].random,
+        );
       case REJECTED_GUESTLIST:
         setColor(red);
         addstr("\"VIPs only for now, due to recent events.\"");
       case NOT_REJECTED:
         setColor(lightGreen);
-        addstr([
-          "\"Keep it civil and don't drink too much.\"",
-          "\"Let me get the door for you.\"",
-          "\"Ehh, alright, go on in.\"",
-          "\"Come on in.\"",
-        ].random);
+        addstr(
+          [
+            "\"Keep it civil and don't drink too much.\"",
+            "\"Let me get the door for you.\"",
+            "\"Ehh, alright, go on in.\"",
+            "\"Come on in.\"",
+          ].random,
+        );
     }
 
     await getKey();
@@ -383,7 +411,9 @@ Future<void> specialBouncerAssessSquad() async {
 
 Future<void> specialLabCosmeticsCagedAnimals() async {
   bool freeThem = await sitemodePrompt(
-      "You see animals in a sealed cage.", "Free them? (Yes or No)");
+    "You see animals in a sealed cage.",
+    "Free them? (Yes or No)",
+  );
   if (!freeThem) return;
 
   UnlockResult result = await unlock(UnlockTypes.cage);
@@ -441,12 +471,14 @@ Future<void> specialNuclearOnOff() async {
   bool pressIt;
   if (laws[Law.nuclearPower] == DeepAlignment.eliteLiberal) {
     pressIt = await sitemodePrompt(
-        "You see the nuclear waste center control room.",
-        "Release nuclear waste?");
+      "You see the nuclear waste center control room.",
+      "Release nuclear waste?",
+    );
   } else {
     pressIt = await sitemodePrompt(
-        "You see the nuclear power plant control room.",
-        "Mess with the reactor?");
+      "You see the nuclear power plant control room.",
+      "Mess with the reactor?",
+    );
   }
   if (!pressIt) return;
 
@@ -488,8 +520,10 @@ Future<void> specialNuclearOnOff() async {
 
       sitestory!.drama.add(Drama.shutDownReactor);
     } else {
-      await encounterMessage("The lights go out as the reactor shuts down!",
-          line2: "Power must be out statewide...");
+      await encounterMessage(
+        "The lights go out as the reactor shuts down!",
+        line2: "Power must be out statewide...",
+      );
 
       changePublicOpinion(View.nuclearPower, 15);
 
@@ -500,8 +534,9 @@ Future<void> specialNuclearOnOff() async {
     }
   } else {
     await encounterMessage(
-        "After some failed attempts, and a very loud alarm, ",
-        line2: "the Squad resigns to just leaving a threatening note.");
+      "After some failed attempts, and a very loud alarm, ",
+      line2: "the Squad resigns to just leaving a threatening note.",
+    );
 
     juiceparty(15, 500);
   }
@@ -513,8 +548,9 @@ Future<void> specialNuclearOnOff() async {
 
 Future<void> specialLabGeneticCagedAnimals() async {
   bool freeThem = await sitemodePrompt(
-      "You see horrible misshapen creatures in a sealed cage.",
-      "Free them? (Yes or No)");
+    "You see horrible misshapen creatures in a sealed cage.",
+    "Free them? (Yes or No)",
+  );
   if (!freeThem) return;
 
   UnlockResult result = await unlock(UnlockTypes.cageHard);
@@ -545,7 +581,9 @@ Future<void> specialLabGeneticCagedAnimals() async {
 
 Future<void> specialPoliceStationLockup() async {
   bool freeThem = await sitemodePrompt(
-      "You see prisoners in the detention room.", "Free them? (Yes or No)");
+    "You see prisoners in the detention room.",
+    "Free them? (Yes or No)",
+  );
   if (!freeThem) return;
 
   UnlockResult result = await unlock(UnlockTypes.cell);
@@ -570,7 +608,9 @@ Future<void> specialPoliceStationLockup() async {
 
 Future<void> specialCourthouseLockup() async {
   bool freeThem = await sitemodePrompt(
-      "You see prisoners in the Courthouse jail.", "Free them? (Yes or No)");
+    "You see prisoners in the Courthouse jail.",
+    "Free them? (Yes or No)",
+  );
   if (!freeThem) return;
 
   UnlockResult result = await unlock(UnlockTypes.cell);
@@ -595,14 +635,18 @@ Future<void> specialCourthouseLockup() async {
 
 Future<void> specialCourthouseJury() async {
   if (siteAlarm) {
-    await encounterMessage("It appears as if this room has been ",
-        line2: "vacated in a hurry.", color: white);
+    await encounterMessage(
+      "It appears as if this room has been ",
+      line2: "vacated in a hurry.",
+      color: white,
+    );
     return;
   }
 
   bool influenceThem = await sitemodePrompt(
-      "You've found a Jury in deliberations!",
-      "Attempt to influence them? (Yes or No)");
+    "You've found a Jury in deliberations!",
+    "Attempt to influence them? (Yes or No)",
+  );
   if (!influenceThem) return;
 
   levelMap[locx][locy][locz].special = TileSpecial.none;
@@ -617,7 +661,8 @@ Future<void> specialCourthouseJury() async {
             p.skill(Skill.persuasion) +
             p.skill(Skill.law) >
         maxattack) {
-      maxattack = p.attribute(Attribute.charisma) +
+      maxattack =
+          p.attribute(Attribute.charisma) +
           p.attribute(Attribute.intelligence) +
           p.skill(Skill.persuasion) +
           p.skill(Skill.law);
@@ -664,28 +709,33 @@ Future<void> specialCourthouseJury() async {
   if (succeed) {
     if (laws[Law.deathPenalty] == DeepAlignment.archConservative) {
       await encounterMessage(
-          "${maxp.name} works the room like in Twelve Angry Men, and the jury ",
-          line2: "concludes that $crime isn't worth yet another execution.");
+        "${maxp.name} works the room like in Twelve Angry Men, and the jury ",
+        line2: "concludes that $crime isn't worth yet another execution.",
+      );
       addjuice(maxp, 25, 1000);
     } else {
       await encounterMessage(
-          "${maxp.name} works the room like in Twelve Angry Men, and the jury ",
-          line2: "concludes that $crime wasn't really wrong here.");
+        "${maxp.name} works the room like in Twelve Angry Men, and the jury ",
+        line2: "concludes that $crime wasn't really wrong here.",
+      );
       addjuice(maxp, 25, 200);
     }
   } else {
     if (successPersuasion) {
       await encounterMessage(
-          "${maxp.name} charms the jury into not calling the guards, but fails ",
-          line2: "to show why $crime should go unpunished.");
+        "${maxp.name} charms the jury into not calling the guards, but fails ",
+        line2: "to show why $crime should go unpunished.",
+      );
     } else if (successLaw) {
       await encounterMessage(
-          "${maxp.name} presents a complex lecture on the many nuances of ",
-          line2: "the law around $crime, but the jurors just fall asleep.");
+        "${maxp.name} presents a complex lecture on the many nuances of ",
+        line2: "the law around $crime, but the jurors just fall asleep.",
+      );
     } else {
       await encounterMessage(
-          "${maxp.name} tries to work the room like in Twelve Angry Men, but ",
-          line2: "only manages to produce Twelve Angry Jurors.");
+        "${maxp.name} tries to work the room like in Twelve Angry Men, but ",
+        line2: "only manages to produce Twelve Angry Jurors.",
+      );
       fillEncounter(CreatureTypeIds.juror, 12);
       printEncounter();
       siteAlarm = true;
@@ -702,11 +752,12 @@ Future<void> specialPrisonControl(TileSpecial prisonControlType) async {
     TileSpecial.prisonControlLow => "low security",
     TileSpecial.prisonControlMedium => "medium security",
     TileSpecial.prisonControlHigh => "high security",
-    _ => ""
+    _ => "",
   };
   bool freeThem = await sitemodePrompt(
-      "You've found the $level prison control room.",
-      "Free the prisoners? (Yes or No)");
+    "You've found the $level prison control room.",
+    "Free the prisoners? (Yes or No)",
+  );
   if (!freeThem) return;
 
   int numleft = lcsRandom(8) + 2;
@@ -758,13 +809,17 @@ Future<void> specialPrisonControl(TileSpecial prisonControlType) async {
 
 Future<void> specialIntelSupercomputer() async {
   if (siteAlarm) {
-    await encounterMessage("The security alert has caused the ",
-        line2: "computer to shut down.");
+    await encounterMessage(
+      "The security alert has caused the ",
+      line2: "computer to shut down.",
+    );
     return;
   }
 
   bool hackIt = await sitemodePrompt(
-      "You've found the Intelligence Supercomputer.", "Hack it? (Yes or No)");
+    "You've found the Intelligence Supercomputer.",
+    "Hack it? (Yes or No)",
+  );
   if (!hackIt) return;
 
   UnlockResult result = await hack(HackTypes.supercomputer);
@@ -818,17 +873,20 @@ Future<void> specialGraffiti() async {
     ..graffitiOther = false;
   if (!activeSite!.hasHighSecurity) {
     // Erase any previous semi-permanent graffiti here
-    activeSite!.changes.removeWhere((element) =>
-        element.x == locx &&
-        element.y == locy &&
-        element.z == locz &&
-        (element.flag == SITEBLOCK_GRAFFITI ||
-            element.flag == SITEBLOCK_GRAFFITI_CCS ||
-            element.flag == SITEBLOCK_GRAFFITI_OTHER));
+    activeSite!.changes.removeWhere(
+      (element) =>
+          element.x == locx &&
+          element.y == locy &&
+          element.z == locz &&
+          (element.flag == SITEBLOCK_GRAFFITI ||
+              element.flag == SITEBLOCK_GRAFFITI_CCS ||
+              element.flag == SITEBLOCK_GRAFFITI_OTHER),
+    );
 
     // Add new semi-permanent graffiti
-    activeSite!.changes
-        .add(SiteTileChange(locx, locy, locz, SITEBLOCK_GRAFFITI));
+    activeSite!.changes.add(
+      SiteTileChange(locx, locy, locz, SITEBLOCK_GRAFFITI),
+    );
   }
   siteCrime++;
   juiceparty(1, 50);
@@ -867,8 +925,11 @@ Future<bool> sitemodePrompt(String line1, String line2) async {
   }
 }
 
-Future<void> encounterMessage(String message,
-    {String? line2, Color color = white}) async {
+Future<void> encounterMessage(
+  String message, {
+  String? line2,
+  Color color = white,
+}) async {
   clearMessageArea();
 
   mvaddstrc(9, 1, color, message);
@@ -887,7 +948,9 @@ void delayedSuspicion(int time) {
 
 Future<void> specialSweatshopEquipment() async {
   bool smash = await sitemodePrompt(
-      "You see some textile equipment.", "Destroy it? (Yes or No)");
+    "You see some textile equipment.",
+    "Destroy it? (Yes or No)",
+  );
   if (!smash) return;
 
   await _vandalizeTile();
@@ -895,7 +958,9 @@ Future<void> specialSweatshopEquipment() async {
 
 Future<void> specialPolluterEquipment() async {
   bool smash = await sitemodePrompt(
-      "You see some industrial equipment.", "Destroy it? (Yes or No)");
+    "You see some industrial equipment.",
+    "Destroy it? (Yes or No)",
+  );
   if (!smash) return;
 
   changePublicOpinion(View.pollution, 2, coloredByLcsOpinions: true);
@@ -905,7 +970,9 @@ Future<void> specialPolluterEquipment() async {
 
 Future<void> specialLabEquipment() async {
   bool smash = await sitemodePrompt(
-      "You see some lab equipment.", "Destroy it? (Yes or No)");
+    "You see some lab equipment.",
+    "Destroy it? (Yes or No)",
+  );
   if (!smash) return;
 
   changePublicOpinion(View.animalResearch, 2, coloredByLcsOpinions: true);
@@ -937,8 +1004,10 @@ void _lootWeapon(String tag, int extraMags) {
 }
 
 Future<void> specialCEOSafe() async {
-  bool crack =
-      await sitemodePrompt("You've found a safe.", "Crack it? (Yes or No)");
+  bool crack = await sitemodePrompt(
+    "You've found a safe.",
+    "Crack it? (Yes or No)",
+  );
   if (!crack) return;
 
   UnlockResult result = await unlock(UnlockTypes.safe);
@@ -960,14 +1029,15 @@ Future<void> specialCEOSafe() async {
     }
 
     if (oneIn(2)) {
-      await encounterMessage("The squad Liberates some expensive jewelery.");
+      await encounterMessage("The squad Liberates some expensive jewelry.");
       _loot(Loot(LootTypeIds.expensiveJewelry, stackSize: 3));
       empty = false;
     }
 
     if (oneIn(3)) {
       await encounterMessage(
-          "There are some... very compromising photos here.");
+        "There are some... very compromising photos here.",
+      );
       _loot(Loot(LootTypeIds.ceoPhotos));
       empty = false;
     }
@@ -978,8 +1048,10 @@ Future<void> specialCEOSafe() async {
     }
 
     if (oneIn(3)) {
-      await encounterMessage("Wow, get a load of these love letters.",
-          line2: "The squad will take those.");
+      await encounterMessage(
+        "Wow, get a load of these love letters.",
+        line2: "The squad will take those.",
+      );
       _loot(Loot(LootTypeIds.ceoLoveLetters));
       empty = false;
     }
@@ -1005,15 +1077,18 @@ Future<void> specialCEOSafe() async {
 }
 
 Future<void> specialNursingHomeSafe() async {
-  bool crack =
-      await sitemodePrompt("You've found a safe.", "Crack it? (Yes or No)");
+  bool crack = await sitemodePrompt(
+    "You've found a safe.",
+    "Crack it? (Yes or No)",
+  );
   if (!crack) return;
 
   UnlockResult result = await unlock(UnlockTypes.safe);
 
   if (result == UnlockResult.unlocked) {
     await encounterMessage(
-        "The squad has found documents detailing systemic elder abuse.");
+      "The squad has found documents detailing systemic elder abuse.",
+    );
     _loot(Loot(LootTypeIds.elderAbuseEvidence));
 
     juiceparty(50, 1000);
@@ -1026,14 +1101,7 @@ Future<void> specialNursingHomeSafe() async {
   levelMap[locx][locy][locz].special = TileSpecial.none;
 }
 
-enum PatientPersonality {
-  lonely,
-  angry,
-  cheerful,
-  depressed,
-  withdrawn,
-  basic,
-}
+enum PatientPersonality { lonely, angry, cheerful, depressed, withdrawn, basic }
 
 class PatientState {
   PatientState(
@@ -1142,81 +1210,102 @@ PatientState _getPatientState(PatientPersonality personality) {
   switch (lcsRandomWeighted<PatientStateKey>(stateWeights)) {
     case PatientStateKey.lonely:
       return PatientState(
-          "%FIRSTLAST% is lonely and feels isolated here.",
-          "%HELPER% sits and talks with %FIRST% for a while.",
-          Skill.psychology);
+        "%FIRSTLAST% is lonely and feels isolated here.",
+        "%HELPER% sits and talks with %FIRST% for a while.",
+        Skill.psychology,
+      );
     case PatientStateKey.lyingInSamePosition:
       return PatientState(
-          "%FIRSTLAST% has been lying in the same position all day.",
-          "%HELPER% repositions %FIRST% so %HE% is more comfortable.",
-          Skill.firstAid,
-          difficulty: Difficulty.easy);
+        "%FIRSTLAST% has been lying in the same position all day.",
+        "%HELPER% repositions %FIRST% so %HE% is more comfortable.",
+        Skill.firstAid,
+        difficulty: Difficulty.easy,
+      );
     case PatientStateKey.pillsLookWrong:
       return PatientState(
-          "%FIRSTLAST% says the pills don't look right.",
-          "%HELPER% checks %FIRST%'s chart and gets %HIM% the right medication.",
-          Skill.firstAid,
-          difficulty: Difficulty.average);
+        "%FIRSTLAST% says the pills don't look right.",
+        "%HELPER% checks %FIRST%'s chart and gets %HIM% the right medication.",
+        Skill.firstAid,
+        difficulty: Difficulty.average,
+      );
     case PatientStateKey.bruiseOnLeftCheek:
       return PatientState(
-          "%FIRSTLAST% has a bruise on %HIS% left cheek.",
-          "%FIRST% confides in %HELPER% that one of the aides hit %HIM%.",
-          Skill.psychology,
-          difficulty: Difficulty.easy);
+        "%FIRSTLAST% has a bruise on %HIS% left cheek.",
+        "%FIRST% confides in %HELPER% that one of the aides hit %HIM%.",
+        Skill.psychology,
+        difficulty: Difficulty.easy,
+      );
     case PatientStateKey.leftInSoiledClothing:
       return PatientState(
-          "%FIRSTLAST% has been left in soiled clothing.",
-          "%HELPER% helps %FIRST% get into a new set of clothes.",
-          Skill.firstAid);
+        "%FIRSTLAST% has been left in soiled clothing.",
+        "%HELPER% helps %FIRST% get into a new set of clothes.",
+        Skill.firstAid,
+      );
     case PatientStateKey.leftInRestraints:
       return PatientState(
-          "%FIRSTLAST% has been left in restraints as a punishment.",
-          "%HELPER% releases the restraints so %FIRST% can move.",
-          Skill.security);
+        "%FIRSTLAST% has been left in restraints as a punishment.",
+        "%HELPER% releases the restraints so %FIRST% can move.",
+        Skill.security,
+      );
     case PatientStateKey.gladToHaveVisitor:
       return PatientState(
-          "%FIRSTLAST% is glad to have a visitor.",
-          "%HELPER% sits and talks with %FIRST% for a while.",
-          Skill.psychology);
+        "%FIRSTLAST% is glad to have a visitor.",
+        "%HELPER% sits and talks with %FIRST% for a while.",
+        Skill.psychology,
+      );
     case PatientStateKey.hallucinatesDeceasedRelative:
       return PatientState(
-          "%FIRSTLAST% mistakes %HELPER% for a deceased relative.",
-          "%HELPER% helps %FIRST% remember them.",
-          Skill.psychology,
-          difficulty: Difficulty.easy);
+        "%FIRSTLAST% mistakes %HELPER% for a deceased relative.",
+        "%HELPER% helps %FIRST% remember them.",
+        Skill.psychology,
+        difficulty: Difficulty.easy,
+      );
     case PatientStateKey.suspectsTheft:
       return PatientState(
-          "%FIRSTLAST% asks if %HELPER% is here to steal from %HIM%.",
-          "%FIRST% confides in %HELPER% that one of the aides steals from %HIM%.",
-          Skill.psychology,
-          difficulty: Difficulty.average);
+        "%FIRSTLAST% asks if %HELPER% is here to steal from %HIM%.",
+        "%FIRST% confides in %HELPER% that one of the aides steals from %HIM%.",
+        Skill.psychology,
+        difficulty: Difficulty.average,
+      );
     case PatientStateKey.swearsAtHelper:
       return PatientState(
-          "%FIRSTLAST% swears bitterly at %HELPER%.",
-          "%HELPER% talks with %FIRST% and learns the aides verbally abuse %HIM%.",
-          Skill.psychology,
-          difficulty: Difficulty.average);
+        "%FIRSTLAST% swears bitterly at %HELPER%.",
+        "%HELPER% talks with %FIRST% and learns the aides verbally abuse %HIM%.",
+        Skill.psychology,
+        difficulty: Difficulty.average,
+      );
     case PatientStateKey.inGoodSpirits:
       return PatientState(
-          "%FIRSTLAST% seems to be in good spirits.",
-          "%HELPER% sits and talks with %FIRST%. It's nice to see %HIM% happy.",
-          Skill.psychology);
+        "%FIRSTLAST% seems to be in good spirits.",
+        "%HELPER% sits and talks with %FIRST%. It's nice to see %HIM% happy.",
+        Skill.psychology,
+      );
     case PatientStateKey.asksForBook:
-      return PatientState("%FIRSTLAST% asks %HELPER% to bring %HIM% a book.",
-          "%HELPER% hands %FIRST% a book.", Skill.writing);
+      return PatientState(
+        "%FIRSTLAST% asks %HELPER% to bring %HIM% a book.",
+        "%HELPER% hands %FIRST% a book.",
+        Skill.writing,
+      );
     case PatientStateKey.asksForChannelChange:
-      return PatientState("%FIRSTLAST% asks %HELPER% to change the TV channel.",
-          "%HELPER% changes the channel.", Skill.computers);
+      return PatientState(
+        "%FIRSTLAST% asks %HELPER% to change the TV channel.",
+        "%HELPER% changes the channel.",
+        Skill.computers,
+      );
     case PatientStateKey.asksForRadio:
-      return PatientState("%FIRSTLAST% asks %HELPER% to turn the radio on.",
-          "%HELPER% turns on the radio.", Skill.music);
+      return PatientState(
+        "%FIRSTLAST% asks %HELPER% to turn the radio on.",
+        "%HELPER% turns on the radio.",
+        Skill.music,
+      );
   }
 }
 
 Future<void> specialNursingHomePatient({bool done = false}) async {
   // Who is here?
   int oldSeed = nextRngSeed;
-  nextRngSeed = (100 + locx) +
+  nextRngSeed =
+      (100 + locx) +
       (100 + locy) * 7 +
       (100 + locz) * 103 * sites.indexOf(activeSite ?? sites[0]);
   Gender gender = oneIn(2) ? Gender.male : Gender.female;
@@ -1235,8 +1324,9 @@ Future<void> specialNursingHomePatient({bool done = false}) async {
 
   // What state are they in?
   PatientState patientState = _getPatientState(personality);
-  Creature helper =
-      squad.sortedBy<num>((a) => a.skill(patientState.skill)).first;
+  Creature helper = squad
+      .sortedBy<num>((a) => a.skill(patientState.skill))
+      .first;
   bool success = helper.skillCheck(patientState.skill, patientState.difficulty);
   int juice = patientState.juice;
   int experience = 2;
@@ -1249,8 +1339,9 @@ Future<void> specialNursingHomePatient({bool done = false}) async {
   if (siteAlarm) {
     // Alarm prevents aiding residents
     await encounterMessage(
-        "$formal looks at the squad in fear and shouts for help.",
-        line2: "$squadName leaves ${gender.himHer} alone.");
+      "$formal looks at the squad in fear and shouts for help.",
+      line2: "$squadName leaves ${gender.himHer} alone.",
+    );
   } else {
     // Resolve the attempt to aid the resident
     String resultMessage;
@@ -1274,8 +1365,10 @@ Future<void> specialNursingHomePatient({bool done = false}) async {
         .replaceAll("%HELPER%", helper.name);
 
     // Show the result
-    await encounterMessage(fillMessage(patientState.description),
-        line2: fillMessage(resultMessage));
+    await encounterMessage(
+      fillMessage(patientState.description),
+      line2: fillMessage(resultMessage),
+    );
 
     currentTile.special = TileSpecial.nursingHomePatientDone;
   }
@@ -1286,8 +1379,9 @@ Future<void> specialNursingHomeManager() async {
   setColor(white);
   move(9, 1);
   currentTile.special = TileSpecial.none;
-  Creature admin =
-      uniqueCreatures.currentSiteCreature(CreatureTypeIds.nursingHomeAdmin);
+  Creature admin = uniqueCreatures.currentSiteCreature(
+    CreatureTypeIds.nursingHomeAdmin,
+  );
   if (admin.alive && admin.location == activeSite) {
     addstr("The administrator is present.");
 
@@ -1306,11 +1400,15 @@ Future<void> specialNursingHomeManager() async {
       encounter.add(admin);
       printEncounter();
       if (activeSite!.hasHighSecurity) {
-        await encounterMessage("${admin.name} cries, ",
-            line2: "\"It's them!  They're back!  SECURITY, HELP ME!!!\"");
+        await encounterMessage(
+          "${admin.name} cries, ",
+          line2: "\"It's them!  They're back!  SECURITY, HELP ME!!!\"",
+        );
       } else {
-        await encounterMessage("${admin.name} cries, ",
-            line2: "\"It's them!  They're back!  NURSES, HELP ME!!!\"");
+        await encounterMessage(
+          "${admin.name} cries, ",
+          line2: "\"It's them!  They're back!  NURSES, HELP ME!!!\"",
+        );
       }
       siteAlarm = true;
 
@@ -1327,15 +1425,18 @@ Future<void> specialNursingHomeManager() async {
 }
 
 Future<void> specialInsuranceSafe() async {
-  bool crack =
-      await sitemodePrompt("You've found a safe.", "Crack it? (Yes or No)");
+  bool crack = await sitemodePrompt(
+    "You've found a safe.",
+    "Crack it? (Yes or No)",
+  );
   if (!crack) return;
 
   UnlockResult result = await unlock(UnlockTypes.safe);
 
   if (result == UnlockResult.unlocked) {
     await encounterMessage(
-        "The squad has found documents detailing the insurance company's malfeasance.");
+      "The squad has found documents detailing the insurance company's malfeasance.",
+    );
     _loot(Loot(LootTypeIds.insuranceFraudEvidence));
 
     juiceparty(50, 1000);
@@ -1416,27 +1517,32 @@ Future<void> specialInsuranceClaimsTerminal() async {
       claimDescriptionShort = "buggy";
   }
 
-  bool approve = await sitemodePrompt("Claim: $claimDescription.",
-      "Denied: $denialReason. Override and approve? (Yes or No)");
+  bool approve = await sitemodePrompt(
+    "Claim: $claimDescription.",
+    "Denied: $denialReason. Override and approve? (Yes or No)",
+  );
   if (!approve) return;
 
   // Best hacker in the squad works the terminal.
-  Creature hacker =
-      squad.sortedBy<num>((a) => a.skillRoll(Skill.computers)).last;
+  Creature hacker = squad
+      .sortedBy<num>((a) => a.skillRoll(Skill.computers))
+      .last;
   bool success = hacker.skillCheck(Skill.computers, Difficulty.average);
   hacker.train(Skill.computers, 20);
 
   if (success) {
     await encounterMessage(
-        "${hacker.name} approves the $claimDescriptionShort claim.",
-        color: lightGreen);
+      "${hacker.name} approves the $claimDescriptionShort claim.",
+      color: lightGreen,
+    );
     juiceparty(5, 200);
     changePublicOpinion(View.healthcare, 1, coloredByLcsOpinions: true);
     changePublicOpinion(View.lcsLiked, 1);
   } else {
     await encounterMessage(
-        "Error: User not authorized. Please contact the administrator.",
-        color: red);
+      "Error: User not authorized. Please contact the administrator.",
+      color: red,
+    );
   }
 
   levelMap[locx][locy][locz].special = TileSpecial.none;
@@ -1448,8 +1554,9 @@ Future<void> specialInsuranceCEO() async {
   move(9, 1);
   currentTile.special = TileSpecial.none;
 
-  Creature ceo =
-      uniqueCreatures.currentSiteCreature(CreatureTypeIds.insuranceCEO);
+  Creature ceo = uniqueCreatures.currentSiteCreature(
+    CreatureTypeIds.insuranceCEO,
+  );
   if (ceo.alive && ceo.location == activeSite) {
     addstr("The Insurance CEO is in his office.");
 
@@ -1463,8 +1570,10 @@ Future<void> specialInsuranceCEO() async {
       encounter.add(Creature.fromId(CreatureTypeIds.merc));
       encounter.add(ceo);
       printEncounter();
-      await encounterMessage("${ceo.name} cries, ",
-          line2: "\"It's them!  They're back for me again!  Help!!!\"");
+      await encounterMessage(
+        "${ceo.name} cries, ",
+        line2: "\"It's them!  They're back for me again!  Help!!!\"",
+      );
       siteAlarm = true;
 
       await enemyattack(encounter);
@@ -1480,8 +1589,10 @@ Future<void> specialInsuranceCEO() async {
 }
 
 Future<void> specialArmory() async {
-  bool smash =
-      await sitemodePrompt("You've found the armory.", "Break in? (Yes or No)");
+  bool smash = await sitemodePrompt(
+    "You've found the armory.",
+    "Break in? (Yes or No)",
+  );
   if (!smash) return;
 
   siteAlarm = true;
@@ -1556,8 +1667,10 @@ Future<void> specialArmory() async {
 }
 
 Future<void> specialCorporateSafe() async {
-  bool crack =
-      await sitemodePrompt("You've found a safe.", "Crack it? (Yes or No)");
+  bool crack = await sitemodePrompt(
+    "You've found a safe.",
+    "Crack it? (Yes or No)",
+  );
   if (!crack) return;
 
   UnlockResult result = await unlock(UnlockTypes.safe);
@@ -1585,11 +1698,14 @@ Future<void> specialRadioBroadcastStudio() async {
   bool broadcast;
   if (siteAlarm) {
     broadcast = await sitemodePrompt(
-        "The studio is empty, but the equipment is still on.",
-        "Start a broadcast? (Yes or No)");
+      "The studio is empty, but the equipment is still on.",
+      "Start a broadcast? (Yes or No)",
+    );
   } else {
-    broadcast = await sitemodePrompt("You've found a radio broadcasting room.",
-        "Interrupt this evening's programming? (Yes or No)");
+    broadcast = await sitemodePrompt(
+      "You've found a radio broadcasting room.",
+      "Interrupt this evening's programming? (Yes or No)",
+    );
   }
   if (!broadcast) return;
 
@@ -1604,12 +1720,14 @@ Future<void> specialCableBroadcastStudio() async {
   bool broadcast;
   if (siteAlarm) {
     broadcast = await sitemodePrompt(
-        "The studio is empty, but the equipment is still on.",
-        "Start a broadcast? (Yes or No)");
+      "The studio is empty, but the equipment is still on.",
+      "Start a broadcast? (Yes or No)",
+    );
   } else {
     broadcast = await sitemodePrompt(
-        "You've found a Cable News broadcasting studio.",
-        "Interrupt this evening's programming? (Yes or No)");
+      "You've found a Cable News broadcasting studio.",
+      "Interrupt this evening's programming? (Yes or No)",
+    );
   }
   if (!broadcast) return;
 
@@ -1653,9 +1771,12 @@ Future<void> specialDisplayCase() async {
       ];
   }
   String featuring = items.randomSeeded(
-      locx + locy * 7 + locz + sites.indexOf(activeSite ?? sites[0]));
+    locx + locy * 7 + locz + sites.indexOf(activeSite ?? sites[0]),
+  );
   bool smash = await sitemodePrompt(
-      "You see a display case containing $featuring.", "Smash it? (Yes or No)");
+    "You see a display case containing $featuring.",
+    "Smash it? (Yes or No)",
+  );
   if (!smash) return;
 
   await _vandalizeTile();
@@ -1790,85 +1911,105 @@ Future<void> specialSecurity(bool metaldetect) async {
       if (autoAdmit) {
         addstr("\"Jesus!! Put some clothes on!\"");
       } else {
-        addstr([
-          "\"Get out of here you nudist!!\"",
-          "\"Back off, creep!\"",
-          "\"Jesus!! Put some clothes on!\"",
-          "\"Are you sleepwalking?!\"",
-        ].random);
+        addstr(
+          [
+            "\"Get out of here you nudist!!\"",
+            "\"Back off, creep!\"",
+            "\"Jesus!! Put some clothes on!\"",
+            "\"Are you sleepwalking?!\"",
+          ].random,
+        );
       }
     case REJECTED_UNDERAGE:
-      addstr([
-        "\"Can't come through here, youngster.\"",
-        "\"Hey kid. You got a reason to be here?\"",
-        "\"No loitering, kid.\"",
-        "\"Your parents work here or something?\"",
-      ].random);
+      addstr(
+        [
+          "\"Can't come through here, youngster.\"",
+          "\"Hey kid. You got a reason to be here?\"",
+          "\"No loitering, kid.\"",
+          "\"Your parents work here or something?\"",
+        ].random,
+      );
     case REJECTED_DRESSCODE:
       addstr("\"Employees only.\"");
     case REJECTED_SMELLFUNNY:
-      addstr([
-        "\"You don't work here, do you?\"",
-        "\"Hmm... can I see your badge?\"",
-        "\"There's just something off about you.\"",
-        "\"You must be new. You'll need your badge.\"",
-      ].random);
+      addstr(
+        [
+          "\"You don't work here, do you?\"",
+          "\"Hmm... can I see your badge?\"",
+          "\"There's just something off about you.\"",
+          "\"You must be new. You'll need your badge.\"",
+        ].random,
+      );
     case REJECTED_BLOODYCLOTHES:
-      addstr([
-        "\"Good God! What is wrong with your clothes?\"",
-        "\"Are you hurt?! The aid station is the other way!\"",
-        "\"Your clothes, that's blood!\"",
-        "\"Blood?! That's more than a little suspicious...\"",
-        "\"Did you just butcher a cat?!\"",
-        "\"Blood everywhere...?\"",
-      ].random);
+      addstr(
+        [
+          "\"Good God! What is wrong with your clothes?\"",
+          "\"Are you hurt?! The aid station is the other way!\"",
+          "\"Your clothes, that's blood!\"",
+          "\"Blood?! That's more than a little suspicious...\"",
+          "\"Did you just butcher a cat?!\"",
+          "\"Blood everywhere...?\"",
+        ].random,
+      );
     case REJECTED_DAMAGEDCLOTHES:
-      addstr([
-        "\"Good God! What is wrong with your clothes?\"",
-        "\"Are you okay? Why are your clothes ripped?\"",
-      ].random);
+      addstr(
+        [
+          "\"Good God! What is wrong with your clothes?\"",
+          "\"Are you okay? Why are your clothes ripped?\"",
+        ].random,
+      );
     case REJECTED_SECONDRATECLOTHES:
-      addstr([
-        "\"Did you make that outfit yourself?\"",
-        "\"Is that a halloween costume? Who are you?\"",
-      ].random);
+      addstr(
+        [
+          "\"Did you make that outfit yourself?\"",
+          "\"Is that a halloween costume? Who are you?\"",
+        ].random,
+      );
     case REJECTED_WEAPONS:
       if (metaldetect) {
         addstr("-BEEEP- -BEEEP- -BEEEP-");
         if (politics.laws[Law.gunControl] == DeepAlignment.archConservative) {
           await getKey();
           clearMessageArea();
-          mvaddstrc(9, 1, white,
-              "The guard sounds incredibly bored and doesn't even glance at the squad.");
           mvaddstrc(
-              10,
-              1,
-              lightGreen,
-              [
-                "\"Anyone carrying a gun is welcome. Head on in.\"",
-                "\"Don't mind it, not sure why we even turn it on.\"",
-                "\"Ignore the noise. Keep your gun, just don't shoot nobody.\"",
-                "\"Don't mind Metal Mabel here, she's just here to impress Liberals.\"",
-                "\"It's a free country. Don't know why we even have this thing.\"",
-                "\"Constitution says you can carry guns anywhere you want.\"",
-                "\"You've a right to bear arms here or anywhere else.\"",
-              ].random);
+            9,
+            1,
+            white,
+            "The guard sounds incredibly bored and doesn't even glance at the squad.",
+          );
+          mvaddstrc(
+            10,
+            1,
+            lightGreen,
+            [
+              "\"Anyone carrying a gun is welcome. Head on in.\"",
+              "\"Don't mind it, not sure why we even turn it on.\"",
+              "\"Ignore the noise. Keep your gun, just don't shoot nobody.\"",
+              "\"Don't mind Metal Mabel here, she's just here to impress Liberals.\"",
+              "\"It's a free country. Don't know why we even have this thing.\"",
+              "\"Constitution says you can carry guns anywhere you want.\"",
+              "\"You've a right to bear arms here or anywhere else.\"",
+            ].random,
+          );
           rejectReason = NOT_REJECTED;
           metaldetect = false;
           scanSquad();
           switch (rejectReason) {
             case REJECTED_NUDE:
               await encounterMessage(
-                  "Better keep moving before the guard notices you're naked...");
+                "Better keep moving before the guard notices you're naked...",
+              );
             case REJECTED_WEAPONS:
               await encounterMessage(
-                  "Better keep moving before the guard notices what you're carrying...");
+                "Better keep moving before the guard notices what you're carrying...",
+              );
             case REJECTED_DAMAGEDCLOTHES:
             case REJECTED_BLOODYCLOTHES:
             case REJECTED_DRESSCODE:
             case REJECTED_SECONDRATECLOTHES:
               await encounterMessage(
-                  "Better keep moving before the guard notices what you're wearing...");
+                "Better keep moving before the guard notices what you're wearing...",
+              );
             case REJECTED_SMELLFUNNY:
             case REJECTED_TRANS:
             case REJECTED_FEMALE:
@@ -1881,21 +2022,25 @@ Future<void> specialSecurity(bool metaldetect) async {
           siteAlarm = true;
         }
       } else {
-        addstr([
-          "\"Put that away!\"",
-          "\"Hey, back off!\"",
-          "\"Don't try anything!\"",
-          "\"Are you here to make trouble?\"",
-          "\"Stay back!\"",
-        ].random);
+        addstr(
+          [
+            "\"Put that away!\"",
+            "\"Hey, back off!\"",
+            "\"Don't try anything!\"",
+            "\"Are you here to make trouble?\"",
+            "\"Stay back!\"",
+          ].random,
+        );
       }
     case NOT_REJECTED:
-      addstr([
-        "\"Move along.\"",
-        "\"Have a nice day.\"",
-        "\"Quiet day, today.\"",
-        "\"Go on in.\"",
-      ].random);
+      addstr(
+        [
+          "\"Move along.\"",
+          "\"Have a nice day.\"",
+          "\"Quiet day, today.\"",
+          "\"Go on in.\"",
+        ].random,
+      );
   }
 
   await getKey();
@@ -1928,17 +2073,23 @@ void specialSecuritySecondvisit() {
 }
 
 Future<void> specialBankVault() async {
-  await encounterMessage("The vault door has three layers: A combo lock, ",
-      line2: "an electronic lock, and a biometric lock.");
-  await encounterMessage("The squad will need a security expert, a computer ",
-      line2: "expert, and one of the bank managers.");
+  await encounterMessage(
+    "The vault door has three layers: A combo lock, ",
+    line2: "an electronic lock, and a biometric lock.",
+  );
+  await encounterMessage(
+    "The squad will need a security expert, a computer ",
+    line2: "expert, and one of the bank managers.",
+  );
 
   for (Creature p in pool) {
     if (p.type.id == CreatureTypeIds.bankManager &&
         p.sleeperAgent &&
         p.base == activeSite) {
-      await encounterMessage("Sleeper ${p.name} can handle the biometrics, ",
-          line2: "but you'll still have to crack the other locks.");
+      await encounterMessage(
+        "Sleeper ${p.name} can handle the biometrics, ",
+        line2: "but you'll still have to crack the other locks.",
+      );
       break;
     }
   }
@@ -1946,20 +2097,26 @@ Future<void> specialBankVault() async {
   bool open = await sitemodePromptOneLine("Open the bank vault? (Yes or No)");
   if (!open) return;
 
-  await encounterMessage("First is the combo lock that will have to ",
-      line2: "be cracked by a security expert.");
+  await encounterMessage(
+    "First is the combo lock that will have to ",
+    line2: "be cracked by a security expert.",
+  );
 
   UnlockResult result = await unlock(UnlockTypes.vault);
   if (result != UnlockResult.unlocked) {
-    await encounterMessage("The squad can only dream of the money ",
-        line2: "on the other side of this door...");
+    await encounterMessage(
+      "The squad can only dream of the money ",
+      line2: "on the other side of this door...",
+    );
     levelMap[locx][locy][locz].special = TileSpecial.none;
     await noticeCheck(difficulty: Difficulty.challenging);
     return;
   }
 
-  await encounterMessage("Next is the electronic lock that will have to ",
-      line2: "be bypassed by a computer expert.");
+  await encounterMessage(
+    "Next is the electronic lock that will have to ",
+    line2: "be bypassed by a computer expert.",
+  );
 
   result = await hack(HackTypes.vault);
   if (result != UnlockResult.unlocked) {
@@ -1969,8 +2126,10 @@ Future<void> specialBankVault() async {
     return;
   }
 
-  await encounterMessage("Last is the biometric lock keyed only ",
-      line2: "to the bank's managers.");
+  await encounterMessage(
+    "Last is the biometric lock keyed only ",
+    line2: "to the bank's managers.",
+  );
 
   Creature? manager;
   bool canbreakin = false;
@@ -1997,8 +2156,10 @@ Future<void> specialBankVault() async {
       if (p.base == activeSite &&
           p.sleeperAgent &&
           p.type.id == CreatureTypeIds.bankManager) {
-        await encounterMessage("Sleeper ${p.name} opens the vault, ",
-            line2: "and will join the active LCS to avoid arrest.");
+        await encounterMessage(
+          "Sleeper ${p.name} opens the vault, ",
+          line2: "and will join the active LCS to avoid arrest.",
+        );
         canbreakin = true;
         p.location = p.base = squad[0].base;
         p.sleeperAgent = false;
@@ -2043,8 +2204,10 @@ Future<void> specialBankTeller() async {
 int _specialBankMoneySWATCounter = 0;
 Future<void> specialBankMoney() async {
   levelMap[locx][locy][locz].special = TileSpecial.none;
-  await encounterMessage("The squad loads bricks of cash into a duffel bag.",
-      color: lightGreen);
+  await encounterMessage(
+    "The squad loads bricks of cash into a duffel bag.",
+    color: lightGreen,
+  );
 
   _loot(Money(20000));
   siteCrime += 20;
@@ -2124,11 +2287,15 @@ Future<void> specialOvalOffice() async {
       encounter.add(Creature.fromId(CreatureTypeIds.secretService));
       printEncounter();
       if (squad.first.genderAssignedAtBirth == Gender.male) {
-        await encounterMessage("${uniqueCreatures.president.name} smirks,",
-            line2: "\"You got brass fucking balls, I'll give you that.\"");
+        await encounterMessage(
+          "${uniqueCreatures.president.name} smirks,",
+          line2: "\"You got brass fucking balls, I'll give you that.\"",
+        );
       } else {
-        await encounterMessage("${uniqueCreatures.president.name} smirks,",
-            line2: "\"You're a brave fucking girl, I'll give you that.\"");
+        await encounterMessage(
+          "${uniqueCreatures.president.name} smirks,",
+          line2: "\"You're a brave fucking girl, I'll give you that.\"",
+        );
       }
       siteAlarm = true;
 
@@ -2190,10 +2357,12 @@ Future<void> lootGroundBase() async {
 
   if (activeSite!.loot.isEmpty) {
     await encounterMessage(
-        "That's the last of the safehouse inventory. Time to go.");
+      "That's the last of the safehouse inventory. Time to go.",
+    );
   } else if (numLooted > 1) {
     await encounterMessage(
-        "The squad picks up $numLooted items from the safehouse.");
+      "The squad picks up $numLooted items from the safehouse.",
+    );
   } else if (numLooted == 1) {
     await encounterMessage("The squad picks up an item from the safehouse.");
   }
@@ -2229,7 +2398,7 @@ Item? lootItemForSite(SiteType site) {
           "WEAPON_SYRINGE",
           "WEAPON_CHAIN",
           "WEAPON_GUITAR",
-          "WEAPON_SPRAYCAN"
+          "WEAPON_SPRAYCAN",
         ];
         newWeaponType = rndWeps.random;
       } else if (oneIn(20)) {
@@ -2240,7 +2409,7 @@ Item? lootItemForSite(SiteType site) {
           "CLOTHING_TRENCHCOAT",
           "CLOTHING_WORKCLOTHES",
           "CLOTHING_TOGA",
-          "CLOTHING_PRISONER"
+          "CLOTHING_PRISONER",
         ];
         newArmorType = rndArmors.random;
       } else if (oneIn(3)) {
@@ -2406,11 +2575,7 @@ Item? lootItemForSite(SiteType site) {
       }
     case SiteType.armyBase:
       if (oneIn(3)) {
-        List<String> rndWeps = [
-          "WEAPON_9MM_HANDGUN",
-          "WEAPON_M4",
-          "WEAPON_M7",
-        ];
+        List<String> rndWeps = ["WEAPON_9MM_HANDGUN", "WEAPON_M4", "WEAPON_M7"];
         newWeaponType = rndWeps.random;
       } else if (oneIn(2)) {
         List<String> rndArmors = ["CLOTHING_ARMYARMOR"];
@@ -2476,20 +2641,16 @@ Item? lootItemForSite(SiteType site) {
         ];
         newArmorType = rndArmors.random;
       }
-      if (oneIn(8)) {
-        newLootType = LootTypeIds.trinket;
-      } else if (oneIn(7)) {
+      if (oneIn(6)) {
         newLootType = LootTypeIds.watch;
-      } else if (oneIn(6)) {
-        newLootType = LootTypeIds.pda;
       } else if (oneIn(5)) {
-        newLootType = LootTypeIds.cellphone;
+        newLootType = LootTypeIds.pda;
       } else if (oneIn(4)) {
-        newLootType = LootTypeIds.silverware;
+        newLootType = LootTypeIds.cellphone;
       } else if (oneIn(3)) {
-        newLootType = LootTypeIds.cheapJewelry;
+        newLootType = LootTypeIds.silverware;
       } else if (oneIn(2)) {
-        newLootType = LootTypeIds.familyPhoto;
+        newLootType = LootTypeIds.expensiveJewelry;
       } else {
         newLootType = LootTypeIds.computer;
       }
@@ -2516,6 +2677,30 @@ Item? lootItemForSite(SiteType site) {
         newLootType = LootTypeIds.cellphone;
       } else {
         newLootType = LootTypeIds.computer;
+      }
+    case SiteType.insuranceOffice:
+      if (oneIn(50)) {
+        newLootType = LootTypeIds.insuranceFraudEvidence;
+      } else if (oneIn(3)) {
+        newLootType = LootTypeIds.cellphone;
+      } else if (oneIn(2)) {
+        newLootType = LootTypeIds.pda;
+      } else {
+        newLootType = LootTypeIds.computer;
+      }
+    case SiteType.nursingHome:
+      if (oneIn(50)) {
+        newLootType = LootTypeIds.elderAbuseEvidence;
+      } else if (oneIn(5)) {
+        newLootType = LootTypeIds.watch;
+      } else if (oneIn(4)) {
+        newLootType = LootTypeIds.cellphone;
+      } else if (oneIn(3)) {
+        newLootType = LootTypeIds.trinket;
+      } else if (oneIn(2)) {
+        newLootType = LootTypeIds.silverware;
+      } else {
+        newLootType = LootTypeIds.familyPhoto;
       }
     case SiteType.barAndGrill:
     case SiteType.bunker:

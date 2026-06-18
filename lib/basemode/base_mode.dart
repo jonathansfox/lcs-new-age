@@ -23,6 +23,8 @@ import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/gamestate/squad.dart';
 import 'package:lcs_new_age/gamestate/time.dart';
+import 'package:lcs_new_age/items/flag.dart';
+import 'package:lcs_new_age/items/flag_type.dart';
 import 'package:lcs_new_age/location/location_type.dart';
 import 'package:lcs_new_age/location/siege.dart';
 import 'package:lcs_new_age/location/site.dart';
@@ -133,8 +135,9 @@ Future<bool> baseMode() async {
             await Future.delayed(const Duration(milliseconds: 100));
           }
         } else if (loc?.siege.underAttack != true) {
-          activeSafehouse =
-              pool.firstWhere((p) => p.site?.siege.underAttack == true).site;
+          activeSafehouse = pool
+              .firstWhere((p) => p.site?.siege.underAttack == true)
+              .site;
           activeSquad = null;
         }
       case Key.i:
@@ -199,7 +202,7 @@ void baseModeSquadSafehouseDisplay(Site? loc) {
   if (loc == null) return;
 
   if (loc.hasFlag) {
-    printFlag();
+    printFlag(loc.flyingFlag);
   }
 }
 
@@ -282,13 +285,21 @@ void printLocation(Site loc) {
     if (eaters > 0) {
       if (days >= 1) {
         mvaddstrc(
-            6, 50, lightGray, "$days day${days > 1 ? "s" : ""} of Food Left.");
+          6,
+          50,
+          lightGray,
+          "$days day${days > 1 ? "s" : ""} of Food Left.",
+        );
       } else if (days == 0) {
         mvaddstrc(6, 50, red, "Not Enough Food");
       }
     }
-    mvaddstrc(6, 1, lightGray,
-        "${loc.compound.rations} Daily Ration${loc.compound.rations > 1 ? "s" : ""}");
+    mvaddstrc(
+      6,
+      1,
+      lightGray,
+      "${loc.compound.rations} Daily Ration${loc.compound.rations > 1 ? "s" : ""}",
+    );
     mvaddstr(6, 30, "$eaters Eating");
   }
 }
@@ -328,10 +339,20 @@ void baseModeOptionsDisplay(Site? loc) {
   mvaddstrc(18, 10, lightGray, "=== ACTIVISM ===");
   mvaddstr(18, 51, "=== PLANNING ===");
   addOptionText(19, 40, "e", "E - Equip Squad", enabledWhen: squadSize > 0);
-  addOptionText(19, 60, "v", "V - Vehicles",
-      enabledWhen: vehiclePool.isNotEmpty && squadSize > 0);
-  addOptionText(20, 40, "r", "R - Review Assets and Form Squads",
-      enabledWhen: pool.isNotEmpty);
+  addOptionText(
+    19,
+    60,
+    "v",
+    "V - Vehicles",
+    enabledWhen: vehiclePool.isNotEmpty && squadSize > 0,
+  );
+  addOptionText(
+    20,
+    40,
+    "r",
+    "R - Review Assets and Form Squads",
+    enabledWhen: pool.isNotEmpty,
+  );
   //eraseLine(8);
   Site? aSafehouse = activeSafehouse;
   if (sieged && site != null) {
@@ -356,38 +377,80 @@ void baseModeOptionsDisplay(Site? loc) {
     // that will be disbanded during the siege anyway
     mvaddstrc(8, 1, lightGray, activeSquad?.name ?? "");
   }
-  addOptionText(8, 45, "n", "N - Next Squad",
-      enabledWhen:
-          squads.length > 1 || (activeSquad == null && squads.isNotEmpty));
-  addOptionText(8, 62, "z", "Z - Next Location",
-      enabledWhen: safehouseCount > 0);
+  addOptionText(
+    8,
+    45,
+    "n",
+    "N - Next Squad",
+    enabledWhen:
+        squads.length > 1 || (activeSquad == null && squads.isNotEmpty),
+  );
+  addOptionText(
+    8,
+    62,
+    "z",
+    "Z - Next Location",
+    enabledWhen: safehouseCount > 0,
+  );
   addOptionText(21, 40, "l", "L - The Status of the Liberal Agenda");
-  addOptionText(21, 1, "a", "A - Assign Tasks",
-      enabledWhen: pool.any((p) =>
+  addOptionText(
+    21,
+    1,
+    "a",
+    "A - Assign Tasks",
+    enabledWhen: pool.any(
+      (p) =>
           p.isActiveLiberal &&
-          (p.squad == null || p.squad?.activity.type == ActivityType.none)));
-  addOptionText(21, 20, "b", "B - Sleeper Agents",
-      enabledWhen: pool.any((p) => p.sleeperAgent));
-  addOptionText(20, 1, "c", "C - Cancel Departure",
-      enabledWhen:
-          squadSize > 0 && activeSquad?.activity.type != ActivityType.none);
+          (p.squad == null || p.squad?.activity.type == ActivityType.none),
+    ),
+  );
+  addOptionText(
+    21,
+    20,
+    "b",
+    "B - Sleeper Agents",
+    enabledWhen: pool.any((p) => p.sleeperAgent),
+  );
+  addOptionText(
+    20,
+    1,
+    "c",
+    "C - Cancel Departure",
+    enabledWhen:
+        squadSize > 0 && activeSquad?.activity.type != ActivityType.none,
+  );
 
   if (sieged) {
-    addOptionText(19, 1, "f", "F - Fight/Escape",
-        enabledWhen: squadSize > 0 ||
-            pool.any((p) => p.site?.siege.underAttack ?? false));
+    addOptionText(
+      19,
+      1,
+      "f",
+      "F - Fight/Escape",
+      enabledWhen:
+          squadSize > 0 || pool.any((p) => p.site?.siege.underAttack ?? false),
+    );
     addOptionText(19, 23, "g", "G - Give Up");
   } else {
-    addOptionText(19, 1, "f", "F - Go Forth to Stop Evil",
-        enabledWhen: squadSize > 0);
+    addOptionText(
+      19,
+      1,
+      "f",
+      "F - Go Forth to Stop Evil",
+      enabledWhen: squadSize > 0,
+    );
   }
 
   if (cannotWait) {
     if (sieged) {
       mvaddstrc(23, 1, red, "Cannot Wait until Siege Resolved");
     } else {
-      addOptionText(23, 1, "w", "W - Select Siege Location",
-          baseColorKey: ColorKey.red);
+      addOptionText(
+        23,
+        1,
+        "w",
+        "W - Select Siege Location",
+        baseColorKey: ColorKey.red,
+      );
     }
   } else {
     if (sieged) {
@@ -404,20 +467,18 @@ void baseModeOptionsDisplay(Site? loc) {
   int unreadNewsCount = gameState.newsArchive.where((ns) => ns.unread).length;
   if (unreadNewsCount > 0) {
     addOptionText(
-        22, 40, "m", "M - Media Overview & Impact &C($unreadNewsCount)");
+      22,
+      40,
+      "m",
+      "M - Media Overview & Impact &C($unreadNewsCount)",
+    );
   } else {
     addOptionText(22, 40, "m", "M - Media Overview & Impact");
   }
   addOptionText(23, 40, "x", "X - Exit to the Title Screen");
 
-  if (loc?.hasFlag ?? false) {
-    addOptionText(22, 1, "p", "P - Protest: Burn the flag",
-        baseColorKey: sieged ? "G" : "w");
-  } else {
-    addOptionText(22, 1, "p", "P - Pride: Fly a flag here (\$20)",
-        enabledWhen: (activeSafehouse != null || activeSquad != null) &&
-            ledger.funds >= 20 &&
-            !sieged);
+  if (loc != null) {
+    addFlagButton(22, 1, loc);
   }
 
   setColor(lightGray);
@@ -427,6 +488,62 @@ void baseModeOptionsDisplay(Site? loc) {
   if (loc != null) {
     printSafehouseSecurityBox(loc);
   }
+}
+
+void addFlagButton(int y, int x, Site loc) {
+  String label;
+  bool enabled;
+  bool highlight;
+  bool sieged = loc.siege.underSiege;
+  bool policeSiege = sieged && loc.siege.activeSiegeType == SiegeType.police;
+  bool ownsAnyFlag = loc.loot.any((i) => i is Flag);
+  if (policeSiege && loc.hasFlag) {
+    FlagType flag = loc.flyingFlag!;
+    if (flag.burns) {
+      if (!loc.siege.flagBurnUsed) {
+        label = "P - Protest: Burn the flag";
+        enabled = true;
+        highlight = true;
+      } else {
+        label = "P - Pride: Switch flags";
+        enabled = ownsAnyFlag;
+        highlight = false;
+      }
+    } else {
+      // Waving can be repeated, but only the first wave has any impact
+      enabled = true;
+      if (!loc.siege.flagWaveUsed) {
+        label = "P - Protest: Wave the flag defiantly";
+        highlight = true;
+      } else {
+        label = "P - Protest: Wave the flag again";
+        highlight = false;
+      }
+    }
+  } else if (sieged) {
+    label = loc.hasFlag ? "P - Pride: Switch flags" : "P - Pride: Raise a flag";
+    enabled = ownsAnyFlag;
+    highlight = false;
+  } else {
+    bool canSwitch = ownsAnyFlag || ledger.funds >= 20;
+    String price = ownsAnyFlag ? "" : "(\$20)";
+    enabled = canSwitch;
+    highlight = false;
+    if (loc.hasFlag) {
+      label = "P - Pride: Switch flags $price";
+    } else {
+      label = "P - Pride: Fly a flag here $price";
+    }
+  }
+
+  addOptionText(
+    y,
+    x,
+    "p",
+    label,
+    baseColorKey: highlight ? "G" : "w",
+    enabledWhen: enabled,
+  );
 }
 
 void printSafehouseSecurityBox(Site site) {

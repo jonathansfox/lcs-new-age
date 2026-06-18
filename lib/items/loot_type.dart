@@ -17,7 +17,7 @@ class LootTypeIds {
   static const String familyPhoto = "LOOT_FAMILYPHOTO";
   static const String fineCloth = "LOOT_FINECLOTH";
   static const String recycledCloth = "LOOT_RECYCLEDCLOTH";
-  static const String expensiveJewelry = "LOOT_EXPENSIVEJEWELERY";
+  static const String expensiveJewelry = "LOOT_EXPENSIVEJEWELRY";
   static const String trinket = "LOOT_TRINKET";
   static const String labEquipment = "LOOT_LABEQUIPMENT";
   static const String computer = "LOOT_COMPUTER";

@@ -99,11 +99,21 @@ const int pictureFashionLine = 11;
 const int pictureTshirtWithPleaForHelp = 12;
 
 void displayMajorEventStory(
-    NewsStory ns, List<int> storyXStart, List<int> storyXEnd) {
-  MajorEventContent content =
-      generateMajorEventContent(ns.view!, ns.liberalSpin, ns);
-  displayCenteredNewsFont(content.headline, 5, ns,
-      useBigFont: content.useBigFont);
+  NewsStory ns,
+  List<int> storyXStart,
+  List<int> storyXEnd,
+) {
+  MajorEventContent content = generateMajorEventContent(
+    ns.view!,
+    ns.liberalSpin,
+    ns,
+  );
+  displayCenteredNewsFont(
+    content.headline,
+    5,
+    ns,
+    useBigFont: content.useBigFont,
+  );
   setColor(black, background: ns.publication.backgroundColor);
 
   if (content.pictureId != null) {
@@ -118,16 +128,24 @@ void displayMajorEventStory(
       displayCenteredNewsFont(content.subheadline!, 11, ns);
       startLine = 17;
     }
-    displayNewsStory(content.storyText! + generateFiller(200), storyXStart,
-        storyXEnd, startLine, ns);
+    displayNewsStory(
+      content.storyText! + generateFiller(200),
+      storyXStart,
+      storyXEnd,
+      startLine,
+      ns,
+    );
   }
 }
 
 MajorEventContent generateMajorEventContent(
-    View view, bool liberalSpin, NewsStory ns) {
+  View view,
+  bool liberalSpin,
+  NewsStory ns,
+) {
   bool zeroCensorship =
       laws[Law.freeSpeech] == DeepAlignment.archConservative ||
-          ns.publicationAlignment == DeepAlignment.eliteLiberal;
+      ns.publicationAlignment == DeepAlignment.eliteLiberal;
   bool maxCensorship = noProfanity && !zeroCensorship;
 
   if (liberalSpin) {
@@ -146,7 +164,8 @@ MajorEventContent generateMajorEventContent(
         }
         return MajorEventContent(
           headline: "CLINIC MURDER",
-          storyText: "${randomCityName()} - A doctor that routinely performed "
+          storyText:
+              "${randomCityName()} - A doctor that routinely performed "
               "$abortions was ruthlessly gunned down outside of the "
               "${lastName()} Clinic yesterday.  Dr. ${doctor.firstLast} "
               "was walking to her car when, according to police reports, shots "
@@ -197,9 +216,10 @@ MajorEventContent generateMajorEventContent(
           "were caught in traffic",
         ].random;
         String despiteTheBan = switch (laws[Law.lgbtRights]) {
-          DeepAlignment.archConservative => maxCensorship
-              ? ", even though transgenderism is deviant, as we all know"
-              : ", despite the fact that $victimFullName was a known transsexual",
+          DeepAlignment.archConservative =>
+            maxCensorship
+                ? ", even though transgenderism is deviant, as we all know"
+                : ", despite the fact that $victimFullName was a known transsexual",
           _ => "",
         };
         String authorities = "Authorities";
@@ -211,7 +231,8 @@ MajorEventContent generateMajorEventContent(
 
         return MajorEventContent(
           headline: "CRIME OF HATE",
-          storyText: "${randomCityName()} - $victimFullName, a "
+          storyText:
+              "${randomCityName()} - $victimFullName, a "
               "$victimLabel, was $murdered here yesterday.  "
               "A police spokesperson reported that "
               "four suspects were apprehended after a high speed chase.  Their "
@@ -232,15 +253,15 @@ MajorEventContent generateMajorEventContent(
         int yearConvicted = year - lcsRandom(11) - 10;
         String byExecutionMethod = switch (laws[Law.deathPenalty]) {
           DeepAlignment.archConservative => [
-              "on the cross",
-              "in a fire ant nest",
-              "in a sewage digester vat",
-              "in the guillotine",
-            ].random,
+            "on the cross",
+            "in a fire ant nest",
+            "in a sewage digester vat",
+            "in the guillotine",
+          ].random,
           DeepAlignment.conservative => [
-              "in the gallows",
-              "in the electric chair",
-            ].random,
+            "in the gallows",
+            "in the electric chair",
+          ].random,
           _ => "by lethal injection",
         };
         String exculpatoryEvidence = [
@@ -256,7 +277,8 @@ MajorEventContent generateMajorEventContent(
 
         return MajorEventContent(
           headline: "JUSTICE DEAD",
-          storyText: "${randomStateName()} - An innocent citizen has been put "
+          storyText:
+              "${randomStateName()} - An innocent citizen has been put "
               "to death $byExecutionMethod.  "
               "$victim was pronounced dead at $timeOfDeath yesterday at the "
               "${lastName()} Correctional Facility.&r"
@@ -283,46 +305,47 @@ MajorEventContent generateMajorEventContent(
         String shooterAge = "${lcsRandom(6) + 6 + schoolType * 4}";
         String beforePolice =
             noProfanity && ns.publicationAlignment != DeepAlignment.eliteLiberal
-                ? "[hurt some people]"
-                : "killed ${2 + lcsRandom(30)} and wounded dozens more";
+            ? "[hurt some people]"
+            : "killed ${2 + lcsRandom(30)} and wounded dozens more";
         String unalived =
             noProfanity && ns.publicationAlignment != DeepAlignment.eliteLiberal
-                ? "[decided to stop]"
-                : "committed suicide";
+            ? "[decided to stop]"
+            : "committed suicide";
         String shootingRampage =
             noProfanity && ns.publicationAlignment != DeepAlignment.eliteLiberal
-                ? "[hurting spree]"
-                : "shooting rampage";
+            ? "[hurting spree]"
+            : "shooting rampage";
         String mowDown =
             noProfanity && ns.publicationAlignment != DeepAlignment.eliteLiberal
-                ? "[scare]"
-                : "mow down";
+            ? "[scare]"
+            : "mow down";
         String sprayingBulletsAt =
             noProfanity && ns.publicationAlignment != DeepAlignment.eliteLiberal
-                ? "[scaring]"
-                : "spraying bullets at";
+            ? "[scaring]"
+            : "spraying bullets at";
         String shot =
             noProfanity && ns.publicationAlignment != DeepAlignment.eliteLiberal
-                ? "[scared]"
-                : "shot";
+            ? "[scared]"
+            : "shot";
         String finallyArrived =
             ns.publicationAlignment == DeepAlignment.eliteLiberal
-                ? "finally arrived after forty minutes of loitering around "
-                    "uselessly outside the school"
-                : "arrived";
+            ? "finally arrived after forty minutes of loitering around "
+                  "uselessly outside the school"
+            : "arrived";
         String policeWereUseless =
             ns.publicationAlignment == DeepAlignment.eliteLiberal
-                ? "  The police did not enter the building at any point while "
-                    "the shooting was ongoing."
-                : "";
+            ? "  The police did not enter the building at any point while "
+                  "the shooting was ongoing."
+            : "";
         String journalFinding =
             ns.publicationAlignment == DeepAlignment.eliteLiberal
-                ? "surprised at how easy it was to get his hands on the guns"
-                : "disturbingly obsessed with guns and death";
+            ? "surprised at how easy it was to get his hands on the guns"
+            : "disturbingly obsessed with guns and death";
 
         return MajorEventContent(
           headline: "MASS SHOOTING",
-          storyText: "${randomCityName()} - A student has gone on a "
+          storyText:
+              "${randomCityName()} - A student has gone on a "
               "$shootingRampage at a local $school.  ${shooter.firstLast}, "
               "$shooterAge, used a variety of "
               "guns to $mowDown more than a dozen "
@@ -344,19 +367,8 @@ MajorEventContent generateMajorEventContent(
         return MajorEventContent(
           headline: "REAGAN FLAWED",
           pictureId: pictureReaganBook,
-          subheadline: "${[
-            "Dark",
-            "Shadow",
-            "Abyssal",
-            "Orwellian",
-            "Craggy"
-          ].random} ${[
-            "Actor",
-            "Lord",
-            "Emperor",
-            "Puppet",
-            "Dementia"
-          ].random}: A new book further documenting the other side of Reagan.",
+          subheadline:
+              "${["Dark", "Shadow", "Abyssal", "Orwellian", "Craggy"].random} ${["Actor", "Lord", "Emperor", "Puppet", "Dementia"].random}: A new book further documenting the other side of Reagan.",
         );
       case View.nuclearPower:
         return const MajorEventContent(
@@ -373,15 +385,17 @@ MajorEventContent generateMajorEventContent(
         );
       case View.prisons:
         FullName author = generateFullName();
-        String book = "${[
-          "Nightmare", "Primal", "American", "Solitary", "The Pain",
-          "Orange", //
-        ].random} ${[
-          "Punk", "Kid", "Cell", "Shank", "Lockdown", "Inside", //
-        ].random}";
+        String book =
+            "${[
+              "Nightmare", "Primal", "American", "Solitary", "The Pain",
+              "Orange", //
+            ].random} ${[
+              "Punk", "Kid", "Cell", "Shank", "Lockdown", "Inside", //
+            ].random}";
         return MajorEventContent(
           headline: "ON THE INSIDE",
-          storyText: "${randomCityName()}"
+          storyText:
+              "${randomCityName()}"
               " - A former prisoner has written a book describing in horrifying "
               "detail what goes on behind bars.  "
               "Although popular culture has used, or perhaps overused, the "
@@ -413,7 +427,8 @@ MajorEventContent generateMajorEventContent(
 
         return MajorEventContent(
           headline: "THE FBI FILES",
-          storyText: "Washington, DC - The FBI might be keeping tabs on you.  "
+          storyText:
+              "Washington, DC - The FBI might be keeping tabs on you.  "
               "This newspaper yesterday received a collection of files from "
               "a source in the Federal Bureau of Investigations.  The files "
               "contain information on which people have been attending "
@@ -431,14 +446,15 @@ MajorEventContent generateMajorEventContent(
         );
       case View.freeSpeech:
         String protagonist = firstName();
-        String bookTitle = "$protagonist "
+        String bookTitle =
+            "$protagonist "
             "and the ${[
-          "Mysterious", "Magical", "Golden", "Invisible", //
-          "Wondrous", "Amazing", "Secret",
-        ].random} ${[
-          "School", "Castle", "Forest", "Wizard", //
-          "Thing", "Object", "Friend",
-        ].random}";
+              "Mysterious", "Magical", "Golden", "Invisible", //
+              "Wondrous", "Amazing", "Secret",
+            ].random} ${[
+              "School", "Castle", "Forest", "Wizard", //
+              "Thing", "Object", "Friend",
+            ].random}";
         FullName author = generateFullName();
         String authorName =
             "${author.first} ${author.middle.substring(0, 1)}. ${author.last}";
@@ -452,7 +468,7 @@ MajorEventContent generateMajorEventContent(
           "teaches children to kill their parents and hate life",
           "causes violence in schools and is a gateway to cocaine use",
           "breeds demonic thoughts that manifest themselves as dreams of murder",
-          "contains step-by-step instructions to summon the Prince of Darkness"
+          "contains step-by-step instructions to summon the Prince of Darkness",
         ].random;
         String childMisbehavior = [
           "swore in class",
@@ -466,7 +482,7 @@ MajorEventContent generateMajorEventContent(
         ].random;
         String sadChildQuote = [
           "Mamma, is $protagonist dead?",
-          "Mamma, why did they kill $protagonist?"
+          "Mamma, why did they kill $protagonist?",
         ].random;
 
         return MajorEventContent(
@@ -517,7 +533,8 @@ MajorEventContent generateMajorEventContent(
 
         return MajorEventContent(
           headline: "IN CONTEMPT",
-          storyText: "${randomCityName()} - Conservative federal judge "
+          storyText:
+              "${randomCityName()} - Conservative federal judge "
               "${judge.firstLast} has resigned in disgrace after being caught with a "
               "$prostituteLabel.&r"
               "  ${judge.last}, who once $judgeDid, was found with ${prostitute.firstLast} "
@@ -552,18 +569,8 @@ MajorEventContent generateMajorEventContent(
           subheadline: "Investors out billions as $companyName collapses.",
         );
       case View.ceoSalary:
-        String str = "This major CEO ${[
-          "wants you to worship him like a god",
-          "only works one day a week",
-          "donated millions to the KKK",
-          "hasn't paid taxes in over 20 years",
-          "took out a contract on his wife",
-          "doesn't know what his company does",
-          "hunts endangered species for fun",
-          "imprisoned and tortured an intern",
-          "installed hidden cameras in an office bathroom",
-          "owns slaves in three countries",
-        ].random}.";
+        String str =
+            "This major CEO ${["wants you to worship him like a god", "only works one day a week", "donated millions to the KKK", "hasn't paid taxes in over 20 years", "took out a contract on his wife", "doesn't know what his company does", "hunts endangered species for fun", "imprisoned and tortured an intern", "installed hidden cameras in an office bathroom", "owns slaves in three countries"].random}.";
         return MajorEventContent(
           headline: "AMERICAN CEO",
           pictureId: pictureCEO,
@@ -572,11 +579,12 @@ MajorEventContent generateMajorEventContent(
         );
       case View.amRadio:
         FullName radioHost = generateFullName(Gender.whiteMalePatriarch);
-        String showName = "${[
-          "Straight", "Real", "True", //
-        ].random} ${[
-          "Talk", "Chat", "Discussion", //
-        ].random}";
+        String showName =
+            "${[
+              "Straight", "Real", "True", //
+            ].random} ${[
+              "Talk", "Chat", "Discussion", //
+            ].random}";
         String wildQuote = [
           "and the Grays are going to take over the planet in the End Times",
           "summoning a liberal chupacabra to suck our blood from us like a goat",
@@ -607,7 +615,8 @@ MajorEventContent generateMajorEventContent(
 
         return MajorEventContent(
           headline: "AM IMPLOSION",
-          storyText: "${randomCityName()} - Well-known AM radio personality "
+          storyText:
+              "${randomCityName()} - Well-known AM radio personality "
               "${radioHost.firstLast} went off for fifteen minutes in an "
               "inexplicable rant two nights ago during the syndicated radio "
               "program \"$showName\".&r"
@@ -634,7 +643,7 @@ MajorEventContent generateMajorEventContent(
           "Haiti",
           "Dominican Republic",
           "Colombia",
-          "Venezuela"
+          "Venezuela",
         ];
         FullName immigrant = generateFullName();
         String immigrantCountry = countries.random;
@@ -661,29 +670,31 @@ MajorEventContent generateMajorEventContent(
         ].random;
 
         return MajorEventContent(
-            headline: "BROKEN DREAMS",
-            storyText: "${randomCityName()} - Masked ICE agents seized "
-                "dozens of people off the street in what terrified residents "
-                "described as a series of kidnappings yesterday.  The "
-                "targets were immediately forced onto a plane and sent to a "
-                "prison in $differentCountry, where most of them have never "
-                "been and are being held without trial or any legal "
-                "representation.&r"
-                "  An ICE spokesperson said that everyone arrested was \"The "
-                "worst of the worst.\"  As an example, they cited "
-                "${immigrant.firstLast}, a $immigrantJob from "
-                "$immigrantCountry, and showed photos of ${immigrant.gender.hisHer} "
-                "tattoo of $harmlessTattoo as proof of gang affiliation.  "
-                "Despite these claims, most of those deported, including "
-                "${immigrant.last}, have no known criminal record.&r"
-                "  \"This should never have happened,\" said "
-                "Mayor ${lastName()}.  \"These people are valued members of our "
-                "community who came to this country to work hard and provide "
-                "for their families.  They don't deserve to be treated this "
-                "way and I wasn't elected to let our communities by terrorized "
-                "by a gang of roving kidnappers.\"&r"
-                "  The mayor has directed local police to immediately stop "
-                "cooperating with ICE.&r");
+          headline: "BROKEN DREAMS",
+          storyText:
+              "${randomCityName()} - Masked ICE agents seized "
+              "dozens of people off the street in what terrified residents "
+              "described as a series of kidnappings yesterday.  The "
+              "targets were immediately forced onto a plane and sent to a "
+              "prison in $differentCountry, where most of them have never "
+              "been and are being held without trial or any legal "
+              "representation.&r"
+              "  An ICE spokesperson said that everyone arrested was \"The "
+              "worst of the worst.\"  As an example, they cited "
+              "${immigrant.firstLast}, a $immigrantJob from "
+              "$immigrantCountry, and showed photos of ${immigrant.gender.hisHer} "
+              "tattoo of $harmlessTattoo as proof of gang affiliation.  "
+              "Despite these claims, most of those deported, including "
+              "${immigrant.last}, have no known criminal record.&r"
+              "  \"This should never have happened,\" said "
+              "Mayor ${lastName()}.  \"These people are valued members of our "
+              "community who came to this country to work hard and provide "
+              "for their families.  They don't deserve to be treated this "
+              "way and I wasn't elected to let our communities by terrorized "
+              "by a gang of roving kidnappers.\"&r"
+              "  The mayor has directed local police to immediately stop "
+              "cooperating with ICE.&r",
+        );
       case View.civilRights:
         String companyName = generateCompanyName();
         FullName incitingIncidentEmployee = generateFullName();
@@ -696,36 +707,32 @@ MajorEventContent generateMajorEventContent(
               "was deemed to be \"not the kind of person we want around here.\"",
         ].random;
         return MajorEventContent(
-            headline: "BOYCOTT WINS",
-            storyText:
-                "${randomCityName()} - $companyName has announced a major "
-                "overhaul of its policies after a recent boycott campaign.  "
-                "Civil rights groups had been protesting the company's "
-                "lobbying efforts in support of discriminatory policies, "
-                "and called out a number of specific examples of "
-                "discrimination, but the boycott was sparked when "
-                "${incitingIncidentEmployee.firstLast} "
-                "$incitingIncident  The boycott quickly spread "
-                "through social media, causing sales to plummet and stock "
-                "prices to crash.&r"
-                "  In a statement released yesterday, $companyName apologized "
-                "for its past actions and said that it would be \"taking a long, "
-                "hard look at its policies\" and would be \"implementing a "
-                "series of changes to ensure that $companyName is a more "
-                "inclusive and welcoming place for all employees, customers, "
-                "and suppliers, including and especially black employees "
-                "that have been the subject of unequal treatment in the "
-                "past.\"&r"
-                "  $companyName has also promised to donate \$10,000,000 "
-                "to various civil rights groups, and to settle a lawsuit that "
-                "had been filed against it by ${incitingIncidentEmployee.firstLast}.&r");
+          headline: "BOYCOTT WINS",
+          storyText:
+              "${randomCityName()} - $companyName has announced a major "
+              "overhaul of its policies after a recent boycott campaign.  "
+              "Civil rights groups had been protesting the company's "
+              "lobbying efforts in support of discriminatory policies, "
+              "and called out a number of specific examples of "
+              "discrimination, but the boycott was sparked when "
+              "${incitingIncidentEmployee.firstLast} "
+              "$incitingIncident  The boycott quickly spread "
+              "through social media, causing sales to plummet and stock "
+              "prices to crash.&r"
+              "  In a statement released yesterday, $companyName apologized "
+              "for its past actions and said that it would be \"taking a long, "
+              "hard look at its policies\" and would be \"implementing a "
+              "series of changes to ensure that $companyName is a more "
+              "inclusive and welcoming place for all employees, customers, "
+              "and suppliers, including and especially black employees "
+              "that have been the subject of unequal treatment in the "
+              "past.\"&r"
+              "  $companyName has also promised to donate \$10,000,000 "
+              "to various civil rights groups, and to settle a lawsuit that "
+              "had been filed against it by ${incitingIncidentEmployee.firstLast}.&r",
+        );
       case View.drugs:
-        String drug = [
-          "marijuana",
-          "psilocybin",
-          "MDMA",
-          "LSD",
-        ].random;
+        String drug = ["marijuana", "psilocybin", "MDMA", "LSD"].random;
         String benefit = [
           "improved ability to process trauma and grief",
           "increased empathy",
@@ -770,28 +777,28 @@ MajorEventContent generateMajorEventContent(
         ].random;
         String legalizing = switch (politics.laws[Law.drugs]!) {
           DeepAlignment.archConservative ||
-          DeepAlignment.conservative =>
-            "decriminalizing",
+          DeepAlignment.conservative => "decriminalizing",
           DeepAlignment.moderate || DeepAlignment.liberal => "legalizing",
           DeepAlignment.eliteLiberal => "subsidizing",
         };
 
         return MajorEventContent(
-            headline: "DRUG STUDY",
-            storyText:
-                "${randomCityName()} - A new study has found that $legalizing "
-                "$drug could be the key to solving our economic woes.  "
-                "Researchers at ${lastName()} University discovered that "
-                "regular $drug use leads to $benefit, with some participants "
-                "even reporting that they $someEvenHadThisOutcome.&r"
-                "  \"The tax revenue alone could be used for "
-                "$thingYouCanDoWithTaxes,\" said Dr. ${lastName()}, lead "
-                "researcher on the study.  \"Plus, think of all the money we'd "
-                "save on law enforcement and prisons.  It's a win-win "
-                "situation.\"&r"
-                "  Local drug enthusiast ${enthusiast.firstLast} agrees.  "
-                "\"$enthusiastQuote\" ${enthusiast.last} said, while "
-                "$enthusiastActivity.&r");
+          headline: "DRUG STUDY",
+          storyText:
+              "${randomCityName()} - A new study has found that $legalizing "
+              "$drug could be the key to solving our economic woes.  "
+              "Researchers at ${lastName()} University discovered that "
+              "regular $drug use leads to $benefit, with some participants "
+              "even reporting that they $someEvenHadThisOutcome.&r"
+              "  \"The tax revenue alone could be used for "
+              "$thingYouCanDoWithTaxes,\" said Dr. ${lastName()}, lead "
+              "researcher on the study.  \"Plus, think of all the money we'd "
+              "save on law enforcement and prisons.  It's a win-win "
+              "situation.\"&r"
+              "  Local drug enthusiast ${enthusiast.firstLast} agrees.  "
+              "\"$enthusiastQuote\" ${enthusiast.last} said, while "
+              "$enthusiastActivity.&r",
+        );
       case View.military:
         CountryName country = generateCountryName();
         String countryLong = country.name;
@@ -825,19 +832,20 @@ MajorEventContent generateMajorEventContent(
         ].random;
 
         return MajorEventContent(
-            headline: "END THE WAR",
-            storyText:
-                "$city, $countryShort - More than 100,000 locals marched through "
-                "the capital demanding that the United States end its military "
-                "intervention into the $countryLong.&r"
-                "  \"Go home, Americans!\" one speaker demanded.  \"You have "
-                "been nothing but trouble here!  You think you are "
-                "$supposedMission, but all you are doing is $actualMission!  "
-                "Please, just go!\"&r"
-                "  While the intervention into $countryShort has been "
-                "controversial since the beginning, public opinion in the "
-                "country has sharply turned against the United States ever "
-                "since American forces $incident.&r");
+          headline: "END THE WAR",
+          storyText:
+              "$city, $countryShort - More than 100,000 locals marched through "
+              "the capital demanding that the United States end its military "
+              "intervention into the $countryLong.&r"
+              "  \"Go home, Americans!\" one speaker demanded.  \"You have "
+              "been nothing but trouble here!  You think you are "
+              "$supposedMission, but all you are doing is $actualMission!  "
+              "Please, just go!\"&r"
+              "  While the intervention into $countryShort has been "
+              "controversial since the beginning, public opinion in the "
+              "country has sharply turned against the United States ever "
+              "since American forces $incident.&r",
+        );
 
       case View.policeBehavior:
         switch (lcsRandom(5)) {
@@ -848,7 +856,8 @@ MajorEventContent generateMajorEventContent(
             FullName officer2 = generateFullName(Gender.whiteMalePatriarch);
             return MajorEventContent(
               headline: "COP KILLS COP",
-              storyText: "${randomCityName()} - Undercover police officer "
+              storyText:
+                  "${randomCityName()} - Undercover police officer "
                   "${officer1.firstLast} has shot and killed an off-duty "
                   "officer, ${officer2.firstLast}, in a case of apparent road "
                   "rage.  ${officer1.last} told reporters that ${officer2.last} "
@@ -870,7 +879,8 @@ MajorEventContent generateMajorEventContent(
             FullName officer2 = generateFullName(Gender.whiteMalePatriarch);
             return MajorEventContent(
               headline: "COPS ROB BANK",
-              storyText: "${randomCityName()} - Two police officers, "
+              storyText:
+                  "${randomCityName()} - Two police officers, "
                   "${officer1.firstLast} and ${officer2.firstLast}, are "
                   "suspected of robbing the First American Bank and making off "
                   "with more than \$500,000.  The officers were caught on "
@@ -900,7 +910,8 @@ MajorEventContent generateMajorEventContent(
             ].random;
             return MajorEventContent(
               headline: "COP BEATING",
-              storyText: "${randomCityName()} - Police officer "
+              storyText:
+                  "${randomCityName()} - Police officer "
                   "${officer.firstLast} is under investigation for beating "
                   "a suspect, ${suspect.firstLast}, until $condition.  The "
                   "suspect was handcuffed and in police custody when the "
@@ -920,7 +931,8 @@ MajorEventContent generateMajorEventContent(
             FullName suspect = generateFullName();
             return MajorEventContent(
               headline: "DIRTY COP",
-              storyText: "${randomCityName()} - Police officer "
+              storyText:
+                  "${randomCityName()} - Police officer "
                   "${officer.firstLast} is under investigation for stealing "
                   "\$35,000 worth of drugs from the evidence room.  The drugs "
                   "were stashed in ${officer.gender.hisHer} personal vehicle, "
@@ -948,7 +960,8 @@ MajorEventContent generateMajorEventContent(
             FullName suspect = generateFullName();
             return MajorEventContent(
               headline: "COPS LIED",
-              storyText: "${randomCityName()} - Police officers "
+              storyText:
+                  "${randomCityName()} - Police officers "
                   "${officer.firstLast} and ${officer2.firstLast} are under "
                   "investigation for shooting ${suspect.firstLast} and then "
                   "providing false testimony that resulted in the victim being "
@@ -978,21 +991,22 @@ MajorEventContent generateMajorEventContent(
           case 0:
             // Domestic black site raid
             return MajorEventContent(
-                headline: "BLACK SITE",
-                storyText:
-                    "${randomCityName()} - Police raided a warehouse where dozens "
-                    "of missing Americans were found chained to the walls in small "
-                    "cells, most of them starved, tortured, and subjected to other "
-                    "forms of abuse.  The warehouse was located in a remote area "
-                    "of the county and was reportedly guarded by a mysterious "
-                    "security force that abandoned the building shortly before "
-                    "the police arrived.&r"
-                    "  All of the prisoners were released and taken to a local "
-                    "hospital for treatment.  Several of the victims have been "
-                    "identified as former political activists, including some "
-                    "who went missing years ago.&r"
-                    "  The federal government has denied any knowledge or "
-                    "involvement in the situation.&r");
+              headline: "BLACK SITE",
+              storyText:
+                  "${randomCityName()} - Police raided a warehouse where dozens "
+                  "of missing Americans were found chained to the walls in small "
+                  "cells, most of them starved, tortured, and subjected to other "
+                  "forms of abuse.  The warehouse was located in a remote area "
+                  "of the county and was reportedly guarded by a mysterious "
+                  "security force that abandoned the building shortly before "
+                  "the police arrived.&r"
+                  "  All of the prisoners were released and taken to a local "
+                  "hospital for treatment.  Several of the victims have been "
+                  "identified as former political activists, including some "
+                  "who went missing years ago.&r"
+                  "  The federal government has denied any knowledge or "
+                  "involvement in the situation.&r",
+            );
           case 1:
             // Domestic law enforcement torture produces dozens of false
             // confessions
@@ -1000,31 +1014,32 @@ MajorEventContent generateMajorEventContent(
             FullName suspect = generateFullName();
             FullName supposedVictim = generateFullName();
             return MajorEventContent(
-                headline: "PAIN AND LIES",
-                storyText:
-                    "$city - Local authorities have come under intense scrutiny after "
-                    "a suspect, ${suspect.firstLast} confessed to a staggering "
-                    "list of crimes under police torture, only for the "
-                    "alleged murder victim, ${supposedVictim.firstLast}, to "
-                    "turn up alive.  A media investigation by a local "
-                    "newspaper revealed similar forced confessions, and in "
-                    "the subsequent scandal, several other suspects had their "
-                    "convictions overturned on appeal despite supposedly "
-                    "confessing to the crimes they were accused of.&r"
-                    "  Despite growing public outrage, the police department "
-                    "has completely denied wrongdoing.  \"We stand by the "
-                    "conviction of ${suspect.firstLast} in this case,\" a "
-                    "spokesperson said.  \"If ${suspect.gender.heShe} came "
-                    "out of 'The Confession Factory', as we like to call it, "
-                    "saying ${suspect.gender.heShe} killed "
-                    "${supposedVictim.last}, then that's what happened.  "
-                    "Why would anyone admit to a crime they didn't do?  That's "
-                    "stupid and you should all be embarrassed.  This fake "
-                    "news about ${supposedVictim.last} being alive is the "
-                    "real false confession.  The only issue here is public "
-                    "perception.\"&r"
-                    "  Despite claiming no wrongdoing, the police have placed "
-                    "the officers involved on paid leave.&r");
+              headline: "PAIN AND LIES",
+              storyText:
+                  "$city - Local authorities have come under intense scrutiny after "
+                  "a suspect, ${suspect.firstLast} confessed to a staggering "
+                  "list of crimes under police torture, only for the "
+                  "alleged murder victim, ${supposedVictim.firstLast}, to "
+                  "turn up alive.  A media investigation by a local "
+                  "newspaper revealed similar forced confessions, and in "
+                  "the subsequent scandal, several other suspects had their "
+                  "convictions overturned on appeal despite supposedly "
+                  "confessing to the crimes they were accused of.&r"
+                  "  Despite growing public outrage, the police department "
+                  "has completely denied wrongdoing.  \"We stand by the "
+                  "conviction of ${suspect.firstLast} in this case,\" a "
+                  "spokesperson said.  \"If ${suspect.gender.heShe} came "
+                  "out of 'The Confession Factory', as we like to call it, "
+                  "saying ${suspect.gender.heShe} killed "
+                  "${supposedVictim.last}, then that's what happened.  "
+                  "Why would anyone admit to a crime they didn't do?  That's "
+                  "stupid and you should all be embarrassed.  This fake "
+                  "news about ${supposedVictim.last} being alive is the "
+                  "real false confession.  The only issue here is public "
+                  "perception.\"&r"
+                  "  Despite claiming no wrongdoing, the police have placed "
+                  "the officers involved on paid leave.&r",
+            );
           default:
             // Overseas black site leak reveals torture
             FullName whistleblower = generateFullName();
@@ -1038,20 +1053,22 @@ MajorEventContent generateMajorEventContent(
             String allProtestSigns =
                 "\"${protestSigns.randomPop()}\", \"${protestSigns.randomPop()}\", and \"${protestSigns.randomPop()}\"";
             return MajorEventContent(
-                headline: "TORTURED",
-                storyText: "Washington, D.C. - Photos leaked from an "
-                    "overseas facility operated by the CIA reveals the brutal "
-                    "conditions that prisoners are subjected to.  The photos, "
-                    "which were revealed by whistleblower "
-                    "${whistleblower.firstLast}, show prisoners "
-                    "being tortured and abused by US agents.  The photos have "
-                    "caused an international outcry and prompted calls for the "
-                    "United Nations to investigate the United States' torture "
-                    "practices.&r"
-                    "  Response within the United States has been notably muted "
-                    "relative to the international outrage about the incident, "
-                    "with only a few small protests featuring tired-looking "
-                    "leftists carrying signs like $allProtestSigns.&r");
+              headline: "TORTURED",
+              storyText:
+                  "Washington, D.C. - Photos leaked from an "
+                  "overseas facility operated by the CIA reveals the brutal "
+                  "conditions that prisoners are subjected to.  The photos, "
+                  "which were revealed by whistleblower "
+                  "${whistleblower.firstLast}, show prisoners "
+                  "being tortured and abused by US agents.  The photos have "
+                  "caused an international outcry and prompted calls for the "
+                  "United Nations to investigate the United States' torture "
+                  "practices.&r"
+                  "  Response within the United States has been notably muted "
+                  "relative to the international outrage about the incident, "
+                  "with only a few small protests featuring tired-looking "
+                  "leftists carrying signs like $allProtestSigns.&r",
+            );
         }
 
       case View.healthcare:
@@ -1063,32 +1080,29 @@ MajorEventContent generateMajorEventContent(
             "${adjective.random} ${noun.random} Insurance";
         String insuranceCompanyHoldingGroup = generateCompanyName();
         return MajorEventContent(
-            headline: "DYING DENIAL",
-            storyText:
-                "$city - ${patient.firstLast} remembers when $insuranceCompany (a "
-                "subsidiary of $insuranceCompanyHoldingGroup) first "
-                "answered ${patient.gender.hisHer} call. The voice on the line was "
-                "polite, but it had the unmistakable sound of a computer voice. And "
-                "no matter how much he tried to get a human on the line, or to convince "
-                "the computer that he was dying, he couldn't get through.&r"
-                "  It took $insuranceCompany three months to answer ${patient.last}'s "
-                "request for pre-approval for a life-saving procedure. And when they "
-                "finally did, ${patient.last}'s treatment was denied as an "
-                "elective procedure.&r"
-                "  \"I've never felt so helpless in my life,\" ${patient.last} said. "
-                "\"The procedure I needed was going to cost \$100,000, and I always "
-                "thought the point of insurance was in case things like this happened. "
-                "But they refused to pay for it, even though I was dying.\"&r");
+          headline: "DYING DENIAL",
+          storyText:
+              "$city - ${patient.firstLast} remembers when $insuranceCompany (a "
+              "subsidiary of $insuranceCompanyHoldingGroup) first "
+              "answered ${patient.gender.hisHer} call. The voice on the line was "
+              "polite, but it had the unmistakable sound of a computer voice. And "
+              "no matter how much he tried to get a human on the line, or to convince "
+              "the computer that he was dying, he couldn't get through.&r"
+              "  It took $insuranceCompany three months to answer ${patient.last}'s "
+              "request for pre-approval for a life-saving procedure. And when they "
+              "finally did, ${patient.last}'s treatment was denied as an "
+              "elective procedure.&r"
+              "  \"I've never felt so helpless in my life,\" ${patient.last} said. "
+              "\"The procedure I needed was going to cost \$100,000, and I always "
+              "thought the point of insurance was in case things like this happened. "
+              "But they refused to pay for it, even though I was dying.\"&r",
+        );
       case View.retirement:
         String city = randomCityName();
         String company = generateCompanyName();
         FullName ceo = generateFullName(Gender.whiteMalePatriarch);
         FullName retiree = generateFullName();
-        String pensionCutAmount = [
-          "by 50%",
-          "by 75%",
-          "entirely",
-        ].random;
+        String pensionCutAmount = ["by 50%", "by 75%", "entirely"].random;
         return MajorEventContent(
           headline: "PENSIONS GONE",
           storyText:
@@ -1115,19 +1129,21 @@ MajorEventContent generateMajorEventContent(
       case View.housing:
         String city = randomCityName();
         return MajorEventContent(
-            headline: "PRICED OUT",
-            storyText: "$city - A state of emergency has been declared by the "
-                "local government as the number of people living on the streets "
-                "has reached record levels amidst skyrocketing rent prices.&r"
-                "  \"This isn't just about the camps,\" Mayor ${lastName()} "
-                "said. \"This is about more and more people not being able to "
-                "make ends meet, even when they're working. Many of the "
-                "unhoused are still working, even with their lives overturned. "
-                "We need to take decisive action to bring down the cost of "
-                "housing in our city, or it's only going to get worse.\"&r"
-                "  In the last year, rents in the city have risen more than 20%, "
-                "significantly faster than the growth in wages, leading to a "
-                "growing number of people being priced out of their homes.");
+          headline: "PRICED OUT",
+          storyText:
+              "$city - A state of emergency has been declared by the "
+              "local government as the number of people living on the streets "
+              "has reached record levels amidst skyrocketing rent prices.&r"
+              "  \"This isn't just about the camps,\" Mayor ${lastName()} "
+              "said. \"This is about more and more people not being able to "
+              "make ends meet, even when they're working. Many of the "
+              "unhoused are still working, even with their lives overturned. "
+              "We need to take decisive action to bring down the cost of "
+              "housing in our city, or it's only going to get worse.\"&r"
+              "  In the last year, rents in the city have risen more than 20%, "
+              "significantly faster than the growth in wages, leading to a "
+              "growing number of people being priced out of their homes.",
+        );
       default:
         return MajorEventContent(
           headline: "BUGGY GAME",
@@ -1154,29 +1170,31 @@ MajorEventContent generateMajorEventContent(
             FullName activist = generateFullName(Gender.whiteMalePatriarch);
 
             return MajorEventContent(
-                headline: "TOILET CRISIS",
-                storyText:
-                    "$cityName - The government of $cityName $cityReaction "
-                    "after a $transgenderWoman used the "
-                    "restroom at a local restaurant.  Reports indicate that the "
-                    "$woman \"needed to pee\" and \"felt like she had to go.\"&r"
-                    "  \"Not again,\" vented the restaurant's owner, "
-                    "${owner.firstLast}.  \"I don't know where trans people get "
-                    "off thinking they're allowed to use the toilet.  We need to "
-                    "draw a line in the sand by arresting trans people "
-                    "if they go in the toilet matching their identity and "
-                    "beating them up if they go in the toilet matching their "
-                    "birth.\"&r"
-                    "  \"He's right, you know,\" added "
-                    "${activist.firstLast}, a local anti-trans activist. \"We "
-                    "can't keep letting this happen.  It's well past time to "
-                    "stand up for traditional values and protect our children "
-                    "from these radical lunatics and their extremist potty "
-                    "agenda.\"&r");
+              headline: "TOILET CRISIS",
+              storyText:
+                  "$cityName - The government of $cityName $cityReaction "
+                  "after a $transgenderWoman used the "
+                  "restroom at a local restaurant.  Reports indicate that the "
+                  "$woman \"needed to pee\" and \"felt like she had to go.\"&r"
+                  "  \"Not again,\" vented the restaurant's owner, "
+                  "${owner.firstLast}.  \"I don't know where trans people get "
+                  "off thinking they're allowed to use the toilet.  We need to "
+                  "draw a line in the sand by arresting trans people "
+                  "if they go in the toilet matching their identity and "
+                  "beating them up if they go in the toilet matching their "
+                  "birth.\"&r"
+                  "  \"He's right, you know,\" added "
+                  "${activist.firstLast}, a local anti-trans activist. \"We "
+                  "can't keep letting this happen.  It's well past time to "
+                  "stand up for traditional values and protect our children "
+                  "from these radical lunatics and their extremist potty "
+                  "agenda.\"&r",
+            );
           case 1:
             return MajorEventContent(
               headline: "GAY BOOKS",
-              storyText: "${randomCityName()} - A local library has come under "
+              storyText:
+                  "${randomCityName()} - A local library has come under "
                   "fire after it was discovered that the library's "
                   "\"diversity\" program was promoting books that were "
                   "considered to be pornographic and offensive to "
@@ -1198,63 +1216,72 @@ MajorEventContent generateMajorEventContent(
             FullName primaryPartner = generateFullName();
             Gender gender = primaryPartner.gender;
             int inappropriatePartnerIndex = lcsRandom(10);
-            String inappropriatePartner({bool firstPerson = false}) =>
-                switch (inappropriatePartnerIndex) {
-                  0 => firstPerson
-                      ? "my beloved ${firstName(Gender.female)}"
-                      : "${gender.hisHer} goldfish",
-                  1 => firstPerson ? "baby grands" : "a piano",
-                  2 => firstPerson ? "gas cooking" : "a stove",
-                  3 => firstPerson
-                      ? "my ringa-ding-dingle"
-                      : "${gender.hisHer} cellphone",
-                  4 => firstPerson
-                      ? "${firstName()}'s smooth synthetic voice and seductive word choice"
-                      : "an AI chatbot",
-                  5 => firstPerson
-                      ? "albacore"
-                      : "a particularly tasty tuna fish casserole",
-                  6 => firstPerson
-                      ? "the Cavendish cultivar"
-                      : "a bunch of bananas",
-                  7 => firstPerson ? "smear frames" : "a cartoon character",
-                  8 => firstPerson
-                      ? "my beloved ${firstName(Gender.female)}"
-                      : "${gender.hisHer} anime waifu",
-                  9 => firstPerson
-                      ? "big fluffy ears and a tail"
-                      : "${gender.hisHer} fursona",
-                  _ => firstPerson
-                      ? "my bug collection"
-                      : "an especially gross bug collection",
-                };
+            String inappropriatePartner({
+              bool firstPerson = false,
+            }) => switch (inappropriatePartnerIndex) {
+              0 =>
+                firstPerson
+                    ? "my beloved ${firstName(Gender.female)}"
+                    : "${gender.hisHer} goldfish",
+              1 => firstPerson ? "baby grands" : "a piano",
+              2 => firstPerson ? "gas cooking" : "a stove",
+              3 =>
+                firstPerson
+                    ? "my ringa-ding-dingle"
+                    : "${gender.hisHer} cellphone",
+              4 =>
+                firstPerson
+                    ? "${firstName()}'s smooth synthetic voice and seductive word choice"
+                    : "an AI chatbot",
+              5 =>
+                firstPerson
+                    ? "albacore"
+                    : "a particularly tasty tuna fish casserole",
+              6 =>
+                firstPerson ? "the Cavendish cultivar" : "a bunch of bananas",
+              7 => firstPerson ? "smear frames" : "a cartoon character",
+              8 =>
+                firstPerson
+                    ? "my beloved ${firstName(Gender.female)}"
+                    : "${gender.hisHer} anime waifu",
+              9 =>
+                firstPerson
+                    ? "big fluffy ears and a tail"
+                    : "${gender.hisHer} fursona",
+              _ =>
+                firstPerson
+                    ? "my bug collection"
+                    : "an especially gross bug collection",
+            };
             FullName spiritualGuide = generateFullName();
             FullName activist = generateFullName(Gender.whiteMalePatriarch);
             return MajorEventContent(
-                headline: "WHAT THE LOVE",
-                storyText: "${randomCityName()} - A local wedding venue has "
-                    "conducted a so-called \"wedding\" between a "
-                    "${gender.manWoman} and ${inappropriatePartner()}.  The "
-                    "${gender.manWoman}, ${primaryPartner.firstLast}, "
-                    "was escorted down the aisle by ${gender.hisHer} spiritual "
-                    "guru, ${spiritualGuide.firstLast}.&r"
-                    "  \"I'm so happy to be here today,\" said "
-                    "${primaryPartner.firstLast}.  \"I've been waiting for "
-                    "this day for so long.  I'm so glad to be able to "
-                    "share my love of ${inappropriatePartner(firstPerson: true)}.\"&r"
-                    "  Others haven't been so celebratory.  \"When we said "
-                    "the LGBTQ agenda was undermining the sanctity of marriage "
-                    "and the moral fabric of this country, this is exactly what "
-                    "we were talking about,\" said ${activist.firstLast}, a "
-                    "local activist who is clearly not a fan of the LGBTQ "
-                    "agenda.  \"I said it, didn't I? I said we were going to "
-                    "see somebody try to marry ${inappropriatePartner()}.  I "
-                    "literally said exactly that.\"&r"
-                    "  At press time, ${spiritualGuide.last}, ${activist.last}, "
-                    "and ${primaryPartner.last} were all seen making out in the "
-                    "parking lot, leading to some confusion in our press room "
-                    "about what the relationship between these people is "
-                    "and why we're reporting on any of this.&r");
+              headline: "WHAT THE LOVE",
+              storyText:
+                  "${randomCityName()} - A local wedding venue has "
+                  "conducted a so-called \"wedding\" between a "
+                  "${gender.manWoman} and ${inappropriatePartner()}.  The "
+                  "${gender.manWoman}, ${primaryPartner.firstLast}, "
+                  "was escorted down the aisle by ${gender.hisHer} spiritual "
+                  "guru, ${spiritualGuide.firstLast}.&r"
+                  "  \"I'm so happy to be here today,\" said "
+                  "${primaryPartner.firstLast}.  \"I've been waiting for "
+                  "this day for so long.  I'm so glad to be able to "
+                  "share my love of ${inappropriatePartner(firstPerson: true)}.\"&r"
+                  "  Others haven't been so celebratory.  \"When we said "
+                  "the LGBTQ agenda was undermining the sanctity of marriage "
+                  "and the moral fabric of this country, this is exactly what "
+                  "we were talking about,\" said ${activist.firstLast}, a "
+                  "local activist who is clearly not a fan of the LGBTQ "
+                  "agenda.  \"I said it, didn't I? I said we were going to "
+                  "see somebody try to marry ${inappropriatePartner()}.  I "
+                  "literally said exactly that.\"&r"
+                  "  At press time, ${spiritualGuide.last}, ${activist.last}, "
+                  "and ${primaryPartner.last} were all seen making out in the "
+                  "parking lot, leading to some confusion in our press room "
+                  "about what the relationship between these people is "
+                  "and why we're reporting on any of this.&r",
+            );
           default:
             return MajorEventContent(
               headline: "KINKY WINKY",
@@ -1276,7 +1303,7 @@ MajorEventContent generateMajorEventContent(
                   "We're all doomed because the Tinky Winky issue won't die.",
                 9 => "Polls show people could not care less about Tinky Winky.",
                 10 =>
-                  "Is the effeminate Tinky Winky a symbol of the LGBT agenda?",
+                  "Is the effeminate Tinky Winky a symbol of the gay agenda?",
                 11 =>
                   "It's finally time to have a frank conversation about Tinky Winky.",
                 _ => "Teletubbies reruns reignite the Tinky Winky controversy.",
@@ -1302,7 +1329,7 @@ MajorEventContent generateMajorEventContent(
           "to deport everyone who isn't white",
           "to end birthright citizenship",
           "to crack down on sanctuary cities",
-          "stricter immigration laws"
+          "stricter immigration laws",
         ].random;
         String impact = [
           "draining local resources",
@@ -1311,13 +1338,15 @@ MajorEventContent generateMajorEventContent(
           "overwhelming social services",
           "lowering wages",
           "increasing housing costs",
-          "straining public schools"
+          "straining public schools",
         ].random;
-        String congressman = politics.house
-                .any((member) => member == DeepAlignment.archConservative)
+        String congressman =
+            politics.house.any(
+              (member) => member == DeepAlignment.archConservative,
+            )
             ? "Congressman ${lastName(Gender.whiteMalePatriarch)}"
             : "some random local who walked up to our reporter and started "
-                "talking about how they're not a fan of immigration";
+                  "talking about how they're not a fan of immigration";
         String illegalImmigrant = switch (laws[Law.immigration]) {
           DeepAlignment.archConservative => "illegal",
           DeepAlignment.conservative => "illegal alien",
@@ -1327,22 +1356,24 @@ MajorEventContent generateMajorEventContent(
         };
 
         return MajorEventContent(
-            headline: "FINALLY GONE",
-            storyText: "${randomCityName()} - The nationwide manhunt is over "
-                "after authorities finally caught ${criminal.firstLast}, an "
-                "$illegalImmigrant who captured national attention after "
-                "${criminal.gender.heShe} was seen $crime in a viral video.&r"
-                "  \"We got ${criminal.gender.himHer}, but we all know "
-                "this $bastard should never have been here in the "
-                "first place.  Criminals like this are exactly why we need "
-                "$solution,\" said $congressman.  "
-                "\"We can't continue to allow our immigration laws to be "
-                "flouted by these sick monsters while our children "
-                "suffer.\"&r"
-                "  Local residents have expressed growing concern about the "
-                "impact of immigration on their community, with many "
-                "calling for new laws to help keep foreign criminals from "
-                "$impact.&r");
+          headline: "FINALLY GONE",
+          storyText:
+              "${randomCityName()} - The nationwide manhunt is over "
+              "after authorities finally caught ${criminal.firstLast}, an "
+              "$illegalImmigrant who captured national attention after "
+              "${criminal.gender.heShe} was seen $crime in a viral video.&r"
+              "  \"We got ${criminal.gender.himHer}, but we all know "
+              "this $bastard should never have been here in the "
+              "first place.  Criminals like this are exactly why we need "
+              "$solution,\" said $congressman.  "
+              "\"We can't continue to allow our immigration laws to be "
+              "flouted by these sick monsters while our children "
+              "suffer.\"&r"
+              "  Local residents have expressed growing concern about the "
+              "impact of immigration on their community, with many "
+              "calling for new laws to help keep foreign criminals from "
+              "$impact.&r",
+        );
       case View.drugs:
         String drug = [
           "marijuana",
@@ -1382,58 +1413,61 @@ MajorEventContent generateMajorEventContent(
         ].random;
 
         return MajorEventContent(
-            headline: "DRUG PANIC",
-            storyText: "${randomCityName()} - Chaos erupted online after "
-                "self-proclaimed drug expert ${drugExpert.firstLast} "
-                "went viral with a short form video claiming that \"every "
-                "single person who comes within a six-foot radius of "
-                "$drug will $consequence.\"  The "
-                "panic took a bizarre turn when social media influencers "
-                "started dramatically faking their own drug-related deaths "
-                "to prove the point.&r"
-                "  \"I'm not even going to try to "
-                "explain this,\" said social media influencer "
-                "${influencer.firstLast}.  \"But it's funny as $hell.  Also, "
-                "$addendum\"&r"
-                "  Health officials are scrambling to communicate the truth, "
-                "even as a rash of people have begun to claim they've "
-                "overdosed on substances they haven't even used.  Critics "
-                "argue that the rampant misinformation is fueling "
-                "moral panic rather than addressing real addiction issues.  "
-                "\"Lying about drugs isn't going to stop anyone from trying "
-                "them, it's just discrediting our efforts to educate people "
-                "about the dangers of drugs in the eyes of those predisposed "
-                "to experiment,\" warned a spokesperson from the FDA.  "
-                "\"Still, I'm glad people are thinking about the dangers of "
-                "$drug and I'm hopeful some constructive dialogue will come "
-                "out of this.\"&r");
+          headline: "DRUG PANIC",
+          storyText:
+              "${randomCityName()} - Chaos erupted online after "
+              "self-proclaimed drug expert ${drugExpert.firstLast} "
+              "went viral with a short form video claiming that \"every "
+              "single person who comes within a six-foot radius of "
+              "$drug will $consequence.\"  The "
+              "panic took a bizarre turn when social media influencers "
+              "started dramatically faking their own drug-related deaths "
+              "to prove the point.&r"
+              "  \"I'm not even going to try to "
+              "explain this,\" said social media influencer "
+              "${influencer.firstLast}.  \"But it's funny as $hell.  Also, "
+              "$addendum\"&r"
+              "  Health officials are scrambling to communicate the truth, "
+              "even as a rash of people have begun to claim they've "
+              "overdosed on substances they haven't even used.  Critics "
+              "argue that the rampant misinformation is fueling "
+              "moral panic rather than addressing real addiction issues.  "
+              "\"Lying about drugs isn't going to stop anyone from trying "
+              "them, it's just discrediting our efforts to educate people "
+              "about the dangers of drugs in the eyes of those predisposed "
+              "to experiment,\" warned a spokesperson from the FDA.  "
+              "\"Still, I'm glad people are thinking about the dangers of "
+              "$drug and I'm hopeful some constructive dialogue will come "
+              "out of this.\"&r",
+        );
       case View.military:
         // Major new deployment to fight in some foreign country that
         // rallies public opinion for military
         CountryName country = generateCountryName();
         return MajorEventContent(
-            headline: "ARMY ROLLS OUT",
-            storyText:
-                "Washington, D.C. - As the U.S. military prepares to deploy "
-                "to the ${country.name} to defend democracy against the threat "
-                "of terrorism, people around the country are "
-                "rallying behind the troops.&r"
-                "  \"We need to stand up for democracy and beat "
-                "the bad guys,\" said a military spokesperson.  \"Don't "
-                "worry, we learned from the last time we invaded a country, "
-                "and this one's going to be easy.  In and out, no problem.\"&r"
-                "  The military has already started training for the mission, "
-                "and the troops are ready to go.  \"I can't wait to shoot some "
-                "people,\" one particularly enthusiastic soldier said.  "
-                "\"I joined the military to go fight wars, so I'm really "
-                "looking forward to this.\"&r"
-                "  Meanwhile, on the home front, civilians across the country "
-                "are turning out to show their support for the troops.  "
-                "\"You can buy our new ${country.shortName} Invasion "
-                "Value Meal,\" a national fast food chain spokesperson said.  "
-                "\"It's a great way to show your patriotism.\"  At press time, "
-                "hundreds of people were lined up around the block in hopes of "
-                "getting the burger and fries.&r");
+          headline: "ARMY ROLLS OUT",
+          storyText:
+              "Washington, D.C. - As the U.S. military prepares to deploy "
+              "to the ${country.name} to defend democracy against the threat "
+              "of terrorism, people around the country are "
+              "rallying behind the troops.&r"
+              "  \"We need to stand up for democracy and beat "
+              "the bad guys,\" said a military spokesperson.  \"Don't "
+              "worry, we learned from the last time we invaded a country, "
+              "and this one's going to be easy.  In and out, no problem.\"&r"
+              "  The military has already started training for the mission, "
+              "and the troops are ready to go.  \"I can't wait to shoot some "
+              "people,\" one particularly enthusiastic soldier said.  "
+              "\"I joined the military to go fight wars, so I'm really "
+              "looking forward to this.\"&r"
+              "  Meanwhile, on the home front, civilians across the country "
+              "are turning out to show their support for the troops.  "
+              "\"You can buy our new ${country.shortName} Invasion "
+              "Value Meal,\" a national fast food chain spokesperson said.  "
+              "\"It's a great way to show your patriotism.\"  At press time, "
+              "hundreds of people were lined up around the block in hopes of "
+              "getting the burger and fries.&r",
+        );
       case View.civilRights:
         switch (lcsRandom(3)) {
           case 0:
@@ -1446,50 +1480,52 @@ MajorEventContent generateMajorEventContent(
               "who appears in history books as a symbol of white supremacy",
             ].random;
             return MajorEventContent(
-                headline: "STATUE GONE",
-                storyText:
-                    "${randomCityName()} - A local white supremacist group has "
-                    "seen a surge in membership after a local statue of a racist "
-                    "icon was removed from a local park.  The statue depicted "
-                    "${racist.first} ${racist.middle} ${racist.last}, "
-                    "$racistDescription.  The statue was eventually "
-                    "removed from the park after pressure from civil rights "
-                    "groups, leading to outrage from some who view the act as "
-                    "one of cultural genocide.&r"
-                    "  \"Why would we be sorry?  ${racist.firstLast} was an "
-                    "absolutely massive fascist, and "
-                    "we've been trying to get this statue removed for years,\" said "
-                    "a local civil rights leader.  "
-                    "\"Haters gonna hate, but we carried this day.\"&r"
-                    "  Back at the park, the sentiment was different.  \"This is "
-                    "a slap in the face to our heritage,\" one man yelled into a "
-                    "megaphone.  \"We're all good people here, we used to be "
-                    "friends with those people, but then they started asking for "
-                    "unreasonable things.  Removing Mr. ${racist.last} is "
-                    "symbolic of their larger effort to sideline our historic "
-                    "control of the country.  We're not going to let them do it!  "
-                    "White people, stand up!\"&r");
+              headline: "STATUE GONE",
+              storyText:
+                  "${randomCityName()} - A local white supremacist group has "
+                  "seen a surge in membership after a local statue of a racist "
+                  "icon was removed from a local park.  The statue depicted "
+                  "${racist.first} ${racist.middle} ${racist.last}, "
+                  "$racistDescription.  The statue was eventually "
+                  "removed from the park after pressure from civil rights "
+                  "groups, leading to outrage from some who view the act as "
+                  "one of cultural genocide.&r"
+                  "  \"Why would we be sorry?  ${racist.firstLast} was an "
+                  "absolutely massive fascist, and "
+                  "we've been trying to get this statue removed for years,\" said "
+                  "a local civil rights leader.  "
+                  "\"Haters gonna hate, but we carried this day.\"&r"
+                  "  Back at the park, the sentiment was different.  \"This is "
+                  "a slap in the face to our heritage,\" one man yelled into a "
+                  "megaphone.  \"We're all good people here, we used to be "
+                  "friends with those people, but then they started asking for "
+                  "unreasonable things.  Removing Mr. ${racist.last} is "
+                  "symbolic of their larger effort to sideline our historic "
+                  "control of the country.  We're not going to let them do it!  "
+                  "White people, stand up!\"&r",
+            );
           case 1:
             FullName newBoss = generateFullName();
             return MajorEventContent(
-                headline: "WOKE HIRE",
-                storyText:
-                    "${randomCityName()} - A local company has been accused of "
-                    "discrimination after promoting ${newBoss.firstLast}, a "
-                    "black ${newBoss.gender.manWoman}, into a "
-                    "high-level position.  ${newBoss.last}, who had previously "
-                    "been a software engineer at the company for 27 years, "
-                    "has been cited by disgruntled employees as unqualified.&r"
-                    "  \"I got passed over for that lazy ass?\" "
-                    "said one mail room clerk who had never met the new boss "
-                    "and works in a completely different department.  "
-                    "\"I work way harder than ${newBoss.gender.heShe} does, "
-                    "everybody knows that.\"&r"
-                    "  The controversy has led to a wave of complaints against "
-                    "${newBoss.last}.  \"I bet ${newBoss.gender.heShe} doesn't "
-                    "even know how to use the computer,\" one employee said.  "
-                    "\"${newBoss.gender.heSheCap} probably just got promoted "
-                    "to make the company look good.\"&r");
+              headline: "WOKE HIRE",
+              storyText:
+                  "${randomCityName()} - A local company has been accused of "
+                  "discrimination after promoting ${newBoss.firstLast}, a "
+                  "black ${newBoss.gender.manWoman}, into a "
+                  "high-level position.  ${newBoss.last}, who had previously "
+                  "been a software engineer at the company for 27 years, "
+                  "has been cited by disgruntled employees as unqualified.&r"
+                  "  \"I got passed over for that lazy ass?\" "
+                  "said one mail room clerk who had never met the new boss "
+                  "and works in a completely different department.  "
+                  "\"I work way harder than ${newBoss.gender.heShe} does, "
+                  "everybody knows that.\"&r"
+                  "  The controversy has led to a wave of complaints against "
+                  "${newBoss.last}.  \"I bet ${newBoss.gender.heShe} doesn't "
+                  "even know how to use the computer,\" one employee said.  "
+                  "\"${newBoss.gender.heSheCap} probably just got promoted "
+                  "to make the company look good.\"&r",
+            );
           default:
             String civilRightsMarch = "large civil rights march";
             String marchers = "marchers";
@@ -1499,29 +1535,32 @@ MajorEventContent generateMajorEventContent(
             if (ns.publicationAlignment == DeepAlignment.archConservative) {
               civilRightsMarch = "bunch of black people";
               marchers = "black people";
-              conclusion = "finished whatever they were doing without any "
+              conclusion =
+                  "finished whatever they were doing without any "
                   "further incident";
               couldntCareLessAbout = "all the noise they were making";
               protesting = "kicking up all this fuss";
             }
 
             return MajorEventContent(
-                headline: "JAMMED UP",
-                storyText: "${randomCityName()} - A $civilRightsMarch blocked "
-                    "traffic on a major street for fifteen minutes, leading "
-                    "to frustration from drivers.&r"
-                    "  Although the $marchers moved on relatively quickly "
-                    "and $conclusion, many "
-                    "uninterested bystanders who couldn't care less about "
-                    "$couldntCareLessAbout were still annoyed that "
-                    "somebody was making them late.&r"
-                    "  \"I'm not sure why they're $protesting,\" said one "
-                    "driver who was stuck in traffic for fifteen minutes.  "
-                    "\"I wasn't really listening.  How do they have "
-                    "so much free time on their hands anyway?  Maybe they "
-                    "should get off their asses and get a job.  That "
-                    "would probably fix whatever it is they're going on "
-                    "about in the first place.\"&r");
+              headline: "JAMMED UP",
+              storyText:
+                  "${randomCityName()} - A $civilRightsMarch blocked "
+                  "traffic on a major street for fifteen minutes, leading "
+                  "to frustration from drivers.&r"
+                  "  Although the $marchers moved on relatively quickly "
+                  "and $conclusion, many "
+                  "uninterested bystanders who couldn't care less about "
+                  "$couldntCareLessAbout were still annoyed that "
+                  "somebody was making them late.&r"
+                  "  \"I'm not sure why they're $protesting,\" said one "
+                  "driver who was stuck in traffic for fifteen minutes.  "
+                  "\"I wasn't really listening.  How do they have "
+                  "so much free time on their hands anyway?  Maybe they "
+                  "should get off their asses and get a job.  That "
+                  "would probably fix whatever it is they're going on "
+                  "about in the first place.\"&r",
+            );
         }
       case View.torture:
         String methodToMakeItMoreHuman = [
@@ -1542,26 +1581,27 @@ MajorEventContent generateMajorEventContent(
           "invent a new form of energy that would make the world a better place",
         ].random;
         return MajorEventContent(
-            headline: "COMFY TORTURE",
-            storyText:
-                "${randomCityName()} - Torture isn't what it used to be, "
-                "according to a leaked classified report.  The CIA has "
-                "pioneered a new method of humane torture that offsets the "
-                "physical agony with $methodToMakeItMoreHuman.&r"
-                "  \"I don't know who gave you that paper, but I guess now "
-                "that it's out, there's no harm confirming it,\" a CIA "
-                "spokesperson said.  \"We've been exploring the use of "
-                "luxury interrogation suites that achieve several major "
-                "benchmarks.  Focus groups agree that the new method looks "
-                "much more humane than the old ones, and the results are "
-                "nothing short of miraculous.  We had one guy confess "
-                "to everything we wanted him to confess, he even admitted "
-                "plotting to $insidiousPlot!  Good thing we stopped that "
-                "before it happened.\"&r"
-                "  While critics say this is just a new spin on old abuses, "
-                "some have hailed the new methods as the next stage in "
-                "interrogation techniques, and called on the approach to "
-                "be adopted by police forces across the country.&r");
+          headline: "COMFY TORTURE",
+          storyText:
+              "${randomCityName()} - Torture isn't what it used to be, "
+              "according to a leaked classified report.  The CIA has "
+              "pioneered a new method of humane torture that offsets the "
+              "physical agony with $methodToMakeItMoreHuman.&r"
+              "  \"I don't know who gave you that paper, but I guess now "
+              "that it's out, there's no harm confirming it,\" a CIA "
+              "spokesperson said.  \"We've been exploring the use of "
+              "luxury interrogation suites that achieve several major "
+              "benchmarks.  Focus groups agree that the new method looks "
+              "much more humane than the old ones, and the results are "
+              "nothing short of miraculous.  We had one guy confess "
+              "to everything we wanted him to confess, he even admitted "
+              "plotting to $insidiousPlot!  Good thing we stopped that "
+              "before it happened.\"&r"
+              "  While critics say this is just a new spin on old abuses, "
+              "some have hailed the new methods as the next stage in "
+              "interrogation techniques, and called on the approach to "
+              "be adopted by police forces across the country.&r",
+        );
       case View.deathPenalty:
         FullName serialKiller = generateFullName(Gender.whiteMalePatriarch);
         String heWasFoundInPosessionOf = [
@@ -1590,8 +1630,8 @@ MajorEventContent generateMajorEventContent(
         ].random;
         String howTheDAReacts =
             laws[Law.deathPenalty] == DeepAlignment.eliteLiberal
-                ? "that the death penalty should really be an option"
-                : "it will be seeking the death penalty";
+            ? "that the death penalty should really be an option"
+            : "it will be seeking the death penalty";
 
         return MajorEventContent(
           headline: "LET'S FRY 'EM",
@@ -1613,9 +1653,10 @@ MajorEventContent generateMajorEventContent(
         FullName shooter = generateFullName(shooterGender);
         Gender heroGender = forceGenderBinary(Gender.nonbinary);
         FullName hero = generateFullName(heroGender);
-        String venue = "${lastName()} ${[
-          "Mall", "Theater", "High School", "University", //
-        ].random}";
+        String venue =
+            "${lastName()} ${[
+              "Mall", "Theater", "High School", "University", //
+            ].random}";
         String massShooting = noProfanity ? "[hurting spree]" : "mass shooting";
         String heroAction = noProfanity
             ? "[putting the attacker to sleep]"
@@ -1629,7 +1670,8 @@ MajorEventContent generateMajorEventContent(
         return MajorEventContent(
           headline: "ARMED CITIZEN",
           subheadline: "SAVES LIVES",
-          storyText: "${randomCityName()}"
+          storyText:
+              "${randomCityName()}"
               " - In an uplifting turn, a $massShooting was prevented "
               "by a bystander with a gun.  After ${shooter.firstLast} opened "
               "fire at $venue, ${hero.firstLast} sprang into action.  "
@@ -1647,18 +1689,21 @@ MajorEventContent generateMajorEventContent(
         );
       case View.womensRights:
         FullName author = generateFullName();
-        String bookTitle = "${author.first} ${author.last}'s "
+        String bookTitle =
+            "${author.first} ${author.last}'s "
             "memoir, \"${[
-          "Aborted Regret", "The Abortion Chronicles", "The Abortion Diaries",
-          "The Abortion Papers", "The Abortion Files", //
-        ].random}\"";
+              "Aborted Regret", "The Abortion Chronicles", "The Abortion Diaries",
+              "The Abortion Papers", "The Abortion Files", //
+            ].random}\"";
         FullName politician = generateFullName();
         String politicianName = "${politician.first} ${politician.last}";
         String callToAction = switch (laws[Law.abortion]) {
-          DeepAlignment.archConservative => "resisting any attempt by the "
-              "soulless elite to legalize the murder of children",
-          _ => "pass new laws to protect the most vulnerable children "
-              "in our society from being slaughtered by Liberals",
+          DeepAlignment.archConservative =>
+            "resisting any attempt by the "
+                "soulless elite to legalize the murder of children",
+          _ =>
+            "pass new laws to protect the most vulnerable children "
+                "in our society from being slaughtered by Liberals",
         };
         return MajorEventContent(
           headline: "CLINIC REGRET",
@@ -1676,9 +1721,10 @@ MajorEventContent generateMajorEventContent(
               "\"a clear message to Americans, calling on us to $callToAction.\"&r",
         );
       case View.taxes:
-        String str = "${["Great", "Noble", "True", "Pure", "Golden"].random} ${[
-          "Leadership", "Courage", "Pioneer", "Communicator", "Faith" //
-        ].random}: A new book lauding Reagan and the greatest generation.";
+        String str =
+            "${["Great", "Noble", "True", "Pure", "Golden"].random} ${[
+              "Leadership", "Courage", "Pioneer", "Communicator", "Faith", //
+            ].random}: A new book lauding Reagan and the greatest generation.";
         return MajorEventContent(
           headline: "REAGAN THE MAN",
           pictureId: pictureReaganBook,
@@ -1699,11 +1745,12 @@ MajorEventContent generateMajorEventContent(
           DeepAlignment.eliteLiberal => "from $country",
           _ => "here",
         };
-        String drugName = "${[
-          if (noProfanity) "Bum" else "Anal", "Colo", "Lacta", "Pur", "Loba", //
-        ].random}${[
-          "nephrin", "tax", "zac", "thium", "drene", //
-        ].random}";
+        String drugName =
+            "${[
+              if (noProfanity) "Bum" else "Anal", "Colo", "Lacta", "Pur", "Loba", //
+            ].random}${[
+              "nephrin", "tax", "zac", "thium", "drene", //
+            ].random}";
         String drugEffect = [
           "boosts intelligence in chimpanzees",
           if (noProfanity)
@@ -1722,7 +1769,8 @@ MajorEventContent generateMajorEventContent(
 
         return MajorEventContent(
           headline: "APE EXPLORERS",
-          storyText: "${randomCityName()} - Researchers $fromCountry "
+          storyText:
+              "${randomCityName()} - Researchers $fromCountry "
               "report that they have discovered an amazing new wonder drug.  "
               "Called $drugName, the drug apparently $drugEffect.&r"
               "  Fielding questions about the ethics of their experiments from "
@@ -1783,34 +1831,36 @@ MajorEventContent generateMajorEventContent(
           DeepAlignment.archConservative => "[harmed] the guard",
           DeepAlignment.conservative => "killed the guard",
           _ => [
-              "slit the guard's throat with a shank",
-              "strangled the guard to death with a knotted bed sheet",
-              "chewed out the guard's throat",
-              "smashed the guard's skull with the toilet seat from "
-                  "${perpGender.hisHer} cell",
-              "shot the guard with ${guardGender.hisHer} own gun",
-              "poisoned the guard with drugs smuggled into the prison by "
-                  "the ${["Crips", "Bloods"].random}",
-              "hit all 36 pressure points of death on the guard",
-              "electrocuted the guard with high-voltage wires",
-              "thrown the guard out the top-story window",
-              "taken the guard to the execution chamber and finished "
-                  "${guardGender.himHer} off",
-              "tricked another guard into shooting the guard dead",
-              "burnt the guard to a crisp using a lighter and some gasoline",
-              "eaten the guard's liver with some fava beans and a nice chianti",
-              "performed deadly experiments on the guard unheard of since "
-                  "Dr. Mengele",
-              "sacrificed the guard on a makeshift "
-                  "${["satanic", "neo-pagan"].random} altar",
-            ].random,
+            "slit the guard's throat with a shank",
+            "strangled the guard to death with a knotted bed sheet",
+            "chewed out the guard's throat",
+            "smashed the guard's skull with the toilet seat from "
+                "${perpGender.hisHer} cell",
+            "shot the guard with ${guardGender.hisHer} own gun",
+            "poisoned the guard with drugs smuggled into the prison by "
+                "the ${["Crips", "Bloods"].random}",
+            "hit all 36 pressure points of death on the guard",
+            "electrocuted the guard with high-voltage wires",
+            "thrown the guard out the top-story window",
+            "taken the guard to the execution chamber and finished "
+                "${guardGender.himHer} off",
+            "tricked another guard into shooting the guard dead",
+            "burnt the guard to a crisp using a lighter and some gasoline",
+            "eaten the guard's liver with some fava beans and a nice chianti",
+            "performed deadly experiments on the guard unheard of since "
+                "Dr. Mengele",
+            "sacrificed the guard on a makeshift "
+                "${["satanic", "neo-pagan"].random} altar",
+          ].random,
         };
-        String beatenToDeath =
-            noProfanity ? "[also harmed]" : "beaten to death";
+        String beatenToDeath = noProfanity
+            ? "[also harmed]"
+            : "beaten to death";
 
         return MajorEventContent(
           headline: "HOSTAGE SLAIN",
-          storyText: "${randomCityName()}"
+          storyText:
+              "${randomCityName()}"
               " - The hostage crisis at the $prisonName Correctional Facility "
               "ended tragically yesterday with the death of both the prison "
               "guard being held hostage and ${guardGender.hisHer} captor.&r"
@@ -1885,16 +1935,18 @@ MajorEventContent generateMajorEventContent(
           remapSkinTones: true,
         );
       case View.genetics:
-        String corporation = "${[
-          "Altered", "Gene-tech", "DNA", "Proteomic", "Genomic", //
-        ].random} ${[
-          "Foods", "Agriculture", "Meals", "Farming", "Living" //
-        ].random}";
-        String product = "${[
-          "Mega", "Epic", "Overlord", "Franken", "Transcendent", //
-        ].random} ${[
-          "Rice", "Beans", "Corn", "Wheat", "Potatoes", //
-        ].random}";
+        String corporation =
+            "${[
+              "Altered", "Gene-tech", "DNA", "Proteomic", "Genomic", //
+            ].random} ${[
+              "Foods", "Agriculture", "Meals", "Farming", "Living", //
+            ].random}";
+        String product =
+            "${[
+              "Mega", "Epic", "Overlord", "Franken", "Transcendent", //
+            ].random} ${[
+              "Rice", "Beans", "Corn", "Wheat", "Potatoes", //
+            ].random}";
         String benefit = [
           "extends human life by a few minutes every bite",
           "mends split-ends upon digestion.  Hair is also made glossier and thicker",
@@ -1914,7 +1966,8 @@ MajorEventContent generateMajorEventContent(
 
         return MajorEventContent(
           headline: "GM FOOD FAIRE",
-          storyText: "${randomCityName()}"
+          storyText:
+              "${randomCityName()}"
               " - The genetic foods industry staged a major event here yesterday "
               "to showcase its upcoming products.  Over thirty companies set up "
               "booths and gave talks to wide-eyed onlookers."
@@ -1949,7 +2002,8 @@ MajorEventContent generateMajorEventContent(
 
         return MajorEventContent(
           headline: "JUSTICE AMOK",
-          storyText: "${randomCityName()}"
+          storyText:
+              "${randomCityName()}"
               " - The conviction of confessed serial killer $serialKiller "
               "was overturned by a federal judge yesterday.  Judge "
               "${judge.firstLast} of the notoriously liberal court of appeals "
@@ -1976,15 +2030,16 @@ MajorEventContent generateMajorEventContent(
           subheadline: storyText,
         );
       case View.pollution:
-        String thinkTankName = "${[
-          "American", "United", "Patriot", "Family", "Children's", "National" //
-        ].random} ${[
-          "Heritage", "Enterprise", "Freedom", "Liberty", "Charity",
-          "Equality" //
-        ].random} ${[
-          "Partnership", "Institute", "Consortium", "Forum", "Center",
-          "Association" //
-        ].random}";
+        String thinkTankName =
+            "${[
+              "American", "United", "Patriot", "Family", "Children's", "National", //
+            ].random} ${[
+              "Heritage", "Enterprise", "Freedom", "Liberty", "Charity",
+              "Equality", //
+            ].random} ${[
+              "Partnership", "Institute", "Consortium", "Forum", "Center",
+              "Association", //
+            ].random}";
         String absurdBehavior = [
           "a modest intake of radioactive waste",
           "a healthy dose of radiation",
@@ -2016,7 +2071,8 @@ MajorEventContent generateMajorEventContent(
 
         return MajorEventContent(
           headline: "LOOKING UP",
-          storyText: "${randomCityName()}"
+          storyText:
+              "${randomCityName()}"
               " - Pollution might not be so bad after all.  The $thinkTankName "
               "recently released a wide-ranging report detailing recent trends "
               "and the latest science on the issue.  "
@@ -2033,17 +2089,19 @@ MajorEventContent generateMajorEventContent(
               "such a rush to judgment here.\"&r",
         );
       case View.corporateCulture:
-        String techGiantName = "${[
-          "Ameri", "Gen", "Oro", "Amelia", "Vivo", "Benji", "Amal", "Ply",
-          "Seli", "Rio" //
-        ].random}${[
-          "tech", "com", "zap", "cor", "dyne", "bless", "chip", "co", "wire",
-          "rex" //
-        ].random}";
+        String techGiantName =
+            "${[
+              "Ameri", "Gen", "Oro", "Amelia", "Vivo", "Benji", "Amal", "Ply",
+              "Seli", "Rio", //
+            ].random}${[
+              "tech", "com", "zap", "cor", "dyne", "bless", "chip", "co", "wire",
+              "rex", //
+            ].random}";
 
         return MajorEventContent(
           headline: "NEW JOBS",
-          storyText: "${randomCityName()}"
+          storyText:
+              "${randomCityName()}"
               " - Several major companies have announced at a joint news "
               "conference here that they will be expanding their work forces "
               "considerably during the next quarter.  Over thirty thousand jobs "
@@ -2063,38 +2121,40 @@ MajorEventContent generateMajorEventContent(
         );
       case View.amRadio:
         FullName shockJock = generateFullName(Gender.male);
-        String showName = "${[
-          "Morning", "Commuter", "Jam", "Talk", "Radio", //
-        ].random} ${[
-          "Swamp", "Jolt", "Club", "Show", "Fandango", //
-        ].random}";
+        String showName =
+            "${[
+              "Morning", "Commuter", "Jam", "Talk", "Radio", //
+            ].random} ${[
+              "Swamp", "Jolt", "Club", "Show", "Fandango", //
+            ].random}";
         String shockingBehavior = switch (laws[Law.freeSpeech]) {
           DeepAlignment.eliteLiberal => [
-              "fucked",
-              "encouraged listeners to call in and take a piss",
-              "screamed \"Fuck the police those goddamn motherfuckers.  I got a fucking ticket this morning and I'm fucking pissed as shit.\"",
-              "breastfed from a lactating woman",
-              "jerked off",
-            ].random,
+            "fucked",
+            "encouraged listeners to call in and take a piss",
+            "screamed \"Fuck the police those goddamn motherfuckers.  I got a fucking ticket this morning and I'm fucking pissed as shit.\"",
+            "breastfed from a lactating woman",
+            "jerked off",
+          ].random,
           DeepAlignment.archConservative => [
-              "[laid down in a bed with a woman]",
-              "encouraged listeners to call in and [visit the restroom]",
-              "screamed \"[Darn] the police those [big old jerks].  I got a [parking] ticket this morning and I'm [so angry].\"",
-              "[consumed milk] from [a lady]",
-              "[caused God to kill a kitten]",
-            ].random,
+            "[laid down in a bed with a woman]",
+            "encouraged listeners to call in and [visit the restroom]",
+            "screamed \"[Darn] the police those [big old jerks].  I got a [parking] ticket this morning and I'm [so angry].\"",
+            "[consumed milk] from [a lady]",
+            "[caused God to kill a kitten]",
+          ].random,
           _ => [
-              "had intercourse",
-              "encouraged listeners to call in and urinate",
-              "screamed \"F*ck the police those g*dd*mn m*th*f*ck*rs.  I got a f*cking ticket this morning and I'm f*cking p*ss*d as sh*t.\"",
-              "breastfed from a lactating woman",
-              "masturbated",
-            ].random,
+            "had intercourse",
+            "encouraged listeners to call in and urinate",
+            "screamed \"F*ck the police those g*dd*mn m*th*f*ck*rs.  I got a f*cking ticket this morning and I'm f*cking p*ss*d as sh*t.\"",
+            "breastfed from a lactating woman",
+            "masturbated",
+          ].random,
         };
 
         return MajorEventContent(
           headline: "FM OBSCENITY",
-          storyText: "${randomCityName()}"
+          storyText:
+              "${randomCityName()}"
               " - Infamous FM radio shock jock ${shockJock.firstLast} has "
               "brought radio entertainment to a new low.  During yesterday's "
               "broadcast of the program \"${shockJock.first}'s $showName\", "
@@ -2105,10 +2165,11 @@ MajorEventContent generateMajorEventContent(
               "incident is under investigation.&r",
         );
       case View.healthcare:
-        String numberWaiting = (7.1 +
-                (gameState.date.difference(DateTime(2025, 1, 1)).inDays) *
-                    0.002)
-            .toStringAsFixed(1);
+        String numberWaiting =
+            (7.1 +
+                    (gameState.date.difference(DateTime(2025, 1, 1)).inDays) *
+                        0.002)
+                .toStringAsFixed(1);
         String governmentInsult = [
           "Bunch of absolute muppets, they are",
           "Shower of useless clowns",
@@ -2117,23 +2178,24 @@ MajorEventContent generateMajorEventContent(
           "A right shambles, the lot of them",
         ].random;
         return MajorEventContent(
-            headline: "NHS CRISIS",
-            storyText:
-                "London, United Kingdom - The National Health Service (NHS) "
-                "has been brought to its knees by record-breaking waiting times "
-                "for routine healthcare services as the number of people "
-                "waiting for hospital care and diagnostic tests continues to rise.&r"
-                "  \"This NHS situation has gone pear-shaped, you can't get "
-                "a GP appointment for love nor money these days,\" "
-                "said one fed-up Londoner. \"And last time I was in A&E there "
-                "were people left on trolleys in the corridors. "
-                "We need some real leadership from "
-                "Westminster or Downing Street if we want to get a grip on this "
-                "mess. I shan't hold my breath with this government though. "
-                "$governmentInsult.\"&r"
-                "  A total of $numberWaiting million patients are currently waiting "
-                "for planned hospital care, with more than a quarter of these "
-                "waiting longer than the NHS's 18-week target.&r");
+          headline: "NHS CRISIS",
+          storyText:
+              "London, United Kingdom - The National Health Service (NHS) "
+              "has been brought to its knees by record-breaking waiting times "
+              "for routine healthcare services as the number of people "
+              "waiting for hospital care and diagnostic tests continues to rise.&r"
+              "  \"This NHS situation has gone pear-shaped, you can't get "
+              "a GP appointment for love nor money these days,\" "
+              "said one fed-up Londoner. \"And last time I was in A&E there "
+              "were people left on trolleys in the corridors. "
+              "We need some real leadership from "
+              "Westminster or Downing Street if we want to get a grip on this "
+              "mess. I shan't hold my breath with this government though. "
+              "$governmentInsult.\"&r"
+              "  A total of $numberWaiting million patients are currently waiting "
+              "for planned hospital care, with more than a quarter of these "
+              "waiting longer than the NHS's 18-week target.&r",
+        );
       case View.retirement:
         String thinkTankAdjective = [
           "American",
@@ -2141,7 +2203,7 @@ MajorEventContent generateMajorEventContent(
           "Patriot",
           "Family",
           "Children's",
-          "National"
+          "National",
         ].random;
         String thinkTankNoun = [
           "Heritage",
@@ -2149,7 +2211,7 @@ MajorEventContent generateMajorEventContent(
           "Freedom",
           "Liberty",
           "Charity",
-          "Equality"
+          "Equality",
         ].random;
         String thinkTankNoun2 = [
           "Partnership",
@@ -2157,60 +2219,66 @@ MajorEventContent generateMajorEventContent(
           "Consortium",
           "Forum",
           "Center",
-          "Association"
+          "Association",
         ].random;
         String thinkTankName =
             "$thinkTankAdjective $thinkTankNoun $thinkTankNoun2";
-        FullName thinkTankSpokesperson =
-            generateFullName(Gender.whiteMalePatriarch);
-        FullName socialSecurityAdministrationSpokesperson =
-            generateFullName(Gender.whiteMalePatriarch);
-        String dateOfInsolvency =
-            (DateTime.now().year + 5 + lcsRandom(5)).toString();
+        FullName thinkTankSpokesperson = generateFullName(
+          Gender.whiteMalePatriarch,
+        );
+        FullName socialSecurityAdministrationSpokesperson = generateFullName(
+          Gender.whiteMalePatriarch,
+        );
+        String dateOfInsolvency = (DateTime.now().year + 5 + lcsRandom(5))
+            .toString();
         return MajorEventContent(
-            headline: "INSECURITY",
-            storyText: "Washington, DC - The Social Security Administration "
-                "has announced that the program is on the brink of insolvency, "
-                "with the trust fund expected to be depleted by $dateOfInsolvency. Meanwhile, "
-                "private healthcare accounts are thriving due to recent high "
-                "returns in the stock market.&r"
-                "  \"We've been saying for years that Social Security is an "
-                "unsustainable pyramid scheme, a fraud on the American people,\" "
-                "said ${thinkTankSpokesperson.firstLast}, a spokesperson for the "
-                "$thinkTankName. \"It's time for the American people to take "
-                "control of their own retirement and cut government inefficiency "
-                "and waste out of our futures.\"&r"
-                "  ${socialSecurityAdministrationSpokesperson.firstLast} from "
-                "the Social Security Administration offered a more measured "
-                "response. \"The Social Security Administration will continue to fulfill "
-                "its statutory mandates, but policy adjustments to balance "
-                "revenues and outflows will be necessary for long-term sustainability.\"&r");
+          headline: "INSECURITY",
+          storyText:
+              "Washington, DC - The Social Security Administration "
+              "has announced that the program is on the brink of insolvency, "
+              "with the trust fund expected to be depleted by $dateOfInsolvency. Meanwhile, "
+              "private healthcare accounts are thriving due to recent high "
+              "returns in the stock market.&r"
+              "  \"We've been saying for years that Social Security is an "
+              "unsustainable pyramid scheme, a fraud on the American people,\" "
+              "said ${thinkTankSpokesperson.firstLast}, a spokesperson for the "
+              "$thinkTankName. \"It's time for the American people to take "
+              "control of their own retirement and cut government inefficiency "
+              "and waste out of our futures.\"&r"
+              "  ${socialSecurityAdministrationSpokesperson.firstLast} from "
+              "the Social Security Administration offered a more measured "
+              "response. \"The Social Security Administration will continue to fulfill "
+              "its statutory mandates, but policy adjustments to balance "
+              "revenues and outflows will be necessary for long-term sustainability.\"&r",
+        );
       case View.housing:
         String city = randomCityName();
         FullName resident = generateFullName();
         return MajorEventContent(
-            headline: "PUBLIC SLUMS",
-            storyText: "$city - The public housing crisis has reached a "
-                "tipping point, with record numbers of people living in overcrowded "
-                "and unsafe conditions. The crisis is being fueled by a combination "
-                "of rising cost of repairs and regulatory limits on rent, which is "
-                "leading to neglect and decay. The suppressed rent is also inviting "
-                "criminal elements and other unsavory characters to move in.&r"
-                "  \"This place seemed like a good idea when I moved in,\" "
-                "${resident.firstLast} said. \"And I guess the price is still pretty "
-                "okay, but now it's a dump. I'm thinking of moving out, I just "
-                "don't know where else I can afford to live.\"&r"
-                "  The city has been trying to address the crisis by investing in "
-                "new housing, but the costs are too high and the city is losing "
-                "money on every building it builds.&r"
-                "  \"We're trying to build enough public housing, "
-                "but the city can't outbuild growth. "
-                "We should really be looking to low-cost private "
-                "development in the long run. Unfortunately, it costs "
-                "\$220,000 in permits for "
-                "a private developer to build one new house in this city,\" said "
-                "the city's Planning Commissioner "
-                "${lastName(Gender.whiteMalePatriarch)}.&r");
+          headline: "PUBLIC SLUMS",
+          storyText:
+              "$city - The public housing crisis has reached a "
+              "tipping point, with record numbers of people living in overcrowded "
+              "and unsafe conditions. The crisis is being fueled by a combination "
+              "of rising cost of repairs and regulatory limits on rent, which is "
+              "leading to neglect and decay. The suppressed rent is also inviting "
+              "criminal elements and other unsavory characters to move in.&r"
+              "  \"This place seemed like a good idea when I moved in,\" "
+              "${resident.firstLast} said. \"And I guess the price is still pretty "
+              "okay, but now it's a dump. I'm thinking of moving out, I just "
+              "don't know where else I can afford to live.\"&r"
+              "  The city has been trying to address the crisis by investing in "
+              "new housing, but the costs are too high and the city is losing "
+              "money on every building it builds.&r"
+              "  \"We're trying to build enough public housing, "
+              "but the city can't outbuild growth. "
+              "We should really be looking to low-cost private "
+              "development in the long run. Unfortunately, it costs "
+              "\$220,000 in permits for "
+              "a private developer to build one new house in this city,\" said "
+              "the city's Planning Commissioner "
+              "${lastName(Gender.whiteMalePatriarch)}.&r",
+        );
       default:
         return MajorEventContent(
           headline: "BUGGY GAME",

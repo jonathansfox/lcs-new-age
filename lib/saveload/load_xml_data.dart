@@ -9,6 +9,8 @@ import 'package:lcs_new_age/items/armor_upgrade.dart';
 import 'package:lcs_new_age/items/armor_upgrade_xml.dart';
 import 'package:lcs_new_age/items/clothing_type.dart';
 import 'package:lcs_new_age/items/clothing_type_xml.dart';
+import 'package:lcs_new_age/items/flag_type.dart';
+import 'package:lcs_new_age/items/flag_type_xml.dart';
 import 'package:lcs_new_age/items/loot_type.dart';
 import 'package:lcs_new_age/items/loot_type_xml.dart';
 import 'package:lcs_new_age/items/weapon_type.dart';
@@ -37,6 +39,8 @@ Future<void> loadXmlData() async {
   _parseDocument(await rootBundle.loadString('assets/xml/armor_upgrades.xml'));
   loadingFeedback("loot.xml");
   _parseDocument(await rootBundle.loadString('assets/xml/loot.xml'));
+  loadingFeedback("flags.xml");
+  _parseDocument(await rootBundle.loadString('assets/xml/flags.xml'));
   loadingFeedback("creatures.xml");
   _parseDocument(await rootBundle.loadString('assets/xml/creatures.xml'));
   loadingFeedback("weapons.xml");
@@ -85,6 +89,8 @@ void _parseDocument(String xml) {
         parseArmorUpgrade(armorUpgrades[id] ?? ArmorUpgrade(id), element);
       case 'loottype':
         parseLootType(lootTypes[id] ?? LootType(id), element);
+      case 'flagtype':
+        parseFlagType(flagTypes[id] ?? FlagType(id), element);
       case 'creaturetype':
         parseCreatureType(creatureTypes[id] ?? CreatureType(id), element);
       case 'weapontype':

@@ -32,12 +32,10 @@ class CursesMovie {
     frame = [];
 
     ByteData h = await rootBundle.load("assets/art/$filename");
-    debugPrint("loading movie: $filename");
 
     picnum = h.getUint32(0, Endian.little);
     dimx = h.getUint32(4, Endian.little);
     dimy = h.getUint32(8, Endian.little);
-    debugPrint("picnum: $picnum, dimx: $dimx, dimy: $dimy");
     picture = readCPCData(h, 0);
     int pos = 12 + picnum * dimx * dimy * 4;
     int frameCount = h.getUint32(pos, Endian.little);

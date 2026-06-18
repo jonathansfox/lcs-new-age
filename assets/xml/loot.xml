@@ -15,8 +15,8 @@
     </loottype>
     -->
 
-    <loottype idname="LOOT_CHEAPJEWELERY">
-        <name>Cheap Jewelery</name>
+    <loottype idname="LOOT_CHEAPJEWELRY">
+        <name>Cheap Jewelry</name>
         <fencevalue>50</fencevalue>
     </loottype>
 
@@ -44,8 +44,8 @@
         <cloth>true</cloth>
     </loottype>
 
-    <loottype idname="LOOT_EXPENSIVEJEWELERY">
-        <name>Fine Jewelery</name>
+    <loottype idname="LOOT_EXPENSIVEJEWELRY">
+        <name>Fine Jewelry</name>
         <fencevalue>500</fencevalue>
     </loottype>
 

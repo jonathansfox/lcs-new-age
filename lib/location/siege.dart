@@ -38,6 +38,18 @@ class Siege {
   int timeuntilRuralMob = -1;
   int timeuntilccs = -1;
   int timeuntilcia = -1;
+
+  /// Per-siege protest budget: the squad may burn one flag and wave one flag
+  /// during a police siege. Reset whenever a siege begins or ends.
+  @JsonKey(defaultValue: false)
+  bool flagBurnUsed = false;
+  @JsonKey(defaultValue: false)
+  bool flagWaveUsed = false;
+
+  void resetFlagProtests() {
+    flagBurnUsed = false;
+    flagWaveUsed = false;
+  }
 }
 
 enum SiegeType {

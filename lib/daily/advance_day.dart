@@ -31,6 +31,7 @@ import 'package:lcs_new_age/sitemode/sitemap.dart';
 import 'package:lcs_new_age/sitemode/sitemode.dart';
 import 'package:lcs_new_age/title_screen/game_over.dart';
 import 'package:lcs_new_age/utils/colors.dart';
+import 'package:lcs_new_age/utils/debug_flags.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 import 'package:lcs_new_age/vehicles/vehicle.dart';
 
@@ -81,9 +82,11 @@ void _moveSquadlessToBases() {
       if (c.location == null && c.base == null) {
         c.base = sites.firstWhere((l) => l.type == SiteType.homelessEncampment);
       } else {
-        c.base = sites.firstWhere((l) =>
-            l.city == c.location?.city &&
-            l.type == SiteType.homelessEncampment);
+        c.base = sites.firstWhere(
+          (l) =>
+              l.city == c.location?.city &&
+              l.type == SiteType.homelessEncampment,
+        );
       }
     }
     if (c.base != null && !c.imprisoned) c.location = c.base;
@@ -98,7 +101,8 @@ Future<void> _advanceSquads() async {
         if (c.activity.type != ActivityType.none &&
             c.activity.type != s.activity.type) {
           await showMessage(
-              "${c.name} acted with ${s.name} instead of ${c.activity.description}.");
+            "${c.name} acted with ${s.name} instead of ${c.activity.description}.",
+          );
         }
         c.activity = s.activity;
       }
@@ -107,20 +111,23 @@ Future<void> _advanceSquads() async {
       Site site = s.activity.location!;
       if (site.isClosed || site.siege.underSiege) {
         await showMessage(
-            "${s.name} decided ${site.name} was too hot to risk.");
+          "${s.name} decided ${site.name} was too hot to risk.",
+        );
         s.activity = Activity(ActivityType.none);
         continue;
       }
       await _carUpSquad(s, vehiclesInUse);
       if (site.area != s.site?.area && s.members.first.car == null) {
         await showMessage(
-            "${s.name} didn't have a car to get to ${site.name}.");
+          "${s.name} didn't have a car to get to ${site.name}.",
+        );
         s.activity = Activity(ActivityType.none);
         continue;
       }
       if (site != s.members.first.base) {
-        for (Creature driver
-            in s.members.where((m) => m.car != null && m.isDriver)) {
+        for (Creature driver in s.members.where(
+          (m) => m.car != null && m.isDriver,
+        )) {
           driver.train(Skill.driving, 10);
         }
       }
@@ -130,11 +137,13 @@ Future<void> _advanceSquads() async {
       if (site.cityId != s.members.first.base?.cityId) {
         debugPrint("site.cityId: ${site.cityId}");
         debugPrint(
-            "s.members.first.base?.cityId: ${s.members.first.base?.cityId}");
+          "s.members.first.base?.cityId: ${s.members.first.base?.cityId}",
+        );
         int price = s.members.length * 100;
         if (ledger.funds < price) {
           await showMessage(
-              "${s.name} couldn't afford to travel to ${site.name}.");
+            "${s.name} couldn't afford to travel to ${site.name}.",
+          );
           canDepart = false;
         } else {
           ledger.subtractFunds(price, Expense.travel);
@@ -153,8 +162,11 @@ Future<void> _advanceSquads() async {
 }
 
 Future<void> _carUpSquad(Squad squad, List<Vehicle> vehiclesInUse) async {
-  List<Vehicle> desiredVehicles =
-      squad.members.map((c) => c.preferredCar).nonNulls.toSet().toList();
+  List<Vehicle> desiredVehicles = squad.members
+      .map((c) => c.preferredCar)
+      .nonNulls
+      .toSet()
+      .toList();
   for (Vehicle v in desiredVehicles) {
     if (vehiclesInUse.contains(v)) {
       await showMessage("${squad.name} couldn't use the ${v.fullName()}.");
@@ -185,10 +197,16 @@ Future<void> _carUpSquad(Squad squad, List<Vehicle> vehiclesInUse) async {
     if (driver.length > 1) {
       // Too many drivers; identify the best one and toss the rest
       Creature bestDriver = driver.reduce((value, element) {
-        int vDrive =
-            value.skillRoll(Skill.driving, take10: true, healthMod: true);
-        int eDrive =
-            element.skillRoll(Skill.driving, take10: true, healthMod: true);
+        int vDrive = value.skillRoll(
+          Skill.driving,
+          take10: true,
+          healthMod: true,
+        );
+        int eDrive = element.skillRoll(
+          Skill.driving,
+          take10: true,
+          healthMod: true,
+        );
         return vDrive >= eDrive ? value : element;
       });
       passenger.addAll(driver.where((element) => element != bestDriver));
@@ -219,9 +237,11 @@ Future<void> _ageThings() async {
         } else {
           c.die();
           await showMessage(
-              "${c.name} has passed away at the age of ${c.age}.");
+            "${c.name} has passed away at the age of ${c.age}.",
+          );
           await showMessage(
-              "Their Heart finally gave out.  The Liberal will be missed.");
+            "Their Heart finally gave out.  The Liberal will be missed.",
+          );
         }
       }
     }
@@ -261,12 +281,14 @@ Future<void> _ageThings() async {
 Future<void> _squadDepart(Squad s) async {
   if (s.members.isEmpty) return;
   Site site = s.activity.location!;
-  Site? base = s.members.first.base ??
+  Site? base =
+      s.members.first.base ??
       s.site ??
       findSiteInSameCity(site.city, SiteType.homelessEncampment);
   if (base == null) {
     debugPrint(
-        "Squad has no base to return to and no homeless camp found. Canceling departure.");
+      "Squad has no base to return to and no homeless camp found. Canceling departure.",
+    );
     return;
   }
   if (s.members.first.base == site) {
@@ -285,8 +307,12 @@ Future<void> _squadDepart(Squad s) async {
     if (!raidableSafehouses.contains(site.type)) {
       c = Key.s;
     } else {
-      mvaddstrc(8, 1, white,
-          "Why is the squad here?   (S)afe House, to cause (T)rouble, or (B)oth?");
+      mvaddstrc(
+        8,
+        1,
+        white,
+        "Why is the squad here?   (S)afe House, to cause (T)rouble, or (B)oth?",
+      );
       do {
         c = await getKey();
       } while (c != Key.s && c != Key.b && c != Key.t);
@@ -365,8 +391,9 @@ Future<void> dispersalCheck() async {
     // preventing everyone who requires contact with that person
     // from being marked safe. After everyone reachable has been
     // reached and marked safe, all remaining squad members are nuked.
-    Map<Creature, DispersalTypes> dispersalStatus =
-        Map.fromEntries(pool.map((e) => MapEntry(e, DispersalTypes.noContact)));
+    Map<Creature, DispersalTypes> dispersalStatus = Map.fromEntries(
+      pool.map((e) => MapEntry(e, DispersalTypes.noContact)),
+    );
 
     bool promotion;
     do {
@@ -405,7 +432,7 @@ Future<void> dispersalCheck() async {
     bool changed;
 
     do // while(changed)
-        {
+    {
       changed = false;
 
       bool inprison;
@@ -432,7 +459,6 @@ Future<void> dispersalCheck() async {
             }
           }
         }
-
         // If in prison or unreachable due to a member of the command structure
         // above being in prison
         else if ((dispersalStatus[p] == DispersalTypes.bossSafe && inprison) ||
@@ -497,8 +523,12 @@ Future<void> dispersalCheck() async {
         if (!disbanding) {
           if (p.hidingDaysLeft == 0 &&
               dispersalStatus[p] == DispersalTypes.hiding) {
-            mvaddstrc(8, 1, white,
-                "${p.name} has lost touch with the Liberal Crime Squad.");
+            mvaddstrc(
+              8,
+              1,
+              white,
+              "${p.name} has lost touch with the Liberal Crime Squad.",
+            );
             await getKey();
             mvaddstrc(9, 1, lightGreen, "The Liberal has gone into hiding...");
             await getKey();
@@ -506,8 +536,12 @@ Future<void> dispersalCheck() async {
             mvaddstrc(8, 1, white, "${p.name} has abandoned the LCS.");
             await getKey();
           } else if (dispersalStatus[p] == DispersalTypes.noContact) {
-            mvaddstrc(8, 1, white,
-                "${p.name} has lost touch with the Liberal Crime Squad.");
+            mvaddstrc(
+              8,
+              1,
+              white,
+              "${p.name} has lost touch with the Liberal Crime Squad.",
+            );
             await getKey();
           }
         }
@@ -520,8 +554,10 @@ Future<void> dispersalCheck() async {
           p.location = null;
           if (!p.sleeperAgent) {
             //Sleepers end up in camp otherwise.
-            p.base =
-                findSiteInSameCity(p.base!.city, SiteType.homelessEncampment);
+            p.base = findSiteInSameCity(
+              p.base!.city,
+              SiteType.homelessEncampment,
+            );
           }
           p.activity.type = ActivityType.none;
           p.hidingDaysLeft = -1; // Hide indefinitely
@@ -548,11 +584,13 @@ Future<Creature?> _promoteSubordinates(Creature cr) async {
     requiredJuice = 100;
     promoteToFounder = true;
   }
-  Iterable<Creature> eligibleSubordinates = subordinates.where((p) =>
-      p.alive &&
-      p.align == Alignment.liberal &&
-      !p.brainwashed &&
-      (!p.seduced || p.juice >= 100));
+  Iterable<Creature> eligibleSubordinates = subordinates.where(
+    (p) =>
+        p.alive &&
+        p.align == Alignment.liberal &&
+        !p.brainwashed &&
+        (!p.seduced || p.juice >= 100),
+  );
   for (Creature candidate in eligibleSubordinates) {
     if (candidate.juice > requiredJuice) {
       requiredJuice = candidate.juice;
@@ -568,8 +606,11 @@ Future<Creature?> _promoteSubordinates(Creature cr) async {
       erase();
       mvaddstrc(8, 1, white, "${cr.name} has died.");
       await getKey();
-      mvaddstr(10, 1,
-          "There are none left with the courage and conviction to lead....");
+      mvaddstr(
+        10,
+        1,
+        "There are none left with the courage and conviction to lead....",
+      );
       await getKey();
     }
     return null;
@@ -605,10 +646,11 @@ Future<Creature?> _promoteSubordinates(Creature cr) async {
     await getKey();
 
     mvaddstr(
-        10,
-        1,
-        "${newboss.name} is the new leader "
-        "of the Liberal Crime Squad!");
+      10,
+      1,
+      "${newboss.name} is the new leader "
+      "of the Liberal Crime Squad!",
+    );
     await getKey();
 
     cr.hireId = newboss.id; // Make dead founder not founder.
@@ -644,6 +686,11 @@ Future<void> _dailyHealing() async {
   //HEAL PEOPLE AND TRAIN
   for (Creature p in pool) {
     bool hospital = p.site?.type == SiteType.universityHospital;
+    if (hospital) {
+      p.daysHospitalized++;
+    } else {
+      p.daysHospitalized = 0;
+    }
     int billFactor = 0;
     if (hospital) {
       switch (politics.laws[Law.healthcare]) {
@@ -660,6 +707,38 @@ Future<void> _dailyHealing() async {
       }
     }
     if (!p.alive) continue;
+    if (debugVerboseHospitalLogging && hospital) {
+      Site? canonical = sites.firstWhereOrNull(
+        (s) => s.idString == p.site?.idString,
+      );
+      List<String> inj = [];
+      if (p.body is HumanoidBody) {
+        HumanoidBody b = p.body as HumanoidBody;
+        if (b.puncturedHeart) inj.add("heart");
+        if (b.puncturedRightLung) inj.add("Rlung");
+        if (b.puncturedLeftLung) inj.add("Llung");
+        if (b.puncturedLiver) inj.add("liver");
+        if (b.puncturedStomach) inj.add("stomach");
+        if (b.puncturedRightKidney) inj.add("Rkidney");
+        if (b.puncturedLeftKidney) inj.add("Lkidney");
+        if (b.puncturedSpleen) inj.add("spleen");
+        if (b.ribs < b.maxRibs) inj.add("ribs(${b.ribs}/${b.maxRibs})");
+        if (b.neck == InjuryState.untreated) inj.add("neck!");
+        if (b.upperSpine == InjuryState.untreated) inj.add("upSpine!");
+        if (b.lowerSpine == InjuryState.untreated) inj.add("lowSpine!");
+      }
+      List<String> nasty = p.body.parts
+          .where((w) => w.nastyOff)
+          .map((w) => w.name)
+          .toList();
+      debugPrint(
+        "[HOSP] ${p.name} day=${p.daysHospitalized} "
+        "ct=${clinictime(p)} blood=${p.blood}/${p.maxBlood} "
+        "med=${medical[p.site]} canon=${identical(canonical, p.site)} "
+        "site=${p.site?.idString}(${p.site?.type.name}) "
+        "inj=$inj nasty=$nasty",
+      );
+    }
     if (clinictime(p) > 0) {
       int damage = 0; // Amount health degrades
       //int release=1;
@@ -726,10 +805,11 @@ Future<void> _dailyHealing() async {
       if (p.body is HumanoidBody) {
         // Handle major injuries
         HumanoidBody body = p.body as HumanoidBody;
-        bool handleInjury(
-            {bool possiblePermanentDamage = true,
-            int extraDifficulty = 0,
-            int extraBleed = 0}) {
+        bool handleInjury({
+          bool possiblePermanentDamage = true,
+          int extraDifficulty = 0,
+          int extraBleed = 0,
+        }) {
           Site? site = p.site;
           int medicalValue = medical[site] ?? 0;
           if (site != null) {
@@ -760,7 +840,10 @@ Future<void> _dailyHealing() async {
         // Critical hit wounds
         if (body.puncturedHeart) {
           body.puncturedHeart = handleInjury(
-              extraDifficulty: 2, extraBleed: 8, possiblePermanentDamage: true);
+            extraDifficulty: 2,
+            extraBleed: 8,
+            possiblePermanentDamage: true,
+          );
         }
         if (body.puncturedRightLung) {
           body.puncturedRightLung = handleInjury(possiblePermanentDamage: true);
@@ -789,16 +872,19 @@ Future<void> _dailyHealing() async {
           }
         }
         if (body.neck == InjuryState.untreated) {
-          body.neck =
-              handleInjury() ? InjuryState.untreated : InjuryState.treated;
+          body.neck = handleInjury()
+              ? InjuryState.untreated
+              : InjuryState.treated;
         }
         if (body.upperSpine == InjuryState.untreated) {
-          body.upperSpine =
-              handleInjury() ? InjuryState.untreated : InjuryState.treated;
+          body.upperSpine = handleInjury()
+              ? InjuryState.untreated
+              : InjuryState.treated;
         }
         if (body.lowerSpine == InjuryState.untreated) {
-          body.lowerSpine =
-              handleInjury() ? InjuryState.untreated : InjuryState.treated;
+          body.lowerSpine = handleInjury()
+              ? InjuryState.untreated
+              : InjuryState.treated;
         }
       }
 
@@ -817,46 +903,61 @@ Future<void> _dailyHealing() async {
         mvaddstr(8, 1, "${p.name}'s injuries require professional treatment.");
         p.activity = Activity(ActivityType.clinic);
         await getKey();
-      } else if (hospital && clinictime(p) == 0) {
-        p.blood = p.maxBlood;
-        p.activity = Activity.none();
-        if (p.medicalBills > 0) {
-          erase();
-          setColor(lightGray);
-          mvaddstr(6, 1, "${p.name} is being discharged from ${p.site!.name}.");
-          mvaddstrx(8, 1,
-              "&w${p.name}'s hospital bill comes to &R\$${p.medicalBills}&w.");
-          mvaddstrx(9, 1, "The LCS has &G\$${ledger.funds}&w available.");
-          addOptionText(11, 1, "A", "A - Pay the bill.",
-              enabledWhen: ledger.funds >= p.medicalBills);
-          addOptionText(12, 1, "B", "B - Just leave.");
-
-          while (true) {
-            int c = await getKey();
-            if (c == Key.a && ledger.funds >= p.medicalBills) {
-              ledger.subtractFunds(p.medicalBills, Expense.hospitalBills);
-              p.medicalBills = 0;
-              break;
-            } else if (c == Key.b) {
-              break;
-            }
-          }
-        } else {
-          await showMessage(
-              "${p.name} has been discharged from ${p.site!.name}.");
-        }
-
-        Site? hs =
-            findSiteInSameCity(p.site!.city, SiteType.homelessEncampment);
-
-        if (hs != null &&
-            (p.base?.siege.underSiege != false ||
-                p.base?.controller != SiteController.lcs)) {
-          p.base = hs;
-        }
-
-        p.location = p.base;
       }
+    }
+    // Discharge a hospitalized Liberal as soon as they are fully healed
+    // (clinictime 0) -- including when the final point of blood was restored
+    // by aging outside this loop, which would otherwise skip the heal block
+    // (and this discharge) entirely -- or once they reach the maximum stay.
+    if (hospital &&
+        p.alive &&
+        (clinictime(p) == 0 || p.daysHospitalized >= 60)) {
+      p.daysHospitalized = 0;
+      p.activity = Activity.none();
+      if (p.medicalBills > 0) {
+        erase();
+        setColor(lightGray);
+        mvaddstr(6, 1, "${p.name} is being discharged from ${p.site!.name}.");
+        mvaddstrx(
+          8,
+          1,
+          "&w${p.name}'s hospital bill comes to &R\$${p.medicalBills}&w.",
+        );
+        mvaddstrx(9, 1, "The LCS has &G\$${ledger.funds}&w available.");
+        addOptionText(
+          11,
+          1,
+          "A",
+          "A - Pay the bill.",
+          enabledWhen: ledger.funds >= p.medicalBills,
+        );
+        addOptionText(12, 1, "B", "B - Just leave.");
+
+        while (true) {
+          int c = await getKey();
+          if (c == Key.a && ledger.funds >= p.medicalBills) {
+            ledger.subtractFunds(p.medicalBills, Expense.hospitalBills);
+            p.medicalBills = 0;
+            break;
+          } else if (c == Key.b) {
+            break;
+          }
+        }
+      } else {
+        await showMessage(
+          "${p.name} has been discharged from ${p.site!.name}.",
+        );
+      }
+
+      Site? hs = findSiteInSameCity(p.site!.city, SiteType.homelessEncampment);
+
+      if (hs != null &&
+          (p.base?.siege.underSiege != false ||
+              p.base?.controller != SiteController.lcs)) {
+        p.base = hs;
+      }
+
+      p.location = p.base;
     }
   }
   //Give experience to medics
@@ -910,7 +1011,8 @@ Future<void> _doRent() async {
         } else {
           //EVICTED!!!!!!!!!
           await showMessage(
-              "EVICTION NOTICE: ${l.name}.  Possessions dumped on the street.");
+            "EVICTION NOTICE: ${l.name}.  Possessions dumped on the street.",
+          );
 
           l.controller = SiteController.unaligned;
 

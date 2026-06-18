@@ -75,10 +75,10 @@ enum Law {
     "There are universal workers' rights and high wages.",
     "All work is voluntary and unpaid, and people are free to pursue their passions.",
   ]),
-  lgbtRights("LGBT Rights", [
+  lgbtRights("LGBTQ+ Rights", [
     "Sexual minorities are lined up and shot.",
     "Gender and sexual deviants are rounded up and forced into conversion camps.",
-    "Sodomy is a crime and all discrimination against LGBT people is legal.",
+    "Sodomy is a crime and all discrimination against LGBTQ+ people is legal.",
     "Same sex marriages are not legally recognized.",
     "Same sex marriage is legal, but trans rights vary widely from state to state.",
     "Transgender and nonbinary identities are legally recognized nationwide.",
@@ -232,11 +232,9 @@ enum Law {
   const Law(this.label, this.description);
   final String label;
   final List<String> description;
-  static Iterable<Law> get all => Law.values.whereNot((l) => [
-        Law.flagBurning,
-        Law.torture,
-        Law.elections,
-      ].contains(l));
+  static Iterable<Law> get all => Law.values.whereNot(
+    (l) => [Law.flagBurning, Law.torture, Law.elections].contains(l),
+  );
 }
 
 String billName(Law l, bool liberal) {
@@ -285,9 +283,9 @@ String billName(Law l, bool liberal) {
       }
     case Law.lgbtRights:
       if (liberal) {
-        return "Protect LGBT Rights";
+        return "Protect LGBTQ+ Rights";
       } else {
-        return "Save Children from the LGBT Agenda";
+        return "Save Children from Gender Ideology";
       }
     case Law.corporate:
       if (liberal) {

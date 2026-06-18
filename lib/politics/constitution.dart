@@ -24,8 +24,12 @@ Future<void> tryToPurgeSupremeCourt() async {
   if (canSeeThings) {
     erase();
 
-    mvaddstrc(12, 6, white,
-        "The Elite Liberal Congress is proposing an ELITE LIBERAL AMENDMENT!");
+    mvaddstrc(
+      12,
+      6,
+      white,
+      "The Elite Liberal Congress is proposing an ELITE LIBERAL AMENDMENT!",
+    );
 
     await getKey();
   }
@@ -76,7 +80,10 @@ Future<void> tryToPurgeSupremeCourt() async {
     }
     addstr(", also of");
     mvaddstr(
-        y + 5, 0, "the President's choosing with the advice and consent of");
+      y + 5,
+      0,
+      "the President's choosing with the advice and consent of",
+    );
     mvaddstr(y + 6, 0, "the Senate.");
 
     mvaddstr(24, 0, "Press 'C' to watch the ratification process unfold.");
@@ -112,8 +119,12 @@ Future<void> tryToPassTermLimits() async {
   if (canSeeThings) {
     erase();
 
-    mvaddstrc(12, 6, white,
-        "A National Convention has proposed an ELITE LIBERAL AMENDMENT!");
+    mvaddstrc(
+      12,
+      6,
+      white,
+      "A National Convention has proposed an ELITE LIBERAL AMENDMENT!",
+    );
 
     await getKey();
   }
@@ -123,15 +134,30 @@ Future<void> tryToPassTermLimits() async {
     amendmentHeading();
 
     mvaddstr(
-        2, 5, "In light of the Conservative nature of entrenched politicians,");
-    mvaddstr(3, 0,
-        "and the corrupting influence of incumbency on the democratic process,");
-    mvaddstr(4, 0,
-        "all members of the House of Representatives and Senate shall henceforth");
-    mvaddstr(5, 0,
-        "be limited to one term in office.  This shall be immediately enforced");
-    mvaddstr(6, 0,
-        "by holding elections to replace all members of Congress upon the");
+      2,
+      5,
+      "In light of the Conservative nature of entrenched politicians,",
+    );
+    mvaddstr(
+      3,
+      0,
+      "and the corrupting influence of incumbency on the democratic process,",
+    );
+    mvaddstr(
+      4,
+      0,
+      "all members of the House of Representatives and Senate shall henceforth",
+    );
+    mvaddstr(
+      5,
+      0,
+      "be limited to one term in office.  This shall be immediately enforced",
+    );
+    mvaddstr(
+      6,
+      0,
+      "by holding elections to replace all members of Congress upon the",
+    );
     mvaddstr(7, 0, "ratification of this amendment.");
 
     mvaddstr(24, 0, "Press 'C' to watch the ratification process unfold.");
@@ -139,13 +165,18 @@ Future<void> tryToPassTermLimits() async {
     while (await getKey() != Key.c) {}
   }
 
-  if (await ratifyConstitutionalAmendment(DeepAlignment.eliteLiberal,
-      bypassCongress: true)) {
+  if (await ratifyConstitutionalAmendment(
+    DeepAlignment.eliteLiberal,
+    bypassCongress: true,
+  )) {
     politics.termLimitsPassed = true;
     politics.laws[Law.elections] = DeepAlignment.eliteLiberal;
     if (canSeeThings) {
-      mvaddstr(24, 0,
-          "Press any key to hold new elections!                           ");
+      mvaddstr(
+        24,
+        0,
+        "Press any key to hold new elections!                           ",
+      );
       await getKey();
     }
     await senateElections(0);
@@ -165,8 +196,11 @@ Future<void> tryToRepealConstitution() async {
     setColor(white);
 
     erase();
-    mvaddstr(12, 3,
-        "The Arch-Conservative Congress is proposing an ARCH-CONSERVATIVE AMENDMENT!");
+    mvaddstr(
+      12,
+      3,
+      "The Arch-Conservative Congress is proposing an ARCH-CONSERVATIVE AMENDMENT!",
+    );
 
     await getKey();
 
@@ -174,29 +208,59 @@ Future<void> tryToRepealConstitution() async {
     amendmentHeading();
 
     mvaddstr(
-        2, 5, "In recognition of the fact that society is degenerating under");
+      2,
+      5,
+      "In recognition of the fact that society is degenerating under",
+    );
     mvaddstr(
-        3, 0, "the pressure of the elite liberal threat, WE THE PEOPLE HEREBY");
+      3,
+      0,
+      "the pressure of the elite liberal threat, WE THE PEOPLE HEREBY",
+    );
     mvaddstr(
-        4, 0, "REPEAL THE CONSTITUTION.  The former United States are to be");
+      4,
+      0,
+      "REPEAL THE CONSTITUTION.  The former United States are to be",
+    );
     mvaddstr(
-        5, 0, "reorganized into the CONFEDERATED STATES OF AMERICA, with new");
+      5,
+      0,
+      "reorganized into the CONFEDERATED STATES OF AMERICA, with new",
+    );
     mvaddstr(6, 0, "boundaries to be determined by leading theologians.");
     mvaddstr(8, 5, "Ronald Reagan is to be King, forever, even after death.");
-    mvaddstr(10, 5,
-        "The following Executive Officers are also chosen in perpetuity:");
-    mvaddstr(11, 0,
-        "Minister of Love Strom Thurmond, Minister of Peace Jesse Helms,");
+    mvaddstr(
+      10,
+      5,
+      "The following Executive Officers are also chosen in perpetuity:",
+    );
+    mvaddstr(
+      11,
+      0,
+      "Minister of Love Strom Thurmond, Minister of Peace Jesse Helms,",
+    );
     mvaddstr(12, 0, "and Minister of Truth Jerry Falwell.");
     mvaddstr(
-        14, 5, "Even though all of the aforementioned persons are deceased,");
+      14,
+      5,
+      "Even though all of the aforementioned persons are deceased,",
+    );
     mvaddstr(
-        15, 0, "they shall nominally hold these posts without end, and all");
+      15,
+      0,
+      "they shall nominally hold these posts without end, and all",
+    );
     mvaddstr(
-        16, 0, "actual decisions shall be made by business representatives,");
+      16,
+      0,
+      "actual decisions shall be made by business representatives,",
+    );
     mvaddstr(17, 0, "chosen by respected business leaders.");
     mvaddstr(
-        19, 5, "People may petition Jesus for a redress of grievances, as");
+      19,
+      5,
+      "People may petition Jesus for a redress of grievances, as",
+    );
     mvaddstr(20, 0, "He will be the only one listening.");
     mvaddstr(22, 5, "Have a nice day.");
 
@@ -207,8 +271,11 @@ Future<void> tryToRepealConstitution() async {
 
   if (await ratifyConstitutionalAmendment(DeepAlignment.archConservative)) {
     if (canSeeThings) {
-      mvaddstr(24, 0,
-          "Press any key to reflect on what has happened ONE LAST TIME.");
+      mvaddstr(
+        24,
+        0,
+        "Press any key to reflect on what has happened ONE LAST TIME.",
+      );
 
       await getKey();
     }
@@ -223,12 +290,24 @@ Future<void> tryToRepealConstitution() async {
     HighScore yourScore;
     if (canSeeThings) {
       execName[Exec.president] = FullName("Ronald", "", "Reagan", Gender.male);
-      execName[Exec.vicePresident] =
-          FullName("Strom", "", "Thurmond", Gender.male);
-      execName[Exec.secretaryOfState] =
-          FullName("Jesse", "", "Helms", Gender.male);
-      execName[Exec.attorneyGeneral] =
-          FullName("Jerry", "", "Falwell", Gender.male);
+      execName[Exec.vicePresident] = FullName(
+        "Strom",
+        "",
+        "Thurmond",
+        Gender.male,
+      );
+      execName[Exec.secretaryOfState] = FullName(
+        "Jesse",
+        "",
+        "Helms",
+        Gender.male,
+      );
+      execName[Exec.attorneyGeneral] = FullName(
+        "Jerry",
+        "",
+        "Falwell",
+        Gender.male,
+      );
       for (Exec e in exec.keys) {
         exec[e] = DeepAlignment.archConservative;
       }
@@ -264,17 +343,17 @@ Future<void> tryToRepealConstitution() async {
         case CantSeeReason.disbanded:
           //DISBANDED AND REAGANIFIED
           await defeatMessages(
-            "You disappeared safely, but you hadn't done enough.",
-            "The Conservatives have made the world in their image.",
-            "They'll round the last of you up eventually.  All is lost.",
+            "You just watched it happen as the country collapsed without you.",
+            "Freedom, equality, justice... they're just words now.",
+            "The world grows dark...",
           );
           yourScore = await saveHighScore(Ending.disbandLoss);
         case CantSeeReason.hospital:
           //HOSPITALIZED AND REAGANIFIED
           await defeatMessages(
-            "You were in the hospital when the country was on the verge of collapse.",
-            "The Conservatives have made the world in their image.",
-            "They'll round the last of you up eventually.  All is lost.",
+            "You were in a coma when the country was on the verge of collapse.",
+            "They don't bring folks like you back anymore.",
+            "The world is fading with you...",
           );
           yourScore = await saveHighScore(Ending.reaganified);
         case CantSeeReason.other:
@@ -294,8 +373,11 @@ Future<void> tryToRepealConstitution() async {
     endGame();
   } else {
     if (canSeeThings) {
-      mvaddstr(24, 0,
-          "Press any key to breathe a sigh of relief.                   ");
+      mvaddstr(
+        24,
+        0,
+        "Press any key to breathe a sigh of relief.                   ",
+      );
 
       await getKey();
     }
@@ -303,8 +385,12 @@ Future<void> tryToRepealConstitution() async {
 }
 
 /* endgame - checks if a constitutional amendment is ratified */
-Future<bool> ratifyConstitutionalAmendment(DeepAlignment level,
-    {bool bypassCongress = false, Law? lawview, View? view}) async {
+Future<bool> ratifyConstitutionalAmendment(
+  DeepAlignment level, {
+  bool bypassCongress = false,
+  Law? lawview,
+  View? view,
+}) async {
   if (canSeeThings) {
     erase();
 
@@ -331,7 +417,10 @@ Future<bool> ratifyConstitutionalAmendment(DeepAlignment level,
       mvaddstr(0, 62, "House");
       mvaddstr(0, 70, "Senate");
       mvaddstr(
-          24, 0, "Press any key to watch the Congressional votes unfold.     ");
+        24,
+        0,
+        "Press any key to watch the Congressional votes unfold.     ",
+      );
       await getKey();
     }
 
@@ -440,8 +529,11 @@ Future<bool> ratifyConstitutionalAmendment(DeepAlignment level,
         addstr(states[s].name);
       }
 
-      mvaddstr(24, 0,
-          "Press any key to watch the State votes unfold.              ");
+      mvaddstr(
+        24,
+        0,
+        "Press any key to watch the State votes unfold.              ",
+      );
 
       await getKey();
     }
@@ -524,6 +616,10 @@ Future<bool> ratifyConstitutionalAmendment(DeepAlignment level,
 void amendmentHeading() {
   erase();
 
-  mvaddstrc(0, 0, white,
-      "Proposed Amendment ${romanNumeral(politics.constitutionalAmendments + 1)} to the United States Constitution:");
+  mvaddstrc(
+    0,
+    0,
+    white,
+    "Proposed Amendment ${romanNumeral(politics.constitutionalAmendments + 1)} to the United States Constitution:",
+  );
 }

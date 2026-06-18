@@ -7,6 +7,7 @@ import 'package:lcs_new_age/creature/gender.dart';
 import 'package:lcs_new_age/creature/name.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/gamestate/ledger.dart';
+import 'package:lcs_new_age/items/flag_type.dart';
 import 'package:lcs_new_age/items/item.dart';
 import 'package:lcs_new_age/items/money.dart';
 import 'package:lcs_new_age/location/city.dart';
@@ -25,12 +26,12 @@ part 'site.g.dart';
 @JsonSerializable(ignoreUnannotated: true)
 class Site extends Location {
   Site(this.type, [City? city, District? district])
-      : name = type.name,
-        shortName = type.shortName,
-        cityId = city?.id ?? cities.firstOrNull?.id ?? -1,
-        districtId = district?.id ?? districts.firstOrNull?.id ?? -1,
-        id = gameState.nextSiteId++,
-        mapseed = nextRngSeed {
+    : name = type.name,
+      shortName = type.shortName,
+      cityId = city?.id ?? cities.firstOrNull?.id ?? -1,
+      districtId = district?.id ?? districts.firstOrNull?.id ?? -1,
+      id = gameState.nextSiteId++,
+      mapseed = nextRngSeed {
     if (type == SiteType.homelessEncampment || type == SiteType.warehouse) {
       controller = SiteController.lcs;
     }
@@ -66,10 +67,14 @@ class Site extends Location {
       ccsReach -= 2;
     }
     if (ccsReach < 0) ccsReach = 0;
-    int target = ccsReach *
+    int target =
+        ccsReach *
         creaturesPresent.where((e) => e.isCriminal && e.isActiveLiberal).length;
-    if ([SiteType.barAndGrill, SiteType.bombShelter, SiteType.bunker]
-        .contains(type)) {
+    if ([
+      SiteType.barAndGrill,
+      SiteType.bombShelter,
+      SiteType.bunker,
+    ].contains(type)) {
       target *= 3;
     }
     return target;
@@ -77,6 +82,9 @@ class Site extends Location {
 
   @JsonKey()
   bool hasFlag = false;
+  @JsonKey(defaultValue: 'FLAG_US')
+  String flyingFlagId = 'FLAG_US';
+  FlagType? get flyingFlag => hasFlag ? flagTypes[flyingFlagId] : null;
   @JsonKey(includeToJson: true, includeFromJson: true, defaultValue: false)
   bool _businessFront = false;
   bool get businessFront {
@@ -161,8 +169,9 @@ class Site extends Location {
 
   @override
   String getName({bool short = false, bool includeCity = false}) {
-    String fullName =
-        short ? (frontShortName ?? shortName) : (frontName ?? name);
+    String fullName = short
+        ? (frontShortName ?? shortName)
+        : (frontName ?? name);
     if (includeCity && multipleCityMode) {
       return '$fullName, ${city.getName(short: true)}';
     } else {
@@ -187,13 +196,8 @@ class Site extends Location {
     if (type == SiteType.upscaleApartment || discreet || businessFront) {
       protection = 80;
     }
-    if (laws[Law.flagBurning] == DeepAlignment.archConservative) {
-      if (hasFlag) {
-        protection += 30;
-      } else {
-        protection -= 10;
-      }
-    }
+    int flagSecrecy = flagSecrecyWhenFlying(flyingFlag);
+    if (flagSecrecy > 0) protection += flagSecrecy;
     return protection.clamp(0, 95);
   }
 
@@ -300,7 +304,7 @@ void initSiteName(Site loc) {
         "Radiant",
         "Loving",
         "Tender",
-        "Joyful"
+        "Joyful",
       ];
       const noun = [
         "Journey",
@@ -309,7 +313,7 @@ void initSiteName(Site loc) {
         "Touch",
         "Oasis",
         "Care",
-        "Reflections"
+        "Reflections",
       ];
       loc.name = "${adjective.random} ${noun.random} Nursing Home";
       loc.shortName = "NursingHome";

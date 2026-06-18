@@ -1,5 +1,17 @@
-## 1.5.1 - ????
-* Changed some wording on save management and export for improved clarity
+## 1.5.1 - 6/18/20266
+* Added the ability to fly other flags than the US flag and 24 new flag options to choose from
+* Added the ability to craft flags (and made most flags only available through crafting)
+* Added the ability to wave most flags during a siege for a weaker version of the burn flag effect
+* Changed some wording on save management and export for improved clarity (and exporting saves is now E instead of B)
+* Fixed a crash when stealing cheap jewelry from various locations
+* Fixed a bug where loot in the nursing home and insurance office locations wasn't working right
+* Added a hard limit on how long you can stay at the hospital in one visit before they just discharge you whether you're healed or not
+* Fixed a bug that could cause you to end up permanently in the hospital
+* Slowed the rate of heat decay on individuals
+* Changed LGBT in some contexts to LGBTQ or LGBTQ+ depending on vibes
+* Changed "Save Children from the LGBT Agenda" to "Save Children from Gender Ideology" for conservative legislation
+* Renamed the "sweatshops" issue to "labor rights" in some contexts
+* Added some 1.5.0 changelog items I overlooked (game text resizable, added medical bills)
 
 ## 1.5.0 - 6/15/2026
 * Added Housing, Healthcare, and Retirement issues and corresponding laws
@@ -26,6 +38,7 @@
 * Fixed the Liberal Guardian potentially using censorship and/or hate speech during C+ free speech laws
 * Fixed Ronald Reagan's death date
 * Added an option to change text size so the game window can be enlarged
+* Added medical bills and changed the way hospital visits heal people (it generally takes much less time to get discharged now)
 
 ## 1.4.9 - 6/15/2025
 * Renamed several safehouses when the LCS captures them

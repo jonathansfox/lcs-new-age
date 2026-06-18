@@ -254,7 +254,7 @@ Future<bool> loadGame(SaveFile selectedSave) async {
     } else if (c == Key.d) {
       await deleteSave(selectedSave);
       return false;
-    } else if (c == Key.b) {
+    } else if (c == Key.e) {
       await backupSave(selectedSave);
     } else if (c == Key.q || isBackKey(c)) {
       return false;
