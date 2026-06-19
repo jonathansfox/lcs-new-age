@@ -14,6 +14,7 @@ import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
 import 'package:lcs_new_age/politics/laws.dart';
 import 'package:lcs_new_age/utils/colors.dart';
+import 'package:lcs_new_age/utils/game_options.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 
 /* monthly - move a liberal to jail */
@@ -46,7 +47,7 @@ Future<void> prison(Creature g) async {
     "sale to a furniture maker",
     "being fed into a meat processing plant",
     "sale to foreign slave traders",
-    "exposure to degenerate Bay 12 Curses games"
+    "exposure to degenerate Bay 12 Curses games",
   ];
 
   const List<String> historicExecutionMethods = [
@@ -54,7 +55,7 @@ Future<void> prison(Creature g) async {
     "hanging",
     "firing squad",
     "electrocution",
-    "inert gas asphyxiation"
+    "inert gas asphyxiation",
   ];
 
   const List<String> supposedlyHumaneExecutionMethods = ["lethal injection"];
@@ -101,6 +102,10 @@ Future<void> prison(Creature g) async {
           DeepAlignment.conservative => historicExecutionMethods.random,
           _ => supposedlyHumaneExecutionMethods.random,
         };
+        if (laws[Law.deathPenalty] == DeepAlignment.archConservative &&
+            gameOptions.lighterTone) {
+          method = historicExecutionMethods.random;
+        }
         mvaddstr(9, 1, "Today, the Conservative Machine executed ${g.name}");
         mvaddstr(10, 1, "by $method.");
 
@@ -109,11 +114,18 @@ Future<void> prison(Creature g) async {
         //dejuice boss
         Creature? boss = pool.firstWhereOrNull((p) => p.id == g.hireId);
         if (boss != null) {
-          mvaddstrc(12, 1, lightGray,
-              "${boss.name} has failed the Liberal Crime Squad.");
+          mvaddstrc(
+            12,
+            1,
+            lightGray,
+            "${boss.name} has failed the Liberal Crime Squad.",
+          );
 
-          mvaddstr(14, 1,
-              "If you can't protect your own people, who can you protect?");
+          mvaddstr(
+            14,
+            1,
+            "If you can't protect your own people, who can you protect?",
+          );
 
           await getKey();
 
@@ -128,8 +140,11 @@ Future<void> prison(Creature g) async {
         mvaddstrc(8, 1, lightGray, g.name);
         addstr(" has been released from prison.");
 
-        mvaddstr(9, 1,
-            "No doubt there are some mental scars, but the Liberal is back.");
+        mvaddstr(
+          9,
+          1,
+          "No doubt there are some mental scars, but the Liberal is back.",
+        );
 
         await getKey();
 
@@ -138,8 +153,10 @@ Future<void> prison(Creature g) async {
         // If their old base is no longer under LCS control, wander back to the
         // homeless camp instead.
         if (g.base?.controller != SiteController.lcs) {
-          g.base =
-              findSiteInSameCity(g.location?.city, SiteType.homelessEncampment);
+          g.base = findSiteInSameCity(
+            g.location?.city,
+            SiteType.homelessEncampment,
+          );
         }
         g.location = g.base;
       }
@@ -179,7 +196,7 @@ Future<void> rehabilitation(Creature g) async {
     " sings songs with prisoners of all political persuasions.",
     " is encouraged to befriend Conservatives in prison.",
     " puts on an anti-crime performance in prison.",
-    " sees a video in prison by victims of political crime."
+    " sees a video in prison by victims of political crime.",
   ];
 
   erase();
@@ -279,7 +296,7 @@ Future<void> laborCamp(Creature g) async {
     " does back-breaking work all month in prison.",
     " gets in a brutal fight with another prisoner.",
     " participates in a quickly-suppressed prison riot.",
-    " participates in a quickly-suppressed prison riot."
+    " participates in a quickly-suppressed prison riot.",
   ];
 
   experience ??= laborCampExperiences.random;
@@ -374,21 +391,21 @@ Future<void> prisonScene(Creature g) async {
     " organizes a group of inmates to beat up on a serial rapist.",
     " learns lots of little skills from other inmates.",
     " gets a prison tattoo with the letters L-C-S.",
-    " thinks up new protest songs while in prison."
+    " thinks up new protest songs while in prison.",
   ];
   const List<String> badExperiences = [
     " gets sick for a few days from nasty prison food.",
     " spends too much time working out at the prison gym.",
     " is sexually assaulted by another prison inmate.",
     " writes to a letter the warden swearing off political activism.",
-    " rats out one of the other inmates in exchange for benefits."
+    " rats out one of the other inmates in exchange for benefits.",
   ];
   const List<String> generalExperiences = [
     " mouths off to a prison guard and ends up in solitary.",
     " gets high off drugs smuggled into the prison.",
     " does nothing but read books at the prison library.",
     " gets into a fight and is punished with latrine duty.",
-    " constantly tries thinking how to escape from prison."
+    " constantly tries thinking how to escape from prison.",
   ];
 
   if (escaped == 0) {

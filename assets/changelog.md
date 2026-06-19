@@ -1,4 +1,7 @@
-## 1.5.1 - 6/18/20266
+## 1.5.2 - 6/18/2026
+* Added a main menu option to lighten the tone of the writing to be more neutral in some of the more visceral, bleak, and depressing areas of the game
+
+## 1.5.1 - 6/18/2026
 * Added the ability to fly other flags than the US flag and 24 new flag options to choose from
 * Added the ability to craft flags (and made most flags only available through crafting)
 * Added the ability to wave most flags during a siege for a weaker version of the burn flag effect

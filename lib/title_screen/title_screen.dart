@@ -17,7 +17,7 @@ import 'package:lcs_new_age/utils/interface_options.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const String gameVersion = "1.5.1";
+const String gameVersion = "1.5.2";
 bool megaFounderCheat = false;
 
 Future<void> titleScreen() async {
@@ -132,15 +132,38 @@ Future<void> optionsMenu() async {
     setColor(lightGray);
     mvaddstrCenter(4, "Configure your Liberal Crime Squad experience");
 
+    addOptionText(8, 4, "I", "I - Interface Options");
+    addOptionText(console.y + 1, 4, "C", "C - Content and Tone Options");
+    addOptionText(console.y + 2, 4, "B", "B - Back to Title Screen");
+
+    int c = await getKey();
+
+    switch (c) {
+      case Key.i:
+        await interfaceOptionsMenu();
+      case Key.c:
+        await contentAndToneOptionsMenu();
+      case Key.b:
+        return;
+    }
+  }
+}
+
+Future<void> interfaceOptionsMenu() async {
+  while (true) {
+    erase();
+    setColor(lightGreen);
+    mvaddstrCenter(2, "INTERFACE OPTIONS");
+
     addOptionText(
-      6,
+      4,
       4,
       "E",
       "E - Encounter Warnings: ${gameOptions.encounterWarnings ? "&GOn&x" : "&ROff&x"}",
     );
     setColor(midGray);
     addparagraph(
-      7,
+      5,
       8,
       x2: 72,
       "Adds an extra prompt when you run into people so you don't "
@@ -222,6 +245,46 @@ Future<void> optionsMenu() async {
         if (gameOptions.fontSize > 32) {
           gameOptions.fontSize = 32;
         }
+        await gameOptions.save();
+      case Key.b:
+        return;
+    }
+  }
+}
+
+Future<void> contentAndToneOptionsMenu() async {
+  while (true) {
+    erase();
+    setColor(lightGreen);
+    mvaddstrCenter(2, "CONTENT AND TONE");
+
+    addOptionText(
+      4,
+      4,
+      "L",
+      "L - Lighter Tone: ${gameOptions.lighterTone ? "&GOn&x" : "&ROff&x"}",
+    );
+    setColor(midGray);
+    addparagraph(
+      5,
+      8,
+      x2: 72,
+      "Adjusts some of the heavier, darker flavor text to use more "
+      "direct and straightforward wording. This affects how your people are "
+      "shown to respond to traumatic experiences, some combat flavor text, "
+      "and some bad endings. Also reduces how often news stories about "
+      "hate crimes are shown, instead generating other news stories that "
+      "have the same impact on the game world. This option does not change "
+      "the mechanics of the game. Default is off.",
+    );
+
+    addOptionText(console.y + 1, 4, "B", "B - Back to Options");
+
+    int c = await getKey();
+
+    switch (c) {
+      case Key.l:
+        gameOptions.lighterTone = !gameOptions.lighterTone;
         await gameOptions.save();
       case Key.b:
         return;

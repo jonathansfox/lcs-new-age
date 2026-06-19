@@ -10,6 +10,7 @@ import 'package:lcs_new_age/politics/alignment.dart';
 import 'package:lcs_new_age/politics/laws.dart';
 import 'package:lcs_new_age/politics/views.dart';
 import 'package:lcs_new_age/utils/colors.dart';
+import 'package:lcs_new_age/utils/game_options.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 
 class MajorEventContent {
@@ -151,6 +152,27 @@ MajorEventContent generateMajorEventContent(
   if (liberalSpin) {
     switch (view) {
       case View.womensRights:
+        if (gameOptions.lighterTone || oneIn(2)) {
+          FullName organizer = generateFullName();
+          return MajorEventContent(
+            headline: "WOMEN'S MARCH",
+            storyText:
+                "${randomCityName()} - Tens of thousands marched downtown "
+                "today in support of women's rights, in one of the largest "
+                "demonstrations the city has seen in years.&r"
+                "   The Women's March, led by a coalition of women's rights "
+                "organizations, called for equal pay for equal work, "
+                "access to affordable healthcare, and the right to make "
+                "decisions about their own bodies.&r"
+                "   \"This fight is bigger than any one of us,\" organizer "
+                "${organizer.firstLast} said.  \"We need to stand together "
+                "and show that we are not going to be silenced. We need to "
+                "make sure that our voices are heard.\"&r"
+                "   The march proceeded peacefully and without incident.  "
+                "The atmosphere was festive and supportive, with many "
+                "bystanders cheering the women on.&r",
+          );
+        }
         FullName doctor = generateFullName(Gender.female);
         FullName perpetrator = generateFullName(Gender.male);
         String abortions = switch (laws[Law.genderEquality]) {
@@ -183,6 +205,26 @@ MajorEventContent generateMajorEventContent(
               "two children.&r",
         );
       case View.lgbtRights:
+        if (gameOptions.lighterTone || oneIn(2)) {
+          FullName organizer = generateFullName();
+          return MajorEventContent(
+            headline: "MARCH OF LOVE",
+            storyText:
+                "${randomCityName()} - A huge crowd gathered downtown today "
+                "for a march celebrating LGBT rights and calling for equal "
+                "treatment under the law.&r"
+                "   \"We're here to remind everyone that we are all equal, "
+                "that love is love, and that everyone deserves a chance at "
+                "happiness,\" said ${organizer.firstLast}, a local activist "
+                "who helped organize the march.  \"To everyone who came out "
+                "today, whether it was coming out to support us or coming "
+                "out to your friends and family, thank you!\"&r"
+                "   One bystander struck a supportive tone: \"It's just so "
+                "heartwarming to see people marching for the idea of just "
+                "being in love and being who they are. Who can argue with "
+                "that?\"&r",
+          );
+        }
         FullName victim = generateFullName(Gender.female);
         String victimDeadName = firstName(Gender.male);
         String victimFullName = laws[Law.lgbtRights]! < DeepAlignment.moderate

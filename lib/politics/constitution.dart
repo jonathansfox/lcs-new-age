@@ -322,6 +322,8 @@ Future<void> tryToRepealConstitution() async {
             "You went on vacation when the country was on the verge of collapse.",
             "The Conservatives have made the world in their image.",
             "They'll round up the last of you eventually.  All is lost.",
+            gentle:
+                "The Arch-Conservative Amendment passed while you were on vacation.",
           );
           yourScore = await saveHighScore(Ending.dating);
         case CantSeeReason.hiding:
@@ -330,6 +332,8 @@ Future<void> tryToRepealConstitution() async {
             "You went into hiding when the country was on the verge of collapse.",
             "The Conservatives have made the world in their image.",
             "They'll round the last of you up eventually.  All is lost.",
+            gentle:
+                "The Arch-Conservative Amendment passed while you were in hiding.",
           );
           yourScore = await saveHighScore(Ending.hiding);
         case CantSeeReason.prison:
@@ -338,6 +342,8 @@ Future<void> tryToRepealConstitution() async {
             "While you were on the inside, the country degenerated...",
             "Your kind are never released these days.",
             "Ain't no sunshine...",
+            gentle:
+                "The Arch-Conservative Amendment passed while you were in prison.",
           );
           yourScore = await saveHighScore(Ending.prison);
         case CantSeeReason.disbanded:
@@ -346,6 +352,8 @@ Future<void> tryToRepealConstitution() async {
             "You just watched it happen as the country collapsed without you.",
             "Freedom, equality, justice... they're just words now.",
             "The world grows dark...",
+            gentle:
+                "The Arch-Conservative Amendment passed after the LCS disbanded.",
           );
           yourScore = await saveHighScore(Ending.disbandLoss);
         case CantSeeReason.hospital:
@@ -354,6 +362,8 @@ Future<void> tryToRepealConstitution() async {
             "You were in a coma when the country was on the verge of collapse.",
             "They don't bring folks like you back anymore.",
             "The world is fading with you...",
+            gentle:
+                "The Arch-Conservative Amendment passed while you were in the hospital.",
           );
           yourScore = await saveHighScore(Ending.reaganified);
         case CantSeeReason.other:
@@ -363,6 +373,8 @@ Future<void> tryToRepealConstitution() async {
             "You weren't there when the country was on the verge of collapse.",
             "The Conservatives have made the world in their image.",
             "They'll round the last of you up eventually.  All is lost.",
+            gentle:
+                "The Arch-Conservative Amendment passed while you were away.",
           );
           yourScore = await saveHighScore(Ending.reaganified);
       }

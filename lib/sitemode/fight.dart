@@ -30,6 +30,7 @@ import 'package:lcs_new_age/sitemode/site_display.dart';
 import 'package:lcs_new_age/sitemode/sitemap.dart';
 import 'package:lcs_new_age/talk/talk_in_combat.dart';
 import 'package:lcs_new_age/utils/colors.dart';
+import 'package:lcs_new_age/utils/game_options.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 
 /* attack handling for each side as a whole */
@@ -65,7 +66,10 @@ Future<void> youattack(List<Creature> validTargets) async {
 }
 
 Future<void> squadMemberAttacks(
-    Creature p, bool wasAlarm, List<Creature> validTargets) async {
+  Creature p,
+  bool wasAlarm,
+  List<Creature> validTargets,
+) async {
   // Categorize npcs into danger levels
   List<Creature> superEnemies = [];
   List<Creature> dangerousEnemies = [];
@@ -146,8 +150,11 @@ Future<void> squadMemberAttacks(
       // Charge with assault if first strike
       addPotentialCrime([p], Crime.assault, reasonKey: target.id.toString());
     } else {
-      addPotentialCrime([p], Crime.disturbingThePeace,
-          reasonKey: target.id.toString());
+      addPotentialCrime(
+        [p],
+        Crime.disturbingThePeace,
+        reasonKey: target.id.toString(),
+      );
     }
   }
 
@@ -173,7 +180,7 @@ const List<String> escapeCrawling = [
   " crawls off sobbing...",
   " crawls off whispering...",
   " crawls off praying...",
-  " crawls off cursing..."
+  " crawls off cursing...",
 ];
 const List<String> escapeRunning = [
   " makes a break for it!",
@@ -221,7 +228,11 @@ Future<void> enemyattack(List<Creature> possibleEnemies) async {
 
         mvaddstrc(9, 1, white, e.name);
         if (e.body.legok < 2 || e.blood < e.maxBlood * 0.45) {
-          addstr(escapeCrawling.random);
+          if (gameOptions.lighterTone) {
+            addstr("crawls off...");
+          } else {
+            addstr(escapeCrawling.random);
+          }
         } else {
           addstr(escapeRunning.random);
         }
@@ -344,8 +355,12 @@ Future<void> enemyattack(List<Creature> possibleEnemies) async {
 }
 
 /* attack handling for an individual creature and its target */
-Future<bool> attack(Creature a, Creature t, bool mistake,
-    {bool forceMelee = false}) async {
+Future<bool> attack(
+  Creature a,
+  Creature t,
+  bool mistake, {
+  bool forceMelee = false,
+}) async {
   bool targetInSquad = t.squad == activeSquad && t.align == Alignment.liberal;
   bool targetIsLeader = targetInSquad && t.boss == null;
 
@@ -386,10 +401,14 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
   bool forceRanged = mode == GameMode.carChase;
   bool canSocialAttack =
       (a.align == Alignment.liberal || encounter.length < ENCMAX) &&
-          !forceRanged;
+      !forceRanged;
   bool forceNoReload = forceMelee || !a.canReload();
-  Attack? attackUsed = a.getAttack(forceRanged, forceMelee, forceNoReload,
-      allowSocial: canSocialAttack);
+  Attack? attackUsed = a.getAttack(
+    forceRanged,
+    forceMelee,
+    forceNoReload,
+    allowSocial: canSocialAttack,
+  );
 
   if (attackUsed == null) return false; // No viable attack to use, so don't
 
@@ -601,7 +620,8 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
     if (maxNumberOfAttacks == 1) {
       bursthits = 1;
     } else {
-      bursthits = maxNumberOfAttacks ~/ 2 +
+      bursthits =
+          maxNumberOfAttacks ~/ 2 +
           lcsRandom((a.skill(Skill.martialArts) - maxNumberOfAttacks) ~/ 3 + 1);
     }
     if (bursthits > maxNumberOfAttacks) bursthits = maxNumberOfAttacks;
@@ -611,8 +631,9 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
   } else {
     if (mode == GameMode.site &&
         lcsRandom(100) < (attackUsed.fire?.chanceCausesDebris ?? 0)) {
-      activeSite!.changes
-          .add(SiteTileChange(locx, locy, locz, SITEBLOCK_DEBRIS));
+      activeSite!.changes.add(
+        SiteTileChange(locx, locy, locz, SITEBLOCK_DEBRIS),
+      );
     }
     if (mode == GameMode.site &&
         lcsRandom(100) < (attackUsed.fire?.chance ?? 0)) {
@@ -790,8 +811,15 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
 
     bool aliveBefore = t.alive;
     for (int i = 0; i < bursthits; i++) {
-      await hit(a, t, attackUsed, hitPart!, sneakAttack, addNastyOff,
-          damageMultiplier);
+      await hit(
+        a,
+        t,
+        attackUsed,
+        hitPart!,
+        sneakAttack,
+        addNastyOff,
+        damageMultiplier,
+      );
       if (hitPart.critical && addStun) {
         t.stunned = 10;
       } else if (addStun) {
@@ -854,38 +882,34 @@ Future<bool> attack(Creature a, Creature t, bool mistake,
       move(10, 1);
       if (sneakAttack) {
         addstr(t.name);
-        addstr([
-          " notices at the last moment!",
-          " notices before the attack connects!",
-          " spins and blocks the attack!",
-          " jumps back and cries out in alarm!",
-        ].random);
+        addstr(
+          [
+            " notices at the last moment!",
+            " notices before the attack connects!",
+            " spins and blocks the attack!",
+            " jumps back and cries out in alarm!",
+          ].random,
+        );
         siteAlarm = true;
       } else if (mode == GameMode.carChase) {
-        addstr("${a.name}'s shot ${[
-          "misses!",
-          "goes wide!",
-          "hits the car!",
-          "hits the road!",
-          "hits the sidewalk!",
-          "hits a building!",
-          "hits a tree!",
-          "hits a parked car!",
-          "ricochets off the car!",
-          "ricochets off the road!",
-          "is too high!",
-        ].random}");
+        addstr(
+          "${a.name}'s shot ${["misses!", "goes wide!", "hits the car!", "hits the road!", "hits the sidewalk!", "hits a building!", "hits a tree!", "hits a parked car!", "ricochets off the car!", "ricochets off the road!", "is too high!"].random}",
+        );
       } else if (t.skillCheck(
-          Skill.dodge, Difficulty.average)) //Awesome dodge or regular one?
+        Skill.dodge,
+        Difficulty.average,
+      )) //Awesome dodge or regular one?
       {
         addstr(t.name);
-        addstr([
-          " dodges the attack!",
-          " leaps out of the way!",
-          " does the Matrix dodge!",
-          " sidesteps the attack!",
-          " dodges into cover!",
-        ].random);
+        addstr(
+          [
+            " dodges the attack!",
+            " leaps out of the way!",
+            " does the Matrix dodge!",
+            " sidesteps the attack!",
+            " dodges into cover!",
+          ].random,
+        );
       } else {
         addstr("${a.name} misses.");
       }
@@ -911,8 +935,13 @@ int healthmodroll(int aroll, Creature a) {
 }
 
 /* adjusts attack damage based on armor, other factors */
-int damagemod(Creature t, Attack attackUsed, int damamount,
-    BodyPart hitlocation, double mod) {
+int damagemod(
+  Creature t,
+  Attack attackUsed,
+  int damamount,
+  BodyPart hitlocation,
+  double mod,
+) {
   debugPrint("Damage mod: $mod, damage before application: $damamount");
 
   if (mod < 0) {
@@ -928,8 +957,15 @@ int damagemod(Creature t, Attack attackUsed, int damamount,
   return damamount;
 }
 
-Future<void> hit(Creature a, Creature t, Attack attackUsed, BodyPart hitPart,
-    bool sneakAttack, bool addNastyOff, double damageMultiplier) async {
+Future<void> hit(
+  Creature a,
+  Creature t,
+  Attack attackUsed,
+  BodyPart hitPart,
+  bool sneakAttack,
+  bool addNastyOff,
+  double damageMultiplier,
+) async {
   if (hitPart.missing) return;
   String str = "";
   int damamount = 0;
@@ -1001,8 +1037,8 @@ Future<void> hit(Creature a, Creature t, Attack attackUsed, BodyPart hitPart,
       hitPart.bruised = attackUsed.bruises;
     }
 
-    int severamount =
-        (hitPart.relativeHealth * t.maxBlood + t.maxBlood).round();
+    int severamount = (hitPart.relativeHealth * t.maxBlood + t.maxBlood)
+        .round();
     if (hitPart.critical) {
       severamount += t.maxBlood * 2;
     }
@@ -1011,9 +1047,11 @@ Future<void> hit(Creature a, Creature t, Attack attackUsed, BodyPart hitPart,
         damamount >= severamount &&
         !bruiseOnly) {
       String NAME = // ignore: non_constant_identifier_names
-          t.name.toUpperCase();
+      t.name
+          .toUpperCase();
       String PART = // ignore: non_constant_identifier_names
-          hitPart.name.toUpperCase();
+      hitPart.name
+          .toUpperCase();
       if (severtype == SeverType.clean) {
         hitPart.cleanOff = true;
         if (hitPart.critical && !hitPart.weakSpot) {
@@ -1518,8 +1556,12 @@ Future<bool> socialAttack(Creature a, Creature t, Attack attackUsed) async {
   int resist = 0;
 
   clearMessageArea();
-  mvaddstrc(9, 1, white,
-      "${a.name} ${attackUsed.attackDescription.random} ${t.name}!");
+  mvaddstrc(
+    9,
+    1,
+    white,
+    "${a.name} ${attackUsed.attackDescription.random} ${t.name}!",
+  );
 
   int attack = a.skillRoll(attackUsed.skill);
   if (t.align == Alignment.liberal) {
@@ -1761,7 +1803,7 @@ Future<bool> incapacitated(Creature a, bool noncombat) async {
       }
     } else {
       a.incapacitatedThisRound = false;
-      if (noncombat) {
+      if (noncombat && !gameOptions.lighterTone) {
         clearMessageArea();
         mvaddstrc(9, 1, white, a.name);
         if (a.squad == null && !a.type.majorEnemy) a.nonCombatant = true;
@@ -2003,7 +2045,9 @@ Future<void> captureCreature(Creature t) async {
     }
   } else {
     t.location = findSiteInSameCity(
-        activeSite?.city ?? t.location?.city, SiteType.policeStation);
+      activeSite?.city ?? t.location?.city,
+      SiteType.policeStation,
+    );
   }
 
   t.squad = null;
@@ -2015,6 +2059,18 @@ void addDeathMessage(Creature cr) {
   setColor(yellow);
 
   move(9, 1);
+
+  if (gameOptions.lighterTone) {
+    String deathMessage = [
+      "dies.",
+      "is killed.",
+      "is dead.",
+      "is gone.",
+    ].random;
+    addstr("${cr.name} $deathMessage");
+    return;
+  }
+
   String str = "";
 
   BodyPart? head = cr.body.parts.firstWhereOrNull((bp) => bp.name == "Head");
