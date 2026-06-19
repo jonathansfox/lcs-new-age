@@ -1,3 +1,6 @@
+## 1.5.3 - ????
+* Fixed a bug where disguises that are supposed to blend in at the condominiums were instead deemed very suspicious
+
 ## 1.5.2 - 6/18/2026
 * Added a main menu option to lighten the tone of the writing to be more neutral in some of the more visceral, bleak, and depressing areas of the game
 
