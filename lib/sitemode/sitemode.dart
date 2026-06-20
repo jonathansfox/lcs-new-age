@@ -783,8 +783,7 @@ Future<void> _siteModeAux() async {
         if (subdue) {
           await _fightSubdued();
         } else {
-          await youattack(encounter);
-          await enemyattack(encounter);
+          await combatRound(encounter);
           await creatureadvance();
           encounterTimer++;
         }

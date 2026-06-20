@@ -40,6 +40,10 @@ class GameState {
   Map<String, dynamic> toJson() => _$GameStateToJson(this);
 
   int uniqueGameId = lcsRandom(10000000);
+
+  @JsonKey(defaultValue: false)
+  bool alternatingInitiative = false;
+
   List<City> cities = [];
   @JsonKey(includeFromJson: false, includeToJson: false)
   List<District> get districts =>
@@ -84,7 +88,7 @@ class GameState {
   int activeSafehouseId = -1;
 
   Map<SortingScreens, CreatureSortMethod> activeSortingChoice = {
-    for (var screen in SortingScreens.values) screen: CreatureSortMethod.none
+    for (var screen in SortingScreens.values) screen: CreatureSortMethod.none,
   };
 
   @JsonKey(defaultValue: [])
@@ -148,7 +152,7 @@ class GameState {
   Map<String, Location>? _locationMap;
   Map<String, Location> get locationMap {
     _locationMap ??= {
-      for (var location in allLocations) location.idString: location
+      for (var location in allLocations) location.idString: location,
     };
     return _locationMap!;
   }
@@ -157,13 +161,7 @@ class GameState {
   List<CrimeData> potentialCrimes = [];
 }
 
-enum CCSStrength {
-  inHiding,
-  active,
-  attacks,
-  sieges,
-  defeated,
-}
+enum CCSStrength { inHiding, active, attacks, sieges, defeated }
 
 enum CCSExposure { none, lcsGotData, exposed, nobackers }
 
@@ -183,10 +181,9 @@ Iterable<Creature> get poolAndProspects => pool
 List<Site> get sites => gameState.sites;
 Map<String, Site> get siteMap => gameState.siteMap;
 
-Iterable<Location> get allLocations =>
-    Iterable.castFrom<Site, Location>(gameState.sites)
-        .followedBy(gameState.districts)
-        .followedBy(gameState.cities);
+Iterable<Location> get allLocations => Iterable.castFrom<Site, Location>(
+  gameState.sites,
+).followedBy(gameState.districts).followedBy(gameState.cities);
 Map<String, Location> get locationMap => gameState.locationMap;
 
 int get month => gameState.date.month;
@@ -293,6 +290,8 @@ bool get corporateFeudalism =>
 bool get utterNightmare =>
     !laws.values.any((a) => a != DeepAlignment.archConservative);
 
+bool get alternatingInitiative => gameState.alternatingInitiative;
+
 bool get offendedAngryRuralMobs => gameState.offendedAngryRuralMobs;
 set offendedAngryRuralMobs(bool value) =>
     gameState.offendedAngryRuralMobs = value;
@@ -309,12 +308,14 @@ void changePublicOpinion(
   bool coloredByCcsOpinions = false,
   int extraMoralAuthority = 0,
   bool noPublicInterest = false,
-}) =>
-    gameState.politics.changePublicOpinion(view, power,
-        coloredByLcsOpinions: coloredByLcsOpinions,
-        coloredByCcsOpinions: coloredByCcsOpinions,
-        extraMoralAuthority: extraMoralAuthority,
-        noPublicInterest: noPublicInterest);
+}) => gameState.politics.changePublicOpinion(
+  view,
+  power,
+  coloredByLcsOpinions: coloredByLcsOpinions,
+  coloredByCcsOpinions: coloredByCcsOpinions,
+  extraMoralAuthority: extraMoralAuthority,
+  noPublicInterest: noPublicInterest,
+);
 
 UniqueCreatures get uniqueCreatures => gameState.uniqueCreatures;
 

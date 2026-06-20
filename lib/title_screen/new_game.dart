@@ -29,6 +29,7 @@ Future<void> setupNewGame() async {
   bool classicmode = false;
   bool strongccs = false;
   bool nightmarelaws = false;
+  bool alternatingInitiative = false;
 
   void checkBoxOption(
     int y,
@@ -56,9 +57,9 @@ Future<void> setupNewGame() async {
     );
     checkBoxOption(
       7,
-      classicmode,
+      !classicmode,
       "A",
-      "Classic Mode: No Conservative Crime Squad.",
+      "Power Concedes Nothing: A Conservative Crime Squad will oppose you.",
     );
     checkBoxOption(
       9,
@@ -73,8 +74,15 @@ Future<void> setupNewGame() async {
       "C",
       "Nightmare Mode: Liberalism is forgotten. Is it too late to fight back?",
     );
+    // TODO(author): final wording for the player-facing label.
+    checkBoxOption(
+      13,
+      alternatingInitiative,
+      "D",
+      "Alternating Initiative: Enemies have more of a chance to fight back.",
+    );
 
-    addOptionText(15, 0, "Any Other Key", "Any Other Key - Continue...");
+    addOptionText(17, 0, "Any Other Key", "Any Other Key - Continue...");
 
     int c = await getKey();
 
@@ -90,8 +98,14 @@ Future<void> setupNewGame() async {
       nightmarelaws = !nightmarelaws;
       continue;
     }
+    if (c == Key.d) {
+      alternatingInitiative = !alternatingInitiative;
+      continue;
+    }
     break;
   }
+
+  gameState.alternatingInitiative = alternatingInitiative;
 
   if (nightmarelaws) {
     for (Law l in Law.values) {

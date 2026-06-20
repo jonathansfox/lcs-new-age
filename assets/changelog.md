@@ -1,4 +1,5 @@
 ## 1.5.3 - ????
+* Added a new game option for alternating combat initiative, where your squad and the enemy take turns attacking one at a time instead of each side acting all at once
 * Fixed a bug where disguises that are supposed to blend in at the condominiums were instead deemed very suspicious
 
 ## 1.5.2 - 6/18/2026
