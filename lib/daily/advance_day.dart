@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:lcs_new_age/basemode/activities.dart';
+import 'package:lcs_new_age/basemode/blind_time_log.dart';
 import 'package:lcs_new_age/common_actions/common_actions.dart';
 import 'package:lcs_new_age/common_display/common_display.dart';
 import 'package:lcs_new_age/creature/body.dart';
@@ -236,12 +237,14 @@ Future<void> _ageThings() async {
           c.permanentHealthDamage = c.permanentHealthDamage + 1;
         } else {
           c.die();
-          await showMessage(
+          await showMessageOrLog(
             "${c.name} has passed away at the age of ${c.age}.",
           );
-          await showMessage(
-            "Their Heart finally gave out.  The Liberal will be missed.",
-          );
+          if (canSeeThings) {
+            await showMessage(
+              "Their Heart finally gave out.  The Liberal will be missed.",
+            );
+          }
         }
       }
     }
@@ -521,28 +524,33 @@ Future<void> dispersalCheck() async {
         erase();
 
         if (!disbanding) {
+          // Dispersals still interrupt as normal, but also leave a record in
+          // the time-passing log so the outcome stays visible while blind.
           if (p.hidingDaysLeft == 0 &&
               dispersalStatus[p] == DispersalTypes.hiding) {
             mvaddstrc(
               8,
               1,
               white,
-              "${p.name} has lost touch with the Liberal Crime Squad.",
+              "${p.name} lost touch with the Liberal Crime Squad.",
             );
             await getKey();
             mvaddstrc(9, 1, lightGreen, "The Liberal has gone into hiding...");
             await getKey();
+            logBlindEvent("${p.name} lost touch with the Liberal Crime Squad.");
           } else if (dispersalStatus[p] == DispersalTypes.abandonLCS) {
-            mvaddstrc(8, 1, white, "${p.name} has abandoned the LCS.");
+            mvaddstrc(8, 1, white, "${p.name} abandoned the LCS.");
             await getKey();
+            logBlindEvent("${p.name} abandoned the LCS.");
           } else if (dispersalStatus[p] == DispersalTypes.noContact) {
             mvaddstrc(
               8,
               1,
               white,
-              "${p.name} has lost touch with the Liberal Crime Squad.",
+              "${p.name} lost touch with the Liberal Crime Squad.",
             );
             await getKey();
+            logBlindEvent("${p.name} lost touch with the Liberal Crime Squad.");
           }
         }
 
@@ -762,7 +770,7 @@ Future<void> _dailyHealing() async {
       }
       if (p.alive && p.blood < 0) {
         p.die();
-        await showMessage("${p.name} has died of injuries.");
+        await showMessageOrLog("${p.name} has died of injuries.");
       }
       for (BodyPart w in p.body.parts) {
         // Limbs blown off
@@ -1004,13 +1012,30 @@ Future<void> advanceLocations() async {
 Future<void> _doRent() async {
   if (day == 3 && !disbanding) {
     for (Site l in sites) {
+      bool liberalLandlord = pool.any(
+        (p) =>
+            p.alive &&
+            p.sleeperAgent &&
+            p.type.id == CreatureTypeIds.landlord &&
+            p.workSite == l,
+      );
+      if (liberalLandlord) {
+        l.controller = SiteController.lcs;
+        l.rent = 0;
+        continue;
+      } else if (l.chargesRent &&
+          l.controller == SiteController.lcs &&
+          l.rent == 0) {
+        l.rent = 100000000000;
+      }
+
       if (l.controller == SiteController.lcs && !l.newRental) {
         // if rent >= 1000000 this means you get should kicked out automatically
         if (ledger.funds >= l.rent && l.rent < 1000000) {
           ledger.subtractFunds(l.rent, Expense.rent);
         } else {
           //EVICTED!!!!!!!!!
-          await showMessage(
+          await showMessageOrLog(
             "EVICTION NOTICE: ${l.name}.  Possessions dumped on the street.",
           );
 

@@ -167,6 +167,11 @@ class Site extends Location {
       type == SiteType.prison;
   bool get isSafehouse => controller == SiteController.lcs;
 
+  bool get chargesRent =>
+      type == SiteType.tenement ||
+      type == SiteType.apartment ||
+      type == SiteType.upscaleApartment;
+
   @override
   String getName({bool short = false, bool includeCity = false}) {
     String fullName = short

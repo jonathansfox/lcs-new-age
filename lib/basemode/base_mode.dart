@@ -5,6 +5,7 @@ import 'package:lcs_new_age/basemode/activate_regulars.dart';
 import 'package:lcs_new_age/basemode/activate_sleepers.dart';
 import 'package:lcs_new_age/basemode/activities.dart';
 import 'package:lcs_new_age/basemode/base_actions.dart';
+import 'package:lcs_new_age/basemode/blind_time_log.dart';
 import 'package:lcs_new_age/basemode/disbanding.dart';
 import 'package:lcs_new_age/basemode/flag.dart';
 import 'package:lcs_new_age/basemode/invest_in_location.dart';
@@ -45,6 +46,8 @@ Future<bool> baseMode() async {
     if (!forceWait) {
       await howTimesHaveChanged(daysWithoutVision);
       daysWithoutVision = 0;
+      // Vision restored; the time-passing log only covers blind stretches.
+      clearBlindLog();
     }
 
     int partySize = activeSquad?.members.length ?? 0;
@@ -131,6 +134,7 @@ Future<bool> baseMode() async {
             erase();
             mvaddstrc(7, 5, lightGray, "Time passes...");
             mvaddstr(9, 12, "${getMonth(month)} $day, $year");
+            displayBlindLog();
             refresh();
             await Future.delayed(const Duration(milliseconds: 100));
           }

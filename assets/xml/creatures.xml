@@ -452,16 +452,43 @@ Elements marked as hardcoded may have their values overridden by the game.
         <weapon>CIVILIAN</weapon>
         <armor>CLOTHING_CLOTHES</armor>
         <age>MATURE</age>
-        <alignment>MODERATE</alignment>
+        <alignment>CONSERVATIVE</alignment>
         <attributes>
             <intelligence>4-10</intelligence>
-            <wisdom>4-10</wisdom>
+            <wisdom>8-10</wisdom>
         </attributes>
         <gender>MALE BIAS</gender>
+        <infiltration>100</infiltration>
+        <juice>100-200</juice>
         <money>120-240</money>
         <skills>
-            <business>3-6</business>
+            <business>5-10</business>
+            <persuasion>2-6</persuasion>
         </skills>
+        <seethroughstealth>5</seethroughstealth>
+        <seethroughdisguise>11</seethroughdisguise>
+        <social_attack>
+            <priority>1</priority>
+            <alignment_restriction>CONSERVATIVE</alignment_restriction>
+            <attack_description>extols the sanctity of property rights to</attack_description>
+            <attack_description>explains that rent is just the market to</attack_description>
+            <attack_description>rants about the evils of price controls to</attack_description>
+            <attack_description>praises the discipline of the free market to</attack_description>
+            <attack_description>lectures on the risks landlords take to</attack_description>
+            <social_damage>true</social_damage>
+            <skill>BUSINESS</skill>
+            <stuns>true</stuns>
+        </social_attack>
+        <social_attack>
+            <priority>2</priority>
+            <attack_description>champions rent control to</attack_description>
+            <attack_description>declares that housing is a human right to</attack_description>
+            <attack_description>denounces slumlords to</attack_description>
+            <attack_description>promises to lower the rent for</attack_description>
+            <social_damage>true</social_damage>
+            <skill>BUSINESS</skill>
+            <stuns>true</stuns>
+        </social_attack>
     </creaturetype>
     <creaturetype idname="CREATURE_BANK_TELLER">
         <type_name>Bank Teller</type_name>
@@ -832,6 +859,7 @@ Elements marked as hardcoded may have their values overridden by the game.
         <reports_to_police>1</reports_to_police>
         <intimidation_resistant>true</intimidation_resistant>
         <can_perform_arrests>true</can_perform_arrests>
+        <bodyguard>true</bodyguard>
     </creaturetype>
     <creaturetype idname="CREATURE_RADIOPERSONALITY">
         <type_name>Radio Personality</type_name>
@@ -1421,6 +1449,7 @@ Elements marked as hardcoded may have their values overridden by the game.
         <kidnap_resistant>1</kidnap_resistant>
         <intimidation_resistant>true</intimidation_resistant>
         <edgelord>true</edgelord>
+        <bodyguard>true</bodyguard>
     </creaturetype>
     <creaturetype idname="CREATURE_HICK">
         <type_name>Country Folk</type_name>

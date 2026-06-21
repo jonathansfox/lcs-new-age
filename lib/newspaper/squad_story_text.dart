@@ -4,8 +4,11 @@ import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/newspaper/news_story.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
 
-String squadStoryTextLocation(NewsStory ns, bool ccs,
-    {bool includeOpening = true}) {
+String squadStoryTextLocation(
+  NewsStory ns,
+  bool ccs, {
+  bool includeOpening = true,
+}) {
   String story = "";
   if (includeOpening) story += "  The events took place ";
   String placename = ns.loc!.getName();
@@ -138,8 +141,9 @@ String squadStoryTextOpening(NewsStory ns, bool ccs) {
     if (!lcsInPublicEye &&
         ns.publicationAlignment != DeepAlignment.eliteLiberal) {
       if (ns.liberalSpin) {
-        String briefly =
-            ns.type == NewsStories.squadKilledInSiteAction ? "briefly " : "";
+        String briefly = ns.type == NewsStories.squadKilledInSiteAction
+            ? "briefly "
+            : "";
         story += "A group calling itself the Liberal Crime Squad ";
         story +=
             "burst ${briefly}onto the scene of political activism yesterday, according ";
@@ -155,27 +159,27 @@ String squadStoryTextOpening(NewsStory ns, bool ccs) {
       if (ns.liberalSpin) {
         String albietWithTragicEnd =
             ns.type == NewsStories.squadKilledInSiteAction
-                ? ", albiet with a tragic end"
-                : "";
+            ? ", albiet with a tragic end"
+            : "";
         story +=
             "The Liberal Crime Squad has struck again$albietWithTragicEnd.&r";
       } else {
         String notorious =
             ns.publicationAlignment == DeepAlignment.archConservative
-                ? "notorious "
-                : "";
+            ? "notorious "
+            : "";
         String terrorists =
             ns.publicationAlignment == DeepAlignment.archConservative
-                ? "terrorists "
-                : "";
+            ? "terrorists "
+            : "";
         String another =
             ns.publicationAlignment == DeepAlignment.archConservative
-                ? "another"
-                : "a violent";
+            ? "another"
+            : "a violent";
         String butTheyGotWhatTheyDeserved =
             ns.type == NewsStories.squadKilledInSiteAction
-                ? ", but they got what they deserved"
-                : "";
+            ? ", but they got what they deserved"
+            : "";
         story +=
             "The ${notorious}Liberal Crime Squad ${terrorists}went on $another rampage$butTheyGotWhatTheyDeserved.&r";
       }
@@ -183,34 +187,37 @@ String squadStoryTextOpening(NewsStory ns, bool ccs) {
   } else if (ns.type == NewsStories.ccsSiteAction ||
       ns.type == NewsStories.ccsKilledInSiteAction) {
     if (!ccsInPublicEye) {
-      if (ns.liberalSpin) {
-        String wouldBe =
-            ns.type == NewsStories.ccsKilledInSiteAction ? "would-be " : "";
+      if (!ns.liberalSpin) {
+        String wouldBe = ns.type == NewsStories.ccsKilledInSiteAction
+            ? "would-be "
+            : "";
         String vigilantes =
             ns.publicationAlignment == DeepAlignment.archConservative
-                ? "patriots"
-                : "heavily armed vigilantes";
-        String briefly =
-            ns.type == NewsStories.ccsKilledInSiteAction ? "briefly " : "";
+            ? "patriots"
+            : "heavily armed vigilantes";
+        String briefly = ns.type == NewsStories.ccsKilledInSiteAction
+            ? "briefly "
+            : "";
         String accordingToThePolice =
             ns.publicationAlignment == DeepAlignment.eliteLiberal
-                ? ""
-                : ", according to a spokesperson from the police department";
+            ? ""
+            : ", according to a spokesperson from the police department";
         story +=
             "A group of $wouldBe$vigilantes calling themselves the Conservative Crime Squad ";
         story +=
             "burst ${briefly}onto the scene of political activism yesterday$accordingToThePolice.&r";
       } else {
-        String wouldBe =
-            ns.type == NewsStories.ccsKilledInSiteAction ? "would-be " : "";
+        String wouldBe = ns.type == NewsStories.ccsKilledInSiteAction
+            ? "would-be "
+            : "";
         String terrorists =
             ns.publicationAlignment == DeepAlignment.eliteLiberal
-                ? "terrorists"
-                : "heavily armed vigilantes";
+            ? "terrorists"
+            : "heavily armed vigilantes";
         String accordingToThePolice =
             ns.publicationAlignment == DeepAlignment.eliteLiberal
-                ? ""
-                : ", according to a spokesperson from the police department";
+            ? ""
+            : ", according to a spokesperson from the police department";
         String violent = ns.type == NewsStories.ccsKilledInSiteAction
             ? "violent "
             : "suicidal";
@@ -223,14 +230,14 @@ String squadStoryTextOpening(NewsStory ns, bool ccs) {
           ns.publicationAlignment != DeepAlignment.eliteLiberal) {
         String patriotsHave =
             ns.publicationAlignment == DeepAlignment.archConservative
-                ? "patriots have"
-                : "has";
+            ? "patriots have"
+            : "has";
         story += "The Conservative Crime Squad $patriotsHave struck again.&r";
       } else {
         String terroristsHave =
             ns.publicationAlignment == DeepAlignment.eliteLiberal
-                ? "terrorists"
-                : "";
+            ? "terrorists"
+            : "";
         story +=
             "The Conservative Crime Squad $terroristsHave went on another rampage.&r";
       }

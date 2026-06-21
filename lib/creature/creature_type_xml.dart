@@ -177,6 +177,8 @@ void parseCreatureType(CreatureType type, XmlElement xml) {
       case "can_perform_arrests":
         type.canPerformArrests =
             parseBool(element.innerText) ?? type.canPerformArrests;
+      case "bodyguard":
+        type.bodyguard = parseBool(element.innerText) ?? type.bodyguard;
       case "animal":
         type.animal = parseBool(element.innerText) ?? type.animal;
       case "dog":

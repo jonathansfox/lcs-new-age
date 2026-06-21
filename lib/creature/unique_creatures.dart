@@ -51,11 +51,12 @@ class UniqueCreatures {
   @JsonKey(includeFromJson: false, includeToJson: false)
   Creature get aceLiberalAttorney {
     _aceLiberalAttorney ??= Creature.fromId(CreatureTypeIds.lawyer)
-      ..name = "${[
-        "Huang", "Astraea", "Saleem", "Imani", //
-      ].random} ${[
-        "Truth", "Justice", "Liberty", "Peace", //
-      ].random}";
+      ..name =
+          "${[
+            "Huang", "Astraea", "Saleem", "Imani", //
+          ].random} ${[
+            "Truth", "Justice", "Liberty", "Peace", //
+          ].random}";
     return _aceLiberalAttorney!;
   }
 
@@ -73,6 +74,10 @@ class UniqueCreatures {
   Map<String, Creature> get currentSiteCreatures {
     Location? site = gameState.activeSite;
     if (site == null) return {};
+    return siteCreatures(site);
+  }
+
+  Map<String, Creature> siteCreatures(Location site) {
     Map<String, Creature>? creatures = _siteCreatures[site.idString];
     if (creatures == null) {
       creatures = {};
@@ -82,7 +87,13 @@ class UniqueCreatures {
   }
 
   Creature currentSiteCreature(String typeId) {
-    Map<String, Creature> creatures = currentSiteCreatures;
+    Location? site = gameState.activeSite;
+    if (site == null) return Creature.fromId(typeId);
+    return siteCreature(typeId, site);
+  }
+
+  Creature siteCreature(String typeId, Location site) {
+    Map<String, Creature> creatures = siteCreatures(site);
     Creature? creature = creatures[typeId];
     if (creature == null) {
       creature = Creature.fromId(typeId);
@@ -98,18 +109,23 @@ class UniqueCreatures {
 
   void syncWithPool() {
     if (_ceo != null) {
-      _ceo = poolAndProspects.firstWhere((p) => p.id == _ceo!.id,
-          orElse: () => _ceo!);
+      _ceo = poolAndProspects.firstWhere(
+        (p) => p.id == _ceo!.id,
+        orElse: () => _ceo!,
+      );
     }
     if (_president != null) {
-      _president = poolAndProspects.firstWhere((p) => p.id == _president!.id,
-          orElse: () => _president!);
+      _president = poolAndProspects.firstWhere(
+        (p) => p.id == _president!.id,
+        orElse: () => _president!,
+      );
     }
     for (var siteCreatureList in _siteCreatures.values) {
       for (var entry in siteCreatureList.entries) {
         siteCreatureList[entry.key] = poolAndProspects.firstWhere(
-            (p) => p.id == entry.value.id,
-            orElse: () => entry.value);
+          (p) => p.id == entry.value.id,
+          orElse: () => entry.value,
+        );
       }
     }
   }
@@ -135,7 +151,9 @@ class UniqueCreatures {
   }
 
   Iterable<Creature> allCreatures() {
-    return [ceo, president]
-        .followedBy(_siteCreatures.values.expand((e) => e.values));
+    return [
+      ceo,
+      president,
+    ].followedBy(_siteCreatures.values.expand((e) => e.values));
   }
 }

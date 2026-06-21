@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:lcs_new_age/basemode/activities.dart';
+import 'package:lcs_new_age/basemode/blind_time_log.dart';
 import 'package:lcs_new_age/basemode/disbanding.dart';
 import 'package:lcs_new_age/basemode/liberal_agenda.dart';
 import 'package:lcs_new_age/common_display/common_display.dart';
@@ -34,35 +35,50 @@ import 'package:lcs_new_age/utils/lcsrandom.dart';
 
 Future<void> advanceMonth() async {
   var oldlaw = Map.fromEntries(laws.entries);
-  switch (ccsState) {
-    case CCSStrength.inHiding:
-      if (politics.publicMood() > 60) {
-        for (Site s in sites.where(
-          (s) =>
-              s.controller == SiteController.unaligned &&
-              [
-                SiteType.barAndGrill,
-                SiteType.bombShelter,
-                SiteType.bunker,
-              ].contains(s.type),
-        )) {
-          s.controller = SiteController.ccs;
+  bool yearsSinceStart(int years) => !date.isBefore(
+    DateTime(
+      gameStartDate.year + years,
+      gameStartDate.month,
+      gameStartDate.day,
+    ),
+  );
+  if (canSeeThings) {
+    switch (ccsState) {
+      case CCSStrength.inHiding:
+        if (politics.publicMood() > 60 ||
+            (yearsSinceStart(1) && oneIn(3)) ||
+            ccsAggressive) {
+          for (Site s in sites.where(
+            (s) =>
+                s.controller == SiteController.unaligned &&
+                [
+                  SiteType.barAndGrill,
+                  SiteType.bombShelter,
+                  SiteType.bunker,
+                ].contains(s.type),
+          )) {
+            s.controller = SiteController.ccs;
+          }
+          ccsState = CCSStrength.active;
+          if (!ccsInPublicEye) {
+            publicOpinion[View.ccsHated] = politics.publicMood();
+          }
         }
-        ccsState = CCSStrength.active;
-        if (!ccsInPublicEye) {
-          publicOpinion[View.ccsHated] = politics.publicMood();
+      case CCSStrength.active:
+        if (politics.publicMood() > 80 ||
+            (yearsSinceStart(2) && oneIn(3)) ||
+            ccsAggressive) {
+          ccsState = CCSStrength.attacks;
         }
-      }
-    case CCSStrength.active:
-      if (politics.publicMood() > 80) {
-        ccsState = CCSStrength.attacks;
-      }
-    case CCSStrength.attacks:
-      if (politics.publicMood() > 90) {
-        ccsState = CCSStrength.sieges;
-      }
-    default:
-      break;
+      case CCSStrength.attacks:
+        if (politics.publicMood() > 90 ||
+            (yearsSinceStart(3) && oneIn(3)) ||
+            ccsAggressive) {
+          ccsState = CCSStrength.sieges;
+        }
+      default:
+        break;
+    }
   }
 
   //CLEAR RENT EXEMPTIONS
@@ -244,7 +260,7 @@ Future<void> advanceMonth() async {
     if (p.sleeperAgent) continue;
     if (p.site?.type == SiteType.policeStation) {
       if (p.missing) {
-        await showMessage(
+        await showMessageOrLog(
           "Cops re-polluted ${p.name}'s mind with Conservatism!",
           color: purple,
         );
@@ -256,7 +272,7 @@ Future<void> advanceMonth() async {
         bool execute =
             laws[Law.deathPenalty] == DeepAlignment.archConservative &&
             laws[Law.immigration] == DeepAlignment.archConservative;
-        await showMessage(
+        await showMessageOrLog(
           "${p.name} has been handed over to ICE and ${execute ? "executed" : "deported"}!",
           color: purple,
         );
@@ -306,30 +322,34 @@ Future<void> advanceMonth() async {
           //Issue a raid on this guy's base!
           p.base?.heat += 300;
 
-          erase();
-          mvaddstrc(8, 1, white, p.name);
-          if (p.brainwashed) {
-            addstr(" has reverted to Conservatism in police custody!");
+          String headline = p.brainwashed
+              ? "${p.name} reverted to Conservatism in police custody!"
+              : "${p.name} broke under pressure and ratted you out!";
+          if (canSeeThings) {
+            erase();
+            mvaddstrc(8, 1, white, headline);
+
+            await getKey();
+
+            mvaddstrc(
+              9,
+              1,
+              white,
+              "The traitor will testify in court, and safehouses may be compromised.",
+            );
+
+            await getKey();
           } else {
-            addstr(" has broken under the pressure and ratted you out!");
+            logBlindEvent(headline);
           }
-
-          await getKey();
-
-          mvaddstrc(
-            9,
-            1,
-            white,
-            "The traitor will testify in court, and safehouses may be compromised.",
-          );
-
-          await getKey();
           p.squad = null;
           pool.remove(p);
           continue; //no trial for this person; skip to next person
         }
 
-        await showMessage("${p.name} is moved to the courthouse for trial.");
+        await showMessageOrLog(
+          "${p.name} is moved to the courthouse for trial.",
+        );
 
         p.location = findSiteInSameCity(p.site!.city, SiteType.courthouse);
         Clothing prisoner = Clothing("CLOTHING_PRISONER");

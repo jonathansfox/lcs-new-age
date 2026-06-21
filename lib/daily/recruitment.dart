@@ -87,7 +87,7 @@ List<String> _issueEventStrings = [
   "a book on the history of military atrocities",
   "a documentary on the prisoners' suffering",
   "a leaked government paper on environmental conditions",
-  "a documentary on life under corporate culture"
+  "a documentary on life under corporate culture",
 ];
 
 Future<void> meetWithPotentialRecruits() async {
@@ -187,11 +187,19 @@ Future<bool> completeRecruitMeeting(RecruitmentSession r, Creature p) async {
   addstrc(white, p.name);
   addstrc(lightGray, " approach the situation?");
 
-  addOptionText(13, 0, "A",
-      "A - Spend \$50 on props and a${inPerson ? " " : "n e-"}book for them to keep.",
-      enabledWhen: ledger.funds >= 50);
   addOptionText(
-      14, 0, "B", "B - Just casually chat with them and discuss politics.");
+    13,
+    0,
+    "A",
+    "A - Spend \$50 on props and a${inPerson ? " " : "n e-"}book for them to keep.",
+    enabledWhen: ledger.funds >= 50,
+  );
+  addOptionText(
+    14,
+    0,
+    "B",
+    "B - Just casually chat with them and discuss politics.",
+  );
 
   bool canRecruit = false;
   String recruitmentText = "C - ";
@@ -216,8 +224,12 @@ Future<bool> completeRecruitMeeting(RecruitmentSession r, Creature p) async {
       mvaddstr(y, 0, "${p.name} offers to let ${r.recruit.name} join the LCS.");
       await getKey();
 
-      mvaddstrc(y += 2, 0, lightGreen,
-          "${r.recruit.name} accepts, and is eager to get started.");
+      mvaddstrc(
+        y += 2,
+        0,
+        lightGreen,
+        "${r.recruit.name} accepts, and is eager to get started.",
+      );
       r.recruit.hireId = p.id;
       liberalize(r.recruit);
       await getKey();
@@ -248,13 +260,15 @@ Future<bool> completeRecruitMeeting(RecruitmentSession r, Creature p) async {
         p.train(Skill.business, r.recruit.skill(Skill.business));
       }
 
-      int libPersuasiveness = p.skill(Skill.business) +
+      int libPersuasiveness =
+          p.skill(Skill.business) +
           p.skill(Skill.science) +
           p.skill(Skill.religion) +
           p.skill(Skill.law) +
           p.attribute(Attribute.intelligence);
 
-      int recruitReluctance = 5 +
+      int recruitReluctance =
+          5 +
           r.recruit.skill(Skill.business) +
           r.recruit.skill(Skill.science) +
           r.recruit.skill(Skill.religion) +
@@ -302,7 +316,9 @@ Future<bool> completeRecruitMeeting(RecruitmentSession r, Creature p) async {
         move(y++, 0);
         addstr("They'll definitely meet again tomorrow.");
       } else if (p.skillCheck(
-          Skill.persuasion, difficulty)) // Second chance to not fail horribly
+        Skill.persuasion,
+        difficulty,
+      )) // Second chance to not fail horribly
       {
         if (r.rawEagerness > -128) r.rawEagerness--;
         move(y++, 0);
@@ -329,11 +345,13 @@ Future<bool> completeRecruitMeeting(RecruitmentSession r, Creature p) async {
           addstr(" needs more experience.");
         } else {
           addstr(
-              "${r.recruit.name} thinks ${p.name} is a dangerous extremist.");
+            "${r.recruit.name} thinks ${p.name} is a dangerous extremist.",
+          );
 
           move(y++, 0);
           addstr(
-              "This whole thing was a mistake. There won't be another meeting.");
+            "This whole thing was a mistake. There won't be another meeting.",
+          );
         }
 
         await getKey();
@@ -351,16 +369,28 @@ Future<bool> completeRecruitMeeting(RecruitmentSession r, Creature p) async {
 
 // Prompt to turn new recruit into a sleeper
 Future<void> sleeperizePrompt(
-    Creature converted, Creature recruiter, int y) async {
+  Creature converted,
+  Creature recruiter,
+  int y,
+) async {
   while (true) {
     move(y, 0);
     setColor(lightGray);
     addstr(
-        "In what capacity will ${converted.name} best serve the Liberal cause?");
-    addOptionText(y + 2, 0, "A",
-        "A - Come to ${recruiter.location!.getName(short: false, includeCity: true)} as a &Gregular member&x.");
-    addOptionText(y + 3, 0, "B",
-        "B - Stay at ${converted.workLocation.getName(short: false, includeCity: true)} as a &Bsleeper agent&x.");
+      "In what capacity will ${converted.name} best serve the Liberal cause?",
+    );
+    addOptionText(
+      y + 2,
+      0,
+      "A",
+      "A - Come to ${recruiter.location!.getName(short: false, includeCity: true)} as a &Gregular member&x.",
+    );
+    addOptionText(
+      y + 3,
+      0,
+      "B",
+      "B - Stay at ${converted.workLocation.getName(short: false, includeCity: true)} as a &Bsleeper agent&x.",
+    );
 
     int c = await getKey();
     if (c == Key.b) {

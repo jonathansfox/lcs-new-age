@@ -3,6 +3,7 @@ import 'package:lcs_new_age/common_display/print_party.dart';
 import 'package:lcs_new_age/creature/attributes.dart';
 import 'package:lcs_new_age/creature/conversion.dart';
 import 'package:lcs_new_age/creature/creature.dart';
+import 'package:lcs_new_age/creature/difficulty.dart';
 import 'package:lcs_new_age/creature/skills.dart';
 import 'package:lcs_new_age/daily/hostages/tend_hostage.dart';
 import 'package:lcs_new_age/engine/engine.dart';
@@ -94,6 +95,42 @@ Future<void> kidnapattempt() async {
       if (isBackKey(c)) return;
     }
 
+    // Bodyguards!
+    Creature? guard;
+    for (Creature e in encounter) {
+      if (e.alive && e.type.bodyguard && e != target) {
+        guard = e;
+        break;
+      }
+    }
+    if (guard != null) {
+      bool proceed = await sitemodePrompt(
+        "${guard.name} stays close to ${target.name}, watching for trouble.",
+        "Try to take ${target.name} anyway? (Yes or No)",
+      );
+      if (!proceed) return;
+
+      if (guard.noticedParty ||
+          !kidnapper.skillCheck(Skill.stealth, Difficulty.formidable)) {
+        await encounterMessage(
+          "${guard.name} steps between the squad and ${target.name},",
+          line2: "eyeing the Liberals with suspicion.",
+          color: purple,
+        );
+
+        int time =
+            20 +
+            lcsRandom(10) -
+            guard.attribute(Attribute.intelligence) -
+            guard.attribute(Attribute.wisdom);
+        if (time < 1) time = 1;
+        if (siteAlarmTimer > time || siteAlarmTimer == -1) {
+          siteAlarmTimer = time;
+        }
+        return;
+      }
+    }
+
     bool yellForHelp = false;
     bool success = false;
 
@@ -130,8 +167,11 @@ Future<void> kidnapattempt() async {
 
         success = true;
       } else {
-        await encounterMessage("${kidnapper.name} grabs at ${target.name}",
-            line2: "but ${target.name} writhes away!", color: purple);
+        await encounterMessage(
+          "${kidnapper.name} grabs at ${target.name}",
+          line2: "but ${target.name} writhes away!",
+          color: purple,
+        );
         success = false;
       }
     } else {
@@ -148,7 +188,7 @@ Future<void> kidnapattempt() async {
       move(10, 1);
       addstr("and says, ");
       setColor(lightGreen);
-      addstr("\"${[
+      String quote = [
         "Please, be cool.",
         "No sudden moves now.",
         "Nobody needs to get hurt.",
@@ -186,7 +226,8 @@ Future<void> kidnapattempt() async {
         "You might like direct action.",
         "I prefer the term 'activist' myself.",
         "Don't worry, I'm not a cop.",
-      ].random}\"");
+      ].random;
+      addstr("\"$quote\"");
 
       kidnapper.prisoner = target;
 
@@ -205,15 +246,24 @@ Future<void> kidnapattempt() async {
       siteAlarm = true;
     }
 
-    if (yellForHelp) {
+    if (yellForHelp || guard != null) {
+      if (guard != null) {
+        await encounterMessage(
+          "${guard.name}: \"10-78! Principal in danger!\"",
+          color: purple,
+        );
+      }
       bool present = encounter.any((e) => e.alive);
 
       if (present) {
         await alienationCheck(false);
         siteAlarm = true;
         siteCrime += 5;
-        addPotentialCrime(squad, Crime.kidnapping,
-            reasonKey: target.id.toString());
+        addPotentialCrime(
+          squad,
+          Crime.kidnapping,
+          reasonKey: target.id.toString(),
+        );
         if (target.type.preciousToAngryRuralMobs) offendedAngryRuralMobs = true;
       }
     }
@@ -232,7 +282,8 @@ Future<void> releasehostage() async {
   activeSquadMemberIndex = -1;
 
   if (!activeSquad!.livingMembers.any(
-      (e) => e.prisoner != null && e.prisoner!.align != Alignment.liberal)) {
+    (e) => e.prisoner != null && e.prisoner!.align != Alignment.liberal,
+  )) {
     setColor(white);
     clearMessageArea();
     move(9, 1);
@@ -280,11 +331,7 @@ Future<void> releasehostage() async {
   }
 }
 
-enum FreeHostageMessage {
-  continueLine,
-  newLine,
-  none,
-}
+enum FreeHostageMessage { continueLine, newLine, none }
 
 Future<void> freehostage(Creature cr, FreeHostageMessage situation) async {
   Creature? prisoner = cr.prisoner;
@@ -432,7 +479,8 @@ Future<void> squadHaulImmobileAllies(bool dead) async {
 Future<void> kidnaptransfer(Creature cr, {Creature? kidnapper}) async {
   cr.nameCreature();
 
-  Site? base = kidnapper?.base ??
+  Site? base =
+      kidnapper?.base ??
       activeSquad?.members[0].base ??
       findSiteInSameCity(cr.location?.city, SiteType.homelessEncampment);
   cr.location = base;

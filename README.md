@@ -17,7 +17,7 @@ Liberal Crime Squad: New Age is always looking for Liberal Freedom Fighters to c
 1) [Manually install Flutter](https://docs.flutter.dev/get-started/install) or let the [Flutter extension for VS Code](https://marketplace.visualstudio.com/items?itemName=Dart-Code.flutter) or [IntelliJ](https://plugins.jetbrains.com/plugin/9212-flutter) install it for you.
 2) Run `git clone https://github.com/jonathansfox/lcs-new-age.git` in a convenient location to fetch the source code, and `cd lcs-new-age` into it.
 3) Run `flutter pub get` to download and install required library dependencies.
-4) Run `dart run build_runner build --delete-conflicting-outputs` to auto-generate some of the required code files. The generated code is used for JSON (de-)serialization of save game files.
+4) Run `dart run build_runner build` to auto-generate some of the required code files. The generated code is used for JSON (de-)serialization of save game files.
 
 > Note: You'll have to regenerate these files by running this command again whenever the save game format changes!
 

@@ -76,6 +76,7 @@ class CreatureType {
   bool reportsToPolice = false;
   bool intimidationResistant = false;
   bool canPerformArrests = false;
+  bool bodyguard = false;
   bool animal = false;
   bool dog = false;
   bool get tank => id == CreatureTypeIds.tank;
@@ -97,6 +98,9 @@ class CreatureType {
 
   bool get majorEnemy =>
       id == CreatureTypeIds.corporateCEO ||
+      id == CreatureTypeIds.insuranceCEO ||
+      id == CreatureTypeIds.nursingHomeAdmin ||
+      id == CreatureTypeIds.landlord ||
       id == CreatureTypeIds.radioPersonality ||
       id == CreatureTypeIds.newsAnchor ||
       id == CreatureTypeIds.eminentScientist ||

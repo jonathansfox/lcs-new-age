@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart' show Color;
 import 'package:lcs_new_age/creature/attributes.dart';
 import 'package:lcs_new_age/creature/body.dart';
 import 'package:lcs_new_age/creature/conversion.dart';
@@ -26,86 +27,104 @@ import 'package:lcs_new_age/utils/lcsrandom.dart';
 
 Future<void> setupNewGame() async {
   gameState = GameState();
-  bool classicmode = false;
-  bool strongccs = false;
-  bool nightmarelaws = false;
-  bool alternatingInitiative = false;
 
-  void checkBoxOption(
+  int gameWorld = 0;
+  int ccsOption = 1;
+  int initiative = 0;
+
+  final List<(String, String, Color)> gameWorldChoices = [
+    (
+      "The Times They Are a-Changin'",
+      "The country is beginning to slide into far-right authoritarianism.",
+      yellow,
+    ),
+    (
+      "The End of the World as We Know It",
+      "Liberalism is already forgotten.  Is it too late to fight back?",
+      red,
+    ),
+  ];
+  final List<(String, String, Color)> ccsChoices = [
+    ("Clear Blue Skies", "The CCS will never appear.", lightGreen),
+    (
+      "Bad Blood",
+      "A rival CCS will form eventually and grow stronger over time.",
+      yellow,
+    ),
+    (
+      "We Didn't Start The Fire",
+      "The CCS starts active and extremely strong.",
+      red,
+    ),
+  ];
+  final List<(String, String, Color)> initiativeChoices = [
+    (
+      "Power to the People",
+      "Team initiative: Your squad attacks first in each round.",
+      yellow,
+    ),
+    (
+      "Welcome to the Jungle",
+      "Zipper initiative: Teams take turns attacking one at a time.",
+      red,
+    ),
+  ];
+
+  void cyclingOption(
     int y,
-    bool ticked,
     String key,
-    String text, {
-    bool disabled = false,
-  }) {
-    addOptionText(
-      y,
-      0,
-      key,
-      "[${ticked ? "X" : " "}] $key - $text",
-      enabledWhen: !disabled,
-    );
+    String category,
+    List<(String, String, Color)> choices,
+    int index,
+  ) {
+    var (name, description, color) = choices[index];
+    var colorKey = ColorKey.fromColor(color);
+    addOptionText(y, 2, key, "$key - $category:");
+    mvaddstrx(y, 35, "&$colorKey$name");
+    setColor(midGray);
+    mvaddstr(y + 1, 6, description);
   }
 
-  erase();
   while (true) {
-    mvaddstrc(
-      4,
-      6,
-      white,
-      "New Game of Liberal Crime Squad: Advanced Gameplay Options",
-    );
-    checkBoxOption(
+    erase();
+    mvaddstrc(4, 6, white, "New Game of Liberal Crime Squad: Gameplay Options");
+    cyclingOption(
       7,
-      !classicmode,
       "A",
-      "Power Concedes Nothing: A Conservative Crime Squad will oppose you.",
+      "Starting Political Climate",
+      gameWorldChoices,
+      gameWorld,
     );
-    checkBoxOption(
-      9,
-      strongccs,
-      "B",
-      "We Didn't Start The Fire: The CCS starts active and extremely strong.",
-      disabled: classicmode,
-    );
-    checkBoxOption(
-      11,
-      nightmarelaws,
-      "C",
-      "Nightmare Mode: Liberalism is forgotten. Is it too late to fight back?",
-    );
-    // TODO(author): final wording for the player-facing label.
-    checkBoxOption(
-      13,
-      alternatingInitiative,
-      "D",
-      "Alternating Initiative: Enemies have more of a chance to fight back.",
+    cyclingOption(10, "B", "Conservative Crime Squad", ccsChoices, ccsOption);
+    cyclingOption(13, "C", "Combat Difficulty", initiativeChoices, initiative);
+
+    mvaddstrx(
+      16,
+      2,
+      "Option difficulty ratings: &GEasier &w- &YStandard &w- &RHarder",
     );
 
-    addOptionText(17, 0, "Any Other Key", "Any Other Key - Continue...");
+    addOptionText(18, 2, "Any Other Key", "Any Other Key - Continue...");
 
     int c = await getKey();
 
     if (c == Key.a) {
-      classicmode = !classicmode;
+      gameWorld = (gameWorld + 1) % gameWorldChoices.length;
       continue;
     }
     if (c == Key.b) {
-      strongccs = !strongccs;
+      ccsOption = (ccsOption + 1) % ccsChoices.length;
       continue;
     }
     if (c == Key.c) {
-      nightmarelaws = !nightmarelaws;
-      continue;
-    }
-    if (c == Key.d) {
-      alternatingInitiative = !alternatingInitiative;
+      initiative = (initiative + 1) % initiativeChoices.length;
       continue;
     }
     break;
   }
 
-  gameState.alternatingInitiative = alternatingInitiative;
+  bool nightmarelaws = gameWorld == 1;
+  gameState.alternatingInitiative = initiative == 1;
 
   if (nightmarelaws) {
     for (Law l in Law.values) {
@@ -149,10 +168,14 @@ Future<void> setupNewGame() async {
       } while (politics.courtName[c].firstLast.length > 20);
     }
   }
-  if (classicmode) {
-    ccsState = CCSStrength.defeated;
-  } else if (strongccs) {
-    ccsState = CCSStrength.attacks;
+  switch (ccsOption) {
+    case 0: // Clear Blue Skies: the CCS never appears.
+      ccsState = CCSStrength.defeated;
+    case 2: // We Didn't Start The Fire: start active and at full strength.
+      ccsState = CCSStrength.sieges;
+      gameState.ccsAggressive = true;
+    default: // A Hard Rain's A-Gonna Fall: the CCS forms over time, as normal.
+      break;
   }
   if (debugEliteLiberalPublicOpinion) {
     for (int v = 0; v < View.values.length; v++) {

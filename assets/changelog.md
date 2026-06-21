@@ -1,6 +1,14 @@
 ## 1.5.3 - ????
-* Added a new game option for alternating combat initiative, where your squad and the enemy take turns attacking one at a time instead of each side acting all at once
+* Reworked new game difficulty options screen and added a new combat initiative option, which allows switching to alternating/zipper initiative, where your squad and the enemy take turns attacking one at a time instead of your team attacking all at once at the start of the round
+* Revised how some messages appear when time is passing quickly, such as when everyone in the LCS is imprisoned
+* Made the CCS more aggressive on both We Didn't Start The Fire and Distant Thunder (the new name for the standard CCS difficulty setting); slow play where you don't address the CCS is now significantly more dangerous, as after three in-game years they will start attacking your safehouses whether you're winning or not
+* Made the Landlord an Arch-Conservative foe; you can now make them a sleeper to get free rent, but can no longer threaten them for free rent
+* Added the ability of PMC mercs and Secret Service to block kidnapping attempts
+* Flagged Nursing Home Admin and Insurance CEO as major enemies so they don't flee combat
+* Fixed a cosmetic bug where conservative media would report on the very first CCS action as a rampage
 * Fixed a bug where disguises that are supposed to blend in at the condominiums were instead deemed very suspicious
+* Fixed a bug where all creatures would not save their heat value when the game is saved, nor load it when the game is loaded
+* Fixed a couple cases where a sleeper agent could resign from their post but not be replaced even when they have an important role in the world that should really be backfilled if someone abandons it
 
 ## 1.5.2 - 6/18/2026
 * Added a main menu option to lighten the tone of the writing to be more neutral in some of the more visceral, bleak, and depressing areas of the game
