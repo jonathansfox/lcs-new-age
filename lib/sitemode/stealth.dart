@@ -511,8 +511,6 @@ DisguiseQuality disguiseQuality(Creature cr) {
           uniformed = DisguiseQuality.inconspicuous;
         }
       case SiegeType.medicalDebtCollectors:
-        // The raiders are cubicle-dwelling actuaries, CPAs, claims adjusters,
-        // auditors, and office workers -- business attire blends right in.
         if ([
           "CLOTHING_CHEAPSUIT",
           "CLOTHING_EXPENSIVESUIT",

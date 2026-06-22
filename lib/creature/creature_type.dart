@@ -237,6 +237,7 @@ class CreatureTypeIds {
   static const String veteran = "CREATURE_VETERAN";
   static const String hardenedVeteran = "CREATURE_HARDENED_VETERAN";
   static const String soldier = "CREATURE_SOLDIER";
+  static const String militaryOfficer = "CREATURE_MILITARYOFFICER";
   static const String militaryPolice = "CREATURE_MILITARYPOLICE";
   static const String seal = "CREATURE_SEAL";
   static const String hippie = "CREATURE_HIPPIE";

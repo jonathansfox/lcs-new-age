@@ -31,12 +31,13 @@ class Item implements Comparable<Item> {
       return Clothing(type.idName);
     } else if (type is AmmoType) {
       return Ammo(type.idName);
+    } else if (type.isMoney) {
+      // Must precede LootType: money is a LootType flagged isMoney.
+      return Money(1);
     } else if (type is LootType) {
       return Loot(type.idName);
     } else if (type is FlagType) {
       return Flag(type.idName);
-    } else if (type.isMoney) {
-      return Money(1);
     } else {
       debugPrint("Item constructor: Unknown item type: $idName");
       return Item.superConstructor(type.idName);
@@ -52,12 +53,13 @@ class Item implements Comparable<Item> {
       return Clothing.fromJson(json);
     } else if (type is AmmoType) {
       return Ammo.fromJson(json);
+    } else if (type?.isMoney == true) {
+      // Must precede LootType: money is a LootType flagged isMoney.
+      return Money.fromJson(json);
     } else if (type is LootType) {
       return Loot.fromJson(json);
     } else if (type is FlagType) {
       return Flag.fromJson(json);
-    } else if (type?.isMoney == true) {
-      return Money.fromJson(json);
     } else {
       debugPrint("Item.fromJson: Unknown item type: ${json['typeName']}");
       return Item(json['typeName'])..stackSize = json['stackSize'];

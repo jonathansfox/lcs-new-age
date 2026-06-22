@@ -486,9 +486,6 @@ Future<void> siegeCheck() async {
       // won't come after you.
       int collectibleDebt = min(unpaidMedicalBills, ledger.funds);
       int extraHeatFromMedical = collectibleDebt ~/ 1000;
-      // The armed accountants only roll up when both healthcare and gun
-      // control are Conservative or Arch-Conservative: a hostile medical regime
-      // to run the debt up, and lax gun laws for them to be carrying AR-15s.
       bool medicalLawHostile =
           laws[Law.healthcare]! <= DeepAlignment.conservative &&
           laws[Law.gunControl]! <= DeepAlignment.conservative;

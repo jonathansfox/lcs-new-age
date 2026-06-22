@@ -513,23 +513,6 @@ Elements marked as hardcoded may have their values overridden by the game.
             <business>3-6</business>
         </skills>
     </creaturetype>
-    <creaturetype idname="CREATURE_NURSING_HOME_MANAGER">
-        <type_name>Nursing Home Admin</type_name>
-        <weapon>WEAPON_NONE</weapon>
-        <armor>CLOTHING_CLOTHES</armor>
-        <age>MATURE</age>
-        <gender>MALE BIAS</gender>
-        <alignment>CONSERVATIVE</alignment>
-        <attributes>
-            <intelligence>4-10</intelligence>
-            <wisdom>4-10</wisdom>
-        </attributes>
-        <money>120-240</money>
-        <skills>
-            <business>3-6</business>
-            <firstAid>1-2</firstAid>
-        </skills>
-    </creaturetype>
     <creaturetype idname="CREATURE_TEENAGER">
         <type_name>Teenager</type_name>
         <armor>CLOTHING_CLOTHES</armor>
@@ -863,7 +846,7 @@ Elements marked as hardcoded may have their values overridden by the game.
     </creaturetype>
     <creaturetype idname="CREATURE_RADIOPERSONALITY">
         <type_name>Radio Personality</type_name>
-        <weapon>NONE</weapon>
+        <weapon>WEAPON_NONE</weapon>
         <armor>CLOTHING_EXPENSIVESUIT</armor>
         <age>MATURE</age>
         <alignment>CONSERVATIVE</alignment>
@@ -893,7 +876,7 @@ Elements marked as hardcoded may have their values overridden by the game.
     </creaturetype>
     <creaturetype idname="CREATURE_NEWSANCHOR">
         <type_name>Cable News Anchor</type_name>
-        <weapon>NONE</weapon>
+        <weapon>WEAPON_NONE</weapon>
         <armor>CLOTHING_EXPENSIVESUIT</armor>
         <age>MATURE</age>
         <alignment>CONSERVATIVE</alignment>
@@ -2151,18 +2134,6 @@ Elements marked as hardcoded may have their values overridden by the game.
         <armor>CLOTHING_CLOTHES</armor>
         <alignment>LIBERAL</alignment>
         <talkreceptive>1</talkreceptive>
-    </creaturetype>
-    <creaturetype idname="CREATURE_CCS_MOLOTOV">
-        <!-- Removed -->
-        <type_name>CCS Arsonist</type_name>
-        <kidnap_resistant>1</kidnap_resistant>
-        <edgelord>true</edgelord>
-    </creaturetype>
-    <creaturetype idname="CREATURE_CCS_SNIPER">
-        <!-- Removed -->
-        <type_name>CCS Sniper</type_name>
-        <kidnap_resistant>1</kidnap_resistant>
-        <edgelord>true</edgelord>
     </creaturetype>
     <creaturetype idname="CREATURE_PSYCHOLOGIST">
         <type_name>Psychologist</type_name>
