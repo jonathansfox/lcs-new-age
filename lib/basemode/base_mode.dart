@@ -225,6 +225,8 @@ void printLocation(Site loc) {
           mvaddstr(2, 1, "An angry mob is storming");
         case SiegeType.corporateMercs:
           mvaddstr(2, 1, "Corporate mercs are attacking");
+        case SiegeType.medicalDebtCollectors:
+          mvaddstr(2, 1, "Debt collectors are raiding");
         case SiegeType.ccs:
           mvaddstr(2, 1, "The CCS is attacking");
         default:

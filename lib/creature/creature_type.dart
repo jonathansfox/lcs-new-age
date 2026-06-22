@@ -221,6 +221,8 @@ class CreatureTypeIds {
   static const String officeWorker = "CREATURE_OFFICEWORKER";
   static const String auditor = "CREATURE_AUDITOR";
   static const String actuary = "CREATURE_ACTUARY";
+  static const String cpa = "CREATURE_CPA";
+  static const String claimsAdjuster = "CREATURE_CLAIMS_ADJUSTER";
   static const String footballCoach = "CREATURE_FOOTBALLCOACH";
   static const String sexWorker = "CREATURE_SEXWORKER";
   static const String mailman = "CREATURE_MAILMAN";

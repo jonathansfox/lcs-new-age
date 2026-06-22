@@ -6,3 +6,5 @@ const bool debugPartyRescue = false;
 const bool debugAllItems = false;
 const bool debugBadlyInjured = false;
 const bool debugVerboseHospitalLogging = false;
+const bool debugAMilli = false;
+const bool debugFounderMedicalDebt = false;

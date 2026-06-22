@@ -510,6 +510,17 @@ DisguiseQuality disguiseQuality(Creature cr) {
         ].contains(cr.clothing.type.idName)) {
           uniformed = DisguiseQuality.inconspicuous;
         }
+      case SiegeType.medicalDebtCollectors:
+        // The raiders are cubicle-dwelling actuaries, CPAs, claims adjusters,
+        // auditors, and office workers -- business attire blends right in.
+        if ([
+          "CLOTHING_CHEAPSUIT",
+          "CLOTHING_EXPENSIVESUIT",
+          "CLOTHING_CHEAPDRESS",
+          "CLOTHING_EXPENSIVEDRESS",
+        ].contains(cr.clothing.type.idName)) {
+          uniformed = DisguiseQuality.inconspicuous;
+        }
       case SiegeType.angryRuralMob:
         if (cr.clothing.type.idName == "CLOTHING_CLOTHES") {
           uniformed = DisguiseQuality.unusual;

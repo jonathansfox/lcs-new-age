@@ -13,33 +13,42 @@ import 'package:lcs_new_age/utils/colors.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 
 Future<void> handleRelease(
-    InterrogationSession intr, Creature lead, int y) async {
+  InterrogationSession intr,
+  Creature lead,
+  int y,
+) async {
   Creature cr = intr.hostage;
   erase();
   mvaddstrc(
-      0, 0, white, "The Release of ${cr.name}: Day ${cr.daysSinceJoined}");
+    0,
+    0,
+    white,
+    "The Release of ${cr.name}: Day ${cr.daysSinceJoined}",
+  );
   y = 2;
   setColor(lightGray);
 
   if (cr.site?.siege.underSiege == true) {
     String typeOfSiegers = switch (cr.site?.siege.activeSiegeType) {
       SiegeType.police => switch (cr.site?.siege.escalationState) {
-          SiegeEscalation.police => "police",
-          _ => "soldiers",
-        },
+        SiegeEscalation.police => "police",
+        _ => "soldiers",
+      },
       SiegeType.cia => "CIA agents",
       SiegeType.angryRuralMob => "people outside",
       SiegeType.corporateMercs => "corporate mercenaries",
+      SiegeType.medicalDebtCollectors => "debt collectors",
       SiegeType.ccs => "CCS vigilantes",
       _ => "giant bugs",
     };
     addparagraph(
-        y,
-        0,
-        "${lead.name} leads ${cr.name} to the front door and lets "
-        "${cr.gender.himHer} run into the arms of the waiting $typeOfSiegers. "
-        "There is a brief commotion as ${cr.name} is led to safety, but "
-        "aside from that, there's no change in the situation.");
+      y,
+      0,
+      "${lead.name} leads ${cr.name} to the front door and lets "
+      "${cr.gender.himHer} run into the arms of the waiting $typeOfSiegers. "
+      "There is a brief commotion as ${cr.name} is led to safety, but "
+      "aside from that, there's no change in the situation.",
+    );
     await getKey();
     return;
   }
@@ -98,10 +107,11 @@ Future<void> handleRelease(
   }
 
   addparagraph(
-      y,
-      0,
-      "${lead.name} takes ${cr.name} to a secure location and releases "
-      "${cr.gender.himHer} from captivity. ${cr.name} $reaction");
+    y,
+    0,
+    "${lead.name} takes ${cr.name} to a secure location and releases "
+    "${cr.gender.himHer} from captivity. ${cr.name} $reaction",
+  );
   y = console.y + 1;
 
   await getKey();
@@ -110,12 +120,13 @@ Future<void> handleRelease(
   // they might become a sleeper agent
   if (lcsRandom(100) < successChance) {
     addparagraph(
-        y,
-        0,
-        "${cr.name} gets in touch with ${lead.name} later, expressing "
-        "a desire to continue their conversations and offering "
-        "${cr.gender.hisHer} services as a sleeper agent for the "
-        "Liberal Crime Squad.");
+      y,
+      0,
+      "${cr.name} gets in touch with ${lead.name} later, expressing "
+      "a desire to continue their conversations and offering "
+      "${cr.gender.hisHer} services as a sleeper agent for the "
+      "Liberal Crime Squad.",
+    );
     cr.hireId = lead.id;
     cr.brainwashed = true;
     cr.base = cr.workLocation is Site ? cr.workLocation as Site : null;

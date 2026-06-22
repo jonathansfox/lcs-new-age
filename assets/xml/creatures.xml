@@ -1305,6 +1305,28 @@ Elements marked as hardcoded may have their values overridden by the game.
         </skills>
         <alignment>CONSERVATIVE</alignment>
     </creaturetype>
+    <creaturetype idname="CREATURE_CPA">
+        <type_name>CPA</type_name>
+        <weapon>CIVILIAN</weapon>
+        <armor>CLOTHING_CHEAPSUIT</armor>
+        <age>MATURE</age>
+        <money>40-80</money>
+        <skills>
+            <business>2-4</business>
+        </skills>
+        <alignment>CONSERVATIVE</alignment>
+    </creaturetype>
+    <creaturetype idname="CREATURE_CLAIMS_ADJUSTER">
+        <type_name>Claims Adjuster</type_name>
+        <weapon>CIVILIAN</weapon>
+        <armor>CLOTHING_CHEAPSUIT</armor>
+        <age>MATURE</age>
+        <money>40-80</money>
+        <skills>
+            <business>2-4</business>
+        </skills>
+        <alignment>CONSERVATIVE</alignment>
+    </creaturetype>
     <creaturetype idname="CREATURE_FOOTBALLCOACH">
         <type_name>Football Coach</type_name>
         <weapon>CIVILIAN</weapon>

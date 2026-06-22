@@ -12,45 +12,45 @@ import 'package:shared_preferences/shared_preferences.dart';
 const int scoreVersion = 1;
 
 class HighScores {
-  HighScores(
-      {this.universalRecruits = 0,
-      this.universalMartyrs = 0,
-      this.universalKills = 0,
-      this.universalKidnappings = 0,
-      this.universalFunds = 0,
-      this.universalSpent = 0,
-      this.universalFlagBuys = 0,
-      this.universalFlagBurns = 0,
-      this.universalLosses = 0,
-      this.universalVictories = 0});
+  HighScores({
+    this.universalRecruits = 0,
+    this.universalMartyrs = 0,
+    this.universalKills = 0,
+    this.universalKidnappings = 0,
+    this.universalFunds = 0,
+    this.universalSpent = 0,
+    this.universalFlagBuys = 0,
+    this.universalFlagBurns = 0,
+    this.universalLosses = 0,
+    this.universalVictories = 0,
+  });
   HighScores.fromJson(Map<String, dynamic> json)
-      : scoreList = (json['highScores'] as List<dynamic>? ?? [])
-            .map<HighScore>(
-                (a) => HighScore.fromJson(a as Map<String, dynamic>))
-            .toList(),
-        universalRecruits = json['universalRecruits'] ?? 0,
-        universalMartyrs = json['universalMartyrs'] ?? 0,
-        universalKills = json['universalKills'] ?? 0,
-        universalKidnappings = json['universalKidnappings'] ?? 0,
-        universalFunds = json['universalFunds'] ?? 0,
-        universalSpent = json['universalSpent'] ?? 0,
-        universalFlagBuys = json['universalFlagBuys'] ?? 0,
-        universalFlagBurns = json['universalFlagBurns'] ?? 0,
-        universalLosses = json['universalLosses'] ?? 0,
-        universalVictories = json['universalVictories'] ?? 0;
+    : scoreList = (json['highScores'] as List<dynamic>? ?? [])
+          .map<HighScore>((a) => HighScore.fromJson(a as Map<String, dynamic>))
+          .toList(),
+      universalRecruits = json['universalRecruits'] ?? 0,
+      universalMartyrs = json['universalMartyrs'] ?? 0,
+      universalKills = json['universalKills'] ?? 0,
+      universalKidnappings = json['universalKidnappings'] ?? 0,
+      universalFunds = json['universalFunds'] ?? 0,
+      universalSpent = json['universalSpent'] ?? 0,
+      universalFlagBuys = json['universalFlagBuys'] ?? 0,
+      universalFlagBurns = json['universalFlagBurns'] ?? 0,
+      universalLosses = json['universalLosses'] ?? 0,
+      universalVictories = json['universalVictories'] ?? 0;
   Map<String, dynamic> toJson() => {
-        'highScores': scoreList.map((e) => e.toJson()).toList(),
-        'universalRecruits': universalRecruits,
-        'universalMartyrs': universalMartyrs,
-        'universalKills': universalKills,
-        'universalKidnappings': universalKidnappings,
-        'universalFunds': universalFunds,
-        'universalSpent': universalSpent,
-        'universalFlagBuys': universalFlagBuys,
-        'universalFlagBurns': universalFlagBurns,
-        'universalLosses': universalLosses,
-        'universalVictories': universalVictories,
-      };
+    'highScores': scoreList.map((e) => e.toJson()).toList(),
+    'universalRecruits': universalRecruits,
+    'universalMartyrs': universalMartyrs,
+    'universalKills': universalKills,
+    'universalKidnappings': universalKidnappings,
+    'universalFunds': universalFunds,
+    'universalSpent': universalSpent,
+    'universalFlagBuys': universalFlagBuys,
+    'universalFlagBurns': universalFlagBurns,
+    'universalLosses': universalLosses,
+    'universalVictories': universalVictories,
+  };
   List<HighScore> scoreList = [];
   int universalRecruits = 0;
   int universalMartyrs = 0;
@@ -83,32 +83,32 @@ class HighScore {
     required this.endType,
   });
   HighScore.fromJson(Map<String, dynamic> json)
-      : slogan = json['slogan'] ?? "",
-        month = json['month'] ?? 0,
-        year = json['year'] ?? 2023,
-        statRecruits = json['statRecruits'] ?? 0,
-        statMartyrs = json['statMartyrs'] ?? 0,
-        statKills = json['statKills'] ?? 0,
-        statKidnappings = json['statKidnappings'] ?? 0,
-        statFunds = json['statFunds'] ?? 0,
-        statSpent = json['statSpent'] ?? 0,
-        statBuys = json['statBuys'] ?? 0,
-        statBurns = json['statBurns'] ?? 0,
-        endType = Ending.values[json['endType']];
+    : slogan = json['slogan'] ?? "",
+      month = json['month'] ?? 0,
+      year = json['year'] ?? 2023,
+      statRecruits = json['statRecruits'] ?? 0,
+      statMartyrs = json['statMartyrs'] ?? 0,
+      statKills = json['statKills'] ?? 0,
+      statKidnappings = json['statKidnappings'] ?? 0,
+      statFunds = json['statFunds'] ?? 0,
+      statSpent = json['statSpent'] ?? 0,
+      statBuys = json['statBuys'] ?? 0,
+      statBurns = json['statBurns'] ?? 0,
+      endType = Ending.values[json['endType']];
   Map<String, dynamic> toJson() => {
-        'slogan': slogan,
-        'month': month,
-        'year': year,
-        'statRecruits': statRecruits,
-        'statMartyrs': statMartyrs,
-        'statKills': statKills,
-        'statKidnappings': statKidnappings,
-        'statFunds': statFunds,
-        'statSpent': statSpent,
-        'statBuys': statBuys,
-        'statBurns': statBurns,
-        'endType': endType.index,
-      };
+    'slogan': slogan,
+    'month': month,
+    'year': year,
+    'statRecruits': statRecruits,
+    'statMartyrs': statMartyrs,
+    'statKills': statKills,
+    'statKidnappings': statKidnappings,
+    'statFunds': statFunds,
+    'statSpent': statSpent,
+    'statBuys': statBuys,
+    'statBurns': statBurns,
+    'endType': endType.index,
+  };
   String slogan;
   int month;
   int year;
@@ -185,6 +185,8 @@ Future<void> viewHighScores([HighScore? yourScore]) async {
         addstr("The Liberal Crime Squad was mobbed in ");
       case Ending.corporateSiege:
         addstr("The Liberal Crime Squad was downsized in ");
+      case Ending.medicalSiege:
+        addstr("The Liberal Crime Squad was billed to death in ");
       case Ending.dead:
         addstr("The Liberal Crime Squad was KIA in ");
       case Ending.reaganified:
@@ -272,8 +274,10 @@ Future<HighScores> loadHighScores() async {
 
   // Sort and limit to top 5 scores
   highScores.scoreList.sort((a, b) => a.compareTo(b));
-  highScores.scoreList =
-      highScores.scoreList.sublist(0, min(5, highScores.scoreList.length));
+  highScores.scoreList = highScores.scoreList.sublist(
+    0,
+    min(5, highScores.scoreList.length),
+  );
 
   return highScores;
 }
@@ -313,8 +317,10 @@ Future<HighScore> saveHighScore(Ending ending) async {
   );
   highScores.scoreList.add(yourScore);
   highScores.scoreList.sort((a, b) => a.compareTo(b));
-  highScores.scoreList =
-      highScores.scoreList.sublist(0, min(5, highScores.scoreList.length));
+  highScores.scoreList = highScores.scoreList.sublist(
+    0,
+    min(5, highScores.scoreList.length),
+  );
 
   //SAVE THE STATS
   final prefs = await SharedPreferences.getInstance();

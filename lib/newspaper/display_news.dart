@@ -81,7 +81,8 @@ Future<void> displayStory(NewsStory ns, View? header) async {
               "entire leadership, dead or alive. I personally guarantee it.\""
               "&r";
         case NewsStories.ccsDefeated:
-          story += "An elite FBI force conducted simultaneous "
+          story +=
+              "An elite FBI force conducted simultaneous "
               "raids on several suspected Conservative Crime Squad safehouses in the early hours. Despite resistance from "
               "CCS terrorists armed with automatic weapons and body armor, no FBI agents were killed in the raids, and all "
               "three raids were successful. Seventeen suspects were killed in the fighting, and twenty-three are "
@@ -98,7 +99,8 @@ Future<void> displayStory(NewsStory ns, View? header) async {
               "&r";
         case NewsStories.arrestGoneWrong:
         case NewsStories.carTheft:
-          story += "A routine arrest went horribly wrong yesterday, "
+          story +=
+              "A routine arrest went horribly wrong yesterday, "
               "according to a spokesperson from the police department.&r"
               "  A suspect, whose identity is unclear, killed ";
           if (drama[Drama.killedSomebody]! > 1) {
@@ -118,7 +120,8 @@ Future<void> displayStory(NewsStory ns, View? header) async {
           }
           story += "&r";
         case NewsStories.squadEscapedSiege:
-          story += "Members of the Liberal Crime Squad "
+          story +=
+              "Members of the Liberal Crime Squad "
               "escaped from a police siege yesterday, according ";
           if (!liberalguardian) {
             story += "to a spokesperson from the police department.";
@@ -127,7 +130,8 @@ Future<void> displayStory(NewsStory ns, View? header) async {
           }
           story += "&r";
         case NewsStories.squadFledAttack:
-          story += "Members of the Liberal Crime Squad "
+          story +=
+              "Members of the Liberal Crime Squad "
               "escaped from police officers during a raid yesterday, according ";
           if (!liberalguardian) {
             story += "to a spokesperson from the police department.";
@@ -136,7 +140,8 @@ Future<void> displayStory(NewsStory ns, View? header) async {
           }
           story += "&r";
         case NewsStories.squadDefended:
-          story += "Members of the Liberal Crime Squad "
+          story +=
+              "Members of the Liberal Crime Squad "
               "fought off a police raid yesterday, according ";
           if (!liberalguardian) {
             story += "to a spokesperson from the police department.";
@@ -145,7 +150,8 @@ Future<void> displayStory(NewsStory ns, View? header) async {
           }
           story += "&r";
         case NewsStories.squadBrokeSiege:
-          story += "Members of the Liberal Crime Squad "
+          story +=
+              "Members of the Liberal Crime Squad "
               "violently broke a police siege yesterday, according ";
           if (!liberalguardian) {
             story += "to a spokesperson from the police department.";
@@ -156,10 +162,12 @@ Future<void> displayStory(NewsStory ns, View? header) async {
         case NewsStories.squadKilledInSiegeAttack:
           story += "Members of the Liberal Crime Squad were ";
           if (!liberalguardian) {
-            story += "slain during a police raid yesterday, according "
+            story +=
+                "slain during a police raid yesterday, according "
                 "to a spokesperson from the police department.";
           } else {
-            story += "murdered during a police raid yesterday, according "
+            story +=
+                "murdered during a police raid yesterday, according "
                 "to a Liberal Crime Squad spokesperson.";
           }
           story += "&r";
@@ -176,7 +184,8 @@ Future<void> displayStory(NewsStory ns, View? header) async {
           }
           story += "&r";
         default:
-          bool ccs = ns.type == NewsStories.ccsKilledInSiteAction ||
+          bool ccs =
+              ns.type == NewsStories.ccsKilledInSiteAction ||
               ns.type == NewsStories.ccsSiteAction;
 
           story += squadStoryTextOpening(ns, ccs);
@@ -185,32 +194,35 @@ Future<void> displayStory(NewsStory ns, View? header) async {
 
           int typesum = drama.entries
               .where((entry) => entry.value >= 1)
-              .whereNot((entry) => [
-                    Drama.openedCEOSafe,
-                    Drama.stoleCorpFiles,
-                    Drama.shutDownReactor,
-                    Drama.bankVaultRobbery,
-                    Drama.bankTellerRobbery,
-                    Drama.bankStickup,
-                    Drama.openedPoliceLockup,
-                    Drama.openedCourthouseLockup,
-                    Drama.releasedPrisoners,
-                    Drama.juryTampering,
-                    Drama.hackedIntelSupercomputer,
-                    Drama.openedArmory,
-                    Drama.carChase,
-                    Drama.carCrash,
-                    Drama.footChase,
-                    Drama.hijackedBroadcast,
-                    Drama.legalGunUsed,
-                    Drama.illegalGunUsed,
-                  ].contains(entry.key))
+              .whereNot(
+                (entry) => [
+                  Drama.openedCEOSafe,
+                  Drama.stoleCorpFiles,
+                  Drama.shutDownReactor,
+                  Drama.bankVaultRobbery,
+                  Drama.bankTellerRobbery,
+                  Drama.bankStickup,
+                  Drama.openedPoliceLockup,
+                  Drama.openedCourthouseLockup,
+                  Drama.releasedPrisoners,
+                  Drama.juryTampering,
+                  Drama.hackedIntelSupercomputer,
+                  Drama.openedArmory,
+                  Drama.carChase,
+                  Drama.carCrash,
+                  Drama.footChase,
+                  Drama.hijackedBroadcast,
+                  Drama.legalGunUsed,
+                  Drama.illegalGunUsed,
+                ].contains(entry.key),
+              )
               .length;
 
           if (did(Drama.shutDownReactor)) {
             if (laws[Law.nuclearPower] == DeepAlignment.eliteLiberal) {
               if (!liberalguardian) {
-                story += "  According to sources that were at the scene, "
+                story +=
+                    "  According to sources that were at the scene, "
                     "the Liberal Crime Squad contaminated the state's water supply"
                     "yesterday by tampering with equipment on the site."
                     "&r";
@@ -222,7 +234,8 @@ Future<void> displayStory(NewsStory ns, View? header) async {
               }
             } else {
               if (!liberalguardian) {
-                story += "  According to sources that were at the scene, "
+                story +=
+                    "  According to sources that were at the scene, "
                     "the Liberal Crime Squad nearly caused a catastrophic meltdown of the nuclear "
                     "reactor."
                     "&r";
@@ -236,7 +249,8 @@ Future<void> displayStory(NewsStory ns, View? header) async {
           }
           if (did(Drama.openedPoliceLockup)) {
             if (!liberalguardian) {
-              story += "  According to sources that were at the scene, "
+              story +=
+                  "  According to sources that were at the scene, "
                   "the Liberal Crime Squad allegedly freed or attempted to free prisoners from the police lockup."
                   "&r";
             } else {
@@ -248,17 +262,20 @@ Future<void> displayStory(NewsStory ns, View? header) async {
           }
           if (did(Drama.bankVaultRobbery)) {
             if (!liberalguardian) {
-              story += "  According to sources that were at the scene, "
+              story +=
+                  "  According to sources that were at the scene, "
                   "the Liberal Crime Squad opened the bank vault, which held more than \$100,000 at the time."
                   "&r";
             } else {
-              story += "  The Liberal Crime Squad opened the bank vault, "
+              story +=
+                  "  The Liberal Crime Squad opened the bank vault, "
                   "showing the triumph of Liberal ideals over Conservative economics."
                   "&r";
             }
           } else if (did(Drama.bankStickup)) {
             if (!liberalguardian) {
-              story += "  According to sources that were at the scene, "
+              story +=
+                  "  According to sources that were at the scene, "
                   "the Liberal Crime Squad threatened innocent bystanders in order to rob the bank vault."
                   "&r";
             } else {
@@ -270,7 +287,8 @@ Future<void> displayStory(NewsStory ns, View? header) async {
           }
           if (did(Drama.openedCourthouseLockup)) {
             if (!liberalguardian) {
-              story += "  According to sources that were at the scene, "
+              story +=
+                  "  According to sources that were at the scene, "
                   "the Liberal Crime Squad allegedly freed or attempted to free prisoners from the courthouse lockup."
                   "&r";
             } else {
@@ -282,7 +300,8 @@ Future<void> displayStory(NewsStory ns, View? header) async {
           }
           if (did(Drama.releasedPrisoners)) {
             if (!liberalguardian) {
-              story += "  According to sources that were at the scene, "
+              story +=
+                  "  According to sources that were at the scene, "
                   "the Liberal Crime Squad allegedly freed prisoners while in the facility."
                   "&r";
             } else {
@@ -294,7 +313,8 @@ Future<void> displayStory(NewsStory ns, View? header) async {
           }
           if (did(Drama.juryTampering)) {
             if (!liberalguardian) {
-              story += "  According to police sources that were at the scene, "
+              story +=
+                  "  According to police sources that were at the scene, "
                   "the Liberal Crime Squad allegedly violated the sacred "
                   "trust and attempted to influence a jury."
                   "&r";
@@ -307,7 +327,8 @@ Future<void> displayStory(NewsStory ns, View? header) async {
           }
           if (did(Drama.hackedIntelSupercomputer)) {
             if (!liberalguardian) {
-              story += "  According to police sources that were at the scene, "
+              story +=
+                  "  According to police sources that were at the scene, "
                   "intelligence officials seemed very nervous about something."
                   "&r";
             } else {
@@ -318,7 +339,8 @@ Future<void> displayStory(NewsStory ns, View? header) async {
           }
           if (did(Drama.openedArmory)) {
             if (!liberalguardian) {
-              story += "  According to sources, "
+              story +=
+                  "  According to sources, "
                   "the Liberal Crime Squad attempted to break into the armory."
                   "&r";
             } else {
@@ -329,7 +351,8 @@ Future<void> displayStory(NewsStory ns, View? header) async {
           }
           if (did(Drama.openedCEOSafe)) {
             if (!liberalguardian) {
-              story += "  According to police sources that were at the scene, "
+              story +=
+                  "  According to police sources that were at the scene, "
                   "the owner of the house seemed very frantic about some missing property."
                   "&r";
             } else {
@@ -340,7 +363,8 @@ Future<void> displayStory(NewsStory ns, View? header) async {
           }
           if (did(Drama.stoleCorpFiles)) {
             if (!liberalguardian) {
-              story += "  According to police sources that were at the scene, "
+              story +=
+                  "  According to police sources that were at the scene, "
                   "executives on the scene seemed very nervous about something."
                   "&r";
             } else {
@@ -351,7 +375,8 @@ Future<void> displayStory(NewsStory ns, View? header) async {
           }
           if (did(Drama.hijackedBroadcast)) {
             if (!liberalguardian) {
-              story += "  The Liberal Crime Squad hijacked a news broadcast, "
+              story +=
+                  "  The Liberal Crime Squad hijacked a news broadcast, "
                   "interrupting regular programming."
                   "&r";
             } else {
@@ -406,20 +431,26 @@ Future<void> displayStory(NewsStory ns, View? header) async {
             }
             if (did(Drama.attacked)) {
               addDrama(
-                  "violence", "engaged in combat with Conservative forces");
+                "violence",
+                "engaged in combat with Conservative forces",
+              );
             }
             if (did(Drama.stoleSomething) || did(Drama.bankTellerRobbery)) {
               addDrama("theft", "liberated enemy resources");
             }
             if (did(Drama.freeRabbits) || did(Drama.freeMonsters)) {
               addDrama(
-                  "tampering with lab animals", "liberated abused animals");
+                "tampering with lab animals",
+                "liberated abused animals",
+              );
             }
             if (did(Drama.brokeSweatshopEquipment) ||
                 did(Drama.brokeFactoryEquipment) ||
                 did(Drama.vandalism)) {
-              addDrama("destruction of private property",
-                  "damaged enemy infrastructure");
+              addDrama(
+                "destruction of private property",
+                "damaged enemy infrastructure",
+              );
             }
             if (did(Drama.tagging)) {
               addDrama("vandalism", "marked the site for Liberation");
@@ -434,24 +465,31 @@ Future<void> displayStory(NewsStory ns, View? header) async {
               addDrama("a musical rampage", "performed an impromptu concert");
             }
             if (did(Drama.openedNursingHomeSafe)) {
-              addDrama("accessed private documents",
-                  "uncovered evidence of elder abuse");
+              addDrama(
+                "accessed private documents",
+                "uncovered evidence of elder abuse",
+              );
             }
             if (did(Drama.openedInsuranceSafe)) {
-              addDrama("accessed private documents",
-                  "uncovered evidence of insurance fraud");
+              addDrama(
+                "accessed private documents",
+                "uncovered evidence of insurance fraud",
+              );
             }
 
-            story += "."
+            story +=
+                "."
                 "&r";
           }
 
           if (did(Drama.carChase)) {
             if (!liberalguardian || ccs) {
-              story += "  It is known that there was a high-speed chase "
+              story +=
+                  "  It is known that there was a high-speed chase "
                   "following the incident.  ";
             } else {
-              story += "  Conservative operatives engaged in a reckless "
+              story +=
+                  "  Conservative operatives engaged in a reckless "
                   "pursuit of the LCS.  ";
             }
 
@@ -494,7 +532,8 @@ Future<void> displayStory(NewsStory ns, View? header) async {
                     "gun ownership would help to bring violence like this to "
                     "an end.&r";
               } else {
-                story += "  A prominent gun advocacy group noted that it was "
+                story +=
+                    "  A prominent gun advocacy group noted that it was "
                     "unfortunate that there weren't more armed citizens in "
                     "the area to stop this from happening.&r";
               }
@@ -504,7 +543,8 @@ Future<void> displayStory(NewsStory ns, View? header) async {
                 "  The $culprit was seen to use firearms that are commonly "
                 "sold in the state.&r";
           } else if (did(Drama.illegalGunUsed)) {
-            story += "  The $culprit was seen to use firearms that are "
+            story +=
+                "  The $culprit was seen to use firearms that are "
                 "illegal for civilians to own in this state.&r";
           }
 
@@ -572,7 +612,8 @@ Future<void> displayStory(NewsStory ns, View? header) async {
       }
       story += " found in the ${ns.loc!.name} yesterday.";
       if (!liberalguardian) {
-        story += "  According to a spokesperson for "
+        story +=
+            "  According to a spokesperson for "
             "the police department, the matter is under investigation as a homicide."
             "&r"
             "  Privately, sources in the department confide that there aren't any leads.  "
@@ -588,12 +629,14 @@ Future<void> displayStory(NewsStory ns, View? header) async {
         } else {
           story += "victim was a member ";
         }
-        story += "of the LCS targeted simply due to their political beliefs.  "
+        story +=
+            "of the LCS targeted simply due to their political beliefs.  "
             "According to an LCS spokesperson, \"";
       }
       switch (ns.siegetype) {
         case SiegeType.none:
-          story += "We have no idea who did this, or why, or how it happened.  "
+          story +=
+              "We have no idea who did this, or why, or how it happened.  "
               "It's a complete mystery.  A bug in the game even.  "
               "We're working closely with the programmers to find out what happened.\"";
         case SiegeType.cia:
@@ -620,7 +663,8 @@ Future<void> displayStory(NewsStory ns, View? header) async {
           }
         case SiegeType.police:
           if (!liberalguardian) {
-            story += "It's just a gang-related incident.  "
+            story +=
+                "It's just a gang-related incident.  "
                 "You know, the usual.  "
                 "Some people just don't know how to live in a civilized society";
           } else {
@@ -632,10 +676,12 @@ Future<void> displayStory(NewsStory ns, View? header) async {
           }
         case SiegeType.angryRuralMob:
           if (!liberalguardian) {
-            story += "...  stabbed with, maybe, pitchforks.  There may have "
+            story +=
+                "...  stabbed with, maybe, pitchforks.  There may have "
                 "been bite marks.  Nothing recognizable left.  Complete carnage.";
           } else {
-            story += "We have reason to believe that this brutal massacre was "
+            story +=
+                "We have reason to believe that this brutal massacre was "
                 "inspired by the Conservative media's brainwashing propaganda";
           }
         case SiegeType.corporateMercs:
@@ -649,6 +695,19 @@ Future<void> displayStory(NewsStory ns, View? header) async {
                 "with in the past.  *When* the police can't figure this one out, they're "
                 "just covering it up";
           }
+        case SiegeType.medicalDebtCollectors:
+          if (!liberalguardian) {
+            story +=
+                "The victims were all found to have overdosed on drugs. "
+                "And there were bullet holes everywhere. The building was "
+                "more chewed up than the victims. Our lead theory is that "
+                "they did it to themselves, but who knows?";
+          } else {
+            story +=
+                "This was carried out by debt collectors for the medical "
+                "industry. They'll say otherwise, but we know the truth. "
+                "The sooner we can move to a single payer system, the better.";
+          }
         case SiegeType.ccs:
           if (!liberalguardian) {
             story +=
@@ -660,7 +719,8 @@ Future<void> displayStory(NewsStory ns, View? header) async {
                 "They have to be stopped before they kill again";
           }
       }
-      story += ".\"  "
+      story +=
+          ".\"  "
           "&r";
 
       story += generateFiller(200);
@@ -722,7 +782,8 @@ Future<void> displayStory(NewsStory ns, View? header) async {
       }
 
       story = city;
-      story += " - The disappearance of ${ns.cr!.properName} is now "
+      story +=
+          " - The disappearance of ${ns.cr!.properName} is now "
           "considered a kidnapping, "
           "according to a police spokesperson."
           "&r"
@@ -757,8 +818,12 @@ Future<void> displayStory(NewsStory ns, View? header) async {
   } while (!isBackKey(c));
 }
 
-void displayCenteredNewsFont(String str, int y, NewsStory ns,
-    {bool? useBigFont}) {
+void displayCenteredNewsFont(
+  String str,
+  int y,
+  NewsStory ns, {
+  bool? useBigFont,
+}) {
   if (ns.headline == "") {
     ns.headline = str;
   } else {
@@ -796,20 +861,26 @@ void displayCenteredNewsFont(String str, int y, NewsStory ns,
           for (int y2 = 0; y2 < 7; y2++) {
             move(y + y2, x + x2);
             if (x2 == 5) {
-              setColor(ns.publication.backgroundColor,
-                  background: ns.publication.backgroundColor);
+              setColor(
+                ns.publication.backgroundColor,
+                background: ns.publication.backgroundColor,
+              );
               addchar(' ');
             } else {
-              drawCPCGlyph(bigletters[p][x2][y2],
-                  remapLightGray: ns.publication.backgroundColor);
+              drawCPCGlyph(
+                bigletters[p][x2][y2],
+                remapLightGray: ns.publication.backgroundColor,
+              );
             }
           }
         }
         refresh();
         x += lim;
       } else {
-        setColor(ns.publication.backgroundColor,
-            background: ns.publication.backgroundColor);
+        setColor(
+          ns.publication.backgroundColor,
+          background: ns.publication.backgroundColor,
+        );
         for (int x2 = 0; x2 < 3; x2++) {
           for (int y2 = 0; y2 < 7; y2++) {
             move(y + y2, x + x2);
@@ -834,8 +905,12 @@ void displayCenteredSmallNews(String str, int y, NewsStory ns) {
   addstr(str);
 }
 
-void displayNewsPicture(int p, int y, NewsStory ns,
-    [bool remapSkinTones = false]) {
+void displayNewsPicture(
+  int p,
+  int y,
+  NewsStory ns, [
+  bool remapSkinTones = false,
+]) {
   ns.newspaperPhotoId = p;
   ns.remapSkinTones = remapSkinTones;
   renderNewsPic(p, y, remapSkinTones);
@@ -852,8 +927,13 @@ void renderNewsPic(int p, int y, [bool remapSkinTones = false]) {
 }
 
 /* news - draws the specified block of text to the screen */
-void displayNewsStory(String story, List<int> storyXStart, List<int> storyXEnd,
-    int y, NewsStory? ns) {
+void displayNewsStory(
+  String story,
+  List<int> storyXStart,
+  List<int> storyXEnd,
+  int y,
+  NewsStory? ns,
+) {
   ns?.body = newsprintToWebFormat(story);
   List<String> text = [];
   List<bool> centered = [];
@@ -910,8 +990,10 @@ void displayNewsStory(String story, List<int> storyXStart, List<int> storyXEnd,
     }
     lines.first.trim();
     if (centered.first) {
-      move(cury,
-          (storyXStart[cury] + storyXEnd[cury] - lines.first.length + 1) >> 1);
+      move(
+        cury,
+        (storyXStart[cury] + storyXEnd[cury] - lines.first.length + 1) >> 1,
+      );
     } else {
       move(cury, storyXStart[cury]);
     }
@@ -929,8 +1011,10 @@ void displayNewsStory(String story, List<int> storyXStart, List<int> storyXEnd,
       text[t] = text[t].substring(0, text[t].length - 2);
     }
     if (centered[t]) {
-      move(y + t,
-          (storyXStart[y + t] + storyXEnd[y + t] - text[t].length + 1) >> 1);
+      move(
+        y + t,
+        (storyXStart[y + t] + storyXEnd[y + t] - text[t].length + 1) >> 1,
+      );
     } else {
       mvaddstr(y + t, storyXStart[y + t], text[t]);
     }

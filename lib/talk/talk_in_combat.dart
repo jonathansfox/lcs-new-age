@@ -89,19 +89,24 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
     }
 
     siteCrime += 5;
-    addPotentialCrime(squad, Crime.terrorism,
-        reasonKey: "threatening hostages");
+    addPotentialCrime(
+      squad,
+      Crime.terrorism,
+      reasonKey: "threatening hostages",
+    );
 
     await getKey();
 
     bool noretreat = false;
 
     if (weaponhostage > 0) {
-      Creature? e = encounter.firstWhereOrNull((e) =>
-          e.isEnemy &&
-          e.alive &&
-          e.blood > 70 &&
-          (e.type.canPerformArrests || e.type.edgelord));
+      Creature? e = encounter.firstWhereOrNull(
+        (e) =>
+            e.isEnemy &&
+            e.alive &&
+            e.blood > 70 &&
+            (e.type.canPerformArrests || e.type.edgelord),
+      );
       if (e != null) {
         mvaddstrc(9, 1, white, "${e.name}:");
         move(10, 1);
@@ -174,9 +179,17 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
         mvaddstrc(9, 1, lightGray, "How should ${liberal.name} respond?");
         bool plural = hostages > 1;
         addOptionText(
-            11, 1, "A", "A - Execute ${plural ? "a" : "the"} hostage");
-        addOptionText(12, 1, "B",
-            "B - Offer to trade the hostage${plural ? "s" : ""} for freedom");
+          11,
+          1,
+          "A",
+          "A - Execute ${plural ? "a" : "the"} hostage",
+        );
+        addOptionText(
+          12,
+          1,
+          "B",
+          "B - Offer to trade the hostage${plural ? "s" : ""} for freedom",
+        );
 
         while (true) {
           c = await getKey();
@@ -209,8 +222,12 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
 
           await getKey();
 
-          mvaddstrc(10, 1, white,
-              "${executer.name} Heartlessly drops ${executer.prisoner!.name}'s body.");
+          mvaddstrc(
+            10,
+            1,
+            white,
+            "${executer.name} Heartlessly drops ${executer.prisoner!.name}'s body.",
+          );
           executer.heartDamage++;
           siteCrime += 10;
           addDramaToSiteStory(Drama.killedSomebody);
@@ -363,28 +380,34 @@ Future<bool> talkInCombat(Creature liberal, Creature target) async {
         case SiegeType.cia:
           addstr("pretends to be a Secret Agent.");
         case SiegeType.angryRuralMob:
-          addstr([
-            "complains loudly about John Deere contracts.",
-            "mutters about city folks messing things up.",
-            "grumbles about the 'good old days'.",
-            "blusters about the rising cost of feed.",
-            "yells \"I think they went that-a-way!\"",
-            "says \"They're hidin' here somewhere!\"",
-            "asks \"Y'all seen 'em anywheres?\"",
-            "says \"I reckon they's in the barn.\"",
-            "says \"Doubt they coulda gone far!\"",
-            "shouts \"They went 'round that way!\"",
-          ].random);
+          addstr(
+            [
+              "complains loudly about John Deere contracts.",
+              "mutters about city folks messing things up.",
+              "grumbles about the 'good old days'.",
+              "blusters about the rising cost of feed.",
+              "yells \"I think they went that-a-way!\"",
+              "says \"They're hidin' here somewhere!\"",
+              "asks \"Y'all seen 'em anywheres?\"",
+              "says \"I reckon they's in the barn.\"",
+              "says \"Doubt they coulda gone far!\"",
+              "shouts \"They went 'round that way!\"",
+            ].random,
+          );
         case SiegeType.ccs:
-          addstr([
-            "makes a neo-Nazi hand gesture.",
-            "mutters something racist.",
-            "just starts growling slurs.",
-            "parrots a hateful slogan.",
-            "mutters a vague insult about minorities.",
-          ].random);
+          addstr(
+            [
+              "makes a neo-Nazi hand gesture.",
+              "mutters something racist.",
+              "just starts growling slurs.",
+              "parrots a hateful slogan.",
+              "mutters a vague insult about minorities.",
+            ].random,
+          );
         case SiegeType.corporateMercs:
           addstr("pretends to be a mercenary.");
+        case SiegeType.medicalDebtCollectors:
+          addstr("pretends to be an accountant.");
         case SiegeType.none:
           addstr("sniffs around for Liberals.");
       }
@@ -521,54 +544,61 @@ Future<void> intimidate(Creature liberal) async {
   if (last > 0 && slogan[last - 1] != '"') formattedSlogan += '"';
 
   if (enemyPresent) {
-    addstr([
-      formattedSlogan,
-      "Run, you Conservative swine!",
-      "We're the Liberal Crime Squad!",
-      "Praying won't help you now!",
-      "You fight like a dairy farmer!",
-      "You're in the wrong place!",
-      "Don't mess with the LCS!",
-      "You're in for it now!",
-      "Go now or I'll kill you!",
-      "Run away, and never return!",
-      if (noProfanity) "[Please leave!]" else "Get the fuck out of here!",
-      "I swear to Darwin I'll end you!",
-      "Don't make me ${noProfanity ? "[be mean]" : "fuck you up"}!",
-      "I pity the fool who stands against the LCS!",
-      "Anybody feel like dying a hero?",
-    ].random);
+    addstr(
+      [
+        formattedSlogan,
+        "Run, you Conservative swine!",
+        "We're the Liberal Crime Squad!",
+        "Praying won't help you now!",
+        "You fight like a dairy farmer!",
+        "You're in the wrong place!",
+        "Don't mess with the LCS!",
+        "You're in for it now!",
+        "Go now or I'll kill you!",
+        "Run away, and never return!",
+        if (noProfanity) "[Please leave!]" else "Get the fuck out of here!",
+        "I swear to Darwin I'll end you!",
+        "Don't make me ${noProfanity ? "[be mean]" : "fuck you up"}!",
+        "I pity the fool who stands against the LCS!",
+        "Anybody feel like dying a hero?",
+      ].random,
+    );
   } else {
     if (encounter.any(
-        (e) => e.equippedWeapon != null && e.align == Alignment.conservative)) {
-      addstr([
-        "Hands in the air and you can walk!",
-        "Step back, drop your weapons, and walk out.",
-        "Drop it now!  I won't ask twice!",
-        "If you're giving up, show me your hands.",
-        "Put your weapons down and walk away.",
-        "Drop it before I drop you!",
-        "Lose the weapon and get out of here!",
-        "Drop your weapons and back off!",
-      ].random);
+      (e) => e.equippedWeapon != null && e.align == Alignment.conservative,
+    )) {
+      addstr(
+        [
+          "Hands in the air and you can walk!",
+          "Step back, drop your weapons, and walk out.",
+          "Drop it now!  I won't ask twice!",
+          "If you're giving up, show me your hands.",
+          "Put your weapons down and walk away.",
+          "Drop it before I drop you!",
+          "Lose the weapon and get out of here!",
+          "Drop your weapons and back off!",
+        ].random,
+      );
     } else {
-      addstr([
-        formattedSlogan,
-        "Don't push your luck.",
-        "Walk away. Now!",
-        "If you don't want more trouble, then go.",
-        "I'm giving you chance to run.",
-        "Go on, get out of here.",
-        "You better leave.",
-        "You don't want to be here.",
-        "Back off and live to see another day.",
-        "You don't have to die today.",
-        "You can walk away from this.",
-        "Turn around and walk away.",
-        "Get moving. Now.",
-        "I don't want to see you again.",
-        "Out! Go, before I change my mind.",
-      ].random);
+      addstr(
+        [
+          formattedSlogan,
+          "Don't push your luck.",
+          "Walk away. Now!",
+          "If you don't want more trouble, then go.",
+          "I'm giving you chance to run.",
+          "Go on, get out of here.",
+          "You better leave.",
+          "You don't want to be here.",
+          "Back off and live to see another day.",
+          "You don't have to die today.",
+          "You can walk away from this.",
+          "Turn around and walk away.",
+          "Get moving. Now.",
+          "I don't want to see you again.",
+          "Out! Go, before I change my mind.",
+        ].random,
+      );
     }
   }
   await getKey();
@@ -576,8 +606,8 @@ Future<void> intimidate(Creature liberal) async {
   for (int i = encounter.length - 1; i >= 0; i--) {
     Creature e = encounter[i];
     if (e.alive && e.isEnemy) {
-      int attack =
-          (liberal.juice / 50 + publicOpinion[View.lcsKnown]! / 10).round();
+      int attack = (liberal.juice / 50 + publicOpinion[View.lcsKnown]! / 10)
+          .round();
       int defense = e.attributeRoll(Attribute.wisdom);
       if (e.type.intimidationResistant) defense = defense * 2;
 

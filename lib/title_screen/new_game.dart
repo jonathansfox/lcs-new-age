@@ -309,6 +309,8 @@ Future<void> makeCharacter() async {
   }
 
   ledger.forceSetFunds(7);
+  if (debugAMilli) ledger.forceSetFunds(1000000);
+  if (debugFounderMedicalDebt) founder.medicalBills = 50000;
 
   founder.gender = founder.genderAssignedAtBirth = sex;
   founder.properName = "${first[sex]!} $last";

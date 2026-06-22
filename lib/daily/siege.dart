@@ -473,6 +473,121 @@ Future<void> siegeCheck() async {
         l.siege.timeuntilcorps = -1;
       }
 
+      //MEDICAL INDUSTRY
+      // Unpaid hospital bills among the Liberals sheltering here put a target
+      // on the safehouse: one point of heat for every $1000 of medical debt.
+      // While healthcare law is anything short of universal (Elite Liberal),
+      // the medical industry will eventually send debt collectors after the LCS.
+      int unpaidMedicalBills = l.creaturesPresent
+          .where((p) => p.alive && p.align == Alignment.liberal)
+          .fold(0, (t, p) => t + p.medicalBills);
+      // Debt collectors only chase money they can actually get: any bills
+      // beyond what the LCS could pay add no heat. If you can't pay, they
+      // won't come after you.
+      int collectibleDebt = min(unpaidMedicalBills, ledger.funds);
+      int extraHeatFromMedical = collectibleDebt ~/ 1000;
+      // The armed accountants only roll up when both healthcare and gun
+      // control are Conservative or Arch-Conservative: a hostile medical regime
+      // to run the debt up, and lax gun laws for them to be carrying AR-15s.
+      bool medicalLawHostile =
+          laws[Law.healthcare]! <= DeepAlignment.conservative &&
+          laws[Law.gunControl]! <= DeepAlignment.conservative;
+      if (medicalLawHostile &&
+          l.heat + extraHeatFromMedical > l.heatProtection &&
+          l.siege.timeuntilmedical == -1 &&
+          !l.siege.underSiege &&
+          oneIn(30) &&
+          numpres > 0) {
+        l.siege.timeuntilmedical = lcsRandom(3) + 1;
+        Creature? medicalSleeper = pool.firstWhereOrNull(
+          (p) => p.sleeperAgent && p.type.id == CreatureTypeIds.insuranceCEO,
+        );
+        // Occasional advance warning before the raid.
+        if (medicalSleeper != null || oneIn(5)) {
+          erase();
+          String message = "";
+          message = "You have received ";
+          if (medicalSleeper != null) {
+            message += "a warning from ${medicalSleeper.name} ";
+          } else {
+            message += "an anonymous tip ";
+          }
+          message += "that the medical industry has ";
+          message += "dispatched an accounting team to ";
+          if (medicalSleeper != null) {
+            message += l.getName(includeCity: true);
+          } else {
+            message += "the LCS";
+          }
+          message += " to secure payment of unpaid hospital bills.";
+          setColor(white);
+          addparagraph(8, 1, message);
+          await getKey();
+        }
+      } else if (l.siege.timeuntilmedical > 0 && !l.siege.underSiege) {
+        // Medical raid countdown!
+        l.siege.timeuntilmedical--;
+      } else if (l.siege.timeuntilmedical < -1) {
+        // Post-raid cooldown counting back up toward -1 so persistent debt
+        // doesn't trigger back-to-back raids.
+        l.siege.timeuntilmedical++;
+      } else if (l.siege.timeuntilmedical == 0 &&
+          !l.siege.underSiege &&
+          medicalLawHostile &&
+          numpres > 0) {
+        // Medical industry raid!
+        erase();
+        setColor(white);
+        addparagraph(
+          4,
+          1,
+          "A small fleet of ambulances surrounds the front of ${l.getName()}. "
+          "As they open, a bunch of office workers in cheap suits climb out "
+          "while handling rifles that most of them look like they have "
+          "no idea how to use.",
+        );
+        await getKey();
+        setColor(white);
+        addparagraph(
+          console.y + 1,
+          1,
+          "A gangly accountant climbs up onto one of the ambulances and "
+          "speaks into a loudspeaker: \"Liberal Crime Squad! We're here "
+          "to collect on your unpaid hospital bills! We have no political "
+          "issue with you, we're not gonna try to bring you to justice "
+          "or anything like that, but you owe us a buncha money and "
+          "we're here to settle the debt!\"",
+        );
+        await getKey();
+        addparagraph(
+          console.y + 1,
+          1,
+          "The accountant lifts an AR-15 haphazardly and continues: "
+          "\"Open up and we'll have a nice chat! Without our guns even! "
+          "I have some sweet pens we can sign the paperwork with, and we "
+          "even brought doughnuts! They're gluten free, you'll like them! "
+          "Please, we don't wanna shoot anyone, we're from the finance "
+          "department!\"",
+        );
+        await getKey();
+        setColor(lightBlue);
+        addparagraph(
+          console.y + 1,
+          1,
+          "Hopsital debt collectors are moving to settle with the ${l.getName()}.",
+        );
+        await getKey();
+
+        l.siege.activeSiegeType = SiegeType.medicalDebtCollectors;
+        l.siege.underAttack = true;
+        l.siege.lightsOff = false;
+        l.siege.camerasOff = false;
+        l.siege.timeuntilmedical = -60;
+      } else if (l.siege.timeuntilmedical == 0) {
+        // Silently call off foiled medical raids
+        l.siege.timeuntilmedical = -1;
+      }
+
       //CONSERVATIVE CRIME SQUAD
       if (ccsActive) {
         if (l.extraHeatFromCCS < l.extraHeatFromCCSTarget) {
@@ -1296,6 +1411,10 @@ Future<void> siegeDefeat() async {
     }
 
     loc.siege.activeSiegeType = SiegeType.none;
+  } else if (loc.siege.activeSiegeType == SiegeType.medicalDebtCollectors) {
+    // Non-lethal: the medical industry takes its cut, not the squad's lives.
+    await surrenderToMedicalIndustry(loc);
+    loc.siege.activeSiegeType = SiegeType.none;
   } else {
     //OTHERWISE IT IS SUICIDE
     int killnumber = 0;
@@ -1897,6 +2016,62 @@ Future<void> conquerTextCCS() async {
 
   addOptionText(15, 19, "C", "Press C to Continue Liberally.");
 
+  while (await getKey() != Key.c) {}
+
+  // After the victory screen, brief the squad on any CCS safehouses still out
+  // there, using intel gleaned from this one.
+  List<Site> remainingCcsSafehouses = sites
+      .where((s) => s.controller == SiteController.ccs)
+      .toList();
+  if (remainingCcsSafehouses.isNotEmpty) {
+    await ccsRemainingSafehouseIntel(remainingCcsSafehouses);
+  }
+}
+
+Future<void> ccsRemainingSafehouseIntel(List<Site> remaining) async {
+  erase();
+  mvaddstrc(
+    1,
+    1,
+    white,
+    "The LCS has captured intelligence on the remaining CCS operations.",
+  );
+
+  int y = 3;
+  bool anyHidden = false;
+  mvaddstr(y++, 1, "Remaining CCS safehouses:");
+  for (Site s in remaining) {
+    setColor(lightGray);
+    mvaddstr(y++, 5, "${s.getName()} in ${s.city.getName()}");
+    if (s.hidden) {
+      anyHidden = true;
+      addstrc(red, " (hidden CCS safehouse)");
+    }
+  }
+
+  if (anyHidden) {
+    // Shown once, because at least one listed safehouse is hidden.
+    setColor(lightGray);
+    addparagraph(
+      y + 1,
+      1,
+      x2: 78,
+      "Hidden locations cannot be directly attacked until they are revealed "
+      "by finding a CCS member in that city and either turning them to your "
+      "cause, or capturing and interrogating them for information.",
+    );
+    addparagraph(
+      console.y + 1,
+      1,
+      x2: 78,
+      "The Conservative Crime Squad doesn't usually advertise its members, "
+      "but they can be found in cities where the CCS is active. CCS members "
+      "often have clothing and weapons that don't match their cover "
+      "identities.",
+    );
+  }
+
+  addOptionText(23, 19, "C", "Press C to Continue Liberally.");
   while (await getKey() != Key.c) {}
 }
 

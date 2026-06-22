@@ -1106,6 +1106,18 @@ Future<bool> addsiegeencounter(int type) async {
               case SiegeType.corporateMercs:
                 e = Creature.fromId(CreatureTypeIds.merc);
                 ensureIsArmed(e);
+              case SiegeType.medicalDebtCollectors:
+                e = Creature.fromId(
+                  lcsRandomWeighted({
+                    CreatureTypeIds.actuary: 1,
+                    CreatureTypeIds.cpa: 1,
+                    CreatureTypeIds.claimsAdjuster: 1,
+                    CreatureTypeIds.auditor: 1,
+                    CreatureTypeIds.officeWorker: 1,
+                  }),
+                );
+                conservatize(e);
+                e.giveWeaponAndAmmo("WEAPON_AR15", 4);
               case SiegeType.ccs:
                 e = Creature.fromId(CreatureTypeIds.ccsVigilante);
                 ensureIsArmed(e);

@@ -142,11 +142,7 @@ class UniqueCreatures {
       politics.promoteVP();
     }
     for (var siteCreatureList in _siteCreatures.values) {
-      for (var entry in siteCreatureList.entries) {
-        if (entry.value.id == cr.id) {
-          siteCreatureList.remove(entry.key);
-        }
-      }
+      siteCreatureList.removeWhere((_, creature) => creature.id == cr.id);
     }
   }
 

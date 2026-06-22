@@ -23,6 +23,7 @@ Future<bool> checkForDefeat(
       SiegeType.cia => Ending.ciaSiege,
       SiegeType.angryRuralMob => Ending.hicksSiege,
       SiegeType.corporateMercs => Ending.corporateSiege,
+      SiegeType.medicalDebtCollectors => Ending.medicalSiege,
       SiegeType.ccs => Ending.ccsSiege,
       _ => Ending.dead,
     });
@@ -61,6 +62,7 @@ enum Ending {
   ciaSiege,
   policeSiege,
   corporateSiege,
+  medicalSiege,
   ccsSiege,
   reaganified,
   dead,
