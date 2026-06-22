@@ -87,7 +87,12 @@ class Creature {
   int money = 0;
   int heartDamage = 0;
   int permanentHealthDamage = 0;
-  @JsonKey(name: "heat", includeFromJson: true, includeToJson: true)
+  @JsonKey(
+    name: "heat",
+    includeFromJson: true,
+    includeToJson: true,
+    defaultValue: 0,
+  )
   int _heat = 0;
   @JsonKey(includeFromJson: false, includeToJson: false)
   int get heat => max(
