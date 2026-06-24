@@ -19,11 +19,16 @@ const MAPX = 70;
 const MAPY = 23;
 const MAPZ = 10;
 List<List<List<SiteTile>>> levelMap = List.generate(
-    MAPX,
-    (x) => List.generate(
-        MAPY, (y) => List.generate(MAPZ, (z) => SiteTile(x, y, z))));
-Iterable<SiteTile> adjacentTiles(int x, int y, int z,
-    {bool orthogonal = true}) sync* {
+  MAPX,
+  (x) =>
+      List.generate(MAPY, (y) => List.generate(MAPZ, (z) => SiteTile(x, y, z))),
+);
+Iterable<SiteTile> adjacentTiles(
+  int x,
+  int y,
+  int z, {
+  bool orthogonal = true,
+}) sync* {
   for (int dx = -1; dx <= 1; dx++) {
     for (int dy = -1; dy <= 1; dy++) {
       if (dx == 0 && dy == 0) continue;
@@ -60,7 +65,13 @@ extension LevelMap on List<List<List<SiteTile>>> {
       this[x.clamp(0, MAPX - 1)][y.clamp(0, MAPY - 1)][z.clamp(0, MAPZ - 1)];
 
   Iterable<SiteTile> range(
-      int x1, int y1, int z1, int x2, int y2, int z2) sync* {
+    int x1,
+    int y1,
+    int z1,
+    int x2,
+    int y2,
+    int z2,
+  ) sync* {
     for (int x = x1; x < x2; x++) {
       if (x < 0 || x >= MAPX) continue;
       for (int y = y1; y < y2; y++) {
@@ -78,8 +89,8 @@ SiteTile levelMapTile(int x, int y, int z) =>
     levelMap[x.clamp(0, MAPX - 1)][y.clamp(0, MAPY - 1)][z.clamp(0, MAPZ - 1)];
 SiteTile? levelMapTileOrNull(int x, int y, int z) =>
     x < 0 || x >= MAPX || y < 0 || y >= MAPY || z < 0 || z >= MAPZ
-        ? null
-        : levelMap[x][y][z];
+    ? null
+    : levelMap[x][y][z];
 bool oldMapMode = false;
 
 const SITEBLOCK_EXIT = BIT1;
@@ -331,8 +342,14 @@ Future<void> initsite(Site loc) async {
       case SiteType.whiteHouse:
       case SiteType.amRadioStation:
       case SiteType.cableNewsStation:
-        for (SiteTile tile
-            in levelMap.range(2, 2, 0, MAPX - 2, MAPY - 2, MAPZ)) {
+        for (SiteTile tile in levelMap.range(
+          2,
+          2,
+          0,
+          MAPX - 2,
+          MAPY - 2,
+          MAPZ,
+        )) {
           tile.restricted = true;
         }
       default:
@@ -383,8 +400,12 @@ Future<void> initsite(Site loc) async {
           levelMap[x - 1][y][z].flag & SITEBLOCK_BLOCK > 0 ||
           levelMap[x][y + 1][z].flag & SITEBLOCK_BLOCK > 0 ||
           levelMap[x][y - 1][z].flag & SITEBLOCK_BLOCK > 0) {
-        SiteTileChange change =
-            SiteTileChange(x, y, z, SITEBLOCK_GRAFFITI_OTHER);
+        SiteTileChange change = SiteTileChange(
+          x,
+          y,
+          z,
+          SITEBLOCK_GRAFFITI_OTHER,
+        );
         loc.changes.add(change);
         levelMap[x][y][z].flag |= SITEBLOCK_GRAFFITI_OTHER;
         graffitiquota--;
@@ -640,7 +661,8 @@ void buildSiteFromOldGenerator(Site loc) {
       case SiteType.latteStand:
         for (int x = (MAPX >> 1) - 4; x <= (MAPX >> 1) + 4; x++) {
           for (int y = 0; y < 7; y++) {
-            levelMap[x][y][0].flag = (x == (MAPX >> 1) - 4 ||
+            levelMap[x][y][0].flag =
+                (x == (MAPX >> 1) - 4 ||
                     x == (MAPX >> 1) + 4 ||
                     y == 0 ||
                     y == 6
@@ -694,8 +716,10 @@ void clearAwayBlockedDoorways() {
         }
       }
       // Open up past doors that lead to walls
-      void openUpInDirection(SiteTile? Function(SiteTile) next,
-          Iterable<SiteTile?> Function(SiteTile?) neighbors) {
+      void openUpInDirection(
+        SiteTile? Function(SiteTile) next,
+        Iterable<SiteTile?> Function(SiteTile?) neighbors,
+      ) {
         SiteTile? n = next(tile);
         if (n == null) tile.wall = true;
         while (n != null) {
@@ -750,41 +774,43 @@ void clearSecurityFromLCSSafehouses(Site loc) {
   }
 }
 
+String dameMapNameForSiteType(SiteType type) => switch (type) {
+  SiteType.tenement => "ApartmentIndustrial",
+  SiteType.apartment => "ApartmentUniversity",
+  SiteType.upscaleApartment => "ApartmentDowntown",
+  SiteType.warehouse => "Warehouse",
+  SiteType.homelessEncampment => "HomelessCamp",
+  SiteType.drugHouse => "CrackHouse",
+  SiteType.barAndGrill => "BarAndGrill",
+  SiteType.bombShelter => "BombShelter",
+  SiteType.bunker => "Bunker",
+  SiteType.cosmeticsLab => "CosmeticsLab",
+  SiteType.geneticsLab => "GeneticsLab",
+  SiteType.policeStation => "PoliceStation",
+  SiteType.courthouse => "Courthouse",
+  SiteType.prison => "Prison",
+  SiteType.intelligenceHQ => "IntelligenceHQ",
+  SiteType.armyBase => "ArmyBase",
+  SiteType.fireStation => "FireStation",
+  SiteType.sweatshop => "Sweatshop",
+  SiteType.dirtyIndustry => "Factory",
+  SiteType.corporateHQ => "CorporateHQ",
+  SiteType.ceoHouse => "CEOHouse",
+  SiteType.amRadioStation => "RadioStation",
+  SiteType.cableNewsStation => "CableNews",
+  SiteType.juiceBar => "JuiceBar",
+  SiteType.internetCafe => "InternetCafe",
+  SiteType.latteStand => "LatteStand",
+  SiteType.veganCoOp => "VeganCoOp",
+  SiteType.publicPark => "Park",
+  SiteType.bank => "Bank",
+  SiteType.nuclearPlant => "NuclearPlant",
+  SiteType.whiteHouse => "WhiteHouse",
+  _ => "",
+};
+
 Future<bool> tryBuildSiteFromDAME(Site loc) async {
-  String mapName = switch (loc.type) {
-    SiteType.tenement => "ApartmentIndustrial",
-    SiteType.apartment => "ApartmentUniversity",
-    SiteType.upscaleApartment => "ApartmentDowntown",
-    SiteType.warehouse => "Warehouse",
-    SiteType.homelessEncampment => "HomelessCamp",
-    SiteType.drugHouse => "CrackHouse",
-    SiteType.barAndGrill => "BarAndGrill",
-    SiteType.bombShelter => "BombShelter",
-    SiteType.bunker => "Bunker",
-    SiteType.cosmeticsLab => "CosmeticsLab",
-    SiteType.geneticsLab => "GeneticsLab",
-    SiteType.policeStation => "PoliceStation",
-    SiteType.courthouse => "Courthouse",
-    SiteType.prison => "Prison",
-    SiteType.intelligenceHQ => "IntelligenceHQ",
-    SiteType.armyBase => "ArmyBase",
-    SiteType.fireStation => "FireStation",
-    SiteType.sweatshop => "Sweatshop",
-    SiteType.dirtyIndustry => "Factory",
-    SiteType.corporateHQ => "CorporateHQ",
-    SiteType.ceoHouse => "CEOHouse",
-    SiteType.amRadioStation => "RadioStation",
-    SiteType.cableNewsStation => "CableNews",
-    SiteType.juiceBar => "JuiceBar",
-    SiteType.internetCafe => "InternetCafe",
-    SiteType.latteStand => "LatteStand",
-    SiteType.veganCoOp => "VeganCoOp",
-    SiteType.publicPark => "Park",
-    SiteType.bank => "Bank",
-    SiteType.nuclearPlant => "NuclearPlant",
-    SiteType.whiteHouse => "WhiteHouse",
-    _ => "",
-  };
+  String mapName = dameMapNameForSiteType(loc.type);
   bool loaded = false;
   if (mapName != "") loaded = await readDAMEMap(mapName);
   return loaded;
@@ -833,17 +859,20 @@ void addOldMapSpecials(Site loc) {
     }
   }
   SiteTile specialLocation() {
-    Iterable<SiteTile> range = levelMap.all.where((t) =>
-        t.x >= 2 &&
-        t.y >= 2 &&
-        t.x < MAPX - 2 &&
-        t.y < MAPY - 2 &&
-        !(t.x >= (MAPX >> 1) - 2 &&
-            t.x <= (MAPX >> 1) + 2 &&
-            t.y >= (MAPY >> 1) - 2 &&
-            t.y <= 4));
-    Iterable<SiteTile> candidates = range
-        .where((t) => !t.blocked && !t.loot && t.special == TileSpecial.none);
+    Iterable<SiteTile> range = levelMap.all.where(
+      (t) =>
+          t.x >= 2 &&
+          t.y >= 2 &&
+          t.x < MAPX - 2 &&
+          t.y < MAPY - 2 &&
+          !(t.x >= (MAPX >> 1) - 2 &&
+              t.x <= (MAPX >> 1) + 2 &&
+              t.y >= (MAPY >> 1) - 2 &&
+              t.y <= 4),
+    );
+    Iterable<SiteTile> candidates = range.where(
+      (t) => !t.blocked && !t.loot && t.special == TileSpecial.none,
+    );
     if (candidates.isNotEmpty) return candidates.random;
     return range.random;
   }

@@ -1,3 +1,8 @@
+## 1.5.4 - 6/24/2026
+* Fixed a crash when getting into a footchase
+* Fixed a bug where older saves could cause liberals to camp at locations other than a safehouse, which would cause other downstream issues
+* Fixed a bug where medical debt collectors could raid if you had high heat even if you didn't have outstanding medical bills
+
 ## 1.5.3 - 6/22/2026
 * Reworked new game difficulty options screen and added a new combat initiative option, which allows switching to alternating/zipper initiative, where your squad and the enemy take turns attacking one at a time instead of your team attacking all at once at the start of the round
 * Added the ability of the healthcare industry to send armed accountants to your safehouse to recover unpaid hospital bills

@@ -223,7 +223,7 @@ class Creature {
   @JsonKey(includeFromJson: false, includeToJson: false)
   Site? get workSite => workLocation is Site ? workLocation as Site : null;
   @JsonKey(includeFromJson: false, includeToJson: false)
-  Site? get base => sites.elementAtOrNull(baseId ?? sites.length);
+  Site? get base => sites.firstWhereOrNull((s) => s.id == baseId);
   set base(Site? loc) => baseId = loc?.id;
   @JsonKey(includeFromJson: false, includeToJson: false)
   Squad? get squad => squads.where((s) => s.id == squadId).firstOrNull;

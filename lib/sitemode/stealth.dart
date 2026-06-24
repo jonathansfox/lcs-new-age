@@ -680,7 +680,7 @@ DisguiseQuality disguiseQuality(Creature cr) {
               ].contains(cr.clothing.type.idName)) {
             uniformed = DisguiseQuality.inconspicuous;
           }
-          if (activeSite!.hasHighSecurity) {
+          if (activeSite?.hasHighSecurity ?? false) {
             if (isPolice) {
               uniformed = DisguiseQuality.inconspicuous;
             }
@@ -831,7 +831,7 @@ DisguiseQuality disguiseQuality(Creature cr) {
     }
   }
 
-  if (activeSite!.controller == SiteController.lcs) {
+  if (activeSite?.controller == SiteController.lcs) {
     uniformed = DisguiseQuality.inconspicuous;
   }
 

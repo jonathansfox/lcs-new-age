@@ -486,10 +486,12 @@ Future<void> siegeCheck() async {
       // won't come after you.
       int collectibleDebt = min(unpaidMedicalBills, ledger.funds);
       int extraHeatFromMedical = collectibleDebt ~/ 1000;
+      bool enoughMedicalDebt = collectibleDebt >= 5000;
       bool medicalLawHostile =
           laws[Law.healthcare]! <= DeepAlignment.conservative &&
           laws[Law.gunControl]! <= DeepAlignment.conservative;
       if (medicalLawHostile &&
+          enoughMedicalDebt &&
           l.heat + extraHeatFromMedical > l.heatProtection &&
           l.siege.timeuntilmedical == -1 &&
           !l.siege.underSiege &&
@@ -531,6 +533,7 @@ Future<void> siegeCheck() async {
       } else if (l.siege.timeuntilmedical == 0 &&
           !l.siege.underSiege &&
           medicalLawHostile &&
+          enoughMedicalDebt &&
           numpres > 0) {
         // Medical industry raid!
         erase();

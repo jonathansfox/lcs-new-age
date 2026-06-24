@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
+import 'package:lcs_new_age/location/site.dart';
 import 'package:lcs_new_age/saveload/save_load.dart';
 
 import 'test_support.dart';
@@ -50,6 +51,24 @@ void main() {
             reason: 'No cities loaded from $fileName');
         expect(pool, isNotEmpty,
             reason: 'No LCS members loaded from $fileName');
+
+        // Regression guard: a regular member's home base must always resolve to
+        // an LCS-controlled safehouse. The pre-1.5.0 migration appends new
+        // sites into the middle of the cities->districts->sites order, so any
+        // code that resolves a stored site id by *list index* (rather than by
+        // id) would silently point members at the wrong site -- e.g. a Public
+        // Park -- which then becomes their location and breaks recruiting,
+        // healing, etc. Sleeper agents legitimately base at their (non-LCS)
+        // workplace, so they're excluded.
+        for (final member in pool) {
+          if (member.sleeperAgent) continue;
+          final Site? memberBase = member.base;
+          if (memberBase == null) continue;
+          expect(memberBase.controller, SiteController.lcs,
+              reason: '${member.name} in $fileName has a non-safehouse base '
+                  '(${memberBase.type.name}); a stored site id is being '
+                  'resolved by list index instead of by id.');
+        }
       });
     }
   });

@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/location/site.dart';
@@ -25,7 +26,7 @@ class Vehicle {
   @JsonKey(includeToJson: false, includeFromJson: false)
   VehicleType get type => vehicleTypes[typeName]!;
   @JsonKey(includeToJson: false, includeFromJson: false)
-  Site? get location => locationId != null ? sites[locationId!] : null;
+  Site? get location => sites.firstWhereOrNull((s) => s.id == locationId);
   set location(Site? site) => locationId = site?.id;
   @JsonKey(includeToJson: false, includeFromJson: false)
   String get shortName => type.shortName;

@@ -5,19 +5,20 @@ import 'package:lcs_new_age/engine/engine.dart';
 import 'package:lcs_new_age/gamestate/game_mode.dart';
 import 'package:lcs_new_age/gamestate/game_state.dart';
 import 'package:lcs_new_age/gamestate/time.dart';
+import 'package:lcs_new_age/map_editor/map_editor_screen.dart';
 import 'package:lcs_new_age/politics/alignment.dart';
 import 'package:lcs_new_age/saveload/save_load.dart';
 import 'package:lcs_new_age/title_screen/high_scores.dart';
-import 'package:lcs_new_age/title_screen/map_editor.dart';
 import 'package:lcs_new_age/title_screen/new_game.dart';
 import 'package:lcs_new_age/title_screen/world.dart';
 import 'package:lcs_new_age/utils/colors.dart';
+import 'package:lcs_new_age/utils/debug_flags.dart';
 import 'package:lcs_new_age/utils/game_options.dart';
 import 'package:lcs_new_age/utils/interface_options.dart';
 import 'package:lcs_new_age/utils/lcsrandom.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const String gameVersion = "1.5.3";
+const String gameVersion = "1.5.4";
 bool megaFounderCheat = false;
 
 Future<void> titleScreen() async {
@@ -71,7 +72,7 @@ Future<void> titleScreen() async {
   );
   addOptionText(14, 48, "V", "V - View Changelog");
   addOptionText(15, 10, "O", "O - Gameplay Options");
-  //addOptionText(15, 48, "M", "M - Mod Tools");
+  if (debugShowMapEditor) addOptionText(15, 48, "M", "M - Mod Tools");
 
   while (true) {
     int c = await getKey();
@@ -118,8 +119,10 @@ Future<void> titleScreen() async {
         await optionsMenu();
         return;
       case Key.m:
-        //await moddingMenu();
-        return;
+        if (debugShowMapEditor) {
+          await moddingMenu();
+          return;
+        }
     }
   }
 }
